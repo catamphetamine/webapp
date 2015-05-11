@@ -1,0 +1,48 @@
+React	= require 'react'
+Router = require 'react-router'
+
+# использование: React.createClass(Radium.wrap(...))
+# Radium = require 'radium'
+
+Link = require('react-router').Link
+
+require './layout.less'
+
+Layout = React.createClass
+	render: ->
+		(
+			<div>
+				<header>
+					<ul style={style.menu}>
+						<li style={style.menu_item}><Link to="editor" style={style.menu_item_link} activeStyle={merge(style.menu_item_link, style.menu_item_link.current)}>{_ 'Editor'}</Link></li>
+						<li style={style.menu_item}><Link to="about" style={style.menu_item_link} activeStyle={merge(style.menu_item_link, style.menu_item_link.current)}>{_ 'About'}</Link></li>
+					</ul>
+				</header>
+
+				<Router.RouteHandler/>
+			</div>
+		)
+
+# <this.props.activeRouteHandler />
+
+style = 
+	menu:
+		'list-style-type' : 'none'
+
+	menu_item: {}
+
+	menu_item_link:
+		'display'         : 'inline-block'
+		'text-decoration' : 'none'
+		'color'           : '#000000'
+
+		'padding-left'    : '0.4em'
+		'padding-right'   : '0.4em'
+		'padding-top'     : '0.2em'
+		'padding-bottom'  : '0.2em'
+
+		current:
+			'color'            : '#ffffff'
+			'background-color' : '#000000'
+
+module.exports = Layout

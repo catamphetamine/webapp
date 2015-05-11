@@ -1,0 +1,15 @@
+{
+	"script": "server/main.coffee",
+	"watch": [
+		"server/**/*.coffee"
+	],
+	"ignore": [
+		".git",
+		"node_modules/**/*",
+		"build/**/*"
+	],
+	"env": {
+		"NODE_ENV": "development"
+	},
+	"verbose": false
+}

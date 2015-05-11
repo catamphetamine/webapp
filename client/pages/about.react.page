@@ -1,0 +1,28 @@
+require './about.less' 
+
+React = require 'react'
+
+About = React.createClass
+	getInitialState: ->
+		{
+			putin: ''
+			version: ''
+		}
+
+	componentDidMount: ->
+		api.call('utility.settings').then (settings) =>
+			@setState {
+				putin: settings.putin,
+				version: settings.version
+			}
+
+	render: ->
+		(
+			<div>
+				<div>Putin: {@state.putin}</div>
+				<div>Version: {@state.version}</div>
+				<div>Copyright © 2015</div>
+			</div>
+		)
+
+module.exports = About

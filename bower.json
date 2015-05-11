@@ -1,0 +1,17 @@
+{
+  "name": "cinema",
+  "version": "0.0.0",
+  "authors": [
+    "Nikolay Kuchumov <kuchumovn@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "bluebird": "~2.3.11",
+    "dustjs-linkedin": "~2.5.0"
+  }
+}

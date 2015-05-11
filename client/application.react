@@ -1,0 +1,48 @@
+require './scripts/libraries/language'
+
+Promise = require 'bluebird'
+global.Promise = Promise
+
+# убрать для продакшена
+Promise.longStackTraces()
+
+React = require 'react'
+
+Layout = require './pages/layout.react'
+
+Editor = require './pages/editor.react.page'
+About  = require './pages/about.react.page'
+
+Router       = require('react-router')
+DefaultRoute = require('react-router').DefaultRoute
+Route        = require('react-router').Route
+Routes       = require('react-router').Routes
+
+# global.ajax = require './scripts/libraries/ajax'
+global.api = require './scripts/libraries/api'
+
+document.addEventListener "DOMContentLoaded", ->
+	# React.render (
+	# 	<Routes location="history">
+	# 		<Route path="/" handler={Layout}>
+	# 			<DefaultRoute name="home" handler={Editor} />
+	# 			<Route name="about" handler={About} />
+	# 		</Route>
+	# 	</Routes>
+	# ), 
+	# document.getElementById('layout')
+
+	# React.render (
+	# 	<Layout/>
+	# ), 
+	# document.getElementById('layout')
+
+	routes = (
+		<Route handler={Layout} path="/">
+			<DefaultRoute name="editor" handler={Editor} />
+			<Route name="about" handler={About} />
+		</Route>
+	)
+
+	Router.run routes, Router.HistoryLocation, (Handler) ->
+		React.render(<Handler/>, document.getElementById('layout'))
