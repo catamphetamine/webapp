@@ -34,6 +34,8 @@ http://localhost:3001/webpack-dev-server/
 Сделать
 ====================
 
+Перевести API на socket.io
+
 Почитать, что такое Relay (и GraphQL) и нужен ли он:
 https://facebook.github.io/react/blog/2015/03/19/building-the-facebook-news-feed-with-relay.html
 
