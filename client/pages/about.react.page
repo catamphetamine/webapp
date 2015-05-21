@@ -12,11 +12,14 @@ About = React.createClass
 	componentDidMount: ->		
 		Actions.get_settings()
 
-		Data.on 'settings_changed', =>
+		@off = Data.on 'settings_changed', =>
 			@setState
 				putin: Data.settings.putin,
 				version: Data.settings.version
 				ready: yes
+
+	componentWillUnmount: ->
+		@off()
 
 	render: ->
 		content = if @state.ready

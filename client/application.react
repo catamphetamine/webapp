@@ -12,8 +12,12 @@ EventEmitter = require('events').EventEmitter
 
 React.Store = (object, dispatcher) ->
 	Object.merge(EventEmitter.prototype, object, {
-		off: (event, listener) ->
-			@removeListener(event, listener)
+		on: (event, listener) ->
+			@addListener(event, listener)
+			=> @removeListener(event, listener)
+
+		# off: (event, listener) ->
+		# 	@removeListener(event, listener)
 	})
 
 React.dispatch = (dispatcher, handlers) ->
