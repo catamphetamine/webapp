@@ -30,23 +30,29 @@ http://localhost:3001/webpack-dev-server/
 ====================
 
 ./automation/start.sh
+
 ./automation/stop.sh
 
 Сгенерировать скрипт автозапуска на сервере:
 
 ./automation/start.sh
+
 pm2 startup
+
 pm2 save
 
 https://github.com/Unitech/pm2
 
 Посмотреть статус процесса: 
+
 pm2 list
 
 Мониторинг процесса: 
+
 pm2 monit
 
 Посмотреть логи:
+
 pm2 logs cinema
 
 Возможна кластеризация, безостановочное самообновление и т.п.
@@ -55,11 +61,13 @@ pm2 logs cinema
 ====================
 
 Почитать, что такое Relay (и GraphQL) и нужен ли он:
+
 https://facebook.github.io/react/blog/2015/03/19/building-the-facebook-news-feed-with-relay.html
 
 Сделать какую-нибудь систему перевода на языки
 
 мб: повесить watch-er в gulp'е на папку translation, чтобы он там файлы из .coffee
+
 переводил в ./build/client/translation/*.json
 
 Скрипты установки сразу писать на Ansible
@@ -67,6 +75,7 @@ https://facebook.github.io/react/blog/2015/03/19/building-the-facebook-news-feed
 NginX
 
 Отрендерить React на сервере
+
 https://github.com/irvinebroque/isomorphic-hot-loader
 
 мб: перейти на coffeescript redux
@@ -75,23 +84,38 @@ https://github.com/irvinebroque/isomorphic-hot-loader
 ====================
 
 Для сборки проекта используется WebPack
+
 http://habrahabr.ru/post/245991/
 
+
 При сборке каждого chunk'а к имени фала добавляется хеш.
+
 Таким образом обходится кеширование браузера (с исчезающе малой вероятностью "коллизии" хешей).
+
 Нужные url'ы подставляются в index.html плагином HtmlWebpackPlugin.
 
+
 Вместо LESS и CSS в "компонентах" React'а используется Radium
+
 https://github.com/FormidableLabs/radium
 
+
 Подключен react-hot-loader
+
 http://gaearon.github.io/react-hot-loader/
 
+
 Для подключения модулей из bower'а, по идее, достаточно раскомментировать два помеченных места в webpack.coffee.
+
 Альтернативно, есть плагин:
+
 https://github.com/lpiepiora/bower-webpack-plugin
+
+
 
 Для кеширования Html5 через manifest можно будет посмотреть плагин AppCachePlugin
 
+
 Небольшой мониторинг есть по адресу http://localhost:5959/
+
 (npm модуль look)
