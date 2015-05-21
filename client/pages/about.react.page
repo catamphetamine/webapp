@@ -2,25 +2,36 @@ require './about.less'
 
 React = require 'react'
 
+Actions = require '../flux/actions/actions'
+Data = require '../flux/stores/data'
+
 About = React.createClass
 	getInitialState: ->
-		{
-			putin: ''
-			version: ''
-		}
+		ready: no
 
-	componentDidMount: ->
-		api.call('utility.settings').then (settings) =>
-			@setState {
-				putin: settings.putin,
-				version: settings.version
-			}
+	componentDidMount: ->		
+		Actions.get_settings()
+
+		Data.on 'settings_changed', =>
+			@setState
+				putin: Data.settings.putin,
+				version: Data.settings.version
+				ready: yes
 
 	render: ->
-		(
+		content = if @state.ready
 			<div>
 				<div>Putin: {@state.putin}</div>
 				<div>Version: {@state.version}</div>
+			</div>
+		else
+			<div>
+				Loading...
+			</div>
+
+		(
+			<div>
+				{content}
 				<div>Copyright © 2015</div>
 			</div>
 		)

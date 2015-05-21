@@ -8,6 +8,21 @@ Promise.longStackTraces()
 
 React = require 'react'
 
+EventEmitter = require('events').EventEmitter
+
+React.Store = (object, dispatcher) ->
+	Object.merge(EventEmitter.prototype, object, {
+		off: (event, listener) ->
+			@removeListener(event, listener)
+	})
+
+React.dispatch = (dispatcher, handlers) ->
+	dispatcher.register (incoming) ->
+		if handlers[incoming.event]
+			handlers[incoming.event](incoming.data, incoming)
+		else
+			console.warn "Warning: Unknown event: #{incoming.event}"
+
 Layout = require './pages/layout.react'
 
 Editor = require './pages/editor.react.page'
