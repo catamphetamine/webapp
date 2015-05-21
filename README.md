@@ -29,19 +29,33 @@ http://localhost:3001/webpack-dev-server/
 Запуск (production)
 ====================
 
-Будет реализован через pm2
+./automation/start.sh
+./automation/stop.sh
+
+Сгенерировать скрипт автозапуска на сервере:
+
+./automation/start.sh
+pm2 startup
+pm2 save
+
+https://github.com/Unitech/pm2
+
+Посмотреть статус процесса: 
+pm2 list
+
+Мониторинг процесса: 
+pm2 monit
+
+Посмотреть логи:
+pm2 logs cinema
+
+Возможна кластеризация, безостановочное самообновление и т.п.
 
 Сделать
 ====================
 
-node look
-
-Перевести API на socket.io
-
 Почитать, что такое Relay (и GraphQL) и нужен ли он:
 https://facebook.github.io/react/blog/2015/03/19/building-the-facebook-news-feed-with-relay.html
-
-Сделать Flux
 
 Сделать какую-нибудь систему перевода на языки
 
@@ -78,3 +92,6 @@ http://gaearon.github.io/react-hot-loader/
 https://github.com/lpiepiora/bower-webpack-plugin
 
 Для кеширования Html5 через manifest можно будет посмотреть плагин AppCachePlugin
+
+Небольшой мониторинг есть по адресу http://localhost:5959/
+(npm модуль look)
