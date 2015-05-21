@@ -6,9 +6,13 @@ Cinema is a bug tracker for video production.
 ==========
 
 bower install
+
 npm install
+
 sudo npm install --global bunyan
+
 sudo npm install --global nodemon
+
 sudo npm instal --global pm2
 
 Запуск (development)
@@ -32,6 +36,8 @@ http://localhost:3001/webpack-dev-server/
 
 node look
 
+Перевести API на socket.io
+
 Почитать, что такое Relay (и GraphQL) и нужен ли он:
 https://facebook.github.io/react/blog/2015/03/19/building-the-facebook-news-feed-with-relay.html
 
@@ -48,8 +54,6 @@ NginX
 
 Отрендерить React на сервере
 https://github.com/irvinebroque/isomorphic-hot-loader
-
-мб: слать api по websocket'у
 
 мб: перейти на coffeescript redux
 
