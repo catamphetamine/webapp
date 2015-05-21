@@ -98,32 +98,21 @@ for method in ['get', 'post', 'put', 'delete', 'head']
 
 			method_function.apply(@, arguments)
 
-web.post '/api', (request, response, next) ->
-	json_rpc(request).pipe(response)
-	# next()
+# web.post '/api', (request, response, next) ->
+# 	json_rpc(request).pipe(response)
 
-# engine_io = require 'engine.io'
-# engine_io_server = new engine_io.Server()
+socket_io = require('socket.io')
+# websocket.path('/websocket.io')
+websocket = socket_io.listen(web.server) # (web)
 
-# engine_io_server.on 'connection', (socket) ->
-# 	socket.send('hi')
+websocket.serveClient(no)
+# websocket.set("origins", "*")
 
-# web.get '/websocket/attach', (request, response, next) ->
-# 	if not response.claimUpgrade
-# 		return next(new Error('Connection Must Upgrade For WebSockets'))
-
-# 	upgrade = response.claimUpgrade()
-
-# 	engine_io_server.handleUpgrade(req, upgrade.socket, upgrade.head)
-
-# 	next(no)
-
-websockets = require('socket.io').listen(web)
-
-websockets.sockets.on 'connection', (websocket) ->
-	websocket.emit('news', { hello: 'world' })
-	websocket.on 'my other event', (data) ->
-		log.info(data)
+api = websocket.of '/api'
+api.on 'connection', (socket) ->
+	socket.on 'call', (request) ->
+		json_rpc(request).then (response) ->
+			socket.emit('return', response)
 
 # routes
 # require('./rest api')

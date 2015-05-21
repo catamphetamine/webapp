@@ -8,6 +8,8 @@ auth = require './api/auth'
 Stub = require './json rpc stub'
 stub = new Stub
 
+Promise = require 'bluebird'
+
 # Реализует взаимодействие по протоколу Json Rpc.
 #
 # batching - это запрос на выполнение нескольких Json Rpc команд за один раз;
@@ -81,6 +83,8 @@ class Json_rpc
 		return new Promise (resolve, reject) =>
 			@execute_with_callback (result) ->
 
+				return resolve(result)
+					
 				# если это был batch
 				if result instanceof Array
 

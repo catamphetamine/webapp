@@ -25,8 +25,9 @@ module.exports =
 
 	entry:
 		# массив из трёх строк требуется для react-hot-loader
+		# webpack-dev-server/client?http://0.0.0.0:...
 		application : [
-			"webpack-dev-server/client?http://0.0.0.0:#{configuration.development.webpack.development_server.port}",
+			"webpack-dev-server/client?http://127.0.0.1:#{configuration.development.webpack.development_server.port}",
 			'webpack/hot/only-dev-server',
 			'./client/application.react'
 		]

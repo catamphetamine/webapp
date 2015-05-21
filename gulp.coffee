@@ -57,6 +57,7 @@ gulp.task 'webpack-dev-server', ['server:start'], (callback) ->
 		proxy:
 			"*": "http://localhost:#{application_configuration.webserver.http.port}"
 		hot: yes
+		headers: { "Access-Control-Allow-Origin": "*" }
 		quiet: no
 		noInfo: no
 		# lazy: false

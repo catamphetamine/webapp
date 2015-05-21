@@ -16,7 +16,61 @@
 #
 # api.end().then((results_array) -> ...).catch((error) -> ...)
 
-ajax = require './ajax'
+Promise = require 'bluebird'
+
+transports = 
+  ajax:
+    initialize: ->
+
+    send: (request) ->
+      ajax = require './ajax'
+      ajax.post('/api', request)
+
+  websocket:
+    pending: {}
+
+    ready: no
+    when_ready: []
+
+    initialize: ->
+      websockets = require 'socket.io-client'
+      # options =
+      #   # key: fs.readFileSync('test/fixtures/client.key')
+      #   # cert: fs.readFileSync('test/fixtures/client.crt')
+      #   # ca: fs.readFileSync('test/fixtures/ca.crt')
+      #   # path: '/websocket.io'
+
+      @websocket = websockets('ws://localhost:3000/api')
+
+      @websocket.on 'connect', (socket) =>
+        @ready = yes
+        for request in @when_ready
+          @websocket.emit('call', request)
+        @when_ready = []
+
+        @websocket.on 'return', (data) =>
+          @pending[data.id].resolve(data)
+          delete @pending[data.id]
+
+      @websocket.on 'reconnect_failed', => 
+        for id, pending of @pending
+          pending.reject('reconnect_failed')
+        @pending = {}
+
+    send: (request) ->
+      if @ready
+        @websocket.emit('call', request)
+      else
+        @when_ready.push(request)
+
+      new Promise (resolve, reject) =>
+        @pending[request.id] = 
+          resolve: resolve
+          reject: reject
+      # .timeout(milliseconds)
+
+transport = transports.websocket
+transport.initialize()
 
 id = 1
 
@@ -31,16 +85,16 @@ api =
 	 
 	# Json Rpc batching
 	begin: ->
-		this.batch = []
-		this.batch_promises = []
+		@batch = []
+		@batch_promises = []
 
 	end: ->
-		if not this.batch?
+		if not @batch?
 			throw new Error('Batch.end() called without batch.begin()')
 
-		request = this.batch
-		this.batch = null
-		return this.request(request)
+		request = @batch
+		@batch = null
+		@request(request)
 
 	request_json: (method, params) ->
 		request = 
@@ -110,7 +164,7 @@ api =
   		batch_promises = @batch_promises || []
   		@batch_promises = null
 
-  		ajax.post('/api', request).then (response) ->
+  		transport.send(request).then (response) ->
 
   			# если это не batch: сделать всё и выйти
   			if not (response instanceof Array)
