@@ -1,3 +1,5 @@
+require('look').start()
+
 Root_folder = require('path').normalize(__dirname + '/..')
 global.Root_folder = Root_folder
 
