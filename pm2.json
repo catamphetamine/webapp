@@ -1,0 +1,18 @@
+{
+  "apps" : [{
+    "name"        : "cinema",
+    "script"      : "./server/main.coffee",
+    "args"        : [],
+    "log_date_format"  : "DD-MM-YYYY HH:mm Z",
+    "log_file"    : "./logs/info.txt",
+    "error_file"  : "./logs/errors.txt",
+    "out_file"    : "./logs/output.txt",
+    "ignore_watch" : ["[\\/\\\\]\\./", "node_modules"],
+    "watch"       : false,
+    "node_args"   : "--harmony",
+    "env": {
+        "NODE_ENV": "production",
+        "EXAMPLE_API_TOKEN": "xxx"
+    }
+  }]
+}
