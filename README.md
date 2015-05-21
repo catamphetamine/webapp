@@ -6,9 +6,13 @@ Cinema is a bug tracker for video production.
 ==========
 
 bower install
+
 npm install
+
 sudo npm install --global bunyan
+
 sudo npm install --global nodemon
+
 sudo npm instal --global pm2
 
 Запуск (development)
