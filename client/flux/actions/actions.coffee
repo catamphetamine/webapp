@@ -1,4 +1,4 @@
-Dispatcher = require '../dispatcher'
+Bus = require '../bus'
 
 api = require '../../scripts/libraries/api'
 
@@ -8,9 +8,9 @@ Actions =
 		# просто так; по идее, это можно использовать, 
 		# чтобы показывать какую-нибудь крутилку на экране, 
 		# или статус писать где-нибудь в панели статусов
-		Dispatcher.do 'retrieving settings'
+		Bus.push 'retrieving settings'
 
 		api.call('utility.settings').then (settings) ->
-			Dispatcher.do 'settings', settings
+			Bus.push 'settings', settings
 
 module.exports = Actions

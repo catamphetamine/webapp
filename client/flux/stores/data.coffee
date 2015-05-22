@@ -1,14 +1,14 @@
 React = require 'react'
 
-Dispatcher = require '../dispatcher'
+Bus = require '../bus'
 
 Data = React.Store
-	service_method: (data) ->
-		console.log 'some service method here'
+	helper_method: () ->
+		console.log 'some helper method here'
 
-React.dispatch Dispatcher, 
+Data.listen Bus, 
 	settings: (data) ->
 		Data.settings = data
-		Data.emit('settings_changed')
+		Data.notify('settings_changed')
 
 module.exports = Data

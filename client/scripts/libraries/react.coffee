@@ -7,6 +7,12 @@ module.exports = (React) ->
 				@addListener(event, listener)
 				=> @removeListener(event, listener)
 
+			notify: (event) ->
+				@emit(event)
+
+			listen: (dispatcher, events) ->
+				React.dispatch(dispatcher, events)
+
 			# off: (event, listener) ->
 			# 	@removeListener(event, listener)
 		})
