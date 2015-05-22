@@ -2,6 +2,8 @@ class utility
 	$public_settings: (parameters, callback) ->
 		public_fields = [
 			'putin'
+			# 'webserver.http.host'
+			# 'webserver.http.port'
 		]
 
 		settings = {}

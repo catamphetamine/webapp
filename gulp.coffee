@@ -21,12 +21,16 @@ webpack_configuration = ->
 
 	configuration = Object.create(webpack_configuration_file)
 
+	application_configuration = require './server/configuration'
+	websocket_url = "#{application_configuration.webserver.http.host}:#{application_configuration.webserver.http.port}"
+	
 	configuration.plugins = configuration.plugins.concat(
 		new webpack.DefinePlugin
 			# https://github.com/petehunt/webpack-howto
 			# BUILD_DEV=1 BUILD_PRERELEASE=1 webpack
 			'_production_': JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'true'))
 			'_prerelease_': JSON.stringify(JSON.parse(process.env.BUILD_PRERELEASE || 'false'))
+			'_websocket_url_': JSON.stringify(websocket_url)
 	)
 
 	return configuration
@@ -54,9 +58,9 @@ gulp.task 'webpack-dev-server', ['server:start'], (callback) ->
 	# Start a webpack-dev-server
 	new WebpackDevServer webpack(configuration),
 		# contentBase: './build/client'
-		proxy:
-			"*": "http://localhost:#{application_configuration.webserver.http.port}"
-		hot: yes
+		# proxy:
+		# 	"*": "http://localhost:#{application_configuration.webserver.http.port}"
+		# hot: yes
 		headers: { "Access-Control-Allow-Origin": "*" }
 		quiet: no
 		noInfo: no

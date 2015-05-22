@@ -34,13 +34,14 @@ transports =
 
     initialize: ->
       websockets = require 'socket.io-client'
+
       # options =
       #   # key: fs.readFileSync('test/fixtures/client.key')
       #   # cert: fs.readFileSync('test/fixtures/client.crt')
       #   # ca: fs.readFileSync('test/fixtures/ca.crt')
       #   # path: '/websocket.io'
 
-      @websocket = websockets('ws://localhost:3000/api')
+      @websocket = websockets("ws://#{_websocket_url_}/api")
 
       @websocket.on 'connect', (socket) =>
         @ready = yes

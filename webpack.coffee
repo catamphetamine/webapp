@@ -27,8 +27,8 @@ module.exports =
 		# массив из трёх строк требуется для react-hot-loader
 		# webpack-dev-server/client?http://0.0.0.0:...
 		application : [
-			"webpack-dev-server/client?http://127.0.0.1:#{configuration.development.webpack.development_server.port}",
-			'webpack/hot/only-dev-server',
+			# "webpack-dev-server/client?http://127.0.0.1:#{configuration.development.webpack.development_server.port}",
+			# 'webpack/hot/only-dev-server',
 			'./client/application.react'
 		]
 
@@ -54,11 +54,11 @@ module.exports =
 			},
 			{ 
 				test: /\.react$/
-				loaders: ['react-hot', 'coffee', 'cjsx'] # 'jsx?harmony'
+				loaders: ['coffee', 'cjsx'] # ['react-hot',  # 'jsx?harmony'
 			},
 			{ 
 				test: /\.react.page$/
-				loaders: ['react-router-proxy', 'react-hot', 'coffee', 'cjsx'] # 'jsx?harmony'
+				loaders: ['react-router-proxy', 'coffee', 'cjsx'] # ['react-router-proxy', 'react-hot', # 'jsx?harmony'
 			},
 			{ 
 				test: /\.less$/
@@ -85,7 +85,7 @@ module.exports =
 		new HtmlWebpackPlugin(template: './client/index.html')
 		# new I18nPlugin(languages[language])
 
-    new webpack.HotModuleReplacementPlugin()
+    # new webpack.HotModuleReplacementPlugin()
 
 		# for bower
 		# new webpack.ResolverPlugin(

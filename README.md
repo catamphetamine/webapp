@@ -104,6 +104,18 @@ https://github.com/FormidableLabs/radium
 
 http://gaearon.github.io/react-hot-loader/
 
+Я отключил react-hot-loader, потому что что-то он какой-то неподходящий, не обновляет страницу и т.п.
+
+Для включения react-hot-loader обратно:
+
+В gulp.coffee раскомментировать флаг hot: yes
+
+В webpack.coffee раскомментировать строки в application : [...]
+
+В webpack.coffee добавить 'react-hot' в .react и .react.page
+
+В webpack.coffee раскомментировать new webpack.HotModuleReplacementPlugin()
+
 
 Для подключения модулей из bower'а, по идее, достаточно раскомментировать два помеченных места в webpack.coffee.
 
