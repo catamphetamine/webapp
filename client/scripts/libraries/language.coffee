@@ -161,10 +161,10 @@ Object.set = ->
 	if not object
 		throw new Error('Object is null')
 
-	keys = parameters.reduce((reduced, value) ->
+	reducer = (reduced, value) ->
 		reduced.concat(value.toString().split('.'))
-	, 
-	[])
+
+	keys = parameters.reduce(reducer, [])
 
 	last_key = keys.pop()
 
@@ -181,10 +181,10 @@ Object.get = (object, path) ->
 	parameters = Array.prototype.slice.call(arguments, 0)
 	parameters.shift()
 
-	path_elements = parameters.reduce((reduced, path_element) ->
+	reducer = (reduced, path_element) ->
 		reduced.concat(path_element.toString().split('.'))
-	,
-	[])
+
+	path_elements = parameters.reduce(reducer, [])
 
 	for key in path_elements
 		return if not object

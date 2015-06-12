@@ -1,4 +1,5 @@
-return
+if yes
+	return log.info('skipping database connection')
 
 log.info "Connecting to the \"#{configuration.web.database.database}\" database"
 log.info "(will fail with ECONNRESET if the database doesn't exist)"

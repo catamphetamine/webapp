@@ -1,48 +1,62 @@
-React	= require 'react'
-Router = require 'react-router'
+import React from 'react'
 
-# использование: React.createClass(Radium.wrap(...))
-# Radium = require 'radium'
+// использование: @Radium перед классом компонента
+// Radium = require 'radium'
 
-Link = require('react-router').Link
+import { Link, RouteHandler } from 'react-router'
 
-require './layout.less'
+import _ from './layout.less'
 
-Layout = React.createClass
-	render: ->
+class Layout extends React.Component
+{
+	render()
+	{
+		const markup = 
 		(
 			<div>
 				<header>
 					<ul style={style.menu}>
-						<li style={style.menu_item}><Link to="editor" style={style.menu_item_link} activeStyle={merge(style.menu_item_link, style.menu_item_link.current)}>{_ 'Editor'}</Link></li>
-						<li style={style.menu_item}><Link to="about" style={style.menu_item_link} activeStyle={merge(style.menu_item_link, style.menu_item_link.current)}>{_ 'About'}</Link></li>
+						<li style={style.menu_item}><Link to="editor" style={style.menu_item_link} activeStyle={merge(style.menu_item_link, style.menu_item_link.current)}>{'Editor'}</Link></li>
+						<li style={style.menu_item}><Link to="about" style={style.menu_item_link} activeStyle={merge(style.menu_item_link, style.menu_item_link.current)}>{'About'}</Link></li>
 					</ul>
 				</header>
 
-				<Router.RouteHandler/>
+				<RouteHandler/>
 			</div>
 		)
 
-# <this.props.activeRouteHandler />
+		return markup
+	}
+}
 
-style = 
+// <this.props.activeRouteHandler />
+
+const style = 
+{
 	menu:
+	{
 		'list-style-type' : 'none'
+	},
 
-	menu_item: {}
+	menu_item: {},
 
 	menu_item_link:
-		'display'         : 'inline-block'
-		'text-decoration' : 'none'
-		'color'           : '#000000'
+	{
+		'display'         : 'inline-block',
+		'text-decoration' : 'none',
+		'color'           : '#000000',
 
-		'padding-left'    : '0.4em'
-		'padding-right'   : '0.4em'
-		'padding-top'     : '0.2em'
-		'padding-bottom'  : '0.2em'
+		'padding-left'    : '0.4em',
+		'padding-right'   : '0.4em',
+		'padding-top'     : '0.2em',
+		'padding-bottom'  : '0.2em',
 
 		current:
-			'color'            : '#ffffff'
+		{
+			'color'            : '#ffffff',
 			'background-color' : '#000000'
+		}
+	}
+}
 
-module.exports = Layout
+export default Layout

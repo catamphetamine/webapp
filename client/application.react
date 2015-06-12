@@ -1,49 +1,37 @@
-require './scripts/libraries/language'
+import _ from './scripts/libraries/language'
 
-Promise = require 'bluebird'
-global.Promise = Promise
+import Promises from 'bluebird'
+var Promise = Promises
 
-# убрать для продакшена
+// убрать для продакшена
 Promise.longStackTraces()
 
-React = require 'react'
-require('./scripts/libraries/react')(React)
+import React from 'react'
+import reacter from './scripts/libraries/react'
+reacter(React)
 
-Layout = require './pages/layout.react'
+import Layout from './pages/layout.react'
 
-Editor = require './pages/editor.react.page'
-About  = require './pages/about.react.page'
+import Editor from './pages/editor.react.page'
+import About from './pages/about.react.page'
 
-Router       = require('react-router')
-DefaultRoute = require('react-router').DefaultRoute
-Route        = require('react-router').Route
-Routes       = require('react-router').Routes
+import Router, { DefaultRoute, Route, Routes } from 'react-router'
 
-# global.ajax = require './scripts/libraries/ajax'
-global.api = require './scripts/libraries/api'
+import the_api from './scripts/libraries/api'
+var api = the_api
 
-document.addEventListener "DOMContentLoaded", ->
-	# React.render (
-	# 	<Routes location="history">
-	# 		<Route path="/" handler={Layout}>
-	# 			<DefaultRoute name="home" handler={Editor} />
-	# 			<Route name="about" handler={About} />
-	# 		</Route>
-	# 	</Routes>
-	# ), 
-	# document.getElementById('layout')
-
-	# React.render (
-	# 	<Layout/>
-	# ), 
-	# document.getElementById('layout')
-
-	routes = (
+document.addEventListener("DOMContentLoaded", () =>
+{
+	const routes = 
+	(
 		<Route handler={Layout} path="/">
 			<DefaultRoute name="editor" handler={Editor} />
 			<Route name="about" handler={About} />
 		</Route>
 	)
 
-	Router.run routes, Router.HistoryLocation, (Handler) ->
+	Router.run(routes, Router.HistoryLocation, (Handler) =>
+	{
 		React.render(<Handler/>, document.getElementById('layout'))
+	})
+})

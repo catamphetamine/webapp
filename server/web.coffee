@@ -98,15 +98,11 @@ for method in ['get', 'post', 'put', 'delete', 'head']
 
 			method_function.apply(@, arguments)
 
-# web.post '/api', (request, response, next) ->
-# 	json_rpc(request).pipe(response)
-
 socket_io = require('socket.io')
 # websocket.path('/websocket.io')
 websocket = socket_io.listen(web.server) # (web)
 
 websocket.serveClient(no)
-# websocket.set("origins", "*")
 
 api = websocket.of '/api'
 api.on 'connection', (socket) ->
@@ -132,6 +128,12 @@ api.on 'connection', (socket) ->
 # 		directory: "#{Root_folder}/build/client"
 # 		default: 'index.html'
 # 	})
+
+React = require 'react'
+
+web.get '/react', (request, response) ->
+	# здесь будет серверный рендеринг
+	# html = React.renderToStaticMarkup(body(null))
 
 web.listen configuration.webserver.http.port, ->
 	# log.info "web server listening at #{web.url}"

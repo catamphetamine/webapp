@@ -9,6 +9,8 @@ bower install
 
 npm install
 
+sudo npm install --global coffee-script-redux
+
 sudo npm install --global bunyan
 
 sudo npm install --global nodemon
@@ -60,6 +62,10 @@ pm2 logs cinema
 Сделать
 ====================
 
+Сделать Server Side Rendering
+
+Перейти с CoffeeScript-а на Babel в api на client. Хз пока, переписывать ли серверный код.
+
 Почитать, что такое Relay (и GraphQL) и нужен ли он:
 
 https://facebook.github.io/react/blog/2015/03/19/building-the-facebook-news-feed-with-relay.html
@@ -83,7 +89,22 @@ https://github.com/irvinebroque/isomorphic-hot-loader
 Прочее
 ====================
 
+Было принято решение уходить от CoffeeScript в клиентском коде, так как этот проект затормозился в развитии.
+
+(на оригинальный CoffeeScript его создатель уже давно забил, проект CoffeeScriptRedux тоже пришёл в запустение, и не поддерживает ES6)
+
+Производительность ES6 растёт по сравнению со старым яваскриптом, и на клиенте, особенно мобильном, это важно: быстрота работы, энергосбережение, вот это всё...
+
+Используется ES6 через Babel:
+https://github.com/google/traceur-compiler/wiki/LanguageFeatures
+
+А в ES7, ходят слухи, будет (наконец) async/await:
+https://github.com/lukehoban/ecmascript-asyncawait
+
+
 Для сборки проекта используется WebPack
+
+https://www.youtube.com/watch?v=VkTCL6Nqm6Y
 
 http://habrahabr.ru/post/245991/
 
@@ -131,3 +152,10 @@ https://github.com/lpiepiora/bower-webpack-plugin
 Небольшой мониторинг есть по адресу http://localhost:5959/
 
 (npm модуль look)
+
+
+В качестве слоя данных используется как Json-Rpc, так и Relay и GraphQL (когда он выйдет)
+
+https://facebook.github.io/react/blog/2015/02/20/introducing-relay-and-graphql.html
+http://facebook.github.io/react/blog/2015/03/19/building-the-facebook-news-feed-with-relay.html
+https://gist.github.com/wincent/598fa75e22bdfa44cf47

@@ -1,21 +1,32 @@
-require './editor.less' 
+// require('./editor.less')
 
-React = require 'react'
+import React from 'react'
 
-Editor = React.createClass
-	render: ->
+var style = 
+{
+	editor:
+	{ 
+		'padding'      : '0.4em',
+
+		'border-color' : 'black',
+		'border-style' : 'solid',
+		'border-size'  : '1px',
+
+		'outline'      : 'none'
+	}
+}
+
+class Editor extends React.Component
+{
+	render()
+	{
+		const markup = 
 		(
 			<div contentEditable="true" style={style.editor}>Editor (на хоткеях + кнопки инструментов для мобильных устройств, или что-то получше)</div>
 		)
 
-style = 
-	editor: 
-		'padding'      : '0.4em'
+		return markup
+	}
+}
 
-		'border-color' : 'black'
-		'border-style' : 'solid'
-		'border-size'  : '1px'
-
-		'outline'      : 'none'
-
-module.exports = Editor
+export default Editor

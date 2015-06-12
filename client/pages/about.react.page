@@ -1,37 +1,72 @@
-require './about.less' 
+// require('./about.less' )
 
-React = require 'react'
+import React from 'react'
 
-Actions = require '../flux/actions/actions'
-Data = require '../flux/stores/data'
+import Actions from '../flux/actions/actions'
+import Data from '../flux/stores/data'
 
-About = React.createClass
-	getInitialState: ->
-		ready: no
+class About extends React.Component
+{
+	constructor(properties) 
+	{
+		super(properties)
+		
+		this.state = 
+		{
+			ready: false
+		}
+	}
 
-	componentDidMount: ->		
+	componentDidMount()
+	{
 		Actions.get_settings()
 
-		@off = Data.on 'settings_changed', =>
-			@setState
+		this.off = Data.on('settings_changed', () =>
+		{
+			this.setState
+			({
 				putin: Data.settings.putin,
-				version: Data.settings.version
-				ready: yes
+				version: Data.settings.version,
+				ready: true
+			})
+		})
+	}
 
-	componentWillUnmount: ->
-		@off()
+	componentWillUnmount()
+	{
+		this.off()
+	}
 
-	render: ->
-		content = if @state.ready
-			<div>
-				<div>Putin: {@state.putin}</div>
-				<div>Version: {@state.version}</div>
-			</div>
-		else
-			<div>
-				Loading...
-			</div>
+	render()
+	{
+		if (!this.state) 
+		{
+			return false
+		}
 
+		let content
+
+		if (this.state.ready)
+		{
+			content = 
+			(
+				<div>
+					<div>Putin: {this.state.putin}</div>
+					<div>Version: {this.state.version}</div>
+				</div>
+			)
+		}
+		else 
+		{
+			content = 
+			(
+				<div>
+					Loading...
+				</div>
+			)
+		}
+
+		const markup = 
 		(
 			<div>
 				{content}
@@ -39,4 +74,8 @@ About = React.createClass
 			</div>
 		)
 
-module.exports = About
+		return markup
+	}
+}
+
+export default About

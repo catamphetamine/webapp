@@ -54,11 +54,16 @@ module.exports =
 			},
 			{ 
 				test: /\.react$/
-				loaders: ['coffee', 'cjsx'] # ['react-hot',  # 'jsx?harmony'
+				loaders: ['babel'] # ['coffee', 'cjsx'] # ['react-hot',  # 'jsx?harmony'
+			},
+			{
+				test: /\.jsx?$/,
+				exclude: /(node_modules|bower_components)/,
+				loader: 'babel'
 			},
 			{ 
 				test: /\.react.page$/
-				loaders: ['react-router-proxy', 'coffee', 'cjsx'] # ['react-router-proxy', 'react-hot', # 'jsx?harmony'
+				loaders: ['react-router-proxy', 'babel'] # ['react-router-proxy', 'react-hot', # 'jsx?harmony'
 			},
 			{ 
 				test: /\.less$/
