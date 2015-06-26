@@ -1,12 +1,8 @@
 {
-	"script": "server/main.js",
+	"script": "server/main.coffee",
 	"watch": [
-		"server/**/*.js"
+		"server/**/*.coffee"
 	],
-	"execMap": {
-		"js": "babel-node",
-		"js_pure": "node --harmony --use_strict"
-	},
 	"ignore": [
 		".git",
 		"node_modules/**/*",
@@ -15,6 +11,5 @@
 	"env": {
 		"NODE_ENV": "development"
 	},
-	"verbose": false,
-	"ext": "js"
+	"verbose": false
 }

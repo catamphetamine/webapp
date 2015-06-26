@@ -5,12 +5,12 @@ import React from 'react'
 import Actions from '../flux/actions/actions'
 import Data from '../flux/stores/data'
 
-export default class About extends React.Component
+class About extends React.Component
 {
 	constructor(properties) 
 	{
 		super(properties)
-
+		
 		this.state = 
 		{
 			ready: false
@@ -39,6 +39,11 @@ export default class About extends React.Component
 
 	render()
 	{
+		if (!this.state) 
+		{
+			return false
+		}
+
 		let content
 
 		if (this.state.ready)
@@ -65,11 +70,12 @@ export default class About extends React.Component
 		(
 			<div>
 				{content}
+				<div>Copyright © 2015</div>
 			</div>
 		)
-
-		// <div>Copyright © 2015</div>
 
 		return markup
 	}
 }
+
+export default About

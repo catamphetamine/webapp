@@ -6,21 +6,24 @@ export default (React) =>
 	{
 		return Object.merge(EventEmitter.prototype, object, 
 		{
-			on(event, listener) 
+			on: function(event, listener) 
 			{
 				this.addListener(event, listener)
 				return () => this.removeListener(event, listener)
 			},
 
-			notify(event)
+			notify: function(event)
 			{
 				return this.emit(event)
 			},
 
-			listen(dispatcher, events)
+			listen: function(dispatcher, events)
 			{
 				return React.dispatch(dispatcher, events)
 			}
+
+			// off: (event, listener) ->
+			// 	@removeListener(event, listener)
 		})
 	}
 

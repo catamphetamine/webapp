@@ -7,7 +7,7 @@ import { Link, RouteHandler } from 'react-router'
 
 import _ from './layout.less'
 
-export default class Layout extends React.Component
+class Layout extends React.Component
 {
 	render()
 	{
@@ -18,7 +18,6 @@ export default class Layout extends React.Component
 					<ul style={style.menu}>
 						<li style={style.menu_item}><Link to="editor" style={style.menu_item_link} activeStyle={merge(style.menu_item_link, style.menu_item_link.current)}>{'Editor'}</Link></li>
 						<li style={style.menu_item}><Link to="about" style={style.menu_item_link} activeStyle={merge(style.menu_item_link, style.menu_item_link.current)}>{'About'}</Link></li>
-						<li style={style.menu_item}><Link to="showcase" style={style.menu_item_link} activeStyle={merge(style.menu_item_link, style.menu_item_link.current)}>{'Showcase'}</Link></li>
 					</ul>
 				</header>
 
@@ -59,3 +58,5 @@ const style =
 		}
 	}
 }
+
+export default Layout

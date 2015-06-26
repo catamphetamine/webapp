@@ -10,15 +10,10 @@ import React from 'react'
 import reacter from './scripts/libraries/react'
 reacter(React)
 
-React.initializeTouchEvents(true)
-
 import Layout from './pages/layout.react'
 
 import Editor from './pages/editor.react.page'
 import About from './pages/about.react.page'
-
-import Showcase from './pages/showcase.react.page'
-import Dialog from './pages/showcase/dialog.react.page'
 
 import Router, { DefaultRoute, Route, Routes } from 'react-router'
 
@@ -32,9 +27,6 @@ document.addEventListener("DOMContentLoaded", () =>
 		<Route handler={Layout} path="/">
 			<DefaultRoute name="editor" handler={Editor} />
 			<Route name="about" handler={About} />
-			<Route name="showcase" handler={Showcase}>
-				<Route name="showcase.dialog" path="/showcase/dialog" handler={Dialog} />
-			</Route>
 		</Route>
 	)
 
@@ -43,25 +35,3 @@ document.addEventListener("DOMContentLoaded", () =>
 		React.render(<Handler/>, document.getElementById('layout'))
 	})
 })
-
-// import BrowserHistory from 'react-router/lib/BrowserHistory'
-// import HashHistory from 'react-router/lib/BrowserHistory'
-
-// 	const routes = 
-// 	(
-// 		<Router history={BrowserHistory}>
-// 			<Route path="/" component={Layout}>
-// 				<DefaultRoute name="editor" component={Editor} />
-// 				<Route name="about" component={About} />
-// 				<Route name="showcase" component={Showcase}>
-// 					<Route path="/dialog" component={Dialog} />
-// 					<Route path="/grid" component={Dialog} />
-// 				</Route>
-// 			</Route>
-// 		</Router>
-// 	)
-
-// 	// <Route path="*" component={NoMatch}/>
-// 	// </Route>
-
-// 	React.render(routes, document.getElementById('layout'))
