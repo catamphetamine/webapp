@@ -16,7 +16,7 @@ var style =
 	}
 }
 
-class Editor extends React.Component
+export default class Editor extends React.Component
 {
 	render()
 	{
@@ -28,5 +28,3 @@ class Editor extends React.Component
 		return markup
 	}
 }
-
-export default Editor
