@@ -11,6 +11,8 @@ npm install
 
 sudo npm install --global coffee-script-redux
 
+sudo npm install --global babel
+
 sudo npm install --global bunyan
 
 sudo npm install --global nodemon
@@ -62,7 +64,17 @@ pm2 logs cinema
 Сделать
 ====================
 
+// Мб перейти с bluebird на обычные Promises
+// Пока bluebird лучше:
+// http://programmers.stackexchange.com/questions/278778/why-are-native-es6-promises-slower-and-more-memory-intensive-than-bluebird
+
+Перейти со старого Json Rpc на новый (переписать проще)
+
 Сделать Server Side Rendering
+
+Мб использовать это:
+
+https://github.com/obscene/Obscene-Layout
 
 Перейти с CoffeeScript-а на Babel в api на client. Хз пока, переписывать ли серверный код.
 
@@ -100,6 +112,11 @@ https://github.com/google/traceur-compiler/wiki/LanguageFeatures
 
 А в ES7, ходят слухи, будет (наконец) async/await:
 https://github.com/lukehoban/ecmascript-asyncawait
+
+
+В качестве среды разработки используется Sublime Text 3, с плагинами
+
+https://github.com/babel/babel-sublime
 
 
 Для сборки проекта используется WebPack
