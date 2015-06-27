@@ -1,7 +1,7 @@
 import _ from './scripts/libraries/language'
 
 import Promises from 'bluebird'
-var Promise = Promises
+global.Promise = Promises
 
 // убрать для продакшена
 Promise.longStackTraces()

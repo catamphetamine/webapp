@@ -1,6 +1,7 @@
 import deep_equal from 'deep-equal'
 
 const exists = what => typeof what !== 'undefined'
+global.exists = exists
 
 Object.extend = function(to, from, or_more)
 {
@@ -194,11 +195,24 @@ Object.defineProperty(Array.prototype, 'last',
 	}
 })
 
-// String.prototype.starts_with = (substring) -> @indexOf(substring) == 0
+Object.defineProperty(String.prototype, 'starts_with', 
+{
+	enumerable: false,
+	value: function(substring)
+	{
+		return this.indexOf(substring) === 0
+	}
+})
 
-// String.prototype.ends_with = (substring) ->
-// 	index = this.lastIndexOf(substring)
-// 	return index >= 0 && index == this.length - substring.length
+Object.defineProperty(String.prototype, 'ends_with', 
+{
+	enumerable: false,
+	value: function(substring)
+	{
+		index = this.lastIndexOf(substring)
+		return index >= 0 && index == this.length - substring.length
+	}
+})
 
 // Object.set = ->
 // 	parameters = Array.prototype.slice.call(arguments, 0)

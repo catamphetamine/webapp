@@ -16,8 +16,6 @@
 #
 # api.end().then((results_array) -> ...).catch((error) -> ...)
 
-Promise = require 'bluebird'
-
 transports = 
   ajax:
     initialize: ->
@@ -26,11 +24,13 @@ transports =
       ajax = require './ajax'
       ajax.post('/api', request)
 
+  # websocket не обеспечивает гарантий доставки
+  # http://stackoverflow.com/questions/20685208/websocket-transport-reliability-socket-io-data-loss-during-reconnection
   websocket:
     pending: {}
 
-    ready: no
-    when_ready: []
+    # ready: no
+    # when_ready: []
 
     initialize: ->
       websockets = require 'socket.io-client'
@@ -41,28 +41,49 @@ transports =
       #   # ca: fs.readFileSync('test/fixtures/ca.crt')
       #   # path: '/websocket.io'
 
+      # есть вероятность, что при использовании webpack-dev-server
+      # websocket'ы не закрываются при обновлении страницы,
+      # или ещё какой-то глюк
       @websocket = websockets("ws://#{_websocket_url_}/api")
 
-      @websocket.on 'connect', (socket) =>
-        @ready = yes
-        for request in @when_ready
-          @websocket.emit('call', request)
-        @when_ready = []
+      first_connection = yes
 
-        @websocket.on 'return', (data) =>
-          @pending[data.id].resolve(data)
-          delete @pending[data.id]
+      @websocket.on 'connect', (socket) =>
+        console.log('websocket connected')
+
+        # @ready = yes
+        # for request in @when_ready
+        #   @websocket.emit('call', request)
+        # @when_ready = []
+
+        if first_connection
+          @websocket.on 'return', (data) =>
+            @pending[data.id].resolve(data)
+            delete @pending[data.id]
+
+          first_connection = no
+
+      @websocket.on 'disconnect', (socket) =>
+        console.log('websocket disconnected')
+        console.log('emit')
+        @websocket.emit('call', { id: 111, jsonrpc: '2.0', method: 'utility.settings', params: {}})
+
+        new Promise (resolve, reject) =>
+          @pending[111] = 
+            resolve: resolve
+            reject: reject
 
       @websocket.on 'reconnect_failed', => 
+        console.log('reconnect_failed')
         for id, pending of @pending
           pending.reject('reconnect_failed')
         @pending = {}
 
     send: (request) ->
-      if @ready
-        @websocket.emit('call', request)
-      else
-        @when_ready.push(request)
+      # if @ready
+      @websocket.emit('call', request)
+      # else
+      #   @when_ready.push(request)
 
       new Promise (resolve, reject) =>
         @pending[request.id] = 
@@ -70,7 +91,10 @@ transports =
           reject: reject
       # .timeout(milliseconds)
 
-transport = transports.websocket
+# websocket не обеспечивает гарантий доставки
+# http://stackoverflow.com/questions/20685208/websocket-transport-reliability-socket-io-data-loss-during-reconnection
+# transport = transports.websocket
+transport = transports.ajax
 transport.initialize()
 
 id = 1

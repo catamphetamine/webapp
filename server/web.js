@@ -1,10 +1,13 @@
-import fs      from 'fs'
-import http    from 'http'
-import https   from 'https'
-import restify from 'restify'
-import os      from 'os'
-import log     from './log'
+import fs            from 'fs'
+import http          from 'http'
+import https         from 'https'
+import restify       from 'restify'
+import os            from 'os'
+import socket_io     from 'socket.io'
+import log           from './log'
 import configuration from './configuration'
+import json_rpc      from './libraries/json rpc'
+import utility       from './api/utility'
 
 // http://mcavage.me/node-restify/
 const web = restify.createServer
@@ -15,20 +18,10 @@ const web = restify.createServer
 	log: log
 })
 
-// global.web = web
-
 web.pre(restify.pre.userAgentConnection())
 
 // Api
 
-import json_rpc from './libraries/json rpc'
-
-// json_rpc = () => Json_rpc.create.apply(this, arguments)
-// global.json_rpc = json_rpc
-
-import utility from './api/utility'
-
-// serve_api('auth')
 json_rpc.add('utility', utility)
 
 // Force Https
@@ -56,7 +49,8 @@ web.use(restify.dateParser())
 web.use(restify.queryParser())
 web.use(restify.jsonp())
 web.use(restify.gzipResponse())
-web.use(restify.bodyParser({
+web.use(restify.bodyParser
+({
 	maxBodySize: 0,
 	mapParams: true,
 	mapFiles: false,
@@ -89,8 +83,6 @@ web.use(restify.CORS({
 
 for (let method of ['get', 'post', 'put', 'delete', 'head'])
 {
-	// (method => 
-	// {
 	const method_function = web[method]
 	web[method] = function(path, handler)
 	{
@@ -113,15 +105,14 @@ for (let method of ['get', 'post', 'put', 'delete', 'head'])
 
 		method_function.apply(this, arguments)
 	}
-	// })(method)
 }
 
-import socket_io from 'socket.io'
 // websocket.path('/websocket.io')
-const websocket = socket_io.listen(web.server) // (web)
-
+const websocket = socket_io.listen(web.server) // should be (web), restify is broken
 websocket.serveClient(false)
 
+// websocket не обеспечивает гарантий доставки
+// http://stackoverflow.com/questions/20685208/websocket-transport-reliability-socket-io-data-loss-during-reconnection
 const api = websocket.of('/api')
 api.on('connection', socket =>
 {
@@ -131,6 +122,26 @@ api.on('connection', socket =>
 		{
 			socket.emit('return', response)
 		})
+		.catch(error =>
+		{
+			log.error(error.stack || error)
+			response.send(json_rpc.error(request))
+		})
+	})
+})
+
+web.post('/api', (http_request, http_response) => 
+{
+	const request = http_request.body
+	
+	json_rpc.process(request).then(response =>
+	{
+		http_response.send(response)
+	})
+	.catch(error =>
+	{
+		log.error(error.stack || error)
+		http_response.send(json_rpc.error(request))
 	})
 })
 

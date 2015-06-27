@@ -48,7 +48,7 @@ ajax = (url, data, options) ->
 		parameters = JSON.stringify(data)
 
 		request.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
-		request.setRequestHeader("Content-length", parameters.length)
+		# request.setRequestHeader("Content-length", parameters.length)
 		request.send(parameters)
 	else
 		request.send()

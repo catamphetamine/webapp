@@ -4,7 +4,7 @@
 		"server/**/*.js"
 	],
 	"execMap": {
-		"js": "babel-node",
+		"js": "babel-node --stage 0",
 		"js_pure": "node --harmony --use_strict"
 	},
 	"ignore": [
