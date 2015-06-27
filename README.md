@@ -62,23 +62,20 @@ pm2 logs cinema
 Сделать
 ====================
 
+Посмотреть потом, что скажет react-router-proxy-loader про react-router 1.0.0
+Поддерживает ли react-router 1.0.0 постепенную загрузку dependencies
+
 // Мб перейти с bluebird на обычные Promises
 // Пока bluebird лучше:
 // http://programmers.stackexchange.com/questions/278778/why-are-native-es6-promises-slower-and-more-memory-intensive-than-bluebird
 
-Перейти со старого Json Rpc на новый (переписать проще)
+Обновить React-router
 
 Сделать Server Side Rendering
 
 Мб использовать это:
 
 https://github.com/obscene/Obscene-Layout
-
-Перейти с CoffeeScript-а на Babel в api на client. Хз пока, переписывать ли серверный код.
-
-Почитать, что такое Relay (и GraphQL) и нужен ли он:
-
-https://facebook.github.io/react/blog/2015/03/19/building-the-facebook-news-feed-with-relay.html
 
 Сделать какую-нибудь систему перевода на языки
 
@@ -90,26 +87,13 @@ https://facebook.github.io/react/blog/2015/03/19/building-the-facebook-news-feed
 
 NginX
 
-Отрендерить React на сервере
-
 https://github.com/irvinebroque/isomorphic-hot-loader
-
-мб: перейти на coffeescript redux
 
 Прочее
 ====================
 
-Было принято решение уходить от CoffeeScript в клиентском коде, так как этот проект затормозился в развитии.
-
-(на оригинальный CoffeeScript его создатель уже давно забил, проект CoffeeScriptRedux тоже пришёл в запустение, и не поддерживает ES6)
-
-Производительность ES6 растёт по сравнению со старым яваскриптом, и на клиенте, особенно мобильном, это важно: быстрота работы, энергосбережение, вот это всё...
-
-Используется ES6 через Babel:
+В javascript'овом коде используется ES6/ES7 через Babel:
 https://github.com/google/traceur-compiler/wiki/LanguageFeatures
-
-А в ES7, ходят слухи, будет (наконец) async/await:
-https://github.com/lukehoban/ecmascript-asyncawait
 
 
 В качестве среды разработки используется Sublime Text 3, с плагинами

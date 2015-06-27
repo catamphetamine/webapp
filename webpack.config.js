@@ -85,7 +85,7 @@ module.exports =
 			},
 			{ 
 				test: /\.react.page$/,
-				loaders: ['react-router-proxy', 'babel'] // ['react-router-proxy', 'react-hot', // 'jsx?harmony'
+				loaders: ['babel'] // ['react-router-proxy', 'react-hot', // 'jsx?harmony'
 			},
 			{ 
 				test: /\.less$/,

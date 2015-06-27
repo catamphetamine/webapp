@@ -1,14 +1,12 @@
 // See example gulpfile.js for file system development build:
 // https://github.com/webpack/webpack-with-common-libs/blob/master/gulpfile.js
 
-import gulp from 'gulp'
-import gulp_utilities from 'gulp-util'
-import webpack from	'webpack'
-import WebpackDevServer from 'webpack-dev-server'
+import gulp                       from 'gulp'
+import gulp_utilities             from 'gulp-util'
+import webpack                    from 'webpack'
+import WebpackDevServer           from 'webpack-dev-server'
 import webpack_configuration_file from './webpack.config'
-// coffee                     = require 'gulp-coffee'
-// server                     = require 'gulp-develop-server'
-import nodemon from 'gulp-nodemon'
+import nodemon                    from 'gulp-nodemon'
 
 import application_configuration from './server/configuration'
 

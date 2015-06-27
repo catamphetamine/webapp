@@ -133,7 +133,7 @@ api.on('connection', socket =>
 web.post('/api', (http_request, http_response) => 
 {
 	const request = http_request.body
-	
+
 	json_rpc.process(request).then(response =>
 	{
 		http_response.send(response)
@@ -165,11 +165,44 @@ web.post('/api', (http_request, http_response) =>
 // 	})
 
 import React from 'react'
+import Router from 'react-router'
+// import routes from './../client/routes.react'
 
+// серверный рендеринг; http://localhost:3000/react
 web.get('/react', (request, response) =>
 {
-	// здесь будет серверный рендеринг
 	// html = React.renderToStaticMarkup(body(null))
+
+	// Router.run(routes, request.path, (Handler, router) => 
+	// {
+	// 	Transmit.renderToString(Handler).then(({reactString, reactData}) => 
+	// 	{
+	// 		let output = 
+	// 		(
+	// 			`<!doctype html>
+	// 			<html lang="en-us">
+	// 				<head>
+	// 					<meta charset="utf-8">
+	// 					<title>Isomorphic React</title>
+	// 					<link rel="shortcut icon" href="/images/favicon/favicon-32x32.png">
+	// 				</head>
+	// 				<body>
+	// 					<section id="layout">${reactString}</section>
+	// 				</body>
+	// 			</html>`
+	// 		)
+
+	// 		const webserver = process.env.NODE_ENV === 'production' ? '' : '//localhost:8080'
+	// 		output = Transmit.injectIntoMarkup(output, reactData, [`${webserver}/dist/client.js`])
+
+	// 		response.writeHead(200, { 'Content-type': 'text/html' })
+	// 		response.end(output)
+	// 	})
+	// 	.catch((error) => 
+	// 	{
+	// 		reply(error.stack).type("text/plain").code(500)
+	// 	})
+	// })
 })
 
 web.listen(configuration.webserver.http.port, () =>

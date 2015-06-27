@@ -1,8 +1,8 @@
 import { EventEmitter } from 'events'
 
-export default (React) =>
+const Reacter =
 {
-	React.Store = (object, dispatcher) =>
+	Store: (object, dispatcher) =>
 	{
 		return Object.merge(EventEmitter.prototype, object, 
 		{
@@ -19,15 +19,15 @@ export default (React) =>
 
 			listen: function(dispatcher, events)
 			{
-				return React.dispatch(dispatcher, events)
+				return Reacter.dispatch(dispatcher, events)
 			}
 
 			// off: (event, listener) ->
 			// 	@removeListener(event, listener)
 		})
-	}
+	},
 
-	React.dispatch = (dispatcher, handlers) =>
+	dispatch: (dispatcher, handlers) =>
 	{
 		return dispatcher.register((incoming) =>
 		{
@@ -42,3 +42,5 @@ export default (React) =>
 		})
 	}
 }
+
+export default Reacter
