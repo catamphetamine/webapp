@@ -9,8 +9,6 @@ bower install
 
 npm install
 
-sudo npm install --global coffee-script-redux
-
 sudo npm install --global babel
 
 sudo npm install --global bunyan

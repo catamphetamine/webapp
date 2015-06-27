@@ -288,3 +288,34 @@ Object.defineProperty(Function.prototype, 'periodical',
 
 // временная заглушка для переводов на языки
 // global._ = (key) -> key
+
+global.custom_error = function(name)
+{
+	class Custom_error extends Error
+	{
+		constructor(error)
+		{
+			super()
+
+			if (exists(error))
+			{
+				if (exists(error.code))
+				{
+					this.code = error.code
+				}
+				this.message = error.message || error
+			}
+
+			this.name = name
+
+			if (Error.captureStackTrace)
+			{
+				Error.captureStackTrace(this, Custom_error)
+			}
+		}
+	}
+
+	Custom_error.is_custom_error = true
+
+	return Custom_error
+}
