@@ -19,6 +19,9 @@
 import ajax from './ajax'
 import websockets from 'socket.io-client'
 
+// используемая в приложении версия Api
+const version = '1.0.0'
+
 const transports = 
 {
 	ajax:
@@ -27,7 +30,7 @@ const transports =
 
 		send: (request) =>
 		{
-			return ajax.post('/api', request)
+			return ajax.post(`/api/v${version}`, request)
 		}
 	},
 

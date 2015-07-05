@@ -1,4 +1,5 @@
 import fs            from 'fs'
+import path          from 'path'
 import http          from 'http'
 import https         from 'https'
 import restify       from 'restify'
@@ -130,8 +131,11 @@ api.on('connection', socket =>
 	})
 })
 
-web.post('/api', (http_request, http_response) => 
+web.post(/^\/api\/v([0-9]+\.[0-9]+\.[0-9]+)$/, (http_request, http_response) => 
 {
+	const version = http_request.params[0]
+	log.info(`requested api version: ${version}`)
+
 	const request = http_request.body
 
 	json_rpc.process(request).then(response =>
@@ -204,6 +208,18 @@ web.get('/react', (request, response) =>
 	// 	})
 	// })
 })
+
+// пока нет NginX, раздавать статику средствами Node.js
+if (process.env.NODE_ENV === "production") 
+{
+	// web.get(/\/public\/?.*/, restify.serveStatic
+	web.get(/\/?.*/, restify.serveStatic
+	({
+		directory: './build'
+	}))
+}
+
+// On development, the static files are served from the webpack dev server
 
 web.listen(configuration.webserver.http.port, () =>
 {

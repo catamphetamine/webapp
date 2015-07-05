@@ -73,6 +73,14 @@ pm2 logs cinema
 
 Сделать Server Side Rendering
 
+Сделать сборку и проверить, что она работает
+
+Сделать страницу "не найдено"
+
+Сейчас при изменении серверного кода nodemon засекает это не сразу.
+Мб как-нибудь сделать так, чтобы он сразу засекал и перезапускался.
+(или использовать не nodemon)
+
 Мб использовать это:
 
 https://github.com/obscene/Obscene-Layout
@@ -106,6 +114,12 @@ https://github.com/babel/babel-sublime
 https://www.youtube.com/watch?v=VkTCL6Nqm6Y
 
 http://habrahabr.ru/post/245991/
+
+
+Webpack development server по умолчанию принимает все запросы на себя, 
+но некоторые из них может "проксировать" на Node.js сервер, например.
+Для этого требуется указать шаблоны Url'ов, которые нужно "проксировать",
+в файле gulpfile.babel.js, в параметре proxy запуска webpack-dev-server'а.
 
 
 При сборке каждого chunk'а к имени фала добавляется хеш.
