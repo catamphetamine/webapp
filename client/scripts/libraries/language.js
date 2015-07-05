@@ -3,6 +3,13 @@ import deep_equal from 'deep-equal'
 const exists = what => typeof what !== 'undefined'
 global.exists = exists
 
+const no = function()
+{
+	const parameters = Array.prototype.slice.call(arguments, 0)
+	return !exists.apply(this, parameters)
+}
+global.no = no
+
 Object.extend = function(to, from, or_more)
 {
 	const parameters = Array.prototype.slice.call(arguments, 0)
@@ -209,8 +216,85 @@ Object.defineProperty(String.prototype, 'ends_with',
 	enumerable: false,
 	value: function(substring)
 	{
-		index = this.lastIndexOf(substring)
-		return index >= 0 && index == this.length - substring.length
+		const index = this.lastIndexOf(substring)
+		return index >= 0 && index === this.length - substring.length
+	}
+})
+
+RegExp.escape = function(string)
+{
+	const specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", 'g')
+	return string.replace(specials, "\\$&")
+}
+
+Object.defineProperty(String.prototype, 'replace_all', 
+{
+	enumerable: false,
+	value: function(what, with_what)
+	{
+		const regexp = new RegExp(RegExp.escape(what), 'g')
+		return this.replace(regexp, with_what)
+	}
+})
+
+Object.defineProperty(String.prototype, 'has', 
+{
+	enumerable: false,
+	value: function(what)
+	{
+		return this.indexOf(what) >= 0
+	}
+})
+
+Object.defineProperty(String.prototype, 'before', 
+{
+	enumerable: false,
+	value: function(what)
+	{
+		const index = this.indexOf(what)
+		if (index < 0)
+		{
+			return this
+		}
+		return this.substring(0, index)
+	}
+})
+
+Object.defineProperty(String.prototype, 'after', 
+{
+	enumerable: false,
+	value: function(what)
+	{
+		const index = this.indexOf(what)
+		if (index < 0)
+		{
+			return ''
+		}
+		return this.substring(index + what.length)
+	}
+})
+
+Object.defineProperty(String.prototype, 'is_blank', 
+{
+	enumerable: false,
+	value: function()
+	{
+		return !this || /^\s*$/.test(this)
+	}
+})
+
+Object.defineProperty(String.prototype, 'repeat', 
+{
+	enumerable: false,
+	value: function(times)
+	{
+		let result = ''
+		while (times > 0)
+		{
+			result += this
+			times--
+		}
+		return result
 	}
 })
 

@@ -1,11 +1,11 @@
 // require('./about.less' )
 
-import React from 'react'
+import React, { Component } from 'react'
 
 import Actions from '../flux/actions/actions'
 import Data from '../flux/stores/data'
 
-export default class About extends React.Component
+export default class About extends Component
 {
 	constructor(properties) 
 	{

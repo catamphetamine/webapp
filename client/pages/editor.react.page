@@ -1,30 +1,31 @@
 // require('./editor.less')
 
-import React from 'react'
+import React, { Component } from 'react'
+import { styler } from './../scripts/libraries/reacto'
 
-var style = 
-{
-	editor:
-	{ 
-		'padding'      : '0.4em',
-
-		'border-color' : 'black',
-		'border-style' : 'solid',
-		'border-size'  : '1px',
-
-		'outline'      : 'none'
-	}
-}
-
-export default class Editor extends React.Component
+export default class Editor extends Component
 {
 	render()
 	{
 		const markup = 
 		(
-			<div contentEditable="true" style={style.editor}>Editor (на хоткеях + кнопки инструментов для мобильных устройств, или что-то получше)</div>
+			<div contentEditable="true" style={style('editor')}>Editor (на хоткеях + кнопки инструментов для мобильных устройств, или что-то получше)</div>
 		)
 
 		return markup
 	}
 }
+
+const styles = 
+`
+	editor
+		padding      : 0.4em
+
+		border-color : black
+		border-style : solid
+		border-size  : 1px
+
+		outline      : none
+`
+
+const style=styler(styles)

@@ -1,13 +1,14 @@
-import React from 'react'
+import React, { Component } from 'react'
 
 // использование: @Radium перед классом компонента
 // Radium = require 'radium'
 
 import { Link, RouteHandler } from 'react-router'
+import { styler } from './../scripts/libraries/reacto'
 
-import styles from './layout.less'
+import styling from './layout.less'
 
-export default class Layout extends React.Component
+export default class Layout extends Component
 {
 	render()
 	{
@@ -15,10 +16,10 @@ export default class Layout extends React.Component
 		(
 			<div>
 				<header>
-					<ul style={style.menu}>
-						<li style={style.menu_item}><Link to="editor" style={style.menu_item_link} activeStyle={merge(style.menu_item_link, style.menu_item_link.current)}>{'Editor'}</Link></li>
-						<li style={style.menu_item}><Link to="about" style={style.menu_item_link} activeStyle={merge(style.menu_item_link, style.menu_item_link.current)}>{'About'}</Link></li>
-						<li style={style.menu_item}><Link to="showcase" style={style.menu_item_link} activeStyle={merge(style.menu_item_link, style.menu_item_link.current)}>{'Showcase'}</Link></li>
+					<ul style={style('menu')}>
+						<li style={style('menu item')}><Link to="editor" style={style('menu item link')} activeStyle={style('menu item link', 'current')}>{'Editor'}</Link></li>
+						<li style={style('menu item')}><Link to="about" style={style('menu item link')} activeStyle={style('menu item link', 'current')}>{'About'}</Link></li>
+						<li style={style('menu item')}><Link to="showcase" style={style('menu item link')} activeStyle={style('menu item link', 'current')}>{'Showcase'}</Link></li>
 					</ul>
 				</header>
 
@@ -32,30 +33,27 @@ export default class Layout extends React.Component
 
 // <this.props.activeRouteHandler />
 
-const style = 
-{
-	menu:
-	{
-		'list-style-type' : 'none'
-	},
+const styles = 
+`
+	menu
+		list-style-type: none
 
-	menu_item: {},
+		item
+			display: inline-block
 
-	menu_item_link:
-	{
-		'display'         : 'inline-block',
-		'text-decoration' : 'none',
-		'color'           : '#000000',
+			link
+				display         : inline-block
+				text-decoration : none
+				color           : #000000
 
-		'padding-left'    : '0.4em',
-		'padding-right'   : '0.4em',
-		'padding-top'     : '0.2em',
-		'padding-bottom'  : '0.2em',
+				padding-left    : 0.4em
+				padding-right   : 0.4em
+				padding-top     : 0.2em
+				padding-bottom  : 0.2em
 
-		current:
-		{
-			'color'            : '#ffffff',
-			'background-color' : '#000000'
-		}
-	}
-}
+				current
+					color            : #ffffff
+					background-color : #000000
+`
+
+const style=styler(styles)

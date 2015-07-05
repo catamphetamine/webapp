@@ -1,6 +1,6 @@
 // require('./about.less' )
 
-import React from 'react'
+import React, { Component } from 'react'
 import Boron from 'boron'
 
 const button_style = 
@@ -8,8 +8,8 @@ const button_style =
 	'margin'      : '1em auto',
 	'padding'     : '1em 2em',
 	'outline'     : 'none',
-	'font-size'   : 16,
-	'font-weight' : '600',
+	'fontSize'    : 16,
+	'fontWeight'  : '600',
 	'background'  : '#C94E50',
 	'color'       : '#FFFFFF',
 	'border'      : 'none'
@@ -18,10 +18,10 @@ const button_style =
 const container_style = 
 {
 	'padding'    : '2em',
-	'text-align' : 'center'
+	'textAlign'  : 'center'
 }
 
-export default class Dialog extends React.Component
+export default class Dialog extends Component
 {
 	render()
 	{

@@ -1,8 +1,8 @@
 import React from 'react'
 import Bus from '../bus'
-import Reacter from './../../scripts/libraries/react'
+import { Store } from './../../scripts/libraries/reacto'
 
-const Data = Reacter.Store
+const Data = Store
 ({
 	helper_method: function()
 	{

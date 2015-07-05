@@ -62,6 +62,8 @@ pm2 logs cinema
 Сделать
 ====================
 
+Добавить тесты на styles()
+
 Посмотреть потом, что скажет react-router-proxy-loader про react-router 1.0.0
 Поддерживает ли react-router 1.0.0 постепенную загрузку dependencies
 

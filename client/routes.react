@@ -7,6 +7,7 @@ import About from './pages/about.react.page'
 
 import Showcase from './pages/showcase.react.page'
 import Dialog from './pages/showcase/dialog.react.page'
+import Form from './pages/showcase/form.react.page'
 
 import { Router, Route, DefaultRoute } from 'react-router'
 
@@ -26,6 +27,7 @@ export default
 		<Route name="about" handler={About} />
 		<Route name="showcase" handler={Showcase}>
 			<Route name="showcase.dialog" path="/showcase/dialog" handler={Dialog} />
+			<Route name="showcase.form" path="/showcase/form" handler={Form} />
 		</Route>
 	</Route>
 )
@@ -42,6 +44,7 @@ export default
 // 			<Route path="about" component={About} />
 // 			<Route path="showcase" component={Showcase}>
 // 				<Route path="/dialog" component={Dialog} />
+// 				<Route path="/form" component={Form} />
 // 			</Route>
 // 		</Route>
 // 	</Router>
