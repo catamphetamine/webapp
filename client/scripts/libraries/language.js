@@ -18,7 +18,9 @@ Object.extend = function(to, from, or_more)
 	{
 		const last = parameters.pop()
 		const intermediary_result = Object.extend.apply(this, parameters)
-		return Object.extend(intermediary_result, last)
+		// pass undefined as the third argument because of either Babel.js bug, or some other bug
+		// (the third argument is supplied and is equal to the second argument which is weird)
+		return Object.extend(intermediary_result, last, undefined)
 	}
 
 	for (let key of Object.keys(from))
@@ -35,6 +37,8 @@ Object.extend = function(to, from, or_more)
 
 	return to
 }
+
+global.extend = Object.extend
 
 Object.merge = function()
 {

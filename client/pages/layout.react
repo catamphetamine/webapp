@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 // Radium = require 'radium'
 
 import { Link, RouteHandler } from 'react-router'
-import { styler } from './../scripts/libraries/reacto'
+import styler from 'react-styling'
 
 import styling from './layout.less'
 
@@ -16,10 +16,10 @@ export default class Layout extends Component
 		(
 			<div>
 				<header>
-					<ul style={style('menu')}>
-						<li style={style('menu item')}><Link to="editor" style={style('menu item link')} activeStyle={style('menu item link', 'current')}>{'Editor'}</Link></li>
-						<li style={style('menu item')}><Link to="about" style={style('menu item link')} activeStyle={style('menu item link', 'current')}>{'About'}</Link></li>
-						<li style={style('menu item')}><Link to="showcase" style={style('menu item link')} activeStyle={style('menu item link', 'current')}>{'Showcase'}</Link></li>
+					<ul style={style.menu}>
+						<li style={style.menu.item}><Link to="editor" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Editor'}</Link></li>
+						<li style={style.menu.item}><Link to="about" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'About'}</Link></li>
+						<li style={style.menu.item}><Link to="showcase" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Showcase'}</Link></li>
 					</ul>
 				</header>
 
@@ -33,7 +33,7 @@ export default class Layout extends Component
 
 // <this.props.activeRouteHandler />
 
-const styles = 
+const style = styler
 `
 	menu
 		list-style-type: none
@@ -51,9 +51,7 @@ const styles =
 				padding-top     : 0.2em
 				padding-bottom  : 0.2em
 
-				current
+				.current
 					color            : #ffffff
 					background-color : #000000
 `
-
-const style=styler(styles)

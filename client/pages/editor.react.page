@@ -1,7 +1,7 @@
 // require('./editor.less')
 
 import React, { Component } from 'react'
-import { styler } from './../scripts/libraries/reacto'
+import styler from 'react-styling'
 
 export default class Editor extends Component
 {
@@ -9,14 +9,14 @@ export default class Editor extends Component
 	{
 		const markup = 
 		(
-			<div contentEditable="true" style={style('editor')}>Editor (на хоткеях + кнопки инструментов для мобильных устройств, или что-то получше)</div>
+			<div contentEditable="true" style={style.editor}>Editor (на хоткеях + кнопки инструментов для мобильных устройств, или что-то получше)</div>
 		)
 
 		return markup
 	}
 }
 
-const styles = 
+const style = styler
 `
 	editor
 		padding      : 0.4em
@@ -27,5 +27,3 @@ const styles =
 
 		outline      : none
 `
-
-const style=styler(styles)

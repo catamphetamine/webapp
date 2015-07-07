@@ -1,7 +1,7 @@
 // require('./about.less' )
 
 import React, { Component } from 'react'
-import { styler } from './../../scripts/libraries/reacto'
+import styler from 'react-styling'
 
 export default class Form extends Component
 {
@@ -26,21 +26,21 @@ export default class Form extends Component
 	{
 		const markup = 
 		(
-			<form style={style('form')}>
-				<label style={style('form label')}>{'Text input field'}</label>
-				<input type="text" style={style('form input')} value={this.state.text_value} onChange={this.on_input_text_changed}/>
+			<form style={style.form}>
+				<label style={style.form.label}>{'Text input field'}</label>
+				<input type="text" style={style.form.input} value={this.state.text_value} onChange={this.on_input_text_changed}/>
 				You entered: {this.state.text_value}
 
-				<label style={style('form label')}>{'Select'}</label>
-				<select style={style('form select')} value={this.state.select_value} onChange={this.on_selection_changed}>
+				<label style={style.form.label}>{'Select'}</label>
+				<select style={style.form.select} value={this.state.select_value} onChange={this.on_selection_changed}>
 					<option value="A">Apple</option>
 					<option value="B">Banana</option>
 					<option value="C">Cranberry</option>
 				</select>
 				You selected: {this.state.select_value}
 
-				<label for="description" style={style('form label')}>{'Textarea'}</label>
-				<textarea name="description" style={style('form textarea')} value={this.state.textarea_value} onChange={this.on_textarea_text_changed}/>
+				<label htmlFor="description" style={style.form.label}>{'Textarea'}</label>
+				<textarea name="description" style={style.form.textarea} value={this.state.textarea_value} onChange={this.on_textarea_text_changed}/>
 				You entered: {this.state.textarea_value}
 			</form>
 		)
@@ -69,7 +69,7 @@ export default class Form extends Component
 	}
 }
 
-const styles = 
+const style = styler
 `
 	form
 		padding: 1em
@@ -94,5 +94,3 @@ const styles =
 			margin-top: 1em
 			font-weight: bold
 `
-
-const style=styler(styles)

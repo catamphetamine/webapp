@@ -75,11 +75,14 @@ module.exports =
 				loaders: ['babel'] // ['coffee', 'cjsx'] // ['react-hot',  // 'jsx?harmony'
 			},
 			{
+				// .js and .jsx
 				test: /\.jsx?$/,
 				// exclude: /(node_modules|bower_components)/,
-				include: [
+				include: 
+				[
 					path.resolve(__dirname, 'client'),
-					path.resolve(__dirname, 'node_modules', 'react-absolute-grid')
+					path.resolve(__dirname, 'node_modules', 'react-absolute-grid'),
+					path.resolve(__dirname, 'node_modules', 'react-styling')
 				],
 				loader: 'babel'
 			},
