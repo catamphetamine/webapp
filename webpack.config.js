@@ -81,8 +81,7 @@ module.exports =
 				include: 
 				[
 					path.resolve(__dirname, 'client'),
-					path.resolve(__dirname, 'node_modules', 'react-absolute-grid'),
-					path.resolve(__dirname, 'node_modules', 'react-styling')
+					path.resolve(__dirname, 'node_modules', 'react-absolute-grid')
 				],
 				loader: 'babel'
 			},

@@ -51,7 +51,7 @@ const style = styler
 				padding-top     : 0.2em
 				padding-bottom  : 0.2em
 
-				.current
+				&current
 					color            : #ffffff
 					background-color : #000000
 `
