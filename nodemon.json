@@ -1,11 +1,11 @@
 {
 	"script": "server/main.js",
-	"watch": [
-		"server/**/*.js"
-	],
+	"watch": ["server/**/*.js"],
+	"watch_interval": 300,
+	"dirs": ["server"],
 	"execMap": {
 		"js": "babel-node --stage 0",
-		"js_pure": "node --harmony --use_strict"
+		"js_old": "node --harmony --use_strict"
 	},
 	"ignore": [
 		".git",
@@ -15,6 +15,7 @@
 	"env": {
 		"NODE_ENV": "development"
 	},
-	"verbose": false,
-	"ext": "js"
+	"legacyWatch": false,
+	"verbose": true,
+	"dump": false
 }

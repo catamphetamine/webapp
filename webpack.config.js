@@ -28,7 +28,7 @@ var third_party =
 
 var babel = 'babel?optional[]=runtime&stage=0'
 
-module.exports =
+var config =
 {
 	// for bower
 	// resolve:
@@ -42,8 +42,8 @@ module.exports =
 		// webpack-dev-server/client?http://0.0.0.0:...
 		application: 
 		[
-			// "webpack-dev-server/client?http://127.0.0.1:#{configuration.development.webpack.development_server.port}",
-			// 'webpack/hot/only-dev-server',
+			"webpack-dev-server/client?http://127.0.0.1:" + configuration.development.webpack.development_server.port,
+			'webpack/hot/only-dev-server',
 			'./client/application.react'
 		]
 	},
@@ -74,7 +74,7 @@ module.exports =
 			},
 			{ 
 				test: /\.react$/,
-				loaders: [babel] // ['coffee', 'cjsx'] // ['react-hot',  // 'jsx?harmony'
+				loaders: ['react-hot', babel] // ['coffee', 'cjsx'] // ['react-hot',  // 'jsx?harmony'
 			},
 			{
 				// .js and .jsx
@@ -89,7 +89,7 @@ module.exports =
 			},
 			{ 
 				test: /\.react.page$/,
-				loaders: [babel] // ['react-router-proxy', 'react-hot', // 'jsx?harmony'
+				loaders: ['react-hot', babel] // ['react-router-proxy', 'react-hot', // 'jsx?harmony'
 			},
 			{ 
 				test: /\.less$/,
@@ -113,14 +113,16 @@ module.exports =
 		modulesDirectories: ['build', 'libraries', 'bower_components', 'node_modules']
 	},
 
-	plugins: 
+	plugins:
 	[
 		new webpack.optimize.CommonsChunkPlugin('common', 'common.[hash].js'),
 		new webpack.optimize.OccurenceOrderPlugin(true),
-		new HtmlWebpackPlugin({ template: './client/index.html' })
-		// new I18nPlugin(languages[language])
 
-	    // new webpack.HotModuleReplacementPlugin()
+	    new webpack.HotModuleReplacementPlugin(),
+
+		new HtmlWebpackPlugin({ template: './client/index.html' })
+
+		// new I18nPlugin(languages[language])
 
 		// for bower
 		// new webpack.ResolverPlugin(
@@ -129,9 +131,11 @@ module.exports =
 	]
 }
 
-module.exports.resolve = module.exports.resolve || {}
-module.exports.resolve.alias = module.exports.resolve.alias || {}
-module.exports.module.noParse = module.exports.module.noParse || []
+module.exports = config
+
+config.resolve = config.resolve || {}
+config.resolve.alias = config.resolve.alias || {}
+config.module.noParse = config.module.noParse || []
 
 // Run through deps and extract the first part of the path, 
 // as that is what you use to require the actual node modules 
@@ -140,6 +144,6 @@ module.exports.module.noParse = module.exports.module.noParse || []
 for (let dependency of third_party)
 {
 	const dependency_path = path.resolve(__dirname, 'node_modules', dependency)
-	module.exports.resolve.alias[dependency.split(path.sep)[0]] = dependency_path
-	module.exports.module.noParse.push(dependency_path)
+	config.resolve.alias[dependency.split(path.sep)[0]] = dependency_path
+	config.module.noParse.push(dependency_path)
 }

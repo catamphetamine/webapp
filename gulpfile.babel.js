@@ -70,8 +70,8 @@ gulp.task('webpack-dev-server', ['server:start'], (callback) =>
 		{
 			"/api/*": `http://localhost:${application_configuration.webserver.http.port}`
 		},
-		// hot: yes
-		headers: { "Access-Control-Allow-Origin": "*" },
+		hot: true,
+		headers: { 'Access-Control-Allow-Origin': '*' },
 		quiet: false,
 		noInfo: false,
 		// lazy: false
@@ -83,7 +83,7 @@ gulp.task('webpack-dev-server', ['server:start'], (callback) =>
 		}
 	})
 
-	.listen(application_configuration.development.webpack.development_server.port, 'localhost', (error) =>
+	.listen(application_configuration.development.webpack.development_server.port, '0.0.0.0', (error) =>
 	{
 		if (error) 
 		{

@@ -68,8 +68,8 @@
     "react-hot-loader": "^1.2.7",
     "style-loader": "^0.12.0",
     "url-loader": "^0.5.5",
-    "webpack": "^1.9.4",
-    "webpack-dev-server": "^1.8.2"
+    "webpack": "^1.10.1",
+    "webpack-dev-server": "^1.10.1"
   },
   "scripts": {
     "dev": "webpack-dev-server --devtool eval --progress --colors --hot --content-base build",
