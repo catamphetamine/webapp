@@ -7,16 +7,11 @@ import Data from '../flux/stores/data'
 
 export default class About extends Component
 {
-	constructor(properties) 
+	state = 
 	{
-		super(properties)
-
-		this.state = 
-		{
-			ready: false
-		}
+		ready: false
 	}
-
+	
 	componentDidMount()
 	{
 		Actions.get_settings()

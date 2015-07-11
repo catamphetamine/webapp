@@ -1,3 +1,5 @@
+import Promise from 'bluebird'
+
 export default function ajax(url, data, options)
 {
 	const resolver = Promise.pending()

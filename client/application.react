@@ -1,10 +1,11 @@
 import _ from './scripts/libraries/language'
 
-import Promises from 'bluebird'
-global.Promise = Promises
+import Promise from 'bluebird'
 
-// убрать для продакшена
-Promise.longStackTraces()
+if (__development__)
+{
+	Promise.longStackTraces()
+}
 
 import React from 'react'
 // import ReactDOM from 'react-dom'

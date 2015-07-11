@@ -19,6 +19,8 @@
 import ajax from './ajax'
 import websockets from 'socket.io-client'
 
+import Promise from 'bluebird'
+
 // используемая в приложении версия Api
 const version = '1.0.0'
 

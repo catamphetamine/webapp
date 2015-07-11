@@ -55,6 +55,7 @@ gulp.task('webpack-dev-server', ['server:start'], (callback) =>
 		({
 			'process.env': { NODE_ENV: JSON.stringify('development') },
 			// '_production_': JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'true'))
+			'__development__': true,
 			'__production__': false
 		}),
 		// new webpack.HotModuleReplacementPlugin(),
@@ -109,6 +110,7 @@ gulp.task('webpack:build', (callback) =>
 		({
 			'process.env': { NODE_ENV: JSON.stringify('production') },
 			// '_production_': JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'true'))
+			'__development__': false,
 			'__production__': true
 		}),
 		new webpack.optimize.DedupePlugin(),

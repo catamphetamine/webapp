@@ -26,6 +26,8 @@ var third_party =
 	'underscore/underscore-min.js'
 ]
 
+var babel = 'babel?optional[]=runtime&stage=0'
+
 module.exports =
 {
 	// for bower
@@ -72,7 +74,7 @@ module.exports =
 			},
 			{ 
 				test: /\.react$/,
-				loaders: ['babel'] // ['coffee', 'cjsx'] // ['react-hot',  // 'jsx?harmony'
+				loaders: [babel] // ['coffee', 'cjsx'] // ['react-hot',  // 'jsx?harmony'
 			},
 			{
 				// .js and .jsx
@@ -83,11 +85,11 @@ module.exports =
 					path.resolve(__dirname, 'client'),
 					path.resolve(__dirname, 'node_modules', 'react-absolute-grid')
 				],
-				loader: 'babel'
+				loader: babel
 			},
 			{ 
 				test: /\.react.page$/,
-				loaders: ['babel'] // ['react-router-proxy', 'react-hot', // 'jsx?harmony'
+				loaders: [babel] // ['react-router-proxy', 'react-hot', // 'jsx?harmony'
 			},
 			{ 
 				test: /\.less$/,

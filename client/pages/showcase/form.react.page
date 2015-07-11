@@ -5,16 +5,16 @@ import styler from 'react-styling'
 
 export default class Form extends Component
 {
+	state = 
+	{
+		text_value: 'Text',
+		select_value: 'B',
+		textarea_value: 'Lorem ipsum'
+	}
+
 	constructor(parameters)
 	{
 		super(parameters)
-
-		this.state = 
-		{
-			text_value: 'Text',
-			select_value: 'B',
-			textarea_value: 'Lorem ipsum'
-		}
 
 		// без этой строки значение в input'е не будет меняться
 		this.on_input_text_changed = this.on_input_text_changed.bind(this)

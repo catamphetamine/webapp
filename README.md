@@ -73,6 +73,8 @@ pm2 logs cinema
 
 Обновить React-router
 
+Прочитать доки по новому React-router
+
 Сделать Server Side Rendering
 
 Сделать сборку и проверить, что она работает
