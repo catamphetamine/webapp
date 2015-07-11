@@ -12,16 +12,6 @@ export default class Form extends Component
 		textarea_value: 'Lorem ipsum'
 	}
 
-	constructor(parameters)
-	{
-		super(parameters)
-
-		// без этой строки значение в input'е не будет меняться
-		this.on_input_text_changed = this.on_input_text_changed.bind(this)
-		this.on_selection_changed = this.on_selection_changed.bind(this)
-		this.on_textarea_text_changed = this.on_textarea_text_changed.bind(this)
-	}
-
 	render()
 	{
 		const markup = 
@@ -48,20 +38,20 @@ export default class Form extends Component
 		return markup
 	}
 
-	on_input_text_changed(event)
+	on_input_text_changed = event =>
 	{
 		const value = event.target.value
 		// you can validate value here
     	this.setState({ text_value: value })
 	}
 
-	on_selection_changed(event)
+	on_selection_changed = event =>
 	{
 		const value = event.target.value
     	this.setState({ select_value: value })
 	}
 
-	on_textarea_text_changed(event)
+	on_textarea_text_changed = event =>
 	{
 		const value = event.target.value
 		// you can validate value here
