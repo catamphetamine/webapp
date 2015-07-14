@@ -9,11 +9,7 @@ bower install
 
 npm install
 
-sudo npm install --global babel
-
 sudo npm install --global bunyan
-
-sudo npm install --global nodemon
 
 sudo npm instal --global pm2
 

@@ -4,7 +4,7 @@
 	"watch_interval": 300,
 	"dirs": ["server"],
 	"execMap": {
-		"js": "babel-node --stage 0",
+		"js": "npm run babel-node",
 		"js_old": "node --harmony --use_strict"
 	},
 	"ignore": [

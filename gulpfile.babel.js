@@ -75,7 +75,10 @@ gulp.task('webpack-dev-server', ['server:start'], (callback) =>
 		quiet: false,
 		noInfo: false,
 		// lazy: false
-		watchDelay: 300,
+		watchOptions:
+		{
+			'aggregate-timeout': 300,
+		},
 		historyApiFallback: true,
 		stats:
 		{
