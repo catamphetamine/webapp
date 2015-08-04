@@ -2,28 +2,37 @@ import fs            from 'fs'
 import path          from 'path'
 import http          from 'http'
 import https         from 'https'
-import restify       from 'restify'
 import os            from 'os'
 import socket_io     from 'socket.io'
+import express       from 'express'
 import log           from './log'
 import configuration from './configuration'
-import json_rpc      from './libraries/json rpc'
-import utility       from './api/utility'
+import api           from './api'
 
-// http://mcavage.me/node-restify/
-const web = restify.createServer
-({
-	// certificate: ...
-	// key: ...
-	name: 'cinema',
-	log: log
-})
+import React from 'react'
+import Router from 'react-router'
+import Location from 'react-router/lib/Location'
 
-web.pre(restify.pre.userAgentConnection())
+import Html from './../client/html'
+import ApiClient from './../client/api client'
+import router from './../client/router'
+import create_store from './../client/flux/redux/create'
+
+import compression from 'compression'
+import serve_static from 'serve-static'
+
+import http_proxy from 'http-proxy'
+
+import url from 'url'
+import cors from 'cors'
+import body_parser from 'body-parser'
+import cookie_parser from 'cookie-parser'
+
+import express_session from 'express-session'
+
+const web = new express()
 
 // Api
-
-json_rpc.add('utility', utility)
 
 // Force Https
 
@@ -44,187 +53,171 @@ json_rpc.add('utility', utility)
 // 	else
 // 		next()
 
-web.use(restify.acceptParser(web.acceptable))
-web.use(restify.authorizationParser())
-web.use(restify.dateParser())
-web.use(restify.queryParser())
-web.use(restify.jsonp())
-web.use(restify.gzipResponse())
-web.use(restify.bodyParser
+// # https://github.com/expressjs/session/issues/173
+// memory_store = require(__dirname + '/lib/MemoryStore')
+// store = new memory_store({ timeout: configuration.webserver.session_timeout })
+// app.set('session_store', store)
+	
+// busboy is supposed to be better than formidable
+// app.use(require('connect-busboy')({ highWaterMark: 10 * 1024 * 1024, limits: { fileSize: 100 * 1024 * 1024 } }))
+
+// websocket.path('/websocket.io')
+const websocket = socket_io.listen(web.server) // should be (web), restify is broken
+websocket.serveClient(false)
+
+// // websocket не обеспечивает гарантий доставки
+// // http://stackoverflow.com/questions/20685208/websocket-transport-reliability-socket-io-data-loss-during-reconnection
+// const api = websocket.of('/api')
+// api.on('connection', socket =>
+// {
+// 	socket.on('call', request =>
+// 	{
+// 		json_rpc.process(request).then(response =>
+// 		{
+// 			socket.emit('return', response)
+// 		})
+// 		.catch(error =>
+// 		{
+// 			log.error(error.stack || error)
+// 			response.send(json_rpc.error(request))
+// 		})
+// 	})
+// })
+
+// require('./rest api')
+
+// app.get '/lib/ace-builds/src-min/theme-jsoneditor.js', (request, response) ->
+// 	response.sendfile(Root_folder + '/public/lib/jsoneditor/asset/ace/theme-jsoneditor.js')
+
+// хз, нужно ли сжатие в node.js: мб лучше поставить впереди nginx'ы, 
+// и ими сжимать, чтобы не нагружать процесс node.js
+web.use(compression())
+web.use(serve_static(path.join(__dirname, '..', 'build')))
+
+const webpack_stats_path = path.resolve(__dirname, '..', 'build', 'webpack-stats.json')
+
+let webpack_stats
+
+function refresh_webpack_stats()
+{
+	webpack_stats = require(webpack_stats_path)
+
+	if (_development_)
+	{
+		// Do not cache webpack stats: the script file would change since
+		// hot module replacement is enabled in the development env
+		delete require.cache[require.resolve(webpack_stats_path)]
+	}
+}
+
+if (_production_)
+{
+	refresh_webpack_stats()
+}
+
+const proxy = http_proxy.createProxyServer
 ({
-	maxBodySize: 0,
-	mapParams: true,
-	mapFiles: false,
-	// overrideParams: false
-	// multipartHandler: (part) ->
-	// 	part.on 'data', (data) ->
-	// 		// do something with the multipart data
-	// multipartFileHandler: (part) ->
-	// 	part.on 'data', (data) ->
-	// 		// do something with the multipart file data
-	// keepExtensions: false
-	uploadDir: os.tmpdir(),
-	multiples: true
-}))
+	target: `http://${configuration.api_server.http.host}:${configuration.api_server.http.port}`
+})
+
+// Proxy to API server
+web.use('/api', (request, response) =>
+{
+	proxy.web(request, response)
+})
+
+const cors_options =
+{
+	// origin: 'http://example.com'
+}
+
+web.use(cors(cors_options))
+web.use(body_parser.json())
+web.use(body_parser.urlencoded({ limit: 1099511627776, extended: true })) // 1 Terabyte
+
+web.use(cookie_parser())
+
+const is_https = false
+web.use(express_session({ name: `for_port_${configuration.webserver.http.port}`, secret: 'is kept', resave: true, saveUninitialized: true, cookie: { secure: is_https, maxAge: 100 * 365 * 24 * 60 * 60 * 1000 } }))
 
 web.use((request, response, next) =>
 {
 	request.parameters = request.params
 	next()
 })
-	
-web.use(restify.CORS({
-	// origins: ['https://foo.com', 'http://bar.com', 'http://baz.com:8081'],   // defaults to ['*']
-	// credentials: true,                 // defaults to false
-	// headers: ['x-foo']                 // sets expose-headers
-}))
 
-// busboy is supposed to be better than formidable
-// app.use(require('connect-busboy')({ highWaterMark: 10 * 1024 * 1024, limits: { fileSize: 100 * 1024 * 1024 } }))
-
-for (let method of ['get', 'post', 'put', 'delete', 'head'])
+// серверный рендеринг; http://localhost:3000
+web.use((request, response) =>
 {
-	const method_function = web[method]
-	web[method] = function(path, handler)
+	if (_development_)
 	{
-		const simpler_handler = handler
-		handler = (request, response, next) =>
-		{
-			let next_explicitly_called = false
-			self_detecting_next = () =>
-			{
-				next_explicitly_called = true
-				next.apply(this, arguments)
-			}
-
-			simpler_handler(request, response, self_detecting_next)
-
-			if (!next_explicitly_called) {
-				self_detecting_next()
-			}
-		}
-
-		method_function.apply(this, arguments)
+		refresh_webpack_stats()
 	}
-}
 
-// websocket.path('/websocket.io')
-const websocket = socket_io.listen(web.server) // should be (web), restify is broken
-websocket.serveClient(false)
+	const client = new ApiClient(request)
+	const store = create_store(client)
+	const location = new Location(request.path, request.query)
 
-// websocket не обеспечивает гарантий доставки
-// http://stackoverflow.com/questions/20685208/websocket-transport-reliability-socket-io-data-loss-during-reconnection
-const api = websocket.of('/api')
-api.on('connection', socket =>
-{
-	socket.on('call', request =>
+	if (_disable_server_side_rendering_)
 	{
-		json_rpc.process(request).then(response =>
+		return response.send('<!doctype html>\n' +
+			React.renderToString(<Html webpackStats={webpack_stats} component={<div/>} store={store}/>))
+	}
+
+	router(location, undefined, store)
+	.then(({component, transition, redirect}) =>
+	{
+		try
 		{
-			socket.emit('return', response)
-		})
-		.catch(error =>
+			if (redirect)
+			{
+				return response.redirect(transition.redirectInfo.pathname)
+			}
+
+			response.send('<!doctype html>\n' +
+				React.renderToString(<Html webpackStats={webpack_stats} component={component} store={store}/>))
+		}
+		catch (error)
 		{
-			log.error(error.stack || error)
-			response.send(json_rpc.error(request))
-		})
+			log.error(error)
+			response.status(500).send({error: error})
+		}
+	},
+	(error) =>
+	{
+		log.error(error)
+		response.status(500).send({error: error})
 	})
 })
 
-web.post(/^\/api\/v([0-9]+\.[0-9]+\.[0-9]+)$/, (http_request, http_response) => 
+// поднять http сервер
+http.createServer(web).listen(configuration.webserver.http.port, error =>
 {
-	const version = http_request.params[0]
-	log.info(`requested api version: ${version}`)
-
-	const request = http_request.body
-
-	json_rpc.process(request).then(response =>
+	if (error)
 	{
-		http_response.send(response)
-	})
-	.catch(error =>
+		return log.error(error)
+	}
+
+	api().then(() =>
 	{
-		log.error(error.stack || error)
-		http_response.send(json_rpc.error(request))
+		log.info(`Web server is listening`)
+		log.info(`Now go to http://${configuration.webserver.http.host}:${configuration.webserver.http.port}`)
+	},
+	error =>
+	{
+		log.error(error)
 	})
 })
 
-// routes
-// require('./rest api')
-
-// app.get '/lib/ace-builds/src-min/theme-jsoneditor.js', (request, response) ->
-// 	response.sendfile(Root_folder + '/public/lib/jsoneditor/asset/ace/theme-jsoneditor.js')
-
+// // сертификаты для SSL
 // https_options = 
 // 	key  : fs.readFileSync("#{Root_folder}/#{configuration.webserver.https.private_key}")
 // 	cert : fs.readFileSync("#{Root_folder}/#{configuration.webserver.https.certificate}")
 
-// http.createServer(app).listen(configuration.webserver.http.port)
-// https.createServer(https_options, app).listen(configuration.webserver.https.port)
-
-// web.get /.*/, ->
-// 	restify.serveStatic({
-// 		directory: "#{Root_folder}/build/client"
-// 		default: 'index.html'
-// 	})
-
-import React from 'react'
-import Router from 'react-router'
-// import routes from './../client/routes.react'
-
-// серверный рендеринг; http://localhost:3000/react
-web.get('/react', (request, response) =>
-{
-	// html = React.renderToStaticMarkup(body(null))
-
-	// Router.run(routes, request.path, (Handler, router) => 
-	// {
-	// 	Transmit.renderToString(Handler).then(({reactString, reactData}) => 
-	// 	{
-	// 		let output = 
-	// 		(
-	// 			`<!doctype html>
-	// 			<html lang="en-us">
-	// 				<head>
-	// 					<meta charset="utf-8">
-	// 					<title>Isomorphic React</title>
-	// 					<link rel="shortcut icon" href="/images/favicon/favicon-32x32.png">
-	// 				</head>
-	// 				<body>
-	// 					<section id="layout">${reactString}</section>
-	// 				</body>
-	// 			</html>`
-	// 		)
-
-	// 		const webserver = process.env.NODE_ENV === 'production' ? '' : '//localhost:8080'
-	// 		output = Transmit.injectIntoMarkup(output, reactData, [`${webserver}/dist/client.js`])
-
-	// 		response.writeHead(200, { 'Content-type': 'text/html' })
-	// 		response.end(output)
-	// 	})
-	// 	.catch((error) => 
-	// 	{
-	// 		reply(error.stack).type("text/plain").code(500)
-	// 	})
-	// })
-})
-
-// пока нет NginX, раздавать статику средствами Node.js
-if (process.env.NODE_ENV === "production") 
-{
-	// web.get(/\/public\/?.*/, restify.serveStatic
-	web.get(/\/?.*/, restify.serveStatic
-	({
-		directory: './build'
-	}))
-}
-
-// On development, the static files are served from the webpack dev server
-
-web.listen(configuration.webserver.http.port, () =>
-{
-	// log.info "web server listening at #{web.url}"
-	// log.info "socket.io server listening at #{web.url}"
-})
+// // поднять https сервер
+// https.createServer(https_options, app).listen configuration.webserver.https.port, ->
+// 	log.info "================================================="
+// 	log.info "= GUI доступен по адресу https://localhost:#{configuration.webserver.https.port} ="
+// 	log.info "================================================="
 
 export default web

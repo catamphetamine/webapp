@@ -16,7 +16,7 @@ npm run dev
 
 Далее зайти на:
 
-http://localhost:3001/webpack-dev-server/
+http://localhost:3000
 
 (страница будет сама обновляться при изменении исходных кодов)
 
