@@ -1,11 +1,12 @@
 // require('./about.less' )
 
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
+import { connect } from 'react-redux'
 
-import { Link, RouteHandler } from 'react-router'
+import { Link } from 'react-router'
 import styler from 'react-styling'
 
-export default class Showcase extends Component
+class Showcase extends Component
 {
 	render()
 	{
@@ -27,8 +28,8 @@ export default class Showcase extends Component
 					<li><a href="http://balloob.github.io/react-sidebar/example/">Sidebar</a></li>
 					<li><a href="http://labs.voronianski.com/react-soundplayer/">Sound Player</a></li>
 				</ul>
-
-				<RouteHandler/>
+				
+        		{this.props.children}
 			</div>
 		)
 
@@ -58,3 +59,32 @@ const style = styler
 					color            : #ffffff
 					background-color : #000000
 `
+
+@connect(store =>
+({
+	// settings: store.settings.data
+}))
+export default class Reduxed
+{
+	static propTypes =
+	{
+		// settings: PropTypes.object,
+		dispatch: PropTypes.func.isRequired
+	}
+
+	// static preload(store)
+	// {
+	// 	const promises = []
+	// 	// if (!are_settings_loaded(store.getState()))
+	// 	// {
+	// 		promises.push(store.dispatch(actions.get_settings()))
+	// 	// }
+	// 	return Promise.all(promises)
+	// }
+
+	render()
+	{
+		const { dispatch } = this.props
+		return <Showcase {...this.props}/>
+	}
+}

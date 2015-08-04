@@ -1,12 +1,7 @@
 {
 	"script": "server/main.js",
-	"watch": ["server/**/*.js"],
+	"watch": ["server/**/*.js", "client/**/*.js"],
 	"watch_interval": 300,
-	"dirs": ["server"],
-	"execMap": {
-		"js": "npm run babel-node",
-		"js_old": "node --harmony --use_strict"
-	},
 	"ignore": [
 		".git",
 		"node_modules/**/*",

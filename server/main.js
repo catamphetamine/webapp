@@ -13,7 +13,7 @@ import language from './../client/scripts/libraries/language'
 // Configuration
 
 import configuration from './configuration'
-// global.configuration = configuration
+global.configuration = configuration
 
 console.log("Configuration:", configuration)
 

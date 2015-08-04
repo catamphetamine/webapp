@@ -1,20 +1,10 @@
-import Bus from '../bus'
-import api from '../../scripts/libraries/api'
-
-const Actions = 
+export function get_settings()
 {
-	get_settings: () =>
+	const action =
 	{
-		// просто так; по идее, это можно использовать, 
-		// чтобы показывать какую-нибудь крутилку на экране, 
-		// или статус писать где-нибудь в панели статусов
-		Bus.push('retrieving settings')
-
-		api.call('utility.settings').then((settings) =>
-		{
-			Bus.push('settings', settings)
-		})
+		promise: api => api.call('utility.settings'),
+		types: ['retrieving settings', 'settings retrieved', 'settings retrieval failed']
 	}
-}
 
-export default Actions
+	return action
+}

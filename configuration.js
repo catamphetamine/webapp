@@ -1,6 +1,4 @@
-const configuration = 
+export default
 {
 	putin: 'vodka'
 }
-
-export default configuration

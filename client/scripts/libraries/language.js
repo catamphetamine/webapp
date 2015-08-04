@@ -10,17 +10,17 @@ const no = function()
 }
 global.no = no
 
-Object.extend = function(to, from, or_more)
+// extends the first object with all the others
+Object.extend = function(...objects)
 {
-	const parameters = Array.prototype.slice.call(arguments, 0)
+	const to   = objects[0]
+	const from = objects[1]
 
-	if (exists(or_more))
+	if (objects.length > 2)
 	{
-		const last = parameters.pop()
-		const intermediary_result = Object.extend.apply(this, parameters)
-		// pass undefined as the third argument because of either Babel.js bug, or some other bug
-		// (the third argument is supplied and is equal to the second argument which is weird)
-		return Object.extend(intermediary_result, last, undefined)
+		const last = objects.pop()
+		const intermediary_result = Object.extend.apply(this, objects)
+		return Object.extend(intermediary_result, last)
 	}
 
 	for (let key of Object.keys(from))
@@ -49,7 +49,10 @@ Object.merge = function()
 
 global.merge = Object.merge
 
-Object.clone = object => JSON.parse(JSON.stringify(object))
+Object.clone = function(object)
+{
+	return Object.merge({}, object)
+}
 
 Object.equals = (a, b) => deep_equal(a, b)
 
@@ -158,7 +161,16 @@ Object.set_value_at_path = (where, paths, value) =>
 // 	value: (index) -> @splice(index, 1)
 // }
 
-Object.defineProperty(Array.prototype, "has",
+Object.defineProperty(Array.prototype, 'first',
+{
+	enumerable: false,
+	value: function() 
+	{ 
+		return this[0]
+	}
+})
+
+Object.defineProperty(Array.prototype, 'has',
 {
 	enumerable: false,
 	value: function(element) 
@@ -167,7 +179,7 @@ Object.defineProperty(Array.prototype, "has",
 	}
 })
 
-Object.defineProperty(Array.prototype, "not_empty", 
+Object.defineProperty(Array.prototype, 'not_empty', 
 {
 	enumerable: false,
 	value: function() 
@@ -176,7 +188,7 @@ Object.defineProperty(Array.prototype, "not_empty",
 	}
 })
 
-Object.defineProperty(Array.prototype, "is_empty", 
+Object.defineProperty(Array.prototype, 'is_empty', 
 {
 	enumerable: false,
 	value: function() 
@@ -185,7 +197,7 @@ Object.defineProperty(Array.prototype, "is_empty",
 	}
 })
 
-Object.defineProperty(Array.prototype, "clone", 
+Object.defineProperty(Array.prototype, 'clone', 
 {
 	enumerable: false,
 	value: function() 
@@ -203,6 +215,20 @@ Object.defineProperty(Array.prototype, 'last',
 			return
 		}
 		return this[this.length - 1]
+	}
+})
+
+Object.defineProperty(Array.prototype, 'remove', 
+{
+	enumerable: false,
+	value: function(element)
+	{
+		const index = this.indexOf(element)
+		if (index >= 0)
+		{
+			array.splice(index, 1)
+		}
+		return this
 	}
 })
 
