@@ -39,11 +39,18 @@ configuration.plugins = configuration.plugins.concat
 	}),
 
 	// css files from the extract-text-plugin loader
-	new ExtractTextPlugin('[name]-[chunkhash].css', { allChunks: true }),
+	// (for more information see the extract_text_plugin code for scss_loader below)
+	new extract_text_plugin('[name]-[chunkhash].css', { allChunks: true }),
 
-	// optimizations
+	// omit duplicate modules
 	new webpack.optimize.DedupePlugin(),
+
+	// Assign the module and chunk ids by occurrence count. 
+	// Ids that are used often get lower (shorter) ids. 
+	// This make ids predictable, reduces to total file size and is recommended.
 	new webpack.optimize.OccurenceOrderPlugin(),
+
+	// Compresses javascript files
 	new webpack.optimize.UglifyJsPlugin
 	({
 		compress:
@@ -67,22 +74,26 @@ configuration.plugins = configuration.plugins.concat
 configuration.output.filename = '[name]-[chunkhash].js'
 
 // add strip-loader to javascript loaders
-configuration.module.loaders.map(loader =>
+configuration.module.loaders.filter(loader =>
 {
-	return loader.test.toString() === base_configuration.regular_expressions.javascript.toString())
+	return loader.test.toString() === base_configuration.regular_expressions.javascript.toString()
 })
 .first()
 .loaders.unshift(strip.loader('debug'))
 
-// set extract text plugin as a Css loader
+// begin: set extract text plugin as a Css loader
 
+// find the styles loader
 const scss_loader = configuration.module.loaders.filter(loader =>
 {
-	return loader.test.toString() === base_configuration.regular_expressions.style.toString())
+	return loader.test.toString() === base_configuration.regular_expressions.styles.toString()
 })
 .first()
 
+// the last loader
 const style = scss_loader.loaders.shift()
+
+// remove some of css loaders' parameters
 const rest  = scss_loader.loaders.map(loader =>
 {
 	const [name, parameters] = loader.split('?')
@@ -99,7 +110,14 @@ const rest  = scss_loader.loaders.map(loader =>
 })
 .join('!')
 
-scss_loader.loaders = [extract_text_plugin.extract(style, rest)]
+// https://github.com/webpack/extract-text-webpack-plugin
+//
+// It moves every require("style.css") in entry chunks into a separate css output file. 
+// So your styles are no longer inlined into the javascript, but separate 
+// in a css bundle file (styles.css). If your total stylesheet volume is big, 
+// it will be faster because the stylesheet bundle is loaded in parallel to the javascript bundle.
+delete scss_loader.loaders
+scss_loader.loader = extract_text_plugin.extract(style, rest)
 
 // done: set extract text plugin as a Css loader
 

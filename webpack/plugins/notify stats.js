@@ -15,14 +15,17 @@ module.exports = function notifyStats(stats)
 {
 	var json = stats.toJson()
 
+	// if there were any errors
 	if (json.errors.not_empty())
 	{
 		json.errors.forEach(error)
 	}
+	// if there were any warnings
 	else if (json.warnings.not_empty())
 	{
 		json.warnings.forEach(warning)
-	} 
+	}
+	// if it's ok
 	else
 	{
 		console.log(stats.toString

@@ -17,7 +17,7 @@ const history = new BrowserHistory()
 const client = new api_client()
 
 const content_container = document.getElementById('content')
-const store = create_store(client, window.__data)
+const store = create_store(client, window._flux_store_data)
 const location = new Location(document.location.pathname, document.location.search)
 
 router(location, history, store)
@@ -48,7 +48,6 @@ router(location, history, store)
 	{
 		console.error(error)
 	})
-
 
 if (_development_)
 {

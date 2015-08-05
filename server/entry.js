@@ -8,6 +8,9 @@ var minimist = require('minimist')
 // var piping = require('piping')
 var path = require('path')
 
+const Root_folder = path.normalize(__dirname + '/..')
+global.Root_folder = Root_folder
+
 global._client_ = false
 global._server_ = true
 global._disable_server_side_rendering_ = false  // <----- DISABLES SERVER SIDE RENDERING FOR ERROR DEBUGGING

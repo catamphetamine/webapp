@@ -3,9 +3,6 @@ look.start()
 
 import path from 'path'
 
-const Root_folder = path.normalize(__dirname + '/..')
-global.Root_folder = Root_folder
-
 import utility from './libraries/utility'
 
 import language from './../client/scripts/libraries/language'

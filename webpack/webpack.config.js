@@ -1,7 +1,5 @@
-var webpack = require('webpack')
+// var webpack = require('webpack')
 var path    = require('path')
-
-var HtmlWebpackPlugin = require('html-webpack-plugin')
 
 var root_folder = path.resolve(__dirname, '..')
 
@@ -18,8 +16,11 @@ var babel = 'babel-loader?stage=0&optional=runtime&plugins=typecheck'
 var regular_expressions = 
 {
 	javascript: /\.js$/,
-	style: /\.scss$/
+	styles: /\.scss$/,
+	images: /\.(png|jpg|woff|woff2|eot|ttf|svg)$/
 }
+
+var assets_source_folder = 'client'
 
 var configuration =
 {
@@ -52,13 +53,25 @@ var configuration =
 	{
 		loaders: 
 		[
+			{
+				test: /\.json$/,
+				loader: 'json-loader'
+			},
 			{ 
 				test: regular_expressions.javascript,
-				exclude: /node_modules/,
+				include:
+				[
+					path.resolve(root_folder, 'client'),
+					path.resolve(root_folder, 'server')
+				],
 				loaders: [babel]
 			},
 			{ 
-				test: regular_expressions.style,
+				test: regular_expressions.styles,
+				include:
+				[
+					path.resolve(root_folder, assets_source_folder, 'styles')
+				],
 				loaders: 
 				[
 					'style',
@@ -68,12 +81,17 @@ var configuration =
 				]
 			},
 			{
-				test: /\.(png|jpg|woff|woff2|eot|ttf|svg)$/,
+				test: regular_expressions.images,
+				include:
+				[
+					path.resolve(root_folder, assets_source_folder)
+				],
 				loaders: ['url?limit=10240'] // Any png-image or woff-font below or equal to 10K will be converted to inline base64 instead
 			}
 		]
 	},
 
+	// maybe some kind of a progress bar during compilation
 	progress: true,
 
 	resolve:
@@ -103,6 +121,12 @@ module.exports = configuration
 
 // used in derived configs
 configuration.regular_expressions = regular_expressions
+
+// where to create the webpack stats file
+configuration.webpack_stats_path = 'build/webpack-stats.json'
+
+// will be omitted from assets paths' in write_stats, for example
+configuration.assets_source_folder = 'client'
 
 // configuration.resolve = configuration.resolve || {}
 // configuration.resolve.alias = configuration.resolve.alias || {}

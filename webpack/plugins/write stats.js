@@ -1,21 +1,20 @@
-var fs   = require('fs')
-var path = require('path')
+import fs   from 'fs'
+import path from 'path'
 
-var webpack_configuration = require(path.resolve(__dirname, '../webpack.config.js'))
-
-var output_file_path = path.resolve(__dirname, '../../build/webpack-stats.json')
-	
-module.exports = function write_stats(stats, env)
+// writes webpack-stats.json file, which contains assets' file paths
+export default function write_stats(stats, environment)
 {
-	var publicPath = this.options.output.publicPath
+	const _production_  = environment === 'production'
+	const _development_ = environment === 'development'
 
-	var json = stats.toJson()
+	const output_path = this.options.output.publicPath
 
-	// get chunks by name and extensions
-	function getChunks(name, ext)
+	const json = stats.toJson()
+
+	// get assets by name and extensions
+	function get_assets(name, extension = 'js')
 	{
-		ext = ext || 'js'
-		var chunk = json.assetsByChunkName[name]
+		let chunk = json.assetsByChunkName[name]
 
 		// a chunk could be a string or an array, so make sure it is an array
 		if (!(Array.isArray(chunk)))
@@ -25,97 +24,103 @@ module.exports = function write_stats(stats, env)
 
 		return chunk
 			// filter by extension
-			.filter(function(chunkName)
-			{
-				return path.extname(chunkName) === '.' + ext
-			})
-			.map(function(chunkName)
-			{
-				return publicPath + chunkName
-			})
+			.filter(name => path.extname(name) === `.${extension}`)
+			.map(name => output_path + name)
 	}
 
-	var scripts = [getChunks('main', 'js')] // getChunks('common', 'js'), 
-	var cssFiles = getChunks('main', 'css')
-
-	var cssModules = {}
-
-	var namePrefix = webpack_configuration
-		.module
-		.loaders
-		.filter(loader => loader.test.toString() === webpack_configuration.regular_expressions.style.toString())
-		.first()
-		.loaders
-		.slice(1)
-		.map(loader =>
-		{
-		    const [name, parameters] = loader.split('?')
-		    return `./~/${name}-loader?${parameters}`
-		})
-		.join('!')
-		// don't know why an exclamation mark in the end
-		+ '!'
-
-	json.modules.filter(function(m)
+	const output =
 	{
-		if (env === 'production')
+		css:
 		{
-			return /\.scss$/.test(m.name)
+			modules: {}
 		}
-		return m.name.slice(0, namePrefix.length) === namePrefix
-	})
-	.forEach(function(m)
-	{
-		var name = path.resolve(__dirname, '../../', env === 'production' ?
-			m.name.slice('./src'.length) :
-			m.name.slice(namePrefix.length + './src'.length))
+	}
 
-		if (name)
-		{
-			// Resolve the e.g.: "C:\"  issue on windows
-			const i = name.indexOf(':')
-			if (i >= 0)
-			{
-				name = name.slice(i + 1)
-			}
-		}
+	output.scripts = [get_assets('main', 'js')] // get_assets('common', 'js'), 
+	output.css.files = get_assets('main', 'css')
 
-		//end
-		var regex = env === 'production' ? /module\.exports = ((.|\n)+);/ : /exports\.locals = ((.|\n)+);/
-		var match = m.source.match(regex)
-		cssModules[name] = match ? JSON.parse(match[1]) : {}
-	})
+	// this variable is only used when the enviroment is "development"
+	// let css_module_name_prefix
+	// if (_development_)
+	// {
+	// 	css_module_name_prefix = this.options
+	// 		.module
+	// 		.loaders
+	// 		.filter(loader => loader.test.toString() === this.options.regular_expressions.styles.toString())
+	// 		.first()
+	// 		.loaders
+	// 		.slice(1)
+	// 		.map(loader =>
+	// 		{
+	// 		    const [name, parameters] = loader.split('?')
+	// 		    return `./~/${name}-loader?${parameters}`
+	// 		})
+	// 		.join('!')
+	// 		// don't know why an exclamation mark in the end
+	// 		+ '!'
+	// }
+	//
+	// json.modules.filter(module =>
+	// {
+	// 	if (_production_)
+	// 	{
+	// 		// get all modules with .scss extension
+	// 		return this.options.regular_expressions.styles.test(module.name)
+	// 	}
+	// 	// omit the long css loader prefix when in developer mode
+	// 	return module.name.slice(0, css_module_name_prefix.length) === css_module_name_prefix
+	// })
+	// .forEach(module =>
+	// {
+	// 	const path_prefix = path.resolve(this.options.context, this.options.assets_source_folder)
+	//
+	// 	// strip prefixes from css module name
+	// 	let name = path.resolve(this.options.context, _production_ ?
+	// 		module.name.slice(path_prefix.length) :
+	// 		module.name.slice(css_module_name_prefix.length + path_prefix.length))
+	//
+	// 	// strip Windows drive path
+	// 	if (name)
+	// 	{
+	// 		// Resolve the e.g.: "C:\"  issue on windows
+	// 		const colon_index = name.indexOf(':')
+	// 		if (colon_index >= 0)
+	// 		{
+	// 			name = name.slice(colon_index + 1)
+	// 		}
+	// 	}
+	//
+	// 	// get exported css module name for this css module name
+	// 	const regexp = _production_ ? /module\.exports = ((.|\n)+);/ : /exports\.locals = ((.|\n)+);/
+	// 	var match = module.source.match(regexp)
+	// 	output.css.modules[name] = match ? JSON.parse(match[1]) : {}
+	// })
 
 	// Find compiled images in modules
 	// it will be used to map original filename to the compiled one
 	// for server side rendering
-	const imagesRegex = /\.(jpe?g|png|gif|svg)$/
-	const images = json.modules
-		.filter(function(module)
+	const images_regexp = this.options.regular_expressions.images
+	output.images = json.modules
+		.filter(module => images_regexp.test(module.name))
+		.map(image =>
 		{
-			return imagesRegex.test(module.name)
-		})
-		.map(function(image)
-		{
-			var i = image.source.indexOf('"')
-			var imageSource = image.source.slice(i + 1, -1)
-			imageSource = imageSource.lastIndexOf('data:image', 0) === 0 ? imageSource : publicPath + imageSource
-			return {
+			// retain everything inside of double quotes (don't know what it is for)
+			const double_qoute_index = image.source.indexOf('"')
+			let image_source = image.source.slice(double_qoute_index + 1, -1)
+
+			const is_embedded = image_source.lastIndexOf('data:image', 0) === 0
+			image_source = is_embedded ? image_source : output_path + image_source
+
+			const result = 
+			{
 				original: image.name,
-				compiled: imageSource
+				compiled: image_source
 			}
+
+			return result
 		})
 
-	var content =
-	{
-		scripts: scripts,
-		css:
-		{
-			files: cssFiles,
-			modules: cssModules
-		},
-		images: images
-	}
+	// console.log(JSON.stringify(output, null, 2))
 
-	fs.writeFileSync(output_file_path, JSON.stringify(content))
+	fs.writeFileSync(this.options.webpack_stats_path, JSON.stringify(output))
 }

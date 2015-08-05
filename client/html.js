@@ -25,15 +25,6 @@ export default class Html extends Component
 
 	render()
 	{
-		// let webpack_development_server = null
-		//
-		// if (_development_)
-		// {
-		// 	webpack_development_server = <script src={'http://' + application_configuration.development.webpack.development_server.host + ':' + application_configuration.development.webpack.development_server.port + '/webpack-dev-server.js'}></script>
-		// }
-		//
-		// {webpack_development_server}
-
 		const {webpackStats, component, store} = this.props
 		const title = 'Cinema'
 		const description = 'Workflow'
@@ -72,15 +63,18 @@ export default class Html extends Component
 				</head>
 
 				<body>
+					{/* rendered React application */}
 					<div id="content" dangerouslySetInnerHTML={{__html: React.renderToString(component)}}/>
-					<script dangerouslySetInnerHTML={{__html: `window.__data=${serialize(store.getState())};`}} />
-					
+
+					{/* Flux store data will be reloaded into the store on the client */}
+					<script dangerouslySetInnerHTML={{__html: `window._flux_store_data=${serialize(store.getState())};`}} />
+
 					{/*<script src={webpackStats.script[0]}/>*/}
 
 					{/*<pre>{JSON.stringify(webpackStats, null, 2)}</pre>*/}
 
 					{webpackStats.scripts.map((script) =>
-						<script src={script[0]}/>)}
+						<script src={script.first()}/>)}
 				</body>
 			</html>
 		)

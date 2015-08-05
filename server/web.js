@@ -9,26 +9,15 @@ import log           from './log'
 import configuration from './configuration'
 import api           from './api'
 
-import React from 'react'
-import Router from 'react-router'
-import Location from 'react-router/lib/Location'
-
-import Html from './../client/html'
-import ApiClient from './../client/api client'
-import router from './../client/router'
-import create_store from './../client/flux/redux/create'
-
-import compression from 'compression'
-import serve_static from 'serve-static'
+import compression     from 'compression'
+import serve_static    from 'serve-static'
+import cors            from 'cors'
+import body_parser     from 'body-parser'
+import cookie_parser   from 'cookie-parser'
+import express_session from 'express-session'
 
 import http_proxy from 'http-proxy'
-
-import url from 'url'
-import cors from 'cors'
-import body_parser from 'body-parser'
-import cookie_parser from 'cookie-parser'
-
-import express_session from 'express-session'
+import url from  'url'
 
 const web = new express()
 
@@ -94,27 +83,6 @@ websocket.serveClient(false)
 web.use(compression())
 web.use(serve_static(path.join(__dirname, '..', 'build')))
 
-const webpack_stats_path = path.resolve(__dirname, '..', 'build', 'webpack-stats.json')
-
-let webpack_stats
-
-function refresh_webpack_stats()
-{
-	webpack_stats = require(webpack_stats_path)
-
-	if (_development_)
-	{
-		// Do not cache webpack stats: the script file would change since
-		// hot module replacement is enabled in the development env
-		delete require.cache[require.resolve(webpack_stats_path)]
-	}
-}
-
-if (_production_)
-{
-	refresh_webpack_stats()
-}
-
 const proxy = http_proxy.createProxyServer
 ({
 	target: `http://${configuration.api_server.http.host}:${configuration.api_server.http.port}`
@@ -140,54 +108,19 @@ web.use(cookie_parser())
 const is_https = false
 web.use(express_session({ name: `for_port_${configuration.webserver.http.port}`, secret: 'is kept', resave: true, saveUninitialized: true, cookie: { secure: is_https, maxAge: 100 * 365 * 24 * 60 * 60 * 1000 } }))
 
-web.use((request, response, next) =>
-{
-	request.parameters = request.params
-	next()
-})
+// // для удобства: к http get параметрам можно обращаться через переменную params
+// web.use((request, response, next) =>
+// {
+// 	request.parameters = request.params
+// 	next()
+// })
 
-// серверный рендеринг; http://localhost:3000
+import { render } from './react'
+
+// серверный ("изоморфный") рендеринг
 web.use((request, response) =>
 {
-	if (_development_)
-	{
-		refresh_webpack_stats()
-	}
-
-	const client = new ApiClient(request)
-	const store = create_store(client)
-	const location = new Location(request.path, request.query)
-
-	if (_disable_server_side_rendering_)
-	{
-		return response.send('<!doctype html>\n' +
-			React.renderToString(<Html webpackStats={webpack_stats} component={<div/>} store={store}/>))
-	}
-
-	router(location, undefined, store)
-	.then(({component, transition, redirect}) =>
-	{
-		try
-		{
-			if (redirect)
-			{
-				return response.redirect(transition.redirectInfo.pathname)
-			}
-
-			response.send('<!doctype html>\n' +
-				React.renderToString(<Html webpackStats={webpack_stats} component={component} store={store}/>))
-		}
-		catch (error)
-		{
-			log.error(error)
-			response.status(500).send({error: error})
-		}
-	},
-	(error) =>
-	{
-		log.error(error)
-		response.status(500).send({error: error})
-	})
+	render(request, response)
 })
 
 // поднять http сервер

@@ -67,6 +67,7 @@
     "html-webpack-plugin": "^1.3.0",
     "i18n-webpack-plugin": "^0.2.7",
     "istanbul": "^0.3.17",
+    "json-loader": "^0.5.2",
     "jsx-loader": "^0.13.1",
     "karma": "~0.13.3",
     "karma-phantomjs-launcher": "~0.2.0",
@@ -88,7 +89,7 @@
     "webpack-dev-server": "^1.10.1"
   },
   "scripts": {
-    "server": "node ./server/entry --production",
+    "server": "babel-node ./server/entry --production",
     "dev-server": "nodemon --exec npm run babel-node -- ./server/entry -- --development",
     "build-client": "webpack --verbose --colors --display-error-details --config \"webpack/production build.entry.js\"",
     "dev-client": "babel-node --stage 0 -- \"webpack/development server.js\"",

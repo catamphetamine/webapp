@@ -21,6 +21,21 @@ http://localhost:3000
 (страница будет сама обновляться при изменении исходных кодов)
 
 Запуск (production)
+=====================
+
+Построить проект webpack'ом
+
+npm run build-client
+
+Запустить web сервер
+
+npm run server
+
+Далее зайти на:
+
+http://localhost:3000
+
+Запуск демоном (production, пока ещё не сделано)
 ====================
 
 ./automation/start.sh
@@ -53,6 +68,18 @@ pm2 logs cinema
 
 Сделать
 ====================
+
+Убрать из api client понятие о сервере
+
+Убрать из assets понятие о webpack'е
+
+Отрефакторить весь код
+
+сделать favicon
+
+api client порефакторить
+
+Мб перетасовать какие-то папки, файлы
 
 Запускать web сервер в dev только после того, как webpack-dev-server запустился
 
@@ -186,3 +213,8 @@ https://github.com/lpiepiora/bower-webpack-plugin
 https://facebook.github.io/react/blog/2015/02/20/introducing-relay-and-graphql.html
 http://facebook.github.io/react/blog/2015/03/19/building-the-facebook-news-feed-with-relay.html
 https://gist.github.com/wincent/598fa75e22bdfa44cf47
+
+
+React Context
+
+http://jaysoo.ca/2015/06/09/react-contexts-and-dependency-injection/

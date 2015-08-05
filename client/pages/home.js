@@ -5,22 +5,33 @@ import { connect } from 'react-redux'
 
 import styler from 'react-styling'
 
+// import assets from '../assets'
+// const husky = assets.require_image('./images/kitten.jpg')
+
+import { require_server_image } from '../../server/webpack'
+const husky = _client_ ? require('../images/husky.jpg') : require_server_image('../images/husky.jpg')
+
 class Page extends Component
 {
 	render()
 	{
 		const markup = 
 		(
-			<div>Home page</div>
+			<section>
+				<h1>Home page</h1>
+				<div style={style.image_container}><img src={husky}/></div>
+			</section>
 		)
 
 		return markup
 	}
 }
 
-// const style = styler
-// `
-// `
+const style = styler
+`
+	image_container:
+		text-align: center
+`
 
 @connect(store =>
 ({

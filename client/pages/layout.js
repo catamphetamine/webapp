@@ -13,6 +13,14 @@ import { connect } from 'react-redux'
 // import {isLoaded as isAuthLoaded} from '../flux/stores/auth'
 // import {load as loadAuth} from '../flux/actions/authActions'
 
+// import require_css from '../assets'
+// const styles = require_css('./styles/style.scss')
+// <ul style={styles.main.menu}/>
+
+// import require_image from '../assets'
+// const kitten = require_image('./kitten.jpg')
+// <img src={kitten}/>
+
 class Layout extends Component
 {
 	// static propTypes =
@@ -65,9 +73,7 @@ class Layout extends Component
 					</ul>
 				</nav>
 
-				<div>
-					{this.props.children}
-				</div>
+				{this.props.children}
 
 				<footer></footer>
 			</div>
