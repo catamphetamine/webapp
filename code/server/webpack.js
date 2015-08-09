@@ -1,5 +1,9 @@
-// ideally client shouldn't know the "webpack" word.
-// but currently there's no other way found to "require()" an image on the server
+// ideally client shouldn't know the "webpack" word,
+// but currently there's no other way found to "require()" an image on the server.
+//
+// (maybe the solution would be to just require() images both on the client and the server
+//  and instrument all server require calls like coffeescript does 
+//  through require("coffeescript/register")?)
 
 import webpack_configuration from '../../webpack/webpack.config.js'
 
