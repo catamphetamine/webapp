@@ -3,24 +3,20 @@ var path    = require('path')
 
 var root_folder = path.resolve(__dirname, '..')
 
-var third_party = 
-[
-	'react/dist/react.min.js',
-	'react-router/dist/react-router.min.js',
-	'moment/min/moment.min.js',
-	'underscore/underscore-min.js'
-]
-
 var babel = 'babel-loader?stage=0&optional=runtime&plugins=typecheck'
 
 var regular_expressions = 
 {
-	javascript: /\.js$/,
-	styles: /\.scss$/,
-	images: /\.(png|jpg|woff|woff2|eot|ttf|svg)$/
+	javascript       : /\.js$/,
+	styles           : /\.scss$/,
+	images_and_fonts : /\.(png|jpg|ico|woff|woff2|eot|ttf|svg)$/
 }
 
-var assets_source_folder = 'client'
+var assets_source_folder = path.resolve(root_folder, 'client')
+
+// where to create the webpack stats file
+// (if you ever change this variable also change it in server/webpack.js)
+var webpack_stats_path = path.resolve(root_folder, 'build', 'webpack-stats.json')
 
 var configuration =
 {
@@ -29,7 +25,7 @@ var configuration =
 
 	entry:
 	{
-		main: './client/application.js'
+		main: './code/client/application.js'
 	},
 
 	output: 
@@ -61,8 +57,9 @@ var configuration =
 				test: regular_expressions.javascript,
 				include:
 				[
-					path.resolve(root_folder, 'client'),
-					path.resolve(root_folder, 'server')
+					path.resolve(root_folder, 'code', 'client'),
+					path.resolve(root_folder, 'code', 'language.js'),
+					path.resolve(root_folder, 'code', 'server', 'webpack.js')
 				],
 				loaders: [babel]
 			},
@@ -70,23 +67,23 @@ var configuration =
 				test: regular_expressions.styles,
 				include:
 				[
-					path.resolve(root_folder, assets_source_folder, 'styles')
+					path.resolve(assets_source_folder, 'styles')
 				],
 				loaders: 
 				[
-					'style',
-					'css?modules&importLoaders=2&localIdentName=[local]___[hash:base64:5]',
-					'autoprefixer?browsers=last 2 version',
-					'sass?outputStyle=expanded&sourceMap=true&sourceMapContents=true'
+					'style-loader',
+					'css-loader?modules&importLoaders=2&sourceMap&localIdentName=[local]___[hash:base64:5]',
+					'autoprefixer-loader?browsers=last 2 version',
+					'sass-loader?outputStyle=expanded&sourceMap=true&sourceMapContents=true'
 				]
 			},
 			{
-				test: regular_expressions.images,
+				test: regular_expressions.images_and_fonts,
 				include:
 				[
-					path.resolve(root_folder, assets_source_folder)
+					path.resolve(assets_source_folder)
 				],
-				loaders: ['url?limit=10240'] // Any png-image or woff-font below or equal to 10K will be converted to inline base64 instead
+				loaders: ['url-loader?limit=10240'] // Any png-image or woff-font below or equal to 10K will be converted to inline base64 instead
 			}
 		]
 	},
@@ -123,11 +120,19 @@ module.exports = configuration
 configuration.regular_expressions = regular_expressions
 
 // where to create the webpack stats file
-configuration.webpack_stats_path = 'build/webpack-stats.json'
+configuration.webpack_stats_path = webpack_stats_path
 
-// will be omitted from assets paths' in write_stats, for example
-configuration.assets_source_folder = 'client'
+// // will be omitted from assets paths' in write_stats, for example
+// configuration.assets_source_folder = assets_source_folder
 
+// var third_party = 
+// [
+// 	'react/dist/react.min.js',
+// 	'react-router/dist/react-router.min.js',
+// 	'moment/min/moment.min.js',
+// 	'underscore/underscore-min.js'
+// ]
+//
 // configuration.resolve = configuration.resolve || {}
 // configuration.resolve.alias = configuration.resolve.alias || {}
 // configuration.module.noParse = configuration.module.noParse || []

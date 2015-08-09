@@ -1,4 +1,4 @@
-import language from './../client/scripts/libraries/language'
+import language from '../code/language'
 import path     from 'path'
 
 import webpack             from 'webpack'
@@ -8,7 +8,7 @@ import clean_plugin        from 'clean-webpack-plugin'
 import extract_text_plugin from 'extract-text-webpack-plugin'
 import strip               from 'strip-loader'
 
-import application_configuration from './../server/configuration'
+import application_configuration from '../code/server/configuration'
 const websocket_url = `${application_configuration.webserver.http.host}:${application_configuration.webserver.http.port}`
 
 const configuration = Object.clone(base_configuration)

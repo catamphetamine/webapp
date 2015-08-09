@@ -1,8 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import serialize from 'serialize-javascript'
 
-import application_configuration from '../server/configuration'
-
 const cdn = '//cdnjs.cloudflare.com/ajax/libs/'
 
 /**
@@ -25,7 +23,7 @@ export default class Html extends Component
 
 	render()
 	{
-		const {webpackStats, component, store} = this.props
+		const { webpackStats, component, store } = this.props
 		const title = 'Cinema'
 		const description = 'Workflow'
 		const html = 
@@ -52,12 +50,19 @@ export default class Html extends Component
 					<meta property="twitter:description" content={description}/>
 					*/}
 
-					{/*<link rel="shortcut icon" href="/favicon.ico" />*/}
+					{/* favicon */}
+					<link rel="shortcut icon" href={webpackStats.images_and_fonts.filter(_ =>
+					{
+						return _.original === './client/images/icon/32x32.png'
+					})
+					.first()
+					.compiled} />
 
+					{/* https://www.google.com/design/icons/ */}
 					<link href={cdn + 'font-awesome/4.3.0/css/font-awesome.min.css'}
 								media="screen, projection" rel="stylesheet" type="text/css" />
 
-					{webpackStats.css.files.map((css, i) =>
+					{webpackStats.css.map((css, i) =>
 						<link href={css} key={i} media="screen, projection"
 									rel="stylesheet" type="text/css"/>)}
 				</head>

@@ -5,14 +5,14 @@ import path from 'path'
 
 import utility from './libraries/utility'
 
-import language from './../client/scripts/libraries/language'
+import language from '../language'
 
 // Configuration
 
 import configuration from './configuration'
 global.configuration = configuration
 
-console.log("Configuration:", configuration)
+console.log('Configuration:', configuration)
 
 // Logging
 // log4js = require 'log4js'

@@ -3,8 +3,9 @@
 
 import React from 'react'
 import Router from 'react-router'
-import routes from './../client/routes'
 import { Provider } from 'react-redux'
+
+import routes from './routes'
 
 const get_preloaders = (component) =>
 {

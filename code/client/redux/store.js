@@ -3,8 +3,10 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import asynchronous_middleware from './asynchronous middleware'
 
 // "reducers" are actually "stores"
-import * as reducers from '../stores'
+import * as reducers from '../action response handlers'
 
+// transform each Json object to a switch function,
+// and combine everything into a single reducer
 const reducer = combineReducers(reducers)
 
 export default function(client, data) 

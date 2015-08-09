@@ -23,13 +23,9 @@ http://localhost:3000
 Запуск (production)
 =====================
 
-Построить проект webpack'ом
+Построить проект webpack'ом и запустить web сервер:
 
-npm run build-client
-
-Запустить web сервер
-
-npm run server
+npm run production
 
 Далее зайти на:
 
@@ -69,19 +65,29 @@ pm2 logs cinema
 Сделать
 ====================
 
-Убрать из api client понятие о сервере
+почему webpack два раза билдит
 
-Убрать из assets понятие о webpack'е
+попробовать сделать npm run production на чистом build (без stats)
+
+не запускать web сервер до того, как появится файл webpack-stats.json
+
+api вынести в отдельную папку api в code
+
+мб статику держать не по пути client, а прямо так
+
+https://www.google.com/design/icons/
+
+Убрать из api client понятие о сервере
 
 Отрефакторить весь код
 
-сделать favicon
-
 api client порефакторить
 
-Мб перетасовать какие-то папки, файлы
-
 Запускать web сервер в dev только после того, как webpack-dev-server запустился
+
+сделать showcase с drag n drop
+
+https://github.com/gaearon/react-dnd
 
 nodemon не watch'ит новые файлы
 
@@ -126,9 +132,9 @@ https://medium.com/@clayallsopp/your-first-graphql-server-3c766ab4f0a2
 
 
 Рендеринг React'а вместе с React-router'ом и Redux'ом взят отсюда
-(будет обновляться после 01.08.2015 - мержить к себе новые изменения):
+(будет обновляться после 08.08.2015 - мержить к себе новые изменения):
 
-https://github.com/erikras/react-redux-universal-hot-example/
+https://github.com/erikras/react-redux-universal-hot-example/commits/master
 
 Разделить проект на ядро и чисто кастомный код (actions, stores, pages, components)
 

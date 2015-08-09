@@ -4,10 +4,10 @@ import minimist from 'minimist'
 
 // strip_json_comments = require 'strip-json-comments'
 
-import _ from '../client/scripts/libraries/language'
+import _ from '../language'
 
-import configuration from '../configuration.defaults'
-import specific_configuration from '../configuration'
+import configuration from '../../configuration.defaults'
+import specific_configuration from '../../configuration'
 Object.extend(configuration, specific_configuration)
 export default configuration
 

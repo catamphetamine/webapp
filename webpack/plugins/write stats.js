@@ -37,70 +37,13 @@ export default function write_stats(stats, environment)
 	}
 
 	output.scripts = [get_assets('main', 'js')] // get_assets('common', 'js'), 
-	output.css.files = get_assets('main', 'css')
-
-	// this variable is only used when the enviroment is "development"
-	// let css_module_name_prefix
-	// if (_development_)
-	// {
-	// 	css_module_name_prefix = this.options
-	// 		.module
-	// 		.loaders
-	// 		.filter(loader => loader.test.toString() === this.options.regular_expressions.styles.toString())
-	// 		.first()
-	// 		.loaders
-	// 		.slice(1)
-	// 		.map(loader =>
-	// 		{
-	// 		    const [name, parameters] = loader.split('?')
-	// 		    return `./~/${name}-loader?${parameters}`
-	// 		})
-	// 		.join('!')
-	// 		// don't know why an exclamation mark in the end
-	// 		+ '!'
-	// }
-	//
-	// json.modules.filter(module =>
-	// {
-	// 	if (_production_)
-	// 	{
-	// 		// get all modules with .scss extension
-	// 		return this.options.regular_expressions.styles.test(module.name)
-	// 	}
-	// 	// omit the long css loader prefix when in developer mode
-	// 	return module.name.slice(0, css_module_name_prefix.length) === css_module_name_prefix
-	// })
-	// .forEach(module =>
-	// {
-	// 	const path_prefix = path.resolve(this.options.context, this.options.assets_source_folder)
-	//
-	// 	// strip prefixes from css module name
-	// 	let name = path.resolve(this.options.context, _production_ ?
-	// 		module.name.slice(path_prefix.length) :
-	// 		module.name.slice(css_module_name_prefix.length + path_prefix.length))
-	//
-	// 	// strip Windows drive path
-	// 	if (name)
-	// 	{
-	// 		// Resolve the e.g.: "C:\"  issue on windows
-	// 		const colon_index = name.indexOf(':')
-	// 		if (colon_index >= 0)
-	// 		{
-	// 			name = name.slice(colon_index + 1)
-	// 		}
-	// 	}
-	//
-	// 	// get exported css module name for this css module name
-	// 	const regexp = _production_ ? /module\.exports = ((.|\n)+);/ : /exports\.locals = ((.|\n)+);/
-	// 	var match = module.source.match(regexp)
-	// 	output.css.modules[name] = match ? JSON.parse(match[1]) : {}
-	// })
+	output.css = get_assets('main', 'css')
 
 	// Find compiled images in modules
 	// it will be used to map original filename to the compiled one
 	// for server side rendering
-	const images_regexp = this.options.regular_expressions.images
-	output.images = json.modules
+	const images_regexp = this.options.regular_expressions.images_and_fonts
+	output.images_and_fonts = json.modules
 		.filter(module => images_regexp.test(module.name))
 		.map(image =>
 		{

@@ -5,7 +5,7 @@ import Location from 'react-router/lib/Location'
 import Html         from './../client/html'
 import api_client   from './../client/api client'
 import router       from './../client/router'
-import create_store from './../client/flux/redux/create'
+import create_store from './../client/redux/store'
 
 import * as webpack from './webpack'
 import log from './log'

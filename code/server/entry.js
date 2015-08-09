@@ -8,7 +8,7 @@ var minimist = require('minimist')
 // var piping = require('piping')
 var path = require('path')
 
-const Root_folder = path.normalize(__dirname + '/..')
+const Root_folder = path.resolve(__dirname, '..', '..')
 global.Root_folder = Root_folder
 
 global._client_ = false

@@ -1,6 +1,6 @@
 {
-	"script": "server/main.js",
-	"watch": ["server/**/*.js", "client/**/*.js"],
+	"script": "code/server/entry.js",
+	"watch": ["code/server/**/*.js", "code/*.js"],
 	"watch_interval": 300,
 	"ignore": [
 		".git",

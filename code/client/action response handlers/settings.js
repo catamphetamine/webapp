@@ -3,14 +3,14 @@ const initial_state =
 	loaded: false
 }
 
-const switcher = 
+const handlers =
 {
 	'retrieving settings': (state, action) =>
 	{
 		const new_state = 
 		{
 			...state,
-			loading: true
+			loading : true
 		}
 
 		return new_state
@@ -21,9 +21,9 @@ const switcher =
 		const new_state = 
 		{
 			...state,
-			loading: false,
-			loaded: true,
-			data: action.result
+			loading : false,
+			loaded  : true,
+			data    : action.result
 		}
 
 		return new_state
@@ -34,26 +34,23 @@ const switcher =
 		const new_state = 
 		{
 			...state,
-			loading: false,
-			loaded: true,
-			error: action.error
+			loading : false,
+			loaded  : true,
+			error   : action.error
 		}
 
 		return new_state
 	}
 }
 
-export default function info(state = initial_state, action = {})
+export default function(state = initial_state, action = {})
 {
-	if (!switcher[action.type])
+	const handler = handlers[action.type]
+
+	if (!handler)
 	{
 		return state
 	}
 
-	return switcher[action.type](state, action)
-}
-
-export function is_loaded(global_state)
-{
-	return global_state.settings && global_state.settings.loaded
+	return handler(state, action)
 }

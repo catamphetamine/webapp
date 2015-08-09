@@ -1,17 +1,20 @@
 /* global _devtools_ */
+import 'babel/polyfill'
+
 import React          from 'react'
-import router         from './router'
 import BrowserHistory from 'react-router/lib/BrowserHistory'
 import Location       from 'react-router/lib/Location'
 
-import language       from './scripts/libraries/language.js'
+import language       from '../language'
 
-import create_store   from './flux/redux/create'
+import router         from './router'
+import create_store   from './redux/store'
 import api_client     from './api client'
 
 React.initializeTouchEvents(true)
 
-import styling from './styles/style.scss'
+import styling from '../../client/styles/style.scss'
+import webpage_icon from '../../client/images/icon/32x32.png'
 
 const history = new BrowserHistory()
 const client = new api_client()

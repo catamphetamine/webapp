@@ -81,7 +81,7 @@ websocket.serveClient(false)
 // хз, нужно ли сжатие в node.js: мб лучше поставить впереди nginx'ы, 
 // и ими сжимать, чтобы не нагружать процесс node.js
 web.use(compression())
-web.use(serve_static(path.join(__dirname, '..', 'build')))
+web.use(serve_static(path.join(Root_folder, 'build')))
 
 const proxy = http_proxy.createProxyServer
 ({
@@ -115,7 +115,7 @@ web.use(express_session({ name: `for_port_${configuration.webserver.http.port}`,
 // 	next()
 // })
 
-import { render } from './react'
+import { render } from './webpage rendering'
 
 // серверный ("изоморфный") рендеринг
 web.use((request, response) =>

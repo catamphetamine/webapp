@@ -1,4 +1,4 @@
-import language from './../client/scripts/libraries/language'
+import language from '../code/language'
 
 import webpack                    from 'webpack'
 import webpack_development_server from 'webpack-dev-server'
@@ -6,14 +6,15 @@ import base_configuration         from './webpack.config'
 import write_stats                from './plugins/write stats'
 import notify_stats               from './plugins/notify stats'
 
-import application_configuration  from './../server/configuration'
+import application_configuration  from '../code/server/configuration'
 const websocket_url = `${application_configuration.webserver.http.host}:${application_configuration.webserver.http.port}`
 
 // process.env.UV_THREADPOOL_SIZE = 100
 
 const configuration = Object.clone(base_configuration)
 
-configuration.devtool = 'eval-source-map'
+configuration.devtool = 'inline-source-map'
+// configuration.devtool = 'eval-source-map'
 // configuration.devtool = 'eval-cheap-module-source-map'
 
 configuration.plugins = configuration.plugins.concat
@@ -107,7 +108,15 @@ const development_server_options =
 	stats       : { colors: true }
 }
 
-const compiler = webpack(configuration)
+const compiler = webpack(configuration, function(error, stats)
+{
+	var json = stats.toJson()
+	if (json.errors.length)
+	{
+		console.error(json.errors[0])
+	}
+})
+
 const development_server = new webpack_development_server(compiler, development_server_options)
 
 development_server.listen(application_configuration.development.webpack.development_server.port, '0.0.0.0', (error) =>

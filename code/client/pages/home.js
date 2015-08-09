@@ -9,7 +9,7 @@ import styler from 'react-styling'
 // const husky = assets.require_image('./images/kitten.jpg')
 
 import { require_server_image } from '../../server/webpack'
-const husky = _client_ ? require('../images/husky.jpg') : require_server_image('../images/husky.jpg')
+const husky = _client_ ? require('../../../client/images/husky.jpg') : require_server_image('../../../client/images/husky.jpg')
 
 class Page extends Component
 {
@@ -18,7 +18,7 @@ class Page extends Component
 		const markup = 
 		(
 			<section>
-				<h1>Home page</h1>
+				<h1 style={style.header}>Home page</h1>
 				<div style={style.image_container}><img src={husky}/></div>
 			</section>
 		)
@@ -29,7 +29,10 @@ class Page extends Component
 
 const style = styler
 `
-	image_container:
+	header
+		text-align: center
+
+	image_container
 		text-align: center
 `
 

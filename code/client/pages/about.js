@@ -3,7 +3,7 @@
 import React, { Component, PropTypes } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import * as actions from '../flux/actions/actions'
+import * as actions from '../actions/actions'
 
 class About extends Component
 {
@@ -73,7 +73,7 @@ class About extends Component
 	}
 }
 
-import {is_loaded as are_settings_loaded} from '../flux/stores/settings'
+const is_loaded = (global_state) => global_state.settings && global_state.settings.loaded
 
 @connect(store =>
 ({
