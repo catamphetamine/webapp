@@ -1,14 +1,9 @@
 var path                     = require('path')
 var webpack                  = require('webpack')
-var webpack_isomorphic_tools = require('webpack-isomorphic-tools')
 
 var root_folder = path.resolve(__dirname, '..')
 
 var assets_source_folder = path.resolve(root_folder, 'client')
-
-// where to create the webpack stats file
-// (if you ever change this variable also change it in server/webpack.js)
-var webpack_stats_path = path.resolve(root_folder, 'build', 'webpack-stats.json')
 
 var regular_expressions =
 {
@@ -70,6 +65,14 @@ var configuration =
 					'autoprefixer-loader?browsers=last 2 version',
 					'sass-loader?outputStyle=expanded&sourceMap=true&sourceMapContents=true'
 				]
+			},
+			{
+				test: /\.(woff|woff2|eot|ttf)$/,
+				include: assets_source_folder,
+				loaders: 
+				[
+					'url-loader?limit=10240' // Any png-image or woff-font below or equal to 10K will be converted to inline base64 instead
+				]
 			}
 		]
 	},
@@ -104,30 +107,6 @@ module.exports = configuration
 
 // will be used in development and production configurations
 configuration.regular_expressions = regular_expressions
-
-// where to create the webpack stats file
-configuration.webpack_stats_path = webpack_stats_path
-
-configuration.assets = 
-{
-	images_and_fonts:
-	{
-		extensions:
-		[
-			'png',
-			'jpg',
-			'ico',
-			'woff',
-			'woff2',
-			'eot',
-			'ttf',
-			'svg'
-		],
-		path: assets_source_folder,
-		loaders: ['url-loader?limit=10240'], // Any png-image or woff-font below or equal to 10K will be converted to inline base64 instead
-		path_parser: webpack_isomorphic_tools.url_loader_path_parser
-	}
-}
 
 // var third_party = 
 // [

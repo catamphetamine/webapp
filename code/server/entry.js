@@ -37,7 +37,7 @@ global._development_ = command_line_arguments.development
 // const picture = _client_ ? require('./image.png') : webpack_isomorphic_tools.require('./image.png')
 var webpack_configuration = require('../../webpack/webpack.config.js')
 var Webpack_isomorphic_tools = require('webpack-isomorphic-tools')
-global.webpack_isomorphic_tools = new Webpack_isomorphic_tools(webpack_configuration, { assets: webpack_configuration.assets })
+global.webpack_isomorphic_tools = new Webpack_isomorphic_tools(webpack_configuration, require('../../webpack/isomorphic.js'))
 global.webpack_isomorphic_tools.register()
 
 require(path.resolve(__dirname, 'main'))

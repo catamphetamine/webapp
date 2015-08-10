@@ -53,11 +53,9 @@ configuration.entry.main =
 // network path for static files: fetch all statics from webpack development server
 configuration.output.publicPath = `http://${application_configuration.development.webpack.development_server.host}:${application_configuration.development.webpack.development_server.port}${configuration.output.publicPath}`
 
-new webpack_isomorphic_tools(configuration,
-{
-	development : true,
-	assets      : configuration.assets
-})
+const isomorphic_configuration = require('./isomorphic.js')
+isomorphic_configuration.development = true
+new webpack_isomorphic_tools(configuration, isomorphic_configuration).populate(configuration)
 
 // add react-hot-loader to react components' loaders
 configuration.module.loaders.filter(loader =>
