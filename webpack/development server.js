@@ -2,9 +2,8 @@ import language from '../code/language'
 
 import webpack                    from 'webpack'
 import webpack_development_server from 'webpack-dev-server'
+import webpack_isomorphic_tools   from 'webpack-isomorphic-tools'
 import base_configuration         from './webpack.config'
-import write_stats                from './plugins/write stats'
-import notify_stats               from './plugins/notify stats'
 
 import application_configuration  from '../code/server/configuration'
 const websocket_url = `${application_configuration.webserver.http.host}:${application_configuration.webserver.http.port}`
@@ -40,23 +39,7 @@ configuration.plugins = configuration.plugins.concat
 	// that tells the reloader to not reload if there is a syntax error in your code. 
 	// The error is simply printed in the console, and the component will reload 
 	// when you fix the error.
-	new webpack.NoErrorsPlugin(),
-
-	// outputs stats info to the console
-	function()
-	{
-		this.plugin('done', notify_stats)
-	},
-
-	// write webpack compiled files' names to a file
-	// (this will be used later to fetch these files from server)
-	function()
-	{
-		this.plugin('done', function(stats)
-		{
-			write_stats.call(this, stats, 'development')
-		})
-	}
+	new webpack.NoErrorsPlugin()
 )
 
 // enable webpack development server
@@ -70,10 +53,16 @@ configuration.entry.main =
 // network path for static files: fetch all statics from webpack development server
 configuration.output.publicPath = `http://${application_configuration.development.webpack.development_server.host}:${application_configuration.development.webpack.development_server.port}${configuration.output.publicPath}`
 
+new webpack_isomorphic_tools(configuration,
+{
+	development : true,
+	assets      : configuration.assets
+})
+
 // add react-hot-loader to react components' loaders
 configuration.module.loaders.filter(loader =>
 {
-	return loader.test.toString() === base_configuration.regular_expressions.javascript.toString()
+	return loader.test.toString() === configuration.regular_expressions.javascript.toString()
 })
 .first()
 .loaders.unshift('react-hot')

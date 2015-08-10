@@ -1,6 +1,6 @@
 {
 	"script": "code/server/entry.js",
-	"watch": ["code/server/**/*.js", "code/*.js"],
+	"watch": ["code/**/*.js"],
 	"watch_interval": 300,
 	"ignore": [
 		".git",

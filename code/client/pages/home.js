@@ -5,11 +5,8 @@ import { connect } from 'react-redux'
 
 import styler from 'react-styling'
 
-// import assets from '../assets'
-// const husky = assets.require_image('./images/kitten.jpg')
-
-import { require_server_image } from '../../server/webpack'
-const husky = _client_ ? require('../../../client/images/husky.jpg') : require_server_image('../../../client/images/husky.jpg')
+import husky from '../../../client/images/husky.jpg'
+// const husky = _client_ ? require('../../../client/images/husky.jpg') : webpack_isomorphic_tools.require('./client/images/husky.jpg')
 
 class Page extends Component
 {

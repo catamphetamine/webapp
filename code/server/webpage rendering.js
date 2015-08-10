@@ -7,12 +7,18 @@ import api_client   from './../client/api client'
 import router       from './../client/router'
 import create_store from './../client/redux/store'
 
-import * as webpack from './webpack'
 import log from './log'
 
-// серверный ("изоморфный") рендеринг
+import webpack_configuration from '../../webpack/webpack.config.js'
+
+// isomorphic (universal) rendering (express middleware)
 export function render(request, response)
 {
+	if (_development_)
+	{
+		webpack_isomorphic_tools.refresh()
+	}
+
 	const client = new api_client(request)
 	const store = create_store(client)
 	const location = new Location(request.path, request.query)
@@ -20,11 +26,11 @@ export function render(request, response)
 	if (_disable_server_side_rendering_)
 	{
 		return response.send('<!doctype html>\n' +
-			React.renderToString(<Html webpackStats={webpack.stats()} component={<div/>} store={store}/>))
+			React.renderToString(<Html assets={webpack_isomorphic_tools.assets()} component={<div/>} store={store}/>))
 	}
 
 	router(location, undefined, store)
-	.then(({component, transition, redirect}) =>
+	.then(({ component, transition, redirect }) =>
 	{
 		try
 		{
@@ -34,7 +40,7 @@ export function render(request, response)
 			}
 
 			response.send('<!doctype html>\n' +
-				React.renderToString(<Html webpackStats={webpack.stats()} component={component} store={store}/>))
+				React.renderToString(<Html assets={webpack_isomorphic_tools.assets()} component={component} store={store}/>))
 		}
 		catch (error)
 		{

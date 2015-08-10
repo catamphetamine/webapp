@@ -1,22 +1,20 @@
 // var webpack = require('webpack')
-var path    = require('path')
+var path                     = require('path')
+var webpack_isomorphic_tools = require('webpack-isomorphic-tools')
 
 var root_folder = path.resolve(__dirname, '..')
-
-var babel = 'babel-loader?stage=0&optional=runtime&plugins=typecheck'
-
-var regular_expressions = 
-{
-	javascript       : /\.js$/,
-	styles           : /\.scss$/,
-	images_and_fonts : /\.(png|jpg|ico|woff|woff2|eot|ttf|svg)$/
-}
 
 var assets_source_folder = path.resolve(root_folder, 'client')
 
 // where to create the webpack stats file
 // (if you ever change this variable also change it in server/webpack.js)
 var webpack_stats_path = path.resolve(root_folder, 'build', 'webpack-stats.json')
+
+var regular_expressions =
+{
+	javascript : /\.js$/,
+	styles     : /\.scss$/
+}
 
 var configuration =
 {
@@ -53,37 +51,25 @@ var configuration =
 				test: /\.json$/,
 				loader: 'json-loader'
 			},
-			{ 
+			{
 				test: regular_expressions.javascript,
 				include:
 				[
 					path.resolve(root_folder, 'code', 'client'),
-					path.resolve(root_folder, 'code', 'language.js'),
-					path.resolve(root_folder, 'code', 'server', 'webpack.js')
+					path.resolve(root_folder, 'code', 'language.js')
 				],
-				loaders: [babel]
+				loaders: ['babel-loader?stage=0&optional=runtime&plugins=typecheck']
 			},
-			{ 
+			{
 				test: regular_expressions.styles,
-				include:
-				[
-					path.resolve(assets_source_folder, 'styles')
-				],
+				include: assets_source_folder,
 				loaders: 
 				[
 					'style-loader',
-					'css-loader?modules&importLoaders=2&sourceMap&localIdentName=[local]___[hash:base64:5]',
+					'css-loader?importLoaders=2&sourceMap',
 					'autoprefixer-loader?browsers=last 2 version',
 					'sass-loader?outputStyle=expanded&sourceMap=true&sourceMapContents=true'
 				]
-			},
-			{
-				test: regular_expressions.images_and_fonts,
-				include:
-				[
-					path.resolve(assets_source_folder)
-				],
-				loaders: ['url-loader?limit=10240'] // Any png-image or woff-font below or equal to 10K will be converted to inline base64 instead
 			}
 		]
 	},
@@ -99,7 +85,7 @@ var configuration =
 		// // An array of directory names to be resolved to the current directory 
 		// // as well as its ancestors, and searched for modules. 
 		// // This functions similarly to how node finds “node_modules” directories. 
-		// modulesDirectories: ['server', 'client', 'node_modules']
+		// modulesDirectories: ['server', 'client', 'node_modules', 'web_modules']
 	},
 
 	plugins:
@@ -116,14 +102,32 @@ var configuration =
 
 module.exports = configuration
 
-// used in derived configs
+// will be used in development and production configurations
 configuration.regular_expressions = regular_expressions
 
 // where to create the webpack stats file
 configuration.webpack_stats_path = webpack_stats_path
 
-// // will be omitted from assets paths' in write_stats, for example
-// configuration.assets_source_folder = assets_source_folder
+configuration.assets = 
+{
+	images_and_fonts:
+	{
+		extensions:
+		[
+			'png',
+			'jpg',
+			'ico',
+			'woff',
+			'woff2',
+			'eot',
+			'ttf',
+			'svg'
+		],
+		path: assets_source_folder,
+		loaders: ['url-loader?limit=10240'], // Any png-image or woff-font below or equal to 10K will be converted to inline base64 instead
+		path_parser: webpack_isomorphic_tools.url_loader_path_parser
+	}
+}
 
 // var third_party = 
 // [

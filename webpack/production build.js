@@ -3,10 +3,11 @@ import path     from 'path'
 
 import webpack             from 'webpack'
 import base_configuration  from './webpack.config'
-import write_stats         from './plugins/write stats'
 import clean_plugin        from 'clean-webpack-plugin'
 import extract_text_plugin from 'extract-text-webpack-plugin'
 import strip               from 'strip-loader'
+
+import webpack_isomorphic_tools from 'webpack-isomorphic-tools'
 
 import application_configuration from '../code/server/configuration'
 const websocket_url = `${application_configuration.webserver.http.host}:${application_configuration.webserver.http.port}`
@@ -57,26 +58,22 @@ configuration.plugins = configuration.plugins.concat
 		{
 			warnings: false
 		}
-	}),
-
-	// write webpack compiled files' names to a file
-	// (this will be used later to fetch these files from server)
-	function()
-	{
-		this.plugin('done', function(stats)
-		{
-			write_stats.call(this, stats, 'production')
-		})
-	}
+	})
 )
 
 // don't know why they write it like this
 configuration.output.filename = '[name]-[chunkhash].js'
 
+new webpack_isomorphic_tools(configuration,
+{
+	production : true,
+	assets     : configuration.assets
+})
+
 // add strip-loader to javascript loaders
 configuration.module.loaders.filter(loader =>
 {
-	return loader.test.toString() === base_configuration.regular_expressions.javascript.toString()
+	return loader.test.toString() === configuration.regular_expressions.javascript.toString()
 })
 .first()
 .loaders.unshift(strip.loader('debug'))
@@ -86,29 +83,9 @@ configuration.module.loaders.filter(loader =>
 // find the styles loader
 const scss_loader = configuration.module.loaders.filter(loader =>
 {
-	return loader.test.toString() === base_configuration.regular_expressions.styles.toString()
+	return loader.test.toString() === configuration.regular_expressions.styles.toString()
 })
 .first()
-
-// the last loader
-const style = scss_loader.loaders.shift()
-
-// remove some of css loaders' parameters
-const rest  = scss_loader.loaders.map(loader =>
-{
-	const [name, parameters] = loader.split('?')
-	if (name === 'css')
-	{
-		return name + '?' + parameters.split('&').filter(parameter =>
-		{
-			return !parameter.starts_with('localIdentName=')
-		})
-		.join('&')
-	}
-
-	return loader
-})
-.join('!')
 
 // https://github.com/webpack/extract-text-webpack-plugin
 //
@@ -116,8 +93,9 @@ const rest  = scss_loader.loaders.map(loader =>
 // So your styles are no longer inlined into the javascript, but separate 
 // in a css bundle file (styles.css). If your total stylesheet volume is big, 
 // it will be faster because the stylesheet bundle is loaded in parallel to the javascript bundle.
+// (but it also disables hot module reload)
+scss_loader.loader = extract_text_plugin.extract(scss_loader.loaders.shift(), scss_loader.loaders.join('!'))
 delete scss_loader.loaders
-scss_loader.loader = extract_text_plugin.extract(style, rest)
 
 // done: set extract text plugin as a Css loader
 

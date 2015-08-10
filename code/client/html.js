@@ -16,14 +16,14 @@ export default class Html extends Component
 {
 	static propTypes =
 	{
-		webpackStats: PropTypes.object,
-		component: PropTypes.object,
-		store: PropTypes.object
+		assets    : PropTypes.object,
+		component : PropTypes.object,
+		store     : PropTypes.object
 	}
 
 	render()
 	{
-		const { webpackStats, component, store } = this.props
+		const { assets, component, store } = this.props
 		const title = 'Cinema'
 		const description = 'Workflow'
 		const html = 
@@ -50,36 +50,30 @@ export default class Html extends Component
 					<meta property="twitter:description" content={description}/>
 					*/}
 
-					{/* favicon */}
-					<link rel="shortcut icon" href={webpackStats.images_and_fonts.filter(_ =>
-					{
-						return _.original === './client/images/icon/32x32.png'
-					})
-					.first()
-					.compiled} />
+					{/* use this instead: https://www.google.com/design/icons/ */}
+					{/*<link href={cdn + 'font-awesome/4.3.0/css/font-awesome.min.css'}
+								media="screen, projection" rel="stylesheet" type="text/css" />*/}
 
-					{/* https://www.google.com/design/icons/ */}
-					<link href={cdn + 'font-awesome/4.3.0/css/font-awesome.min.css'}
-								media="screen, projection" rel="stylesheet" type="text/css" />
-
-					{webpackStats.css.map((css, i) =>
-						<link href={css} key={i} media="screen, projection"
-									rel="stylesheet" type="text/css"/>)}
+					{/* styles */}
+					{Object.keys(assets.styles).map((style, i) =>
+						<link href={assets.styles[style]} key={i} media="screen, projection"
+							rel="stylesheet" type="text/css"/>
+					)}
 				</head>
 
 				<body>
-					{/* rendered React application */}
+					{/* rendered React page */}
 					<div id="content" dangerouslySetInnerHTML={{__html: React.renderToString(component)}}/>
 
 					{/* Flux store data will be reloaded into the store on the client */}
 					<script dangerouslySetInnerHTML={{__html: `window._flux_store_data=${serialize(store.getState())};`}} />
 
-					{/*<script src={webpackStats.script[0]}/>*/}
+					{/*<pre>{JSON.stringify(assets, null, 2)}</pre>*/}
 
-					{/*<pre>{JSON.stringify(webpackStats, null, 2)}</pre>*/}
-
-					{webpackStats.scripts.map((script) =>
-						<script src={script.first()}/>)}
+					{/* javascripts */}
+					{Object.keys(assets.javascript).map((script, i) =>
+						<script src={assets.javascript[script]} key={i}/>
+					)}
 				</body>
 			</html>
 		)
