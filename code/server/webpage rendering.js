@@ -27,28 +27,24 @@ export function render(request, response)
 		return response.send('<!doctype html>\n' +
 			React.renderToString(<Html assets={webpack_isomorphic_tools.assets()} component={<div/>} store={store}/>))
 	}
-
+	
 	router(location, undefined, store)
 	.then(({ component, transition, redirect }) =>
 	{
-		try
+		if (redirect)
 		{
-			if (redirect)
-			{
-				return response.redirect(transition.redirectInfo.pathname)
-			}
+			return response.redirect(transition.redirectInfo.pathname)
+		}
 
-			response.send('<!doctype html>\n' +
-				React.renderToString(<Html assets={webpack_isomorphic_tools.assets()} component={component} store={store}/>))
-		}
-		catch (error)
-		{
-			log.error(error)
-			response.status(500).send({error: error})
-		}
-	},
-	(error) =>
+		response.send('<!doctype html>\n' +
+			React.renderToString(<Html assets={webpack_isomorphic_tools.assets()} component={component} store={store}/>))
+	})
+	.catch((error) =>
 	{
+		if (error.redirect) {
+			response.redirect(error.redirect)
+			return
+		}
 		log.error(error)
 		response.status(500).send({error: error})
 	})
