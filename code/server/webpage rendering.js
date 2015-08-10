@@ -11,7 +11,8 @@ import log from './log'
 
 import webpack_configuration from '../../webpack/webpack.config.js'
 
-// isomorphic (universal) rendering (express middleware)
+// isomorphic (universal) rendering (express middleware).
+// will be used in express_application.use(...)
 export function render(request, response)
 {
 	if (_development_)

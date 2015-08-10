@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import serialize from 'serialize-javascript'
 
-const cdn = '//cdnjs.cloudflare.com/ajax/libs/'
+// const cdn = '//cdnjs.cloudflare.com/ajax/libs/'
 
 /**
  * Wrapper component containing HTML metadata and boilerplate tags.
@@ -24,8 +24,10 @@ export default class Html extends Component
 	render()
 	{
 		const { assets, component, store } = this.props
+		
 		const title = 'Cinema'
 		const description = 'Workflow'
+
 		const html = 
 		(
 			<html lang="en-us">
@@ -40,21 +42,11 @@ export default class Html extends Component
 					<meta property="og:description" content={description}/>
 					<meta name="twitter:card" content="summary"/>
 
-					{/*
-					<meta property="twitter:site" content="@erikras"/>
-					<meta property="twitter:creator" content="@erikras"/>
-					<meta property="twitter:image" content={image}/>
-					<meta property="twitter:image:width" content="200"/>
-					<meta property="twitter:image:height" content="200"/>
-					<meta property="twitter:title" content={title}/>
-					<meta property="twitter:description" content={description}/>
-					*/}
-
-					{/* use this instead: https://www.google.com/design/icons/ */}
+					{/* use this icon font instead: https://www.google.com/design/icons/ */}
 					{/*<link href={cdn + 'font-awesome/4.3.0/css/font-awesome.min.css'}
 								media="screen, projection" rel="stylesheet" type="text/css" />*/}
 
-					{/* styles */}
+					{/* styles (will be present only in production with webpack extract text plugin) */}
 					{Object.keys(assets.styles).map((style, i) =>
 						<link href={assets.styles[style]} key={i} media="screen, projection"
 							rel="stylesheet" type="text/css"/>
@@ -68,12 +60,16 @@ export default class Html extends Component
 					{/* Flux store data will be reloaded into the store on the client */}
 					<script dangerouslySetInnerHTML={{__html: `window._flux_store_data=${serialize(store.getState())};`}} />
 
+					{/* You can uncomment this for debugging your assets */}
 					{/*<pre>{JSON.stringify(assets, null, 2)}</pre>*/}
 
 					{/* javascripts */}
 
+					{/* a "common.js" chunk (see webpack extract commons plugin) */}
 					<script src={assets.javascript.common}/>
 					
+					{/* current application entry javascript */}
+					{/* (i guess there's always only one of them, e.g. "main.js") */}
 					{Object.keys(assets.javascript).filter(script => script !== 'common')
 					.map((script, i) =>
 						<script src={assets.javascript[script]} key={i}/>
