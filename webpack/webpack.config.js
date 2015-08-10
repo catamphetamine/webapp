@@ -1,5 +1,5 @@
-// var webpack = require('webpack')
 var path                     = require('path')
+var webpack                  = require('webpack')
 var webpack_isomorphic_tools = require('webpack-isomorphic-tools')
 
 var root_folder = path.resolve(__dirname, '..')
@@ -90,8 +90,8 @@ var configuration =
 
 	plugins:
 	[
-		// // extracts common javascript into a separate file
-		// new webpack.optimize.CommonsChunkPlugin('common', 'common.[hash].js'),
+		// extracts common javascript into a separate file
+		new webpack.optimize.CommonsChunkPlugin('common', 'common.[hash].js'),
 
 		// // Assign the module and chunk ids by occurrence count. 
 		// // Ids that are used often get lower (shorter) ids. 

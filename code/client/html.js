@@ -71,7 +71,11 @@ export default class Html extends Component
 					{/*<pre>{JSON.stringify(assets, null, 2)}</pre>*/}
 
 					{/* javascripts */}
-					{Object.keys(assets.javascript).map((script, i) =>
+
+					<script src={assets.javascript.common}/>
+					
+					{Object.keys(assets.javascript).filter(script => script !== 'common')
+					.map((script, i) =>
 						<script src={assets.javascript[script]} key={i}/>
 					)}
 				</body>
