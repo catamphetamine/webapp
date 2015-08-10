@@ -94,7 +94,7 @@
     "dev": "concurrent --kill-others \"npm run dev-client\" \"npm run dev-server\"",
     "production": "npm-run-all build-client production-server",
     "babel-node": "babel-node --stage 0",
-    "postinstall": "bower install",
+    "_postinstall": "bower install",
     "_lint": "eslint -c .eslintrc src",
     "_dev-webpack": "webpack-dev-server --devtool eval --progress --colors --hot --content-base build",
     "_deploy": "NODE_ENV=production webpack -p --config webpack.config.js",
