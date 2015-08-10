@@ -5,13 +5,12 @@ import { connect } from 'react-redux'
 
 import styler from 'react-styling'
 
-import husky from '../../../client/images/husky.jpg'
-// const husky = _client_ ? require('../../../client/images/husky.jpg') : webpack_isomorphic_tools.require('./client/images/husky.jpg')
-
 class Page extends Component
 {
 	render()
 	{
+		const husky = require('../../../client/images/husky.jpg')
+
 		const markup = 
 		(
 			<section>
