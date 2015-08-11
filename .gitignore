@@ -30,3 +30,7 @@ gh-pages/
 
 # test coverage folder
 coverage
+
+# webpack-isomorphic-tools
+/webpack-stats.debug.json
+/webpack-assets.json

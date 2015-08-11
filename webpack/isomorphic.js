@@ -2,6 +2,8 @@ var webpack_isomorphic_tools = require('webpack-isomorphic-tools')
 
 module.exports = 
 {
+	debug: true,
+
 	assets:
 	[{	
 		extensions:
