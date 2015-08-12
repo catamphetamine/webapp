@@ -60,9 +60,6 @@ export default class Html extends Component
 					{/* Flux store data will be reloaded into the store on the client */}
 					<script dangerouslySetInnerHTML={{__html: `window._flux_store_data=${serialize(store.getState())};`}} />
 
-					{/* You can uncomment this for debugging your assets */}
-					{/*<pre>{JSON.stringify(assets, null, 2)}</pre>*/}
-
 					{/* javascripts */}
 
 					{/* a "common.js" chunk (see webpack extract commons plugin) */}
