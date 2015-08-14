@@ -64,7 +64,7 @@ configuration.plugins = configuration.plugins.concat
 // don't know why they write it like this
 configuration.output.filename = '[name]-[chunkhash].js'
 
-new webpack_isomorphic_tools(configuration, require('./isomorphic.js')).populate(configuration)
+new webpack_isomorphic_tools(require('./isomorphic.js')).populate(configuration)
 
 // add strip-loader to javascript loaders
 configuration.module.loaders.filter(loader =>
