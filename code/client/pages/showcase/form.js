@@ -3,6 +3,12 @@
 import React, { Component } from 'react'
 import styler from 'react-styling'
 
+import { connect } from 'react-redux'
+
+@connect
+(
+	store => ({ })
+)
 export default class Form extends Component
 {
 	state = 

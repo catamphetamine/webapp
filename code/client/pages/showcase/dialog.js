@@ -4,6 +4,8 @@ import React, { Component } from 'react'
 import Boron from 'boron'
 import styler from 'react-styling'
 
+import { connect } from 'react-redux'
+
 const style = styler
 `
 	button
@@ -21,6 +23,10 @@ const style = styler
 		text-align : center
 `
 
+@connect
+(
+	store => ({ })
+)
 export default class Dialog extends Component
 {
 	render()

@@ -6,22 +6,27 @@ import React, { Component, PropTypes } from 'react'
 import { Link } from 'react-router'
 import styler from 'react-styling'
 
+import { bindActionCreators as bind_action_creators } from 'redux'
+import { logout } from '../actions/authentication'
+
 import { create_transition_hook } from '../router'
 
 import { connect } from 'react-redux'
 
-// import styling from '../../../client/styles/style.scss'
-
 // import {isLoaded as isAuthLoaded} from '../flux/stores/auth'
-// import {load as loadAuth} from '../flux/actions/authActions'
 
-class Layout extends Component
+@connect
+(
+	store => ({ }), // user: store.auth.user })
+	dispatch => bind_action_creators({ logout }, dispatch)
+)
+export default class Layout extends Component
 {
-	// static propTypes =
-	// {
-	// 	user: PropTypes.object,
-	// 	logout: PropTypes.func
-	// }
+	static propTypes =
+	{
+		user: PropTypes.object,
+		logout: PropTypes.func.isRequired
+	}
 
 	static contextTypes =
 	{
@@ -42,15 +47,36 @@ class Layout extends Component
 		router.remove_transition_hook(this.transition_hook)
 	}
 
-	// handleLogout(event)
-	// {
-	// 	event.preventDefault()
-	// 	this.props.logout()
-	// }
+	componentWillReceiveProps(nextProps)
+	{
+		if (!this.props.user && nextProps.user)
+		{
+			// login
+			this.context.router.transitionTo('/login_success')
+		} 
+		else if (this.props.user && !nextProps.user)
+		{
+			// logout
+			this.context.router.transitionTo('/')
+		}
+	}
+
+	handle_logout(event)
+	{
+		event.preventDefault()
+		this.props.logout()
+	}
 
 	render()
 	{
-		// const {user} = this.props
+		const { user } = this.props
+
+		// <ul className="nav navbar-nav">
+		// 	{!user && <li><Link to="/login">Login</Link></li>}
+		// 	{user && <li><a href="/logout" onClick={::this.handle_logout}>Logout</a></li>}
+		// </ul>
+
+		// {user && <p>Logged in as <strong>{user.name}</strong>.</p>}
 
 		const markup = 
 		(
@@ -99,38 +125,3 @@ const style = styler
 					color            : #ffffff
 					background-color : #000000
 `
-
-@connect(store => ({
-	// user: store.auth.user
-}))
-export default class Reduxed
-{
-	static propTypes =
-	{
-		// user: PropTypes.object,
-		dispatch: PropTypes.func.isRequired
-	}
-
-	// static preload(store)
-	// {
-	// 	const promises = []
-	// 	if (!isAuthLoaded(store.getState())){
-	// 		promises.push(store.dispatch(loadAuth()))
-	// 	}
-	// 	return Promise.all(promises)
-	// }
-
-	render()
-	{
-		const { user, dispatch } = this.props  // user={user}
-		// {...bindActionCreators(authActions, dispatch)}
-		const markup = 
-		(
-			<Layout>
-				{this.props.children}
-			</Layout>
-		)
-
-		return markup
-	}
-}

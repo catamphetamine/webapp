@@ -6,7 +6,11 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import styler from 'react-styling'
 
-class Showcase extends Component
+@connect
+(
+	store => ({ })
+)
+export default class Showcase extends Component
 {
 	render()
 	{
@@ -59,32 +63,3 @@ const style = styler
 					color            : #ffffff
 					background-color : #000000
 `
-
-@connect(store =>
-({
-	// settings: store.settings.data
-}))
-export default class Reduxed
-{
-	static propTypes =
-	{
-		// settings: PropTypes.object,
-		dispatch: PropTypes.func.isRequired
-	}
-
-	// static preload(store)
-	// {
-	// 	const promises = []
-	// 	// if (!are_settings_loaded(store.getState()))
-	// 	// {
-	// 		promises.push(store.dispatch(actions.get_settings()))
-	// 	// }
-	// 	return Promise.all(promises)
-	// }
-
-	render()
-	{
-		const { dispatch } = this.props
-		return <Showcase {...this.props}/>
-	}
-}

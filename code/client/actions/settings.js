@@ -1,4 +1,4 @@
-export function get_settings()
+export function get()
 {
 	const action =
 	{

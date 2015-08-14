@@ -5,7 +5,6 @@
 // })
 
 var minimist = require('minimist')
-// var piping = require('piping')
 var path = require('path')
 
 const Root_folder = path.resolve(__dirname, '..', '..')
@@ -19,18 +18,6 @@ var command_line_arguments = minimist(process.argv.slice(2))
 
 global._production_ = command_line_arguments.production
 global._development_ = command_line_arguments.development
-
-// if (global._development_)
-// {
-// 	if (!piping
-// 	({
-// 		hook: true,
-// 		ignore: /(\/\.|~$|\.json|\.scss$)/i
-// 	}))
-// 	{
-// 		return
-// 	}
-// }
 
 // alternatively, if you you can skip using this and insted use this: 
 // (and webpack DefinePlugin for setting _client_ environment variable)

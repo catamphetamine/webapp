@@ -5,11 +5,13 @@ import React from 'react'
 import Router from 'react-router'
 import { Provider } from 'react-redux'
 
-import routes from './routes'
+import create_routes from './routes'
 
-const get_preloaders = (component) =>
+const get_preloader = (component = {}) =>
 {
-	return component.preload || (component.DecoratedComponent && component.DecoratedComponent.preload)
+	return component.WrappedComponent ? 
+		get_preloader(component.WrappedComponent) :
+		component.preload
 }
 
 export function create_transition_hook(store)
@@ -17,17 +19,23 @@ export function create_transition_hook(store)
 	return (next_state, transition, callback) =>
 	{
 		Promise.all(next_state.branch
+			// pull out individual route components
 			.map(route => route.component)
-			.map(get_preloaders)
-			.filter(preloader => preloader)
+			// only look at ones with a static fetchData()
+			.map(get_preloader)
+			// pull out fetch data methods
+			.filter(preloader => exists(preloader))
+			// call fetch data methods and save promises
 			.map(preload => preload(store, next_state.params)))
-			// can't just pass callback to then() because callback assumes first param is error
-			.then(() => callback(), (error) => callback(error))
+			// finished
+			.then(() => callback(), error => callback(error))
 	}
 }
 
 export default function universal_router(location, history, store)
 {
+	const routes = create_routes(store)
+
 	return new Promise((resolve, reject) =>
 	{
 		Router.run(routes, location, [create_transition_hook(store)], (error, initialState, transition) =>

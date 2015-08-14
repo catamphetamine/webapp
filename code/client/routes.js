@@ -26,15 +26,24 @@ import { Router, Route, DefaultRoute } from 'react-router'
 
 // <Route path="/dialog" component={Dialog} />
 
-export default 
-(
-	<Route component={Layout}>
-		<Route path="/" component={Home} />
-		<Route path="/editor" component={Editor} />
-		<Route path="/about" component={About} />
-		<Route path="/showcase" component={Showcase}>
-			<Route path="/form" component={Form} />
+export default function(store)
+{
+	const routes =
+	(
+		<Route component={Layout}>
+			<Route path="/" component={Home} />
+			<Route path="/editor" component={Editor} />
+			<Route path="/about" component={About} />
+			<Route path="/showcase" component={Showcase}>
+				<Route path="/form" component={Form} />
+			</Route>
+			<Route path="*" component={Not_found}/>
 		</Route>
-		<Route path="*" component={Not_found}/>
-	</Route>
-)
+	)
+
+			// <Route component={Require_login} onEnter={Require_login.on_enter(store)}>
+			// 	<Route path="/login_success" component={Login_success}/>
+			// </Route>
+
+	return routes
+}

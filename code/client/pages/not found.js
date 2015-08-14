@@ -1,8 +1,13 @@
 // require('./about.less' )
 
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
-export default class About extends Component
+@connect
+(
+	store => ({ })
+)
+export default class Not_found extends Component
 {
 	render()
 	{
