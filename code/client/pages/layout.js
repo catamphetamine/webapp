@@ -9,7 +9,7 @@ import styler from 'react-styling'
 import { bindActionCreators as bind_action_creators } from 'redux'
 import { logout } from '../actions/authentication'
 
-import { create_transition_hook } from '../router'
+import { create_transition_hook } from '../../react-isomorphic-render/router'
 
 import { connect } from 'react-redux'
 

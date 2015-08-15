@@ -5,8 +5,6 @@ import React from 'react'
 import Router from 'react-router'
 import { Provider } from 'react-redux'
 
-import create_routes from './routes'
-
 const get_preloader = (component = {}) =>
 {
 	return component.WrappedComponent ? 
@@ -14,6 +12,8 @@ const get_preloader = (component = {}) =>
 		component.preload
 }
 
+// this method has a bug: .preload() is called for each matching route in the path
+// (e.g. "Application, About", not "About")
 export function create_transition_hook(store)
 {
 	return (next_state, transition, callback) =>
@@ -32,9 +32,24 @@ export function create_transition_hook(store)
 	}
 }
 
-export default function universal_router(location, history, store)
+export default function router({ location, history, store, routes })
 {
-	const routes = create_routes(store)
+	if (typeof routes === 'function')
+	{
+		routes = routes(store)
+	}
+
+	// if (!(routes instanceof ...))
+	// {
+	// 	if (typeof routes === 'function')
+	// 	{
+	// 		routes = routes(store)
+	// 	}
+	// 	else
+	// 	{
+	// 		throw new Error('Invalid routes passed: must be a react object or function')
+	// 	}
+	// }
 
 	return new Promise((resolve, reject) =>
 	{

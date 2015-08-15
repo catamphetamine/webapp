@@ -1,13 +1,13 @@
-import React    from 'react'
-import Router   from 'react-router'
-import Location from 'react-router/lib/Location'
+import React from 'react'
 
 import Html         from './../client/html'
 import api_client   from './../client/api client'
-import router       from './../client/router'
-import create_store from './../client/redux/store'
 
 import log from './log'
+
+import { server }     from '../react-isomorphic-render'
+import create_store   from '../client/redux/store'
+import routes         from '../client/routes'
 
 // isomorphic (universal) rendering (express middleware).
 // will be used in express_application.use(...)
@@ -18,30 +18,23 @@ export function render(request, response)
 		webpack_isomorphic_tools.refresh()
 	}
 
-	const client = new api_client(request)
-	const store = create_store(client)
-	const location = new Location(request.path, request.query)
-
-	if (_disable_server_side_rendering_)
-	{
-		return response.send('<!doctype html>\n' +
-			React.renderToString(<Html assets={webpack_isomorphic_tools.assets()} component={<div/>} store={store}/>))
-	}
-	
-	router(location, undefined, store)
-	.then(({ component, transition, redirect }) =>
-	{
-		if (redirect)
+	server
+	({
+		disable_server_side_rendering : _disable_server_side_rendering_,
+		routes   : routes,
+		store    : create_store(new api_client(request)),
+		request  : request,
+		response : response,
+		html:
 		{
-			return response.redirect(transition.redirectInfo.pathname)
+			with_rendering: (component, store) => <Html assets={webpack_isomorphic_tools.assets()} component={component} store={store}/>,
+			without_rendering: (store) => <Html assets={webpack_isomorphic_tools.assets()} component={<div/>} store={store}/>
 		}
-
-		response.send('<!doctype html>\n' +
-			React.renderToString(<Html assets={webpack_isomorphic_tools.assets()} component={component} store={store}/>))
 	})
 	.catch((error) =>
 	{
-		if (error.redirect) {
+		if (error.redirect)
+		{
 			response.redirect(error.redirect)
 			return
 		}

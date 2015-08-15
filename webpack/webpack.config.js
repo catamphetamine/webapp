@@ -51,6 +51,7 @@ var configuration =
 				include:
 				[
 					path.resolve(root_folder, 'code', 'client'),
+					path.resolve(root_folder, 'code', 'react-isomorphic-render'),
 					path.resolve(root_folder, 'code', 'language.js')
 				],
 				loaders: ['babel-loader?stage=0&optional=runtime&plugins=typecheck']

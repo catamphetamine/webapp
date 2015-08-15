@@ -65,6 +65,10 @@ pm2 logs cinema
 Сделать
 ====================
 
+api выделить в отдельную папку
+
+изоморфность вынести в отдельный модуль
+
 preload вызывается для всей цепочки (Layout, About)
 
 сделать страницу login_success и добавить её в routes
@@ -135,7 +139,7 @@ https://github.com/obscene/Obscene-Layout
 
 NginX
 
-https://github.com/irvinebroque/isomorphic-hot-loader
+https://github.com/acdlite/redux-react-router
 
 GraphQL, когда он выйдет в релиз
 
