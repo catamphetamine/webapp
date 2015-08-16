@@ -7,7 +7,7 @@ import clean_plugin        from 'clean-webpack-plugin'
 import extract_text_plugin from 'extract-text-webpack-plugin'
 import strip               from 'strip-loader'
 
-import webpack_isomorphic_tools from 'webpack-isomorphic-tools'
+import webpack_isomorphic_tools_plugin from 'webpack-isomorphic-tools/plugin'
 
 import application_configuration from '../code/server/configuration'
 const websocket_url = `${application_configuration.webserver.http.host}:${application_configuration.webserver.http.port}`
@@ -58,13 +58,13 @@ configuration.plugins = configuration.plugins.concat
 		{
 			warnings: false
 		}
-	})
+	}),
+
+	new webpack_isomorphic_tools_plugin(require('./isomorphic.js'))
 )
 
 // don't know why they write it like this
 configuration.output.filename = '[name]-[chunkhash].js'
-
-new webpack_isomorphic_tools(require('./isomorphic.js')).populate(configuration)
 
 // add strip-loader to javascript loaders
 configuration.module.loaders.filter(loader =>

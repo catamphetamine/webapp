@@ -1,9 +1,9 @@
 import language from '../code/language'
 
-import webpack                    from 'webpack'
-import webpack_development_server from 'webpack-dev-server'
-import webpack_isomorphic_tools   from 'webpack-isomorphic-tools'
-import base_configuration         from './webpack.config'
+import webpack                         from 'webpack'
+import webpack_development_server      from 'webpack-dev-server'
+import webpack_isomorphic_tools_plugin from 'webpack-isomorphic-tools/plugin'
+import base_configuration              from './webpack.config'
 
 import application_configuration  from '../code/server/configuration'
 const websocket_url = `${application_configuration.webserver.http.host}:${application_configuration.webserver.http.port}`
@@ -39,7 +39,9 @@ configuration.plugins = configuration.plugins.concat
 	// that tells the reloader to not reload if there is a syntax error in your code. 
 	// The error is simply printed in the console, and the component will reload 
 	// when you fix the error.
-	new webpack.NoErrorsPlugin()
+	new webpack.NoErrorsPlugin(),
+
+	new webpack_isomorphic_tools_plugin(require('./isomorphic.js')).development()
 )
 
 // enable webpack development server
@@ -52,8 +54,6 @@ configuration.entry.main =
 
 // network path for static files: fetch all statics from webpack development server
 configuration.output.publicPath = `http://${application_configuration.development.webpack.development_server.host}:${application_configuration.development.webpack.development_server.port}${configuration.output.publicPath}`
-
-new webpack_isomorphic_tools(require('./isomorphic.js')).development().populate(configuration)
 
 // add react-hot-loader to react components' loaders
 configuration.module.loaders.filter(loader =>

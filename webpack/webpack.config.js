@@ -5,6 +5,10 @@ var root_folder = path.resolve(__dirname, '..')
 
 var assets_source_folder = path.resolve(root_folder, 'client')
 
+var Webpack_isomorphic_tools_plugin = require('webpack-isomorphic-tools/plugin')
+var webpack_isomorphic_tools_configuration = require('./isomorphic')
+var webpack_isomorphic_tools_plugin = new Webpack_isomorphic_tools_plugin(webpack_isomorphic_tools_configuration)
+
 var regular_expressions =
 {
 	javascript : /\.js$/,
@@ -43,12 +47,12 @@ var configuration =
 		loaders: 
 		[
 			{
-				test: /\.json$/,
-				loader: 'json-loader'
+				test   : /\.json$/,
+				loader : 'json-loader'
 			},
 			{
-				test: regular_expressions.javascript,
-				include:
+				test    : regular_expressions.javascript,
+				include :
 				[
 					path.resolve(root_folder, 'code', 'client'),
 					path.resolve(root_folder, 'code', 'react-isomorphic-render'),
@@ -57,9 +61,9 @@ var configuration =
 				loaders: ['babel-loader?stage=0&optional=runtime&plugins=typecheck']
 			},
 			{
-				test: regular_expressions.styles,
-				include: assets_source_folder,
-				loaders: 
+				test    : regular_expressions.styles,
+				include : assets_source_folder,
+				loaders : 
 				[
 					'style-loader',
 					'css-loader?importLoaders=2&sourceMap',
@@ -67,10 +71,26 @@ var configuration =
 					'sass-loader?outputStyle=expanded&sourceMap=true&sourceMapContents=true'
 				]
 			},
+			// {
+			// 	test    : Webpack_isomorphic_tools_plugin.regular_expression(['woff', 'woff2', 'eot', 'ttf'].concat(webpack_isomorphic_tools_configuration.assets.images.extensions)),
+			// 	include : assets_source_folder,
+			// 	loaders : 
+			// 	[
+			// 		'url-loader?limit=10240' // Any png-image or woff-font below or equal to 10K will be converted to inline base64 instead
+			// 	]
+			// },
 			{
-				test: /\.(woff|woff2|eot|ttf)$/,
-				include: assets_source_folder,
-				loaders: 
+				test    : /\.(woff|woff2|eot|ttf)$/,
+				include : assets_source_folder,
+				loaders : 
+				[
+					'url-loader?limit=10240' // Any png-image or woff-font below or equal to 10K will be converted to inline base64 instead
+				]
+			},
+			{
+				test    : webpack_isomorphic_tools_plugin.regular_expression('images'),
+				include : assets_source_folder,
+				loaders : 
 				[
 					'url-loader?limit=10240' // Any png-image or woff-font below or equal to 10K will be converted to inline base64 instead
 				]
