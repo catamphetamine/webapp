@@ -52,14 +52,14 @@ export function client({ development, development_tools, routes, history, store,
 	return promise
 }
 
-export function server({ disable_server_side_rendering, html, store, routes, request, response })
+export function server({ disable_server_side_rendering, html, store, routes, request })
 {
 	const location = new Location(request.path, request.query)
 
 	if (disable_server_side_rendering)
 	{
-		return response.send('<!doctype html>\n' +
-			React.renderToString(html.without_rendering(store)))
+		return Promise.resolve({ markup: '<!doctype html>\n' +
+			React.renderToString(html.without_rendering(store)) })
 	}
 	
 	return router({ location, store, routes })
@@ -67,10 +67,10 @@ export function server({ disable_server_side_rendering, html, store, routes, req
 		{
 			if (redirect)
 			{
-				return response.redirect(transition.redirectInfo.pathname)
+				return { redirect_to: response.redirect(transition.redirectInfo.pathname) }
 			}
 
-			response.send('<!doctype html>\n' +
-				React.renderToString(html.with_rendering(component, store)))
+			return { markup: '<!doctype html>\n' +
+				React.renderToString(html.with_rendering(component, store)) }
 		})
 }

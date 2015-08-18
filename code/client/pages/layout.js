@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import DocumentMeta from 'react-document-meta'
 
 // использование: @Radium перед классом компонента
 // Radium = require 'radium'
@@ -69,6 +70,40 @@ export default class Layout extends Component
 
 	render()
 	{
+		// Html document metadata
+
+		const title = 'Cinema'
+		const description = 'A video production studio'
+
+		const meta =
+		{
+			title,
+			description,
+			meta:
+			{
+				charSet: 'utf-8',
+				property:
+				{
+					'og:site_name': title,
+					// 'og:image': image,
+					'og:locale': 'ru_RU',
+					'og:title': title,
+					'og:description': description,
+
+					// 'twitter:card': 'summary',
+					// 'twitter:site': '@erikras',
+					// 'twitter:creator': '@erikras',
+					// 'twitter:title': title,
+					// 'twitter:description': description,
+					// 'twitter:image': image,
+					// 'twitter:image:width': '200',
+					// 'twitter:image:height': '200'
+				}
+			}
+		}
+
+		// render the page
+
 		const { user } = this.props
 
 		// <ul className="nav navbar-nav">
@@ -81,6 +116,8 @@ export default class Layout extends Component
 		const markup = 
 		(
 			<div>
+				<DocumentMeta {...meta}/>
+
 				<nav>
 					<Link to="/">
 						Cinema

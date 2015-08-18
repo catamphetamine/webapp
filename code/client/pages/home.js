@@ -1,6 +1,7 @@
 // require('./editor.less')
 
 import React, { Component, PropTypes } from 'react'
+import DocumentMeta from 'react-document-meta'
 import { connect } from 'react-redux'
 
 import styler from 'react-styling'
@@ -13,7 +14,7 @@ export default class Page extends Component
 {
 	render()
 	{
-		const husky = require('../../../client/images/husky.jpg')
+		const husky = require('../../../assets/images/husky.jpg')
 
 		const markup = 
 		(

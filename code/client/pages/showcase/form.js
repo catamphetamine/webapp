@@ -1,6 +1,7 @@
 // require('./about.less' )
 
 import React, { Component } from 'react'
+import DocumentMeta from 'react-document-meta'
 import styler from 'react-styling'
 
 import { connect } from 'react-redux'
@@ -22,23 +23,27 @@ export default class Form extends Component
 	{
 		const markup = 
 		(
-			<form style={style.form}>
-				<label style={style.form.label}>{'Text input field'}</label>
-				<input type="text" style={style.form.input} value={this.state.text_value} onChange={this.on_input_text_changed}/>
-				You entered: {this.state.text_value}
+			<div>
+				<DocumentMeta title="Form UI Showcase"/>
 
-				<label style={style.form.label}>{'Select'}</label>
-				<select style={style.form.select} value={this.state.select_value} onChange={this.on_selection_changed}>
-					<option value="A">Apple</option>
-					<option value="B">Banana</option>
-					<option value="C">Cranberry</option>
-				</select>
-				You selected: {this.state.select_value}
+				<form style={style.form}>
+					<label style={style.form.label}>{'Text input field'}</label>
+					<input type="text" style={style.form.input} value={this.state.text_value} onChange={this.on_input_text_changed}/>
+					You entered: {this.state.text_value}
 
-				<label htmlFor="description" style={style.form.label}>{'Textarea'}</label>
-				<textarea name="description" style={style.form.textarea} value={this.state.textarea_value} onChange={this.on_textarea_text_changed}/>
-				You entered: {this.state.textarea_value}
-			</form>
+					<label style={style.form.label}>{'Select'}</label>
+					<select style={style.form.select} value={this.state.select_value} onChange={this.on_selection_changed}>
+						<option value="A">Apple</option>
+						<option value="B">Banana</option>
+						<option value="C">Cranberry</option>
+					</select>
+					You selected: {this.state.select_value}
+
+					<label htmlFor="description" style={style.form.label}>{'Textarea'}</label>
+					<textarea name="description" style={style.form.textarea} value={this.state.textarea_value} onChange={this.on_textarea_text_changed}/>
+					You entered: {this.state.textarea_value}
+				</form>
+			</div>
 		)
 
 		return markup

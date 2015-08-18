@@ -1,6 +1,7 @@
 // require('./about.less' )
 
 import React, { Component } from 'react'
+import DocumentMeta from 'react-document-meta'
 import { connect } from 'react-redux'
 
 @connect
@@ -13,7 +14,11 @@ export default class Not_found extends Component
 	{
 		const markup =
 		(
-			<div>Not found</div>
+			<div>
+				<DocumentMeta title="Page not found"/>
+
+				<div>Not found</div>
+			</div>
 		)
 
 		return markup

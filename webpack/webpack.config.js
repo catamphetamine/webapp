@@ -3,7 +3,7 @@ var webpack                  = require('webpack')
 
 var root_folder = path.resolve(__dirname, '..')
 
-var assets_source_folder = path.resolve(root_folder, 'client')
+var assets_source_folder = path.resolve(root_folder, 'assets')
 
 var Webpack_isomorphic_tools_plugin = require('webpack-isomorphic-tools/plugin')
 var webpack_isomorphic_tools_configuration = require('./isomorphic')
@@ -28,10 +28,10 @@ var configuration =
 	output: 
 	{
 		// filesystem path for static files
-		path: path.resolve(root_folder, 'build', 'client'),
+		path: path.resolve(root_folder, 'build', 'assets'),
 
 		// network path for static files
-		publicPath: '/client/',
+		publicPath: '/assets/',
 
 		// file name pattern for entry scripts
 		filename: "[name].[hash].js",

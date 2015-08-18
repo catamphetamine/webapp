@@ -12,8 +12,8 @@ import create_store   from './redux/store'
 import routes         from './routes'
 
 // include these resources in webpack build
-import styling from '../../client/styles/style.scss'
-import webpage_icon from '../../client/images/icon/32x32.png'
+import styling from '../../assets/styles/style.scss'
+import webpage_icon from '../../assets/images/icon/32x32.png'
 
 React.initializeTouchEvents(true)
 

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 // import Boron from 'boron'
+import DocumentMeta from 'react-document-meta'
 import styler from 'react-styling'
 
 import { connect } from 'react-redux'
@@ -31,9 +32,13 @@ export default class Dialog extends Component
 	{
 		const markup = 
 		(
-			<div style={style.container}>
-				<a href="https://github.com/yuanyan/boron/issues/8">https://github.com/yuanyan/boron/issues/8</a>
-				{/*['OutlineModal', 'ScaleModal', 'FadeModal', 'FlyModal', 'DropModal', 'WaveModal'].map(name => this.markup_for_button_and_dialog(name))*/}
+			<div>
+				<DocumentMeta title="Dialog showcase"/>
+
+				<div style={style.container}>
+					<a href="https://github.com/yuanyan/boron/issues/8">https://github.com/yuanyan/boron/issues/8</a>
+					{/*['OutlineModal', 'ScaleModal', 'FadeModal', 'FlyModal', 'DropModal', 'WaveModal'].map(name => this.markup_for_button_and_dialog(name))*/}
+				</div>
 			</div>
 		)
 

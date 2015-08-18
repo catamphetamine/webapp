@@ -2,13 +2,19 @@
 	"script": "code/server/entry.js",
 	"watch": ["code/**/*.js"],
 	"watch_interval": 300,
-	"ignore": [
+	"ignore":
+	[
 		".git",
 		"node_modules/**/*",
 		"build/**/*"
 	],
-	"env": {
+	"env":
+	{
 		"NODE_ENV": "development"
+	},
+	"execMap":
+	{
+		"js": "node --harmony"
 	},
 	"legacyWatch": false,
 	"verbose": false,

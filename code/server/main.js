@@ -28,4 +28,7 @@ import log from './log'
 
 import bookshelf from './database'
 
-import web from './web'
+// import web from './web (express)'
+
+// https://github.com/koajs/koa/issues/466
+import web from './web (koa)'

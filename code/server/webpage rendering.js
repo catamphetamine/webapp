@@ -11,34 +11,42 @@ import routes         from '../client/routes'
 
 // isomorphic (universal) rendering (express middleware).
 // will be used in express_application.use(...)
-export function render(request, response)
+export function render({ request, respond, fail, redirect })
 {
 	if (_development_)
 	{
 		webpack_isomorphic_tools.refresh()
 	}
 
-	server
+	return server
 	({
 		disable_server_side_rendering : _disable_server_side_rendering_,
 		routes   : routes,
 		store    : create_store(new api_client(request)),
 		request  : request,
-		response : response,
 		html:
 		{
 			with_rendering: (component, store) => <Html assets={webpack_isomorphic_tools.assets()} component={component} store={store}/>,
 			without_rendering: (store) => <Html assets={webpack_isomorphic_tools.assets()} component={<div/>} store={store}/>
 		}
 	})
-	.catch((error) =>
+	.then(({ markup, redirect_to }) =>
+	{
+		if (redirect_to)
+		{
+			return redirect(redirect_to)
+		}
+
+		respond(markup)
+	},
+	error =>
 	{
 		if (error.redirect)
 		{
-			response.redirect(error.redirect)
-			return
+			return redirect(error.redirect)
 		}
+
 		log.error(error)
-		response.status(500).send({error: error})
+		fail(error)
 	})
 }

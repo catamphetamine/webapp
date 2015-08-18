@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react'
+import DocumentMeta from 'react-document-meta'
 import serialize from 'serialize-javascript'
 
 // const cdn = '//cdnjs.cloudflare.com/ajax/libs/'
@@ -32,15 +33,13 @@ export default class Html extends Component
 		(
 			<html lang="en-us">
 				<head>
-					<meta charSet="utf-8"/>
-					<title>{title}</title>
+					{/* <meta charSet="utf-8"/> */}
 
-					<meta property="og:site_name" content={title}/>
-					{/* <meta property="og:image" content={image}/> */}
-					<meta property="og:locale" content="en_US"/>
-					<meta property="og:title" content={title}/>
-					<meta property="og:description" content={description}/>
-					<meta name="twitter:card" content="summary"/>
+					{DocumentMeta.rewind({asReact: true})}
+					{/* <title>{title}</title> */}
+
+					{/* favicon */}
+					<link rel="shortcut icon" href={assets.images['./assets/images/icon/32x32.png'].path} />
 
 					{/* use this icon font instead: https://www.google.com/design/icons/ */}
 					{/*<link href={cdn + 'font-awesome/4.3.0/css/font-awesome.min.css'}

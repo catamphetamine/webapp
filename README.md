@@ -69,9 +69,7 @@ pm2 logs cinema
 
 api выделить в отдельную папку
 
-изоморфность вынести в отдельный модуль
-
-preload вызывается для всей цепочки (Layout, About)
+preload вызывается для всей цепочки (Layout, About) (автор пишет, что preload сам должен определять, нужно ли ему вызываться - на мой взгляд, не лучшее решение)
 
 сделать страницу login_success и добавить её в routes
 
@@ -149,7 +147,7 @@ https://medium.com/@clayallsopp/your-first-graphql-server-3c766ab4f0a2
 
 
 Рендеринг React'а вместе с React-router'ом и Redux'ом взят отсюда
-(будет обновляться после 13.08.2015 - мержить к себе новые изменения):
+(будет обновляться после 17.08.2015 - мержить к себе новые изменения):
 
 https://github.com/erikras/react-redux-universal-hot-example/commits/master
 

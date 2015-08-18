@@ -1,6 +1,7 @@
 // require('./about.less' )
 
 import React, { Component, PropTypes } from 'react'
+import DocumentMeta from 'react-document-meta'
 import { bindActionCreators as bind_action_creators } from 'redux'
 import { connect } from 'react-redux'
 import { get as get_settings } from '../actions/settings'
@@ -71,6 +72,8 @@ export default class About extends Component
 		const markup = 
 		(
 			<div>
+				<DocumentMeta title="About"/>
+
 				{content}
 			</div>
 		)

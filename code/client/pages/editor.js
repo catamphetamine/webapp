@@ -1,6 +1,7 @@
 // require('./editor.less')
 
 import React, { Component, PropTypes } from 'react'
+import DocumentMeta from 'react-document-meta'
 import { connect } from 'react-redux'
 
 import styler from 'react-styling'
@@ -15,7 +16,11 @@ export default class Editor extends Component
 	{
 		const markup = 
 		(
-			<div contentEditable="true" style={style.editor}>Editor (на хоткеях + кнопки инструментов для мобильных устройств, или что-то получше)</div>
+			<div>
+				<DocumentMeta title="Rich Text Editor"/>
+
+				<div contentEditable="true" style={style.editor}>Editor (на хоткеях + кнопки инструментов для мобильных устройств, или что-то получше)</div>
+			</div>
 		)
 
 		return markup

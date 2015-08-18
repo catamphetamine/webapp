@@ -1,6 +1,7 @@
 // require('./about.less' )
 
 import React, { Component, PropTypes } from 'react'
+import DocumentMeta from 'react-document-meta'
 import { connect } from 'react-redux'
 
 import { Link } from 'react-router'
@@ -17,6 +18,8 @@ export default class Showcase extends Component
 		const markup = 
 		(
 			<div>
+				<DocumentMeta title="UI Showcase"/>
+
 				<header>
 					<ul style={style.menu}>
 						<li style={style.menu.item}><Link to="/showcase/dialog" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Dialog'}</Link></li>
