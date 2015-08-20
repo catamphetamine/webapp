@@ -1,11 +1,11 @@
 // сработает при вызове dispatch({ promise: ... })
 export default function middleware(client)
 {
-	return ({/* dispatch, getState */}) =>
+	return ({ dispatch, getState }) =>
 	{
-		return (next) => (action) =>
+		return next => action =>
 		{
-			const { promise, types, ...rest } = action
+			const { promise, types, ...rest } = typeof action === 'function' ? action(dispatch, getState) : action
       
 			if (!promise)
 			{

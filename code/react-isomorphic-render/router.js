@@ -18,6 +18,8 @@ export function create_transition_hook(store)
 {
 	return (next_state, transition, callback) =>
 	{
+		const { params, location: { query } } = next_state
+
 		Promise.all(next_state.branch
 			// pull out individual route components
 			.map(route => route.component)
@@ -26,7 +28,7 @@ export function create_transition_hook(store)
 			// pull out fetch data methods
 			.filter(preloader => exists(preloader))
 			// call fetch data methods and save promises
-			.map(preload => preload(store, next_state.params)))
+			.map(preload => preload(store, params, query || {})))
 			// finished
 			.then(() => callback(), error => callback(error))
 	}

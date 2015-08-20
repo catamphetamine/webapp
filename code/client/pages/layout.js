@@ -27,8 +27,9 @@ export default class Layout extends Component
 {
 	static propTypes =
 	{
-		user: PropTypes.object,
-		logout: PropTypes.func.isRequired
+		children : PropTypes.object.isRequired,
+		user     : PropTypes.object,
+		logout   : PropTypes.func.isRequired
 	}
 
 	static contextTypes =

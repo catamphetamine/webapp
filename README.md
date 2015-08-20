@@ -174,7 +174,7 @@ https://medium.com/@clayallsopp/your-first-graphql-server-3c766ab4f0a2
 
 
 Рендеринг React'а вместе с React-router'ом и Redux'ом взят отсюда
-(будет обновляться после 18.08.2015 - мержить к себе новые изменения):
+(будет обновляться после 20.08.2015 - мержить к себе новые изменения):
 
 https://github.com/erikras/react-redux-universal-hot-example/commits/master
 

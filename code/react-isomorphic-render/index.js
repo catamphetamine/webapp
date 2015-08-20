@@ -1,3 +1,5 @@
+import query_string from 'query-string'
+
 import React          from 'react'
 import Location       from 'react-router/lib/Location'
 
@@ -5,7 +7,9 @@ import router         from './router'
 
 export function client({ development, development_tools, routes, history, store, content_container })
 {
-	const location = new Location(document.location.pathname, document.location.search)
+	const search = document.location.search
+	const query = search && query_string.parse(search)
+	const location = new Location(document.location.pathname, query)
 
 	const promise = router({ location, routes, history, store })
 		.then(({ component }) =>
