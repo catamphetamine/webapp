@@ -2,8 +2,6 @@ import React, {Component, PropTypes} from 'react'
 import DocumentMeta from 'react-document-meta'
 import serialize from 'serialize-javascript'
 
-// const cdn = '//cdnjs.cloudflare.com/ajax/libs/'
-
 /**
  * Wrapper component containing HTML metadata and boilerplate tags.
  * Used in server-side code only to wrap the string output of the
@@ -26,20 +24,22 @@ export default class Html extends Component
 	{
 		const { assets, component, store } = this.props
 		
-		const title = 'Cinema'
-		const description = 'Workflow'
+		// const title = 'Cinema'
+
+		// get the favicon (this code will run on server)
+		const required_assets = Html.require_assets()
 
 		const html = 
 		(
 			<html lang="en-us">
 				<head>
 					{/* <meta charSet="utf-8"/> */}
-
-					{DocumentMeta.rewind({asReact: true})}
 					{/* <title>{title}</title> */}
 
+					{DocumentMeta.rewind({ asReact: true })}
+
 					{/* favicon */}
-					<link rel="shortcut icon" href={assets.images['./assets/images/icon/32x32.png'].path} />
+					<link rel="shortcut icon" href={required_assets.icon}/>
 
 					{/* use this icon font instead: https://www.google.com/design/icons/ */}
 					{/*<link href={cdn + 'font-awesome/4.3.0/css/font-awesome.min.css'}
@@ -76,4 +76,18 @@ export default class Html extends Component
 
 		return html
 	}
+}
+
+// include these assets in webpack build
+// (you'll also need to add the corresponding asset types to isomorphic.js;
+//  otherwise you'll get syntax errors when requiring these files on server)
+Html.require_assets = function()
+{
+	const result = 
+	{
+		icon  : require('../../assets/images/icon/32x32.png'),
+		style : require('../../assets/styles/style.scss')
+	}
+
+	return result
 }

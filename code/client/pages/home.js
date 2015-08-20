@@ -6,6 +6,10 @@ import { connect } from 'react-redux'
 
 import styler from 'react-styling'
 
+import { FormattedMessage } from '../international components'
+
+import Locale_switcher from '../components/locale switcher'
+
 @connect
 (
 	store => ({ })
@@ -19,7 +23,9 @@ export default class Page extends Component
 		const markup = 
 		(
 			<section>
-				<h1 style={style.header}>Home page</h1>
+				<h1 style={style.header}>
+					<FormattedMessage message="home.welcome" />
+				</h1>
 				<div style={style.image_container}><img src={husky}/></div>
 			</section>
 		)

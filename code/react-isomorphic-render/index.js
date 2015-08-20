@@ -8,7 +8,7 @@ export function client({ development, development_tools, routes, history, store,
 	const location = new Location(document.location.pathname, document.location.search)
 
 	const promise = router({ location, routes, history, store })
-		.then(({component}) =>
+		.then(({ component }) =>
 		{
 			if (development_tools)
 			{

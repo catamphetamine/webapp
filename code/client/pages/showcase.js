@@ -31,7 +31,8 @@ export default class Showcase extends Component
 
 				<ul>
 					<li><a href="https://github.com/felixrieseberg/React-Dropzone-Component">File drop zone</a></li>
-					<li><a href="http://blog.siftscience.com/blog/2015/4/6/d-threeact-how-sift-science-made-d3-react-besties">Графики D3</a></li>
+					<li><a href="https://github.com/AnSavvides/d3act">D3 + React</a></li>
+					<li><a href="http://blog.siftscience.com/blog/2015/4/6/d-threeact-how-sift-science-made-d3-react-besties">Ещё что-то про графики D3</a></li>
 					<li><a href="http://balloob.github.io/react-sidebar/example/">Sidebar</a></li>
 					<li><a href="http://labs.voronianski.com/react-soundplayer/">Sound Player</a></li>
 				</ul>

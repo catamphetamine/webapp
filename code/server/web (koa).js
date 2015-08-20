@@ -21,6 +21,9 @@ import statics     from 'koa-static-cache'
 import koa_logger  from 'koa-bunyan'
 import koa_proxy   from 'koa-proxy'
 import mount       from 'koa-mount'
+import koa_locale  from 'koa-locale'
+
+// https://github.com/chentsulin/koa-graphql
 
 // https://github.com/koa-modules/locale
 
@@ -61,13 +64,27 @@ web.keys = ['hammertime']
 web.use(session(web))
 // this.session
 
+koa_locale(web, 'language')
+
+// web.use(function *()
+// {
+// 	// query: '?language=en'
+// 	this.locale = this.getLocaleFromQuery() || this.getLocaleFromCookie() || this.getLocaleFromHeader()
+// })
+
 import { render } from './webpage rendering'
+
+function get_language(locale)
+{
+	return locale.substring(0, locale.indexOf('-'))
+}
 
 // серверный ("изоморфный") рендеринг
 web.use(function*()
 {
 	yield render
 	({
+		locale   : get_language(this.getLocaleFromQuery() || this.getLocaleFromCookie() || this.getLocaleFromHeader()),
 		request  : this.request, 
 		respond  : data => this.body = data, 
 		fail     : error => this.throw(error), 

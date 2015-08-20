@@ -1,37 +1,56 @@
-Cinema is a workspace for video production.
+Cinema is a sample project built with React and Flux.
 
-Киностудия - это рабочая среда, предоставляющая инструменты для совместной работы в области кинопроизводства.
+Features
 
-Установка
+* React
+* React-router
+* Redux as Flux
+* Isomorphic (universal) rendering
+* Webpack
+* Express / Koa
+* Internationalization with React-intl (not yet working; work in progress)
+* To be done: GraphQL + Relay
+* To be done: Authentication
+* To be done: Persistence (PostgreSQL)
+
+Installation
 ==========
 
 npm install
 
 // sudo npm instal --global pm2
 
-Запуск (development)
+Running (development)
 =====================
 
 npm run dev
+
+After it finishes loading go to:
 
 Далее зайти на:
 
 http://localhost:3000
 
+(the web page will refresh automagically when you save your changes)
+
 (страница будет сама обновляться при изменении исходных кодов)
 
-Запуск (production)
+Running (production)
 =====================
+
+Build the project with Webpack and run the web server:
 
 Построить проект webpack'ом и запустить web сервер:
 
 npm run production
 
+Next go to:
+
 Далее зайти на:
 
 http://localhost:3000
 
-Запуск демоном (production, пока ещё не сделано)
+Запуск демоном (production, пока ещё не сделано) (to be done)
 ====================
 
 ./automation/start.sh
@@ -65,7 +84,23 @@ pm2 logs cinema
 Сделать
 ====================
 
-перевести с express на koa
+выводить ошибку нормально, а не Internal Server Error - весь стектрейс, чтобы в консоль не переключаться на просмотр текста ошибки
+
+починить переключение языков
+
+проверить правильность языкования при серверном рендеринге
+
+где на клиенте проставляются .messages[] и .locales[] в коде у него
+handleLoad
+
+action response handlers -> store managers или mutators или типа того
+или разделить на store initializer и handlers
+
+server side locale
+
+загружать locales в locale switcher с сервера по api, который будет брать, считывая содержимое папки
+
+localized routes
 
 api выделить в отдельную папку
 
@@ -147,7 +182,7 @@ https://medium.com/@clayallsopp/your-first-graphql-server-3c766ab4f0a2
 
 
 Рендеринг React'а вместе с React-router'ом и Redux'ом взят отсюда
-(будет обновляться после 17.08.2015 - мержить к себе новые изменения):
+(будет обновляться после 18.08.2015 - мержить к себе новые изменения):
 
 https://github.com/erikras/react-redux-universal-hot-example/commits/master
 
@@ -195,6 +230,10 @@ Webpack development server по умолчанию принимает все з�
 Таким образом обходится кеширование браузера (с исчезающе малой вероятностью "коллизии" хешей).
 
 Нужные url'ы подставляются в index.html плагином HtmlWebpackPlugin.
+
+
+При запуске через npm run dev работает hot reload для компонентов React, 
+а также для Redux'а (например, для action response handlers)
 
 
 Вместо LESS и CSS в "компонентах" React'а используются inline стили.

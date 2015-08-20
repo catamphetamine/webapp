@@ -1,42 +1,31 @@
 const initial_state =
 {
-	loaded: false
+	messages : {},
+	locales  : [],
+	locale   : undefined
 }
 
 const handlers =
 {
-	'retrieving settings': (state, action) =>
+	'locale set': (state, action) =>
 	{
 		const new_state = 
 		{
 			...state,
-			loading : true
+			locale  : action.locale
 		}
 
 		return new_state
 	},
 
-	'settings retrieved': (state, action) =>
+	'locale data loaded': (state, action) =>
 	{
 		const new_state = 
 		{
 			...state,
-			loading : false,
-			loaded  : true,
-			data    : action.result
-		}
-
-		return new_state
-	},
-
-	'settings retrieval failed': (state, action) =>
-	{
-		const new_state = 
-		{
-			...state,
-			loading : false,
-			loaded  : true,
-			error   : action.error
+			locales  : action.data.locales,
+			locale   : action.data.locales[0],
+			messages : action.data.messages
 		}
 
 		return new_state

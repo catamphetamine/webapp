@@ -16,6 +16,8 @@ import { connect } from 'react-redux'
 
 // import {isLoaded as isAuthLoaded} from '../flux/stores/auth'
 
+import Locale_switcher from '../components/locale switcher'
+
 @connect
 (
 	store => ({ }), // user: store.auth.user })
@@ -119,9 +121,11 @@ export default class Layout extends Component
 				<DocumentMeta {...meta}/>
 
 				<nav>
-					<Link to="/">
+					<Link to="/" style={style.home} activeStyle={style.home}>
 						Cinema
 					</Link>
+
+					<Locale_switcher style={style.locale_switcher}/>
 
 					<ul style={style.menu}>
 						<li style={style.menu.item}><Link to="/editor" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Editor'}</Link></li>
@@ -142,6 +146,15 @@ export default class Layout extends Component
 
 const style = styler
 `
+	home
+		color       : black
+		font-size   : 16pt
+		margin-left : 1em
+
+	locale_switcher
+		display     : inline-block
+		margin-left : 3em
+
 	menu
 		list-style-type: none
 

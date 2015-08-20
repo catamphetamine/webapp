@@ -11,18 +11,24 @@ import routes         from '../client/routes'
 
 // isomorphic (universal) rendering (express middleware).
 // will be used in express_application.use(...)
-export function render({ request, respond, fail, redirect })
+export function render({ request, respond, fail, redirect, locale })
 {
 	if (_development_)
 	{
 		webpack_isomorphic_tools.refresh()
 	}
 
+	const store = create_store(new api_client(request))
+
+	const locale_data = require(`../client/international/${locale}`)
+
+	store.dispatch({ type: 'locale data loaded', data: locale_data })
+
 	return server
 	({
 		disable_server_side_rendering : _disable_server_side_rendering_,
 		routes   : routes,
-		store    : create_store(new api_client(request)),
+		store    : store,
 		request  : request,
 		html:
 		{

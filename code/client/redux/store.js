@@ -1,17 +1,12 @@
-/* global __DEVELOPMENT__, __CLIENT__, __DEVTOOLS__ */
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import asynchronous_middleware from './asynchronous middleware'
 
 // "reducers" are actually "stores"
-import * as reducers from '../action response handlers'
+// import * as reducers from '../action response handlers'
 
-// transform each Json object to a switch function,
-// and combine everything into a single reducer
-const reducer = combineReducers(reducers)
-
-export default function(client, data) 
+export default function(api_client, data) 
 {
-	const middleware = asynchronous_middleware(client)
+	const middleware = asynchronous_middleware(api_client)
 	
 	let create_store
 
@@ -31,5 +26,18 @@ export default function(client, data)
 		create_store = applyMiddleware(middleware)(createStore)
 	}
 
-	return create_store(reducer, data)
+	const reducer = combineReducers(require('../action response handlers'))
+	const store = create_store(reducer, data)
+	// store.client = api_client
+
+	if (module.hot)
+	{
+		module.hot.accept('../action response handlers', () =>
+		{
+			const next_reducer = combineReducers(require('../action response handlers'))
+			store.replaceReducer(next_reducer)
+		})
+	}
+
+	return store
 }

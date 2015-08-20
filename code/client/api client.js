@@ -39,6 +39,10 @@ class ApiClient_
 								request.set('cookie', initial_server_http_request.get('cookie'))
 							}
 						}
+						if (options && options.locale)
+						{
+							request.set('accept-language', locale)
+						}
 						if (options && options.data)
 						{
 							request.send(options.data)
