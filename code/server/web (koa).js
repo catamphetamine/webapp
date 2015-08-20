@@ -64,11 +64,11 @@ web.keys = ['hammertime']
 web.use(session(web))
 // this.session
 
-koa_locale(web, 'language')
+koa_locale(web, 'locale')
 
 // web.use(function *()
 // {
-// 	// query: '?language=en'
+// 	// query: '?locale=en'
 // 	this.locale = this.getLocaleFromQuery() || this.getLocaleFromCookie() || this.getLocaleFromHeader()
 // })
 
@@ -76,7 +76,12 @@ import { render } from './webpage rendering'
 
 function get_language(locale)
 {
-	return locale.substring(0, locale.indexOf('-'))
+	const dash_index = locale.indexOf('-')
+	if (dash_index >= 0)
+	{
+		return locale.substring(0, dash_index)
+	}
+	return locale
 }
 
 // серверный ("изоморфный") рендеринг
@@ -84,7 +89,7 @@ web.use(function*()
 {
 	yield render
 	({
-		locale   : get_language(this.getLocaleFromQuery() || this.getLocaleFromCookie() || this.getLocaleFromHeader()),
+		locale   : get_language(this.getLocaleFromQuery() || this.getLocaleFromCookie() || this.getLocaleFromHeader() || 'en'),
 		request  : this.request, 
 		respond  : data => this.body = data, 
 		fail     : error => this.throw(error), 

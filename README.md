@@ -8,10 +8,11 @@ Features
 * Isomorphic (universal) rendering
 * Webpack
 * Express / Koa
-* Internationalization with React-intl (not yet working; work in progress)
-* To be done: GraphQL + Relay
+* Internationalization with React-intl
 * To be done: Authentication
+* To be done: GraphQL + Relay
 * To be done: Persistence (PostgreSQL)
+* Maybe to be done: Locale switch hot reload (without reloading page)
 
 Installation
 ==========
@@ -86,17 +87,8 @@ pm2 logs cinema
 
 выводить ошибку нормально, а не Internal Server Error - весь стектрейс, чтобы в консоль не переключаться на просмотр текста ошибки
 
-починить переключение языков
-
-проверить правильность языкования при серверном рендеринге
-
-где на клиенте проставляются .messages[] и .locales[] в коде у него
-handleLoad
-
 action response handlers -> store managers или mutators или типа того
 или разделить на store initializer и handlers
-
-server side locale
 
 загружать locales в locale switcher с сервера по api, который будет брать, считывая содержимое папки
 

@@ -33,7 +33,7 @@ export default class Locale_switcher extends Component
 				<FormattedMessage message="home.language" /> (work in progress)
 
 				<ul style={style.locales}>
-					{ locales.map(this.render_locale_link, this) }
+					{locales.map(this.render_locale_link.bind(this))}
 				</ul>
 			</div>
 		)
