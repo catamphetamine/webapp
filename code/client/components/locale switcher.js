@@ -30,7 +30,7 @@ export default class Locale_switcher extends Component
 		const markup =
 		(
 			<div className="LocaleSwitcher" style={this.props.style}>
-				<FormattedMessage message="home.language" /> (work in progress)
+				<FormattedMessage message="home.language" />
 
 				<ul style={style.locales}>
 					{locales.map(this.render_locale_link.bind(this))}
