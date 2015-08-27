@@ -8,8 +8,6 @@ import base_configuration              from './webpack.config'
 import application_configuration  from '../code/server/configuration'
 const websocket_url = `${application_configuration.webserver.http.host}:${application_configuration.webserver.http.port}`
 
-// process.env.UV_THREADPOOL_SIZE = 100
-
 const configuration = Object.clone(base_configuration)
 
 configuration.devtool = 'inline-source-map'
@@ -93,14 +91,7 @@ const development_server_options =
 	stats       : { colors: true }
 }
 
-const compiler = webpack(configuration, function(error, stats)
-{
-	var json = stats.toJson()
-	if (json.errors.length)
-	{
-		console.error(json.errors[0])
-	}
-})
+const compiler = webpack(configuration)
 
 const development_server = new webpack_development_server(compiler, development_server_options)
 
