@@ -8,8 +8,6 @@ import styler from 'react-styling'
 
 import { FormattedMessage } from '../international components'
 
-import Locale_switcher from '../components/locale switcher'
-
 @connect
 (
 	store => ({ })

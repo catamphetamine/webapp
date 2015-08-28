@@ -83,7 +83,7 @@ export default class Html extends Component
 //  otherwise you'll get syntax errors when requiring these files on server)
 Html.require_assets = function()
 {
-	const result = 
+	const result =
 	{
 		icon  : require('../../assets/images/icon/32x32.png'),
 		style : require('../../assets/styles/style.scss')

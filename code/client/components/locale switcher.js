@@ -93,6 +93,5 @@ const style = styler
 			background : black
 
 			link
-				text-decoration : none
 				color           : white
 `

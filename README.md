@@ -85,6 +85,16 @@ pm2 logs cinema
 Сделать
 ====================
 
+graphiql в development mode
+
+https://github.com/graphql/graphiql
+
+showcase form чтобы имел кнопку с валидацией и записью на сервере в оперативку, и получал бы с сервера
+
+мб использовать redux-form
+
+https://github.com/devknoll/relay-nested-routes
+
 выводить ошибку нормально, а не Internal Server Error - весь стектрейс, чтобы в консоль не переключаться на просмотр текста ошибки
 
 action response handlers -> store managers или mutators или типа того
@@ -93,6 +103,10 @@ action response handlers -> store managers или mutators или типа то�
 загружать locales в locale switcher с сервера по api, который будет брать, считывая содержимое папки
 
 localized routes
+
+locale hot switch
+
+https://github.com/gpbl/react-locale-hot-switch/
 
 api выделить в отдельную папку
 
@@ -174,7 +188,7 @@ https://medium.com/@clayallsopp/your-first-graphql-server-3c766ab4f0a2
 
 
 Рендеринг React'а вместе с React-router'ом и Redux'ом взят отсюда
-(будет обновляться после 20.08.2015 - мержить к себе новые изменения):
+(будет обновляться после 27.08.2015 - мержить к себе новые изменения):
 
 https://github.com/erikras/react-redux-universal-hot-example/commits/master
 

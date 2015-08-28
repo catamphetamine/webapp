@@ -22,7 +22,7 @@ module.exports =
 		{
 			extension: 'scss',
 			// a dummy parser since we're not using styles on the server
-			parser: function(module, options) {}
+			parser: function(module, options, log) {}
 		}
 	}
 }

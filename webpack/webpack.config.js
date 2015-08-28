@@ -22,7 +22,7 @@ var configuration =
 
 	entry:
 	{
-		main: './code/client/application.js'
+		main: './code/client/application.entry.js'
 	},
 
 	output: 

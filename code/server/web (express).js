@@ -94,6 +94,20 @@ web.use('/api', (request, response) =>
 	proxy.web(request, response)
 })
 
+// added the error handling to avoid https://github.com/nodejitsu/node-http-proxy/issues/527
+proxy.on('error', (error, request, response) =>
+{
+	let json
+	console.log('proxy error', error)
+	if (!response.headersSent)
+	{
+		response.writeHead(500, {'content-type': 'application/json'})
+	}
+
+	json = { error: 'proxy_error', reason: error.message }
+	response.end(JSON.stringify(json))
+})
+
 const cors_options =
 {
 	// origin: 'http://example.com'

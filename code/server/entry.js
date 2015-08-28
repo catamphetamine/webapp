@@ -1,7 +1,11 @@
+// use bluebird for promises
+require('babel-runtime/core-js/promise').default = require('bluebird')
+
 require('babel/register')
 ({
 	stage: 0,
-	plugins: ['typecheck']
+	plugins: ['typecheck'],
+	optional: ['runtime']
 })
 
 var minimist = require('minimist')
