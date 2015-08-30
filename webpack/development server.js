@@ -33,11 +33,11 @@ configuration.plugins = configuration.plugins.concat
 	// faster code reload on changes
 	new webpack.HotModuleReplacementPlugin(),
 
-	// webpack.NoErrorsPlugin is an optional plugin 
-	// that tells the reloader to not reload if there is a syntax error in your code. 
-	// The error is simply printed in the console, and the component will reload 
-	// when you fix the error.
-	new webpack.NoErrorsPlugin(),
+	// // webpack.NoErrorsPlugin is an optional plugin 
+	// // that tells the reloader to not reload if there is a syntax error in your code. 
+	// // The error is simply printed in the console, and the component will reload 
+	// // when you fix the error.
+	// new webpack.NoErrorsPlugin(),
 
 	new webpack_isomorphic_tools_plugin(require('./isomorphic.js')).development()
 )
