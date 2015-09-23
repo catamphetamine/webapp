@@ -1,7 +1,7 @@
 // require('./about.less' )
 
 import React, { Component, PropTypes } from 'react'
-import DocumentMeta from 'react-document-meta'
+import { webpage_title } from '../webpage head'
 import { bindActionCreators as bind_action_creators } from 'redux'
 import { connect } from 'react-redux'
 import { get as get_settings } from '../actions/settings'
@@ -24,6 +24,11 @@ export default class About extends Component
 		error        : PropTypes.object
 	}
 
+	static contextTypes =
+	{
+		store : PropTypes.object.isRequired
+	}
+
 	static preload(store)
 	{
 		const promises = []
@@ -32,6 +37,14 @@ export default class About extends Component
 			promises.push(store.dispatch(get_settings()))
 		// }
 		return Promise.all(promises)
+	}
+
+	componentDidMount()
+	{
+		// to do: remove second loading here for client-side navigation
+		// to do: remove loading here for server-side rendered page
+		console.log('### componentDidMount called at ', Date.now())
+		this.constructor.preload(this.context.store)
 	}
 
 	render()
@@ -58,7 +71,7 @@ export default class About extends Component
 		// 		</div>
 		// 	)
 		// }
-		else
+		else if (settings)
 		{
 			content = 
 			(
@@ -69,12 +82,18 @@ export default class About extends Component
 				</div>
 			)
 		}
+		else
+		{
+			content = 
+			(
+				<div>Loading</div>
+			)
+		}
 
 		const markup = 
 		(
 			<div>
-				<DocumentMeta title="About"/>
-
+				{webpage_title("About")}
 				{content}
 			</div>
 		)

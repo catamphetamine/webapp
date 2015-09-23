@@ -1,7 +1,6 @@
 {
 	"script": "code/server/entry.js",
 	"watch": ["code/**/*.js"],
-	"watch_interval": 300,
 	"ignore":
 	[
 		".git",
@@ -17,6 +16,6 @@
 		"js": "node --harmony"
 	},
 	"legacyWatch": false,
-	"verbose": false,
+	"verbose": true,
 	"dump": false
 }

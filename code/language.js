@@ -51,7 +51,7 @@ global.merge = Object.merge
 
 Object.clone = function(object)
 {
-	return Object.merge({}, object)
+	return Object.merge(object)
 }
 
 Object.equals = (a, b) => deep_equal(a, b)

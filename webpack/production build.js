@@ -9,7 +9,7 @@ import strip               from 'strip-loader'
 
 import webpack_isomorphic_tools_plugin from 'webpack-isomorphic-tools/plugin'
 
-import application_configuration from '../code/server/configuration'
+import application_configuration from '../code/configuration'
 const websocket_url = `${application_configuration.webserver.http.host}:${application_configuration.webserver.http.port}`
 
 const configuration = Object.clone(base_configuration)
@@ -32,11 +32,11 @@ configuration.plugins = configuration.plugins.concat
 
 		_websocket_url_: JSON.stringify(websocket_url),
 
-		_client_      : true,
-		_server_      : false,
-		_development_ : false,
-		_production_  : true,
-		_devtools_    : false  // <-------- DISABLE redux-devtools HERE
+		_client_            : true,
+		_server_            : false,
+		_development_       : false,
+		_production_        : true,
+		_development_tools_ : false  // <-------- DISABLE redux-devtools HERE
 	}),
 
 	// css files from the extract-text-plugin loader
@@ -66,13 +66,13 @@ configuration.plugins = configuration.plugins.concat
 // don't know why they write it like this
 configuration.output.filename = '[name]-[chunkhash].js'
 
-// add strip-loader to javascript loaders
-configuration.module.loaders.filter(loader =>
-{
-	return loader.test.toString() === configuration.regular_expressions.javascript.toString()
-})
-.first()
-.loaders.unshift(strip.loader('debug'))
+// // add strip-loader to javascript loaders
+// configuration.module.loaders.filter(loader =>
+// {
+// 	return loader.test.toString() === configuration.regular_expressions.javascript.toString()
+// })
+// .first()
+// .loaders.unshift(strip.loader('debug'))
 
 // begin: set extract text plugin as a Css loader
 

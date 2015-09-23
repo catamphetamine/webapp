@@ -1,27 +1,32 @@
 import query_string from 'query-string'
 
-import React          from 'react'
-import Location       from 'react-router/lib/Location'
+import React                 from 'react'
+import ReactDOM              from 'react-dom'
+import ReactDOMServer        from 'react-dom/server'
+import create_location       from 'history/lib/createLocation'
+import create_history        from 'history/lib/createBrowserHistory'
+// import create_memory_history from 'history/lib/createMemoryHistory'
+import router                from './router'
 
-import router         from './router'
-
-export function client({ development, development_tools, routes, history, store, content_container })
+export function client({ development, development_tools, routes, store, content_container })
 {
-	const search = document.location.search
-	const query = search && query_string.parse(search)
-	const location = new Location(document.location.pathname, query)
+	// let query = document.location.search
+	// query = query && query_string.parse(query)
+	// const location = create_location(document.location.pathname, query)
+  
+	const location = create_location(document.location.pathname, document.location.search)
+	const history = create_history()
 
-	const promise = router({ location, routes, history, store })
+	const promise = router({ location, history, routes, store })
 		.then(({ component }) =>
 		{
+			ReactDOM.render(component, content_container)
+
 			if (development_tools)
 			{
-				const { DevTools, DebugPanel, LogMonitor } = require('redux-devtools/lib/react')
+				const { DevTools, DebugPanel, LogMonitor } = development_tools
 
-				console.info('You will see a "Warning: React attempted to reuse markup in a container but the checksum was' +
-					' invalid." message. That\'s because the redux-devtools are enabled.')
-
-				React.render
+				ReactDOM.render
 				(
 					<div>
 						{component}
@@ -31,10 +36,6 @@ export function client({ development, development_tools, routes, history, store,
 					</div>,
 					content_container
 				)
-			}
-			else
-			{
-				React.render(component, content_container)
 			}
 		},
 		(error) =>
@@ -58,23 +59,37 @@ export function client({ development, development_tools, routes, history, store,
 
 export function server({ disable_server_side_rendering, html, store, routes, request })
 {
-	const location = new Location(request.path, request.query)
+	// const history = create_memory_history()
+	const location = create_location(request.path, request.query)
+
+	const markup = () =>
+	{
+		return '<!doctype html>\n' + ReactDOMServer.renderToString(html.without_rendering(store))
+	}
 
 	if (disable_server_side_rendering)
 	{
-		return Promise.resolve({ markup: '<!doctype html>\n' +
-			React.renderToString(html.without_rendering(store)) })
+		return Promise.resolve({ markup: markup() })
 	}
-	
-	return router({ location, store, routes })
-		.then(({ component, transition, redirect }) =>
+
+	// , history
+	return router({ location, routes, store, preload: true })
+		.then(({ component, redirect }) =>
 		{
 			if (redirect)
 			{
-				return { redirect_to: response.redirect(transition.redirectInfo.pathname) }
+				return { redirect_to: response.redirect(redirect) }
 			}
 
 			return { markup: '<!doctype html>\n' +
-				React.renderToString(html.with_rendering(component, store)) }
+				ReactDOMServer.renderToString(html.with_rendering(component, store)) }
 		})
+
+		// // swallows errors
+		// .catch(error => !error.redirect, error =>
+		// {
+		// 	console.error(error)
+		// 	error.markup = markup() // let client render error page or re-request data
+		// 	throw error
+		// })
 }

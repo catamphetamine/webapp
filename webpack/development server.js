@@ -1,11 +1,13 @@
 import language from '../code/language'
 
+import express from 'express'
+
 import webpack                         from 'webpack'
-import webpack_development_server      from 'webpack-dev-server'
+// import webpack_development_server      from 'webpack-dev-server'
 import webpack_isomorphic_tools_plugin from 'webpack-isomorphic-tools/plugin'
 import base_configuration              from './webpack.config'
 
-import application_configuration  from '../code/server/configuration'
+import application_configuration from '../code/configuration'
 const websocket_url = `${application_configuration.webserver.http.host}:${application_configuration.webserver.http.port}`
 
 const configuration = Object.clone(base_configuration)
@@ -19,15 +21,19 @@ configuration.plugins = configuration.plugins.concat
 	// environment variables
 	new webpack.DefinePlugin
 	({
-		'process.env': { NODE_ENV: JSON.stringify('development') },
+		'process.env':
+		{
+			NODE_ENV: JSON.stringify('development'),
+			BABEL_ENV: JSON.stringify('development/client')
+		},
 
 		_websocket_url_: JSON.stringify(websocket_url),
 
-		_client_      : true,
-		_server_      : false,
-		_production_  : false,
-		_development_ : true,
-		_devtools_    : true  // <-------- DISABLE redux-devtools HERE
+		_client_            : true,
+		_server_            : false,
+		_production_        : false,
+		_development_       : true,
+		_development_tools_ : true  // <-------- DISABLE redux-devtools HERE
 	}),
 
 	// faster code reload on changes
@@ -45,21 +51,40 @@ configuration.plugins = configuration.plugins.concat
 // enable webpack development server
 configuration.entry.main = 
 [
-	`webpack-dev-server/client?http://${application_configuration.development.webpack.development_server.host}:${application_configuration.development.webpack.development_server.port}`,
-	'webpack/hot/only-dev-server',
+	// `webpack-dev-server/client?http://${application_configuration.development.webpack.development_server.host}:${application_configuration.development.webpack.development_server.port}`,
+	// 'webpack/hot/only-dev-server',
+	`webpack-hot-middleware/client?path=http://${application_configuration.development.webpack.development_server.host}:${application_configuration.development.webpack.development_server.port}/__webpack_hmr`,
 	configuration.entry.main
 ]
 
 // network path for static files: fetch all statics from webpack development server
 configuration.output.publicPath = `http://${application_configuration.development.webpack.development_server.host}:${application_configuration.development.webpack.development_server.port}${configuration.output.publicPath}`
 
-// add react-hot-loader to react components' loaders
-configuration.module.loaders.filter(loader =>
+// // add react-hot-loader to react components' loaders
+const javascript_loader = configuration.module.loaders.filter(loader =>
 {
 	return loader.test.toString() === configuration.regular_expressions.javascript.toString()
 })
 .first()
-.loaders.unshift('react-hot')
+// .loaders.unshift('react-hot')
+
+javascript_loader.query = javascript_loader.query || {}
+
+javascript_loader.query.plugins = javascript_loader.query.plugins || []
+javascript_loader.query.plugins.push('react-transform')
+
+extend(javascript_loader.query,
+{
+	extra:
+	{
+		'react-transform':
+		[{
+			target  : 'react-transform-hmr',
+			imports : ['react'],
+			locals  : ['module']
+		}]
+	}
+})
 
 // proxy:
 // {
@@ -93,9 +118,14 @@ const development_server_options =
 
 const compiler = webpack(configuration)
 
-const development_server = new webpack_development_server(compiler, development_server_options)
+// const development_server = new webpack_development_server(compiler, development_server_options)
 
-development_server.listen(application_configuration.development.webpack.development_server.port, '0.0.0.0', (error) =>
+const development_server = new express()
+
+development_server.use(require('webpack-dev-middleware')(compiler, development_server_options))
+development_server.use(require('webpack-hot-middleware')(compiler))
+
+development_server.listen(application_configuration.development.webpack.development_server.port, (error) =>
 {
 	if (error) 
 	{

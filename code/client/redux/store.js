@@ -10,16 +10,18 @@ export default function(api_client, data)
 	
 	let create_store
 
-	if (_development_ && _client_ && _devtools_)
+	if (_development_ && _client_ && _development_tools_)
 	{
 		const { devTools, persistState } = require('redux-devtools')
 		create_store = compose
 		(
 			applyMiddleware(middleware),
+			// Provides support for DevTools:
 			devTools(),
-			persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/)),
-			createStore
+			// Lets you write ?debug_session=<name> in address bar to persist debug sessions
+			persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/))
 		)
+		(createStore)
 	} 
 	else 
 	{

@@ -1,23 +1,14 @@
-// use bluebird for promises
-require('babel-runtime/core-js/promise').default = require('bluebird')
-
 require('babel/register')
-({
-	stage: 0,
-	plugins: ['typecheck'],
-	optional: ['runtime']
-})
 
-var minimist = require('minimist')
 var path = require('path')
 
-const Root_folder = path.resolve(__dirname, '..', '..')
-global.Root_folder = Root_folder
+global.Root_folder = path.resolve(__dirname, '..', '..')
 
 global._client_ = false
 global._server_ = true
-global._disable_server_side_rendering_ = false  // <----- DISABLES SERVER SIDE RENDERING FOR ERROR DEBUGGING
+global._disable_server_side_rendering_ = false
 
+var minimist = require('minimist')
 var command_line_arguments = minimist(process.argv.slice(2))
 
 global._production_ = command_line_arguments.production

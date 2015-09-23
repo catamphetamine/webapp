@@ -4,10 +4,11 @@ import minimist from 'minimist'
 
 // strip_json_comments = require 'strip-json-comments'
 
-import _ from '../language'
+import _ from './language'
 
-import configuration from '../../configuration.defaults'
-import specific_configuration from '../../configuration'
+import configuration from '../configuration.defaults'
+import specific_configuration from '../configuration'
+
 Object.extend(configuration, specific_configuration)
 export default configuration
 
@@ -16,7 +17,8 @@ export default configuration
 
 const process_arguments = minimist(process.argv.slice(2))
 
-if (process_arguments.path) {
+if (process_arguments.path)
+{
 	console.log(Object.path(configuration, process_arguments.path))
 	process.exit()
 }

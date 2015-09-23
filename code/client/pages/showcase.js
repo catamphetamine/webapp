@@ -1,7 +1,7 @@
 // require('./about.less' )
 
 import React, { Component, PropTypes } from 'react'
-import DocumentMeta from 'react-document-meta'
+import { webpage_title } from '../webpage head'
 import { connect } from 'react-redux'
 
 import { Link } from 'react-router'
@@ -18,7 +18,7 @@ export default class Showcase extends Component
 		const markup = 
 		(
 			<div>
-				<DocumentMeta title="UI Showcase"/>
+				{webpage_title("UI Showcase")}
 
 				<header>
 					<ul style={style.menu}>

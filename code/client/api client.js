@@ -51,7 +51,7 @@ class ApiClient_
 						{
 							if (error)
 							{
-								reject(response.body || error)
+								reject((response && response.body) || error)
 							}
 							else
 							{
@@ -251,8 +251,7 @@ class ApiClient_
 			},
 			error =>
 			{
-				console.log('$$$$$$$$$$$$$$$$$')
-				console.log(error)
+				console.error(error)
 
 				for (let promise of batch_promises)
 				{

@@ -85,9 +85,28 @@ pm2 logs cinema
 Сделать
 ====================
 
-graphiql в development mode
+не вызывать загрузку в componentDidMount на клиенте, если страница была отрендерена на сервере
 
-https://github.com/graphql/graphiql
+
+api client порефакторить
+
+Убрать из api client понятие о сервере
+
+
+
+async await
+
+
+загружать locales в locale switcher с сервера по api, который будет брать, считывая содержимое папки
+
+
+action response handlers -> store managers или mutators или типа того
+или разделить на store initializer и handlers
+
+
+
+сабмит формы, чтобы она сохраняла в оперативку на сервере, и обновляла store на клиенте
+(+ чтобы работала при обновлении страницы)
 
 showcase form чтобы имел кнопку с валидацией и записью на сервере в оперативку, и получал бы с сервера
 
@@ -95,12 +114,49 @@ showcase form чтобы имел кнопку с валидацией и зап
 
 https://github.com/devknoll/relay-nested-routes
 
+
+Добавить аутентикацию и пользователя
+
+сделать страницу login_success и добавить её в routes
+
+(мб) login_success чтобы перенаправляла на ту страницу, с которой входили
+
+
+
+
+сделать showcase с drag n drop
+
+https://github.com/gaearon/react-dnd
+
+
+
+
+
+В react-router сделать модульность (постепенную загрузку dependencies)
+
+
+
+
+graphiql в development mode
+
+https://github.com/graphql/graphiql
+
+
+после qraphql:
+
+<IndexRoute component={Home}/>
+<IndexLink to="/">Home</IndexLink>
+
+
+два раза вызывается Layout componentDidMount при использовании Redux DevTools
+
+i18n в webpage_title
+
+
+проверить, что ошибка на сервере в production покажется как страница ошибки мб (или как-то ещё)
+для рендеринга + для api
+
 выводить ошибку нормально, а не Internal Server Error - весь стектрейс, чтобы в консоль не переключаться на просмотр текста ошибки
-
-action response handlers -> store managers или mutators или типа того
-или разделить на store initializer и handlers
-
-загружать locales в locale switcher с сервера по api, который будет брать, считывая содержимое папки
 
 localized routes
 
@@ -108,59 +164,20 @@ locale hot switch
 
 https://github.com/gpbl/react-locale-hot-switch/
 
-api выделить в отдельную папку
-
 preload вызывается для всей цепочки (Layout, About) (автор пишет, что preload сам должен определять, нужно ли ему вызываться - на мой взгляд, не лучшее решение)
-
-сделать страницу login_success и добавить её в routes
-
-(мб) login_success чтобы перенаправляла на ту страницу, с которой входили
 
 хешировать пароль на сервере в auth
 
-сабмит формы, чтобы она сохраняла в оперативку на сервере, и обновляла store на клиенте
-(+ чтобы работала при обновлении страницы)
-
-почему webpack два раза билдит
-
-попробовать сделать npm run production на чистом build (без stats)
-
-не запускать web сервер до того, как появится файл webpack-stats.json
-
-api вынести в отдельную папку api в code
-
-мб статику держать не по пути client, а прямо так
-
 https://www.google.com/design/icons/
-
-Убрать из api client понятие о сервере
-
-Отрефакторить весь код
-
-api client порефакторить
-
-Запускать web сервер в dev только после того, как webpack-dev-server запустился
-
-сделать showcase с drag n drop
-
-https://github.com/gaearon/react-dnd
 
 nodemon не watch'ит новые файлы
 
-Долго запускается webpack dev server: слушает сразу, но stats выводятся только потом
-
 Долго рестартует web сервер после изменений - мб улучшить это как-то
-
-Добавить аутентикацию и пользователя
-
-Мб упразднить папку flux в пути
 
 Обновить Json Rpc и api согласно последним изменениям в pussy
 
 // Посмотреть потом, что скажет react-router-proxy-loader про react-router 1.0.0
 // Поддерживает ли react-router 1.0.0 постепенную загрузку dependencies
-
-В react-router сделать модульность (постепенную загрузку dependencies)
 
 https://github.com/rackt/react-router/blob/master/examples/huge-apps/app.js
 
@@ -168,27 +185,19 @@ https://github.com/rackt/react-router/blob/master/examples/huge-apps/app.js
 // Пока bluebird лучше:
 // http://programmers.stackexchange.com/questions/278778/why-are-native-es6-promises-slower-and-more-memory-intensive-than-bluebird
 
-Сделать сборку и проверить, что она работает
-
 Мб использовать это:
 
 https://github.com/obscene/Obscene-Layout
 
-Прикрутить перевод на языки: react-intl
-
-Скрипты установки сразу писать на Ansible
+Скрипты установки сразу писать на чём-нибудь типа fabric мб (если он кроссплатформенный)
 
 NginX
 
 https://github.com/acdlite/redux-react-router
 
-GraphQL, когда он выйдет в релиз
-
-https://medium.com/@clayallsopp/your-first-graphql-server-3c766ab4f0a2
-
 
 Рендеринг React'а вместе с React-router'ом и Redux'ом взят отсюда
-(будет обновляться после 27.08.2015 - мержить к себе новые изменения):
+(будет обновляться после 21.09.2015 - мержить к себе новые изменения):
 
 https://github.com/erikras/react-redux-universal-hot-example/commits/master
 
@@ -204,6 +213,10 @@ https://github.com/google/traceur-compiler/wiki/LanguageFeatures
 В качестве среды разработки используется Sublime Text 3, с плагинами
 
 https://github.com/babel/babel-sublime
+
+
+Чтобы Sublime Text 3 не искал в ненужных папках во время Find in Files,
+можно использовать такой "Where": -build/*
 
 
 Для общей сборки и для запуска процесса разработки сейчас используется Gulp, но вообще он мало кому нравится, и мб его можно убрать из цепи разработки.

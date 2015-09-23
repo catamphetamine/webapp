@@ -3,13 +3,13 @@ look.start()
 
 import path from 'path'
 
-import utility from './libraries/utility'
+import utility from './utility'
 
 import language from '../language'
 
 // Configuration
 
-import configuration from './configuration'
+import configuration from '../configuration'
 global.configuration = configuration
 
 console.log('Configuration:', configuration)
@@ -19,7 +19,7 @@ console.log('Configuration:', configuration)
 // log = log4js.getLogger()
 // log.setLevel(if configuration.debug then 'DEBUG' else 'INFO')
 
-import log from './log'
+import log from '../log'
 // global.log = log
 
 // maybe not used

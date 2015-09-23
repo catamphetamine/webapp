@@ -2,10 +2,13 @@ import express       from 'express'
 import session       from 'express-session'
 import body_parser   from 'body-parser'
 
-import configuration from './configuration'
+import configuration from '../configuration'
+global.configuration = configuration
 
-import json_rpc      from './libraries/json rpc'
+import json_rpc      from './json rpc'
 import utility       from './api/utility'
+
+import log           from './log'
 
 json_rpc.add('utility', utility)
 
@@ -21,7 +24,7 @@ web.use(session
 
 web.use(body_parser.json())
 
-export default function api()
+function api()
 {
 	return new Promise((resolve, reject) =>
 	{
@@ -50,7 +53,24 @@ export default function api()
 				return reject(error)
 			}
 
+			log.info(`Api server is up`)
+
 			resolve()
 		})
 	})
 }
+
+api().then(() =>
+{
+	log.info(`Api server is listening at http://${configuration.api_server.http.host}:${configuration.api_server.http.port}`)
+},
+error =>
+{
+	log.error(error)
+})
+
+// log all errors
+web.on('error', function(error, context)
+{
+	log.error(error, context)
+})

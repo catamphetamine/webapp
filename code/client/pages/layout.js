@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import DocumentMeta from 'react-document-meta'
+import { webpage_head } from '../webpage head'
 
 // использование: @Radium перед классом компонента
 // Radium = require 'radium'
@@ -10,7 +10,9 @@ import styler from 'react-styling'
 import { bindActionCreators as bind_action_creators } from 'redux'
 import { logout } from '../actions/authentication'
 
-import { create_transition_hook } from '../../react-isomorphic-render/router'
+// import { create_transition_hook } from '../../react-isomorphic-render/router'
+
+import { FormattedMessage } from '../international components'
 
 import { connect } from 'react-redux'
 
@@ -34,21 +36,17 @@ export default class Layout extends Component
 
 	static contextTypes =
 	{
-		router: PropTypes.object.isRequired,
-		store: PropTypes.object.isRequired
+		// router : PropTypes.object.isRequired,
+		history : PropTypes.object.isRequired,
+		store   : PropTypes.object.isRequired
 	}
 
-	componentWillMount()
+	componentDidMount()
 	{
-		const {router, store} = this.context
-		this.transition_hook = create_transition_hook(store)
-		router.addTransitionHook(this.transition_hook)
 	}
 
 	componentWillUnmount()
 	{
-		const {router, store} = this.context
-		router.remove_transition_hook(this.transition_hook)
 	}
 
 	componentWillReceiveProps(nextProps)
@@ -80,28 +78,23 @@ export default class Layout extends Component
 
 		const meta =
 		{
-			title,
-			description,
-			meta:
+			charSet: 'utf-8',
+			property:
 			{
-				charSet: 'utf-8',
-				property:
-				{
-					'og:site_name': title,
-					// 'og:image': image,
-					'og:locale': 'ru_RU',
-					'og:title': title,
-					'og:description': description,
+				'og:site_name': title,
+				// 'og:image': image,
+				'og:locale': 'ru_RU',
+				'og:title': title,
+				'og:description': description,
 
-					// 'twitter:card': 'summary',
-					// 'twitter:site': '@erikras',
-					// 'twitter:creator': '@erikras',
-					// 'twitter:title': title,
-					// 'twitter:description': description,
-					// 'twitter:image': image,
-					// 'twitter:image:width': '200',
-					// 'twitter:image:height': '200'
-				}
+				// 'twitter:card': 'summary',
+				// 'twitter:site': '@erikras',
+				// 'twitter:creator': '@erikras',
+				// 'twitter:title': title,
+				// 'twitter:description': description,
+				// 'twitter:image': image,
+				// 'twitter:image:width': '200',
+				// 'twitter:image:height': '200'
 			}
 		}
 
@@ -119,11 +112,11 @@ export default class Layout extends Component
 		const markup = 
 		(
 			<div>
-				<DocumentMeta {...meta}/>
+				{webpage_head(title, description, meta)}
 
 				<nav>
 					<Link to="/" style={style.home} activeStyle={style.home}>
-						Cinema
+						<FormattedMessage message="meta.title" />
 					</Link>
 
 					<Locale_switcher style={style.locale_switcher}/>

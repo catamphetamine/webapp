@@ -54,5 +54,10 @@ export function render({ request, respond, fail, redirect, locale })
 
 		log.error(error)
 		fail(error)
+
+		if (error.markup)
+		{
+			respond(error.markup)
+		}
 	})
 }

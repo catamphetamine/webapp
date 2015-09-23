@@ -26,8 +26,9 @@ export default function middleware(client)
 			// end asynchronous request
 			return promise(client).then
 			(
-				(result) => next({ ...rest, result, type: Success }),
-				(error)  => next({ ...rest, error,  type: Failure })
+				result => next({ ...rest, result, type: Success }),
+				error => next({...rest, error, type: Failure})
+				// error => Promise.reject(next({...rest, error, type: Failure}))
 			)
 		}
 	}

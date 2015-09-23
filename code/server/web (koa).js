@@ -6,8 +6,7 @@ import os            from 'os'
 import url           from  'url'
 import socket_io     from 'socket.io'
 import log           from './log'
-import configuration from './configuration'
-import api           from './api'
+import configuration from '../configuration'
 
 import koa         from 'koa'
 import session     from 'koa-session'
@@ -22,6 +21,8 @@ import koa_logger  from 'koa-bunyan'
 import koa_proxy   from 'koa-proxy'
 import mount       from 'koa-mount'
 import koa_locale  from 'koa-locale'
+
+import { render } from './webpage rendering'
 
 // https://github.com/chentsulin/koa-graphql
 
@@ -50,8 +51,9 @@ web.use(compress())
 //
 web.use(mount('/assets', statics(path.join(Root_folder, 'build', 'assets'), 
 {
-	maxAge : 365 * 24 * 60 * 60,
-	gzip   : true
+	maxAge  : 365 * 24 * 60 * 60,
+	gzip    : true,
+	dynamic : true
 })))
 
 // // Proxy to API server
@@ -71,8 +73,6 @@ koa_locale(web, 'locale')
 // 	// query: '?locale=en'
 // 	this.locale = this.getLocaleFromQuery() || this.getLocaleFromCookie() || this.getLocaleFromHeader()
 // })
-
-import { render } from './webpage rendering'
 
 function get_language(locale)
 {
@@ -110,16 +110,23 @@ const http_web_server = http.createServer()
 const websocket = socket_io.listen(http_web_server)
 websocket.serveClient(false)
 
-const koa_callback = web.callback()
+// enable Koa for handling http requests
+http_web_server.on('request', web.callback())
 
-http_web_server.on('request', koa_callback)
+// copy-pasted from 
+// https://github.com/koajs/koala/blob/master/lib/app.js
+//
+// "Expect: 100-continue" is something related to http request body parsing
+// http://crypto.pp.ua/2011/02/mexanizm-expectcontinue/
 
-http_web_server.on('checkContinue', function(request, response)
-{
-	// requests with `Expect: 100-continue`
-	request.checkContinue = true
-	koa_callback(request, response)
-})
+// const koa_callback = web.callback()
+// http_web_server.on('request', koa_callback)
+// http_web_server.on('checkContinue', function(request, response)
+// {
+// 	// requests with `Expect: 100-continue`
+// 	request.checkContinue = true
+// 	koa_callback(request, response)
+// })
 
 // поднять http сервер
 http_web_server.listen(configuration.webserver.http.port, error =>
@@ -129,15 +136,8 @@ http_web_server.listen(configuration.webserver.http.port, error =>
 		return log.error(error)
 	}
 
-	api().then(() =>
-	{
-		log.info(`Web server is listening`)
-		log.info(`Now go to http://${configuration.webserver.http.host}:${configuration.webserver.http.port}`)
-	},
-	error =>
-	{
-		log.error(error)
-	})
+	log.info(`Web server is listening`)
+	log.info(`Now go to http://${configuration.webserver.http.host}:${configuration.webserver.http.port}`)
 })
 
 export default web

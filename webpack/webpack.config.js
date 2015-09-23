@@ -58,7 +58,7 @@ var configuration =
 					path.resolve(root_folder, 'code', 'react-isomorphic-render'),
 					path.resolve(root_folder, 'code', 'language.js')
 				],
-				loaders: ['babel-loader?stage=0&optional=runtime&plugins=typecheck']
+				loader: 'babel-loader'
 			},
 			{
 				test    : regular_expressions.styles,

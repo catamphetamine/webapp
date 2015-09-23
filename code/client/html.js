@@ -1,5 +1,8 @@
-import React, {Component, PropTypes} from 'react'
-import DocumentMeta from 'react-document-meta'
+import React, { Component, PropTypes } from 'react'
+import ReactDOMServer from 'react-dom/server'
+
+import { server_generated_webpage_head } from './webpage head'
+
 import serialize from 'serialize-javascript'
 
 /**
@@ -29,14 +32,13 @@ export default class Html extends Component
 		// get the favicon (this code will run on server)
 		const required_assets = Html.require_assets()
 
+		const content = ReactDOMServer.renderToString(component)
+
 		const html = 
 		(
 			<html lang="en-us">
 				<head>
-					{/* <meta charSet="utf-8"/> */}
-					{/* <title>{title}</title> */}
-
-					{DocumentMeta.rewind({ asReact: true })}
+					{server_generated_webpage_head()}
 
 					{/* favicon */}
 					<link rel="shortcut icon" href={required_assets.icon}/>
@@ -54,7 +56,7 @@ export default class Html extends Component
 
 				<body>
 					{/* rendered React page */}
-					<div id="content" dangerouslySetInnerHTML={{__html: React.renderToString(component)}}/>
+					<div id="content" dangerouslySetInnerHTML={{__html: content}}/>
 
 					{/* Flux store data will be reloaded into the store on the client */}
 					<script dangerouslySetInnerHTML={{__html: `window._flux_store_data=${serialize(store.getState())};`}} />

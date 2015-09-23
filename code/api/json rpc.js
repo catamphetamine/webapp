@@ -1,6 +1,6 @@
 import http from 'http'
 import querystring from 'querystring'
-import log from './../log'
+import log from './log'
 
 const create_server = () =>
 {

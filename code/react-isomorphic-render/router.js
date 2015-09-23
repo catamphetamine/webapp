@@ -2,7 +2,7 @@
 // Revision: Jul 23, 2015, abf052864d0ed65c3b11475e5a47a4d0f6206330
 
 import React from 'react'
-import Router from 'react-router'
+import { Router, RoutingContext, match } from 'react-router'
 import { Provider } from 'react-redux'
 
 const get_preloader = (component = {}) =>
@@ -12,29 +12,7 @@ const get_preloader = (component = {}) =>
 		component.preload
 }
 
-// this method has a bug: .preload() is called for each matching route in the path
-// (e.g. "Application, About", not "About")
-export function create_transition_hook(store)
-{
-	return (next_state, transition, callback) =>
-	{
-		const { params, location: { query } } = next_state
-
-		Promise.all(next_state.branch
-			// pull out individual route components
-			.map(route => route.component)
-			// only look at ones with a static fetchData()
-			.map(get_preloader)
-			// pull out fetch data methods
-			.filter(preloader => exists(preloader))
-			// call fetch data methods and save promises
-			.map(preload => preload(store, params, query || {})))
-			// finished
-			.then(() => callback(), error => callback(error))
-	}
-}
-
-export default function router({ location, history, store, routes })
+export default function router({ location, history, store, routes, preload })
 {
 	if (typeof routes === 'function')
 	{
@@ -55,40 +33,68 @@ export default function router({ location, history, store, routes })
 
 	return new Promise((resolve, reject) =>
 	{
-		Router.run(routes, location, [create_transition_hook(store)], (error, initialState, transition) =>
+		match({ routes, history, location }, (error, redirect_location, render_props) =>
 		{
 			if (error)
 			{
 				return reject(error)
 			}
 
-			if (transition && transition.redirectInfo)
+			if (redirect_location)
 			{
 				return resolve
 				({
-					transition,
-					redirect: true
+					redirect: redirect_location.pathname + redirect_location.search
 				})
 			}
 
-			// only on client side
+			// used only on client for <Router history={history} ...>
 			if (history)
 			{
-				initialState.history = history
+				render_props.history = history
 			}
 
-			const component =
-			(
-				<Provider store={store} key="provider">
-					{() => <Router {...initialState} children={routes}/>}
-				</Provider>
-			)
+			function finish()
+			{
+				let markup
 
-			return resolve
-			({
-				component,
-				redirect: false
-			})
+				if (_server_)
+				{
+					markup = (<RoutingContext {...render_props}/>)
+				}
+				else
+				{
+					markup = React.createElement(Router, render_props)
+				}
+
+				const component =
+				(
+					<Provider store={store} key="provider">
+						{markup}
+					</Provider>
+				)
+
+				resolve({ component })
+			}
+
+			if (preload)
+			{
+				// const { params, location: { query } } = next_state
+
+				Promise.all(render_props.components
+					// only look at ones with a static fetchData()
+					.map(get_preloader)
+					// pull out fetch data methods
+					.filter(preloader => exists(preloader))
+					// call fetch data methods and save promises
+					.map(preload => preload(store))) //, params, query || {})))
+					// finished
+					.then(() => finish(), error => reject(error))
+			}
+			else
+			{
+				finish()
+			}
 		})
 	})
 }

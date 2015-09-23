@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 // import Boron from 'boron'
-import DocumentMeta from 'react-document-meta'
+import { webpage_title } from '../../webpage head'
 import styler from 'react-styling'
 
 import { connect } from 'react-redux'
@@ -33,7 +33,7 @@ export default class Dialog extends Component
 		const markup = 
 		(
 			<div>
-				<DocumentMeta title="Dialog showcase"/>
+				{webpage_title("Dialog Showcase")}
 
 				<div style={style.container}>
 					<a href="https://github.com/yuanyan/boron/issues/8">https://github.com/yuanyan/boron/issues/8</a>

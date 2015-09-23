@@ -1,10 +1,8 @@
-/* global _devtools_ */
 import 'babel/polyfill'
 
 import language       from '../language'
 
 import React          from 'react'
-import BrowserHistory from 'react-router/lib/BrowserHistory'
 
 import api_client     from './api client'
 import { client }     from '../react-isomorphic-render'
@@ -25,6 +23,12 @@ international.load_polyfill(locale)
 	.then(international.load_locale_data.bind(null, locale))
 	.then(() =>
 	{
+		let development_tools
+		if (_development_tools_)
+		{
+			development_tools = require('redux-devtools/lib/react')
+		}
+
 		// since react-intl assumes Intl is already in the global scope, 
 		// we can't import the routes (which imports react-intl in some of its components) 
 		// before polyfilling Intl. That's why you see require("./routes") here, 
@@ -32,9 +36,9 @@ international.load_polyfill(locale)
 		client
 		({
 			development       : _development_,
-			development_tools : _devtools_,
+			development_tools : development_tools,
 			routes            : require('./routes'),
-			history           : new BrowserHistory(),
+			// history           : create_history(),
 			store             : create_store(new api_client(), window._flux_store_data),
 			content_container : document.getElementById('content')
 		})
@@ -43,7 +47,5 @@ international.load_polyfill(locale)
 	{
 		console.error(error)
 	})
-
-React.initializeTouchEvents(true)
 
 window.debug = (...parameters) => { console.log.bind(console)(parameters) }

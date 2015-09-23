@@ -1,7 +1,7 @@
 // require('./editor.less')
 
 import React, { Component, PropTypes } from 'react'
-import DocumentMeta from 'react-document-meta'
+import { webpage_title } from '../webpage head'
 import { connect } from 'react-redux'
 
 import styler from 'react-styling'
@@ -21,6 +21,8 @@ export default class Page extends Component
 		const markup = 
 		(
 			<section>
+				{webpage_title("Home")}
+
 				<h1 style={style.header}>
 					<FormattedMessage message="home.welcome" />
 				</h1>

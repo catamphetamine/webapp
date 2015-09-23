@@ -1,7 +1,7 @@
 // require('./about.less' )
 
 import React, { Component } from 'react'
-import DocumentMeta from 'react-document-meta'
+import { webpage_title } from '../../webpage head'
 import styler from 'react-styling'
 
 import { connect } from 'react-redux'
@@ -24,7 +24,7 @@ export default class Form extends Component
 		const markup = 
 		(
 			<div>
-				<DocumentMeta title="Form UI Showcase"/>
+				{webpage_title("Form UI Showcase")}
 
 				<form style={style.form}>
 					<label style={style.form.label}>{'Text input field'}</label>

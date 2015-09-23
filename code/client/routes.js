@@ -45,8 +45,8 @@ export default function(store)
 			<Route path="/editor" component={Editor}/>
 			<Route path="/about" component={About}/>
 			<Route path="/showcase" component={Showcase}>
-				<Route path="/dialog" component={Dialog}/>
-				<Route path="/form" component={Form}/>
+				<Route path="/showcase/dialog" component={Dialog}/>
+				<Route path="/showcase/form" component={Form}/>
 			</Route>
 			<Route path="*" component={Not_found}/>
 		</Route>
