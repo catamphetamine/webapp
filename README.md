@@ -85,9 +85,6 @@ pm2 logs cinema
 Сделать
 ====================
 
-не вызывать загрузку в componentDidMount на клиенте, если страница была отрендерена на сервере
-
-
 api client порефакторить
 
 Убрать из api client понятие о сервере
@@ -142,10 +139,16 @@ graphiql в development mode
 https://github.com/graphql/graphiql
 
 
-после qraphql:
+после graphql:
 
 <IndexRoute component={Home}/>
 <IndexLink to="/">Home</IndexLink>
+
+
+когда graphql будет выделен в отдельное, переименовать:
+server -> rendering_server
+
+
 
 
 два раза вызывается Layout componentDidMount при использовании Redux DevTools

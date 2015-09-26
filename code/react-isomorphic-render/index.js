@@ -20,6 +20,9 @@ export function client({ development, development_tools, routes, store, content_
 	const promise = router({ location, history, routes, store })
 		.then(({ component }) =>
 		{
+			// Render dev tools after initial client render to prevent warning
+			// "React attempted to reuse markup in a container but the checksum was invalid"
+			// https://github.com/erikras/react-redux-universal-hot-example/pull/210
 			ReactDOM.render(component, content_container)
 
 			if (development_tools)

@@ -43,8 +43,10 @@ export default class About extends Component
 	{
 		// to do: remove second loading here for client-side navigation
 		// to do: remove loading here for server-side rendered page
-		console.log('### componentDidMount called at ', Date.now())
-		this.constructor.preload(this.context.store)
+		if (window.client_side_routing)
+		{
+			this.constructor.preload(this.context.store)
+		}
 	}
 
 	render()

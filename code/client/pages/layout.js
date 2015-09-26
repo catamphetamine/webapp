@@ -43,6 +43,7 @@ export default class Layout extends Component
 
 	componentDidMount()
 	{
+		window.client_side_routing = true
 	}
 
 	componentWillUnmount()
