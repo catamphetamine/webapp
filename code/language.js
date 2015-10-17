@@ -403,21 +403,40 @@ Object.defineProperty(Function.prototype, 'periodical',
 // временная заглушка для переводов на языки
 // global._ = (key) -> key
 
-global.custom_error = function(name)
+global.custom_error = function(name, parameters)
 {
 	class Custom_error extends Error
 	{
-		constructor(error)
+		constructor(argument)
 		{
 			super()
 
-			if (exists(error))
+			if (exists(parameters))
 			{
-				if (exists(error.code))
+				if (exists(parameters.code))
 				{
-					this.code = error.code
+					this.code = parameters.code
 				}
-				this.message = error.message || error
+
+				if (exists(parameters.message))
+				{
+					this.message = parameters.message
+				}
+			}
+
+			if (exists(argument))
+			{
+				if (exists(argument.code))
+				{
+					this.code = argument.code
+				}
+				
+				if (exists(argument.message))
+				{
+					this.message = argument.message
+				}
+
+				this.message = this.message || argument
 			}
 
 			this.name = name
@@ -429,7 +448,26 @@ global.custom_error = function(name)
 		}
 	}
 
-	Custom_error.is_custom_error = true
+	// Custom_error.is_custom_error = true
 
 	return Custom_error
 }
+
+// function custom_error(name)
+// {
+// 	function Custom_error(message)
+// 	{
+// 		this.message = message
+// 		this.name = name
+
+// 		if (Error.captureStackTrace)
+// 		{
+// 			Error.captureStackTrace(this, Custom_error)
+// 		}
+// 	}
+
+// 	Custom_error.prototype = Object.create(Error.prototype)
+// 	Custom_error.prototype.constructor = Custom_error
+
+// 	return Custom_error
+// }

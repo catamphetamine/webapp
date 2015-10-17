@@ -3,53 +3,33 @@ import query_string from 'query-string'
 import React                 from 'react'
 import ReactDOM              from 'react-dom'
 import ReactDOMServer        from 'react-dom/server'
-import create_location       from 'history/lib/createLocation'
 import create_history        from 'history/lib/createBrowserHistory'
-// import create_memory_history from 'history/lib/createMemoryHistory'
+import create_memory_history from 'history/lib/createMemoryHistory'
 import router                from './router'
 
-export function client({ development, development_tools, routes, store, content_container })
+export function client({ development, wrap_component, routes, store, content_container })
 {
 	// let query = document.location.search
 	// query = query && query_string.parse(query)
 	// const location = create_location(document.location.pathname, query)
-  
-	const location = create_location(document.location.pathname, document.location.search)
-	const history = create_history()
 
-	const promise = router({ location, history, routes, store })
+	const history = create_history()
+	const location = history.createLocation(document.location.pathname, document.location.search)
+
+	const promise = router({ location, history, routes })
 		.then(({ component }) =>
 		{
-			// Render dev tools after initial client render to prevent warning
-			// "React attempted to reuse markup in a container but the checksum was invalid"
-			// https://github.com/erikras/react-redux-universal-hot-example/pull/210
-			ReactDOM.render(component, content_container)
-
-			if (development_tools)
-			{
-				const { DevTools, DebugPanel, LogMonitor } = development_tools
-
-				ReactDOM.render
-				(
-					<div>
-						{component}
-						<DebugPanel top right bottom key="debugPanel">
-							<DevTools store={store} monitor={LogMonitor}/>
-						</DebugPanel>
-					</div>,
-					content_container
-				)
-			}
+			ReactDOM.render(wrap_component(component), content_container)
 		},
 		(error) =>
 		{
-			console.error(error)
+			console.error(error.stack || error)
 		})
 
 	if (development)
 	{
 		window.React = React // enable debugger
-		const reactRoot = window.document.getElementById('content')
+		const reactRoot = content_container // window.document.getElementById('content')
 
 		if (!reactRoot || !reactRoot.firstChild || !reactRoot.firstChild.attributes || !reactRoot.firstChild.attributes['data-react-checksum'])
 		{
@@ -60,14 +40,16 @@ export function client({ development, development_tools, routes, store, content_
 	return promise
 }
 
-export function server({ disable_server_side_rendering, html, store, routes, request })
+export function server({ disable_server_side_rendering, wrap_component, html, routes, request, preload })
 {
-	// const history = create_memory_history()
-	const location = create_location(request.path, request.query)
+	const history = create_memory_history()
+	// const history = create_history()
+	const location = history.createLocation(request.originalUrl)
+	// const location = history.createLocation(request.path, request.query)
 
 	const markup = () =>
 	{
-		return '<!doctype html>\n' + ReactDOMServer.renderToString(html.without_rendering(store))
+		return '<!doctype html>\n' + ReactDOMServer.renderToString(html.without_rendering())
 	}
 
 	if (disable_server_side_rendering)
@@ -76,7 +58,7 @@ export function server({ disable_server_side_rendering, html, store, routes, req
 	}
 
 	// , history
-	return router({ location, routes, store, preload: true })
+	return router({ location, routes, preload })
 		.then(({ component, redirect }) =>
 		{
 			if (redirect)
@@ -85,7 +67,7 @@ export function server({ disable_server_side_rendering, html, store, routes, req
 			}
 
 			return { markup: '<!doctype html>\n' +
-				ReactDOMServer.renderToString(html.with_rendering(component, store)) }
+				ReactDOMServer.renderToString(html.with_rendering(wrap_component(component))) }
 		})
 
 		// // swallows errors

@@ -1,19 +1,8 @@
 export default
 {
-	locales: ['ru'],
+	'application.title': 'WebApp',
+	'application.description': `Пример web приложения на React'е и Flux'е`,
+	'application.language': 'Язык',
 
-	messages:
-	{
-		meta:
-		{
-			title: 'Киностудия',
-			description: `Приложение на React'е и Flux'е`
-		},
-
-		home:
-		{
-			language: 'Язык',
-			welcome: 'Собака'
-		}
-	}
+	'home.header': 'Собака'
 }

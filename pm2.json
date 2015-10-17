@@ -1,6 +1,6 @@
 {
   "apps" : [{
-    "name"        : "cinema",
+    "name"        : "webapp",
     "script"      : "./server/main.coffee",
     "args"        : [],
     "log_date_format"  : "DD.MM.YYYY HH:mm Z",

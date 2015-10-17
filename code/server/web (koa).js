@@ -11,7 +11,7 @@ import configuration from '../configuration'
 import koa         from 'koa'
 import session     from 'koa-session'
 // https://github.com/Chilledheart/koa-session-redis
-import cors        from 'kcors'
+// import cors        from 'kcors'
 // import csrf        from 'koa-csrf'
 // import body_parser from 'koa-body-parsers'
 import body_parser from 'koa-bodyparser'
@@ -74,26 +74,16 @@ koa_locale(web, 'locale')
 // 	this.locale = this.getLocaleFromQuery() || this.getLocaleFromCookie() || this.getLocaleFromHeader()
 // })
 
-function get_language(locale)
-{
-	const dash_index = locale.indexOf('-')
-	if (dash_index >= 0)
-	{
-		return locale.substring(0, dash_index)
-	}
-	return locale
-}
-
 // серверный ("изоморфный") рендеринг
 web.use(function*()
 {
 	yield render
 	({
-		locale   : get_language(this.getLocaleFromQuery() || this.getLocaleFromCookie() || this.getLocaleFromHeader() || 'en'),
-		request  : this.request, 
-		respond  : data => this.body = data, 
-		fail     : error => this.throw(error), 
-		redirect : to => this.redirect(to)
+		preferred_locale : this.getLocaleFromQuery() || this.getLocaleFromCookie() || this.getLocaleFromHeader() || 'en',
+		request          : this.request, 
+		respond          : data => this.body = data, 
+		fail             : error => this.throw(error), 
+		redirect         : to => this.redirect(to)
 	})
 })
 
@@ -108,7 +98,17 @@ const http_web_server = http.createServer()
 
 // websocket server
 const websocket = socket_io.listen(http_web_server)
+// don't serve client scripts
 websocket.serveClient(false)
+
+websocket.on('connection', socket =>
+{
+	socket.emit('news', { message: `'Hello World!' from server` })
+	socket.on('something', data =>
+	{
+		log.info(data)
+	})
+})
 
 // enable Koa for handling http requests
 http_web_server.on('request', web.callback())

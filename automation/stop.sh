@@ -1,3 +1,3 @@
 #!/bin/bash
 
-pm2 stop cinema
+pm2 stop webapp

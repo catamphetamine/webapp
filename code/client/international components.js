@@ -11,8 +11,8 @@ import connect_to_international_store from './international store'
 
 export default
 {
-	FormattedMessage  : connect_to_international_store(FormattedMessage),
-	FormattedDate     : connect_to_international_store(FormattedDate),
-	FormattedNumber   : connect_to_international_store(FormattedNumber),
-	FormattedRelative : connect_to_international_store(FormattedRelative)
+	text          : connect_to_international_store(FormattedMessage),
+	date          : connect_to_international_store(FormattedDate),
+	number        : connect_to_international_store(FormattedNumber),
+	relative_time : connect_to_international_store(FormattedRelative)
 }

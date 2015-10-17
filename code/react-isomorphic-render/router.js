@@ -3,7 +3,6 @@
 
 import React from 'react'
 import { Router, RoutingContext, match } from 'react-router'
-import { Provider } from 'react-redux'
 
 const get_preloader = (component = {}) =>
 {
@@ -12,27 +11,15 @@ const get_preloader = (component = {}) =>
 		component.preload
 }
 
-export default function router({ location, history, store, routes, preload })
+export default function router({ location, history, routes, preload })
 {
-	if (typeof routes === 'function')
-	{
-		routes = routes(store)
-	}
-
-	// if (!(routes instanceof ...))
-	// {
-	// 	if (typeof routes === 'function')
-	// 	{
-	// 		routes = routes(store)
-	// 	}
-	// 	else
-	// 	{
-	// 		throw new Error('Invalid routes passed: must be a react object or function')
-	// 	}
-	// }
-
 	return new Promise((resolve, reject) =>
 	{
+		if (typeof routes === 'function')
+		{
+			routes = routes() // , history
+		}
+
 		match({ routes, history, location }, (error, redirect_location, render_props) =>
 		{
 			if (error)
@@ -67,14 +54,7 @@ export default function router({ location, history, store, routes, preload })
 					markup = React.createElement(Router, render_props)
 				}
 
-				const component =
-				(
-					<Provider store={store} key="provider">
-						{markup}
-					</Provider>
-				)
-
-				resolve({ component })
+				resolve({ component: markup })
 			}
 
 			if (preload)
@@ -87,7 +67,7 @@ export default function router({ location, history, store, routes, preload })
 					// pull out fetch data methods
 					.filter(preloader => exists(preloader))
 					// call fetch data methods and save promises
-					.map(preload => preload(store))) //, params, query || {})))
+					.map(preloader => preload(preloader))) //, params, query || {})))
 					// finished
 					.then(() => finish(), error => reject(error))
 			}

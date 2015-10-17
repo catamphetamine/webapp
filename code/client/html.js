@@ -18,25 +18,29 @@ export default class Html extends Component
 {
 	static propTypes =
 	{
-		assets    : PropTypes.object,
-		component : PropTypes.object,
-		store     : PropTypes.object
+		locale    : PropTypes.string.isRequired,
+		messages  : PropTypes.object.isRequired,
+		assets    : PropTypes.object.isRequired,
+		component : PropTypes.node,
+		store     : PropTypes.object.isRequired
 	}
 
 	render()
 	{
-		const { assets, component, store } = this.props
+		const { locale, messages, assets, component, store } = this.props
 		
-		// const title = 'Cinema'
+		// const title = 'Webapp'
 
 		// get the favicon (this code will run on server)
 		const required_assets = Html.require_assets()
 
-		const content = ReactDOMServer.renderToString(component)
+		// when server-side rendering is disabled, component will be undefined
+		// (but server-side rendering is always on so this code may be removed)
+		const content = component ? ReactDOMServer.renderToString(component) : ''
 
 		const html = 
 		(
-			<html lang="en-us">
+			<html lang={locale}>
 				<head>
 					{server_generated_webpage_head()}
 
@@ -60,6 +64,9 @@ export default class Html extends Component
 
 					{/* Flux store data will be reloaded into the store on the client */}
 					<script dangerouslySetInnerHTML={{__html: `window._flux_store_data=${serialize(store.getState())};`}} />
+
+					{/* React-intl messages */}
+					<script dangerouslySetInnerHTML={{__html: `window._localized_messages=${serialize(messages)};`}} />
 
 					{/* javascripts */}
 

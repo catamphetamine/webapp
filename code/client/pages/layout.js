@@ -4,15 +4,17 @@ import { webpage_head } from '../webpage head'
 // использование: @Radium перед классом компонента
 // Radium = require 'radium'
 
-import { Link } from 'react-router'
+import { Link, IndexLink } from 'react-router'
+
 import styler from 'react-styling'
+// import autoprefixer from 'autoprefixer'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
 import { logout } from '../actions/authentication'
 
 // import { create_transition_hook } from '../../react-isomorphic-render/router'
 
-import { FormattedMessage } from '../international components'
+import { text as Text } from '../international components'
 
 import { connect } from 'react-redux'
 
@@ -20,12 +22,30 @@ import { connect } from 'react-redux'
 
 import Locale_switcher from '../components/locale switcher'
 
+import { defineMessages, injectIntl as international } from 'react-intl'
+
+const messages = defineMessages
+({
+	title:
+	{
+		id             : 'application.title',
+		description    : 'Web application title',
+		defaultMessage : 'WebApp'
+	},
+	description:
+	{
+		id             : 'application.description',
+		description    : 'Web application description',
+		defaultMessage : 'A generic web application boilerplate'
+	}
+})
+
 @connect
 (
 	store => ({ }), // user: store.auth.user })
 	dispatch => bind_action_creators({ logout }, dispatch)
 )
-export default class Layout extends Component
+class Layout extends Component
 {
 	static propTypes =
 	{
@@ -72,10 +92,12 @@ export default class Layout extends Component
 
 	render()
 	{
+		const format_message = this.props.intl.formatMessage
+
 		// Html document metadata
 
-		const title = 'Cinema'
-		const description = 'A video production studio'
+		const title = 'WebApp'
+		const description = 'A generic web application boilerplate'
 
 		const meta =
 		{
@@ -116,9 +138,9 @@ export default class Layout extends Component
 				{webpage_head(title, description, meta)}
 
 				<nav>
-					<Link to="/" style={style.home} activeStyle={style.home}>
-						<FormattedMessage message="meta.title" />
-					</Link>
+					<IndexLink to="/" style={style.home} activeStyle={style.home.active}>
+						{format_message(messages.title)}
+					</IndexLink>
 
 					<Locale_switcher style={style.locale_switcher}/>
 
@@ -139,12 +161,18 @@ export default class Layout extends Component
 	}
 }
 
+export default international(Layout)
+
 const style = styler
 `
 	home
 		color       : black
 		font-size   : 16pt
 		margin-left : 1em
+
+		active:
+			text-decoration : none
+			cursor          : default
 
 	locale_switcher
 		display     : inline-block

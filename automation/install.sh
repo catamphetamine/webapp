@@ -3,7 +3,7 @@
 # # установить postgresql
 # apt-get install postgresql-9.3 pgadmin3
 
-# # create database "cinema"
+# # create database "webapp"
 
 # # установить node.js
 

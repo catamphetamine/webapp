@@ -11,14 +11,7 @@ const handlers =
 // (is copy & paste'd for all action response handlers)
 export default function(state = initial_state, action = {})
 {
-	const handler = handlers[action.type]
-
-	if (!handler)
-	{
-		return state
-	}
-
-	return handler(state, action)
+	return (handlers[action.type] || (state => state))(state, action)
 }
 
 // export default function info(state = initial_state, action = {}) {

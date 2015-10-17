@@ -1,4 +1,4 @@
-Cinema is a sample project built with React and Flux.
+WebApp is an example of a generic web application with React and Flux.
 
 Features
 
@@ -11,7 +11,7 @@ Features
 * Internationalization with React-intl
 * To be done: Authentication
 * To be done: GraphQL + Relay
-* To be done: Persistence (PostgreSQL)
+* To be done: Persistence (PostgreSQL, Bookshelf)
 * Maybe to be done: Locale switch hot reload (without reloading page)
 
 Installation
@@ -28,30 +28,22 @@ npm run dev
 
 After it finishes loading go to:
 
-Далее зайти на:
-
 http://localhost:3000
 
-(the web page will refresh automagically when you save your changes)
-
-(страница будет сама обновляться при изменении исходных кодов)
+(the web page will refresh automatically when you save your changes)
 
 Running (production)
 =====================
 
 Build the project with Webpack and run the web server:
 
-Построить проект webpack'ом и запустить web сервер:
-
 npm run production
 
 Next go to:
 
-Далее зайти на:
-
 http://localhost:3000
 
-Запуск демоном (production, пока ещё не сделано) (to be done)
+Running in production (to be done)
 ====================
 
 ./automation/start.sh
@@ -78,16 +70,50 @@ pm2 monit
 
 Посмотреть логи:
 
-pm2 logs cinema
+pm2 logs webapp
 
 Возможна кластеризация, безостановочное самообновление и т.п.
 
 Сделать
 ====================
 
-api client порефакторить
+попробовать defineMessages as define_messages
 
-Убрать из api client понятие о сервере
+
+вставить в production build и в development rendering server run
+
+{
+  "plugins": ["react-intl"],
+  "extra": {
+    "react-intl": {
+        "messagesDir": "./build/messages/",
+        "enforceDescriptions": true
+    }
+  }
+}
+
+
+перевести title страниц
+
+
+перевести в layout title и description
+
+
+react-intl v2
+
+на сервере класть переводы мб в window.__locale_messages и на клиенте их брать оттуда
+
+
+
+
+FormattedMessage -> message
+и т.п.
+
+
+
+
+
+api client порефакторить
 
 
 
@@ -95,11 +121,6 @@ async await
 
 
 загружать locales в locale switcher с сервера по api, который будет брать, считывая содержимое папки
-
-
-action response handlers -> store managers или mutators или типа того
-или разделить на store initializer и handlers
-
 
 
 сабмит формы, чтобы она сохраняла в оперативку на сервере, и обновляла store на клиенте
@@ -128,8 +149,17 @@ https://github.com/gaearon/react-dnd
 
 
 
+тикающие relative_time
+
+
+
 
 В react-router сделать модульность (постепенную загрузку dependencies)
+
+
+
+
+update-schema вызывать при изменении схемы Relay (nodemon)
 
 
 
@@ -139,10 +169,6 @@ graphiql в development mode
 https://github.com/graphql/graphiql
 
 
-после graphql:
-
-<IndexRoute component={Home}/>
-<IndexLink to="/">Home</IndexLink>
 
 
 когда graphql будет выделен в отдельное, переименовать:
@@ -200,7 +226,7 @@ https://github.com/acdlite/redux-react-router
 
 
 Рендеринг React'а вместе с React-router'ом и Redux'ом взят отсюда
-(будет обновляться после 21.09.2015 - мержить к себе новые изменения):
+(будет обновляться после 03.10.2015 - мержить к себе новые изменения):
 
 https://github.com/erikras/react-redux-universal-hot-example/commits/master
 
@@ -285,9 +311,9 @@ https://github.com/lpiepiora/bower-webpack-plugin
 Для кеширования Html5 через manifest можно будет посмотреть плагин AppCachePlugin
 
 
-Небольшой мониторинг есть по адресу http://localhost:5959/
+// Небольшой мониторинг есть по адресу http://localhost:5959/
 
-(npm модуль look)
+// (npm модуль look) (не компилируется на новой Node.js, поэтому выключен)
 
 
 В качестве слоя данных используется как Json-Rpc, так и Relay и GraphQL (когда он выйдет)

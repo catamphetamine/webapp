@@ -16,13 +16,16 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 
+// remove this line
+import { FormattedNumber } from 'react-intl'
+
 // import { get_message } from '../actions/locale'
 
 import translate from './translate'
 
 export default function connect_to_international_store(Component)
 {
-	@connect
+	return @connect
 	(
 		store => 
 		({
@@ -30,7 +33,7 @@ export default function connect_to_international_store(Component)
 			locales  : store.locale.locales
 		})
 	)
-	class Connected extends React.Component
+	class Reduxed_Component extends React.Component
 	{
 		static PropTypes =
 		{
@@ -38,15 +41,18 @@ export default function connect_to_international_store(Component)
 			locales     : PropTypes.array.isRequired
 		}
 
-		// const get_message = message => Object.get_value_at_path(messages, message)
-
 		render()
 		{
-			const { messages, message } = this.props
+			const { messages } = this.props
+			const message = this.props.for
 
-			return <Component {...this.props} message={translate(messages, this.props.message)} />
+			const properties = { ...this.props }
+			delete properties.for
+			delete properties.messages
+
+			console.log(properties)
+
+			return <Component {...properties} message={translate(messages, message)} />
 		}
 	}
-
-	return Connected
 }

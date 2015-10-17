@@ -1,5 +1,5 @@
-import look from 'look'
-look.start()
+// import look from 'look'
+// look.start()
 
 import path from 'path'
 

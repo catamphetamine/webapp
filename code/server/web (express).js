@@ -1,3 +1,5 @@
+// this code is old and may be obsolete
+
 import fs            from 'fs'
 import path          from 'path'
 import http          from 'http'
@@ -52,6 +54,15 @@ const web = new express()
 // websocket.path('/websocket.io')
 const websocket = socket_io.listen(web.server) // should be (web), restify is broken
 websocket.serveClient(false)
+
+websocket.on('connection', socket =>
+{
+	socket.emit('news', { message: `'Hello World!' from server` })
+	socket.on('something', data =>
+	{
+		log.info(data)
+	})
+})
 
 // // websocket не обеспечивает гарантий доставки
 // // http://stackoverflow.com/questions/20685208/websocket-transport-reliability-socket-io-data-loss-during-reconnection

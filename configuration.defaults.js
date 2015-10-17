@@ -13,7 +13,7 @@ module.exports =
 			port: 5432,
 			user: 'postgres',
 			password: 'password',
-			database: 'cinema'
+			database: 'webapp'
 		}
 	},
 	webserver: 

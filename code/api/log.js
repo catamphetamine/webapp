@@ -1,3 +1,3 @@
 import log from '../log'
 
-export default log('cinema api')
+export default log('webapp api')

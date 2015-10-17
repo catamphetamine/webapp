@@ -78,11 +78,14 @@ extend(javascript_loader.query,
 	extra:
 	{
 		'react-transform':
-		[{
-			target  : 'react-transform-hmr',
-			imports : ['react'],
-			locals  : ['module']
-		}]
+		{
+			transforms:
+			[{
+				transform : 'react-transform-hmr',
+				imports   : ['react'],
+				locals    : ['module']
+			}]
+		}
 	}
 })
 

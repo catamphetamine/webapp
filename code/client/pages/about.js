@@ -78,7 +78,7 @@ export default class About extends Component
 			content = 
 			(
 				<div>
-					<p>These values were loaded dynamically from the server (ajax):</p>
+					<p>These values were loaded dynamically from the server (via ajax) using REST api:</p>
 					<div>Putin: {settings.putin}</div>
 					<div>Version: {settings.version}</div>
 				</div>

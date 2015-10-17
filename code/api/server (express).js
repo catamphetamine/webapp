@@ -1,3 +1,5 @@
+// this code is old and may be obsolete
+
 import express       from 'express'
 import session       from 'express-session'
 import body_parser   from 'body-parser'
@@ -74,3 +76,4 @@ web.on('error', function(error, context)
 {
 	log.error(error, context)
 })
+\ No newline at end of file

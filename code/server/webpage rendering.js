@@ -8,10 +8,13 @@ import log from './log'
 import { server }     from '../react-isomorphic-render'
 import create_store   from '../client/redux/store'
 import routes         from '../client/routes'
+import markup_wrapper from '../client/markup wrapper'
+
+import load_locale_data from './locale'
 
 // isomorphic (universal) rendering (express middleware).
 // will be used in express_application.use(...)
-export function render({ request, respond, fail, redirect, locale })
+export function render({ request, respond, fail, redirect, preferred_locale })
 {
 	if (_development_)
 	{
@@ -20,20 +23,25 @@ export function render({ request, respond, fail, redirect, locale })
 
 	const store = create_store(new api_client(request))
 
-	const locale_data = require(`../client/international/${locale}`)
+	let { locale, messages } = load_locale_data(preferred_locale)
 
-	store.dispatch({ type: 'locale data loaded', data: locale_data })
+	store.dispatch({ type: 'locale set', locale: locale })
+	// store.dispatch({ type: 'locale data loaded', data: { language: locale, messages: locale_data } })
 
 	return server
 	({
 		disable_server_side_rendering : _disable_server_side_rendering_,
-		routes   : routes,
-		store    : store,
+		routes   : () => routes({ store }),
+		preload  : preloader => preloader(store),
+		wrap_component    : component =>
+		{
+			return markup_wrapper(component, { store, locale, messages })
+		},
 		request  : request,
 		html:
 		{
-			with_rendering: (component, store) => <Html assets={webpack_isomorphic_tools.assets()} component={component} store={store}/>,
-			without_rendering: (store) => <Html assets={webpack_isomorphic_tools.assets()} component={<div/>} store={store}/>
+			with_rendering: component => <Html locale={locale} messages={messages} assets={webpack_isomorphic_tools.assets()} component={component} store={store}/>,
+			without_rendering: () => <Html locale={locale} messages={messages} assets={webpack_isomorphic_tools.assets()} store={store}/>
 		}
 	})
 	.then(({ markup, redirect_to }) =>

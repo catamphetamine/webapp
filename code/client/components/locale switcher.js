@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 
-// const locales = ['en_US', 'ru_RU']
-const locales = ['en', 'ru']
+const locales = ['en-US', 'ru-RU']
 
 import { write as cookie } from '../cookie'
 
@@ -9,7 +8,19 @@ import { connect } from 'react-redux'
 
 import styler from 'react-styling'
 
-import { FormattedMessage } from '../international components'
+import { text } from '../international components'
+
+import { defineMessages, injectIntl as international } from 'react-intl'
+
+const messages = defineMessages
+({
+	language:
+	{
+		id             : 'application.language',
+		description    : 'Web application language',
+		defaultMessage : 'Language'
+	}
+})
 
 @connect
 (
@@ -18,7 +29,7 @@ import { FormattedMessage } from '../international components'
 		locale : store.locale.locale
 	})
 )
-export default class Locale_switcher extends Component
+class Locale_switcher extends Component
 {
 	static propTypes =
 	{
@@ -27,10 +38,12 @@ export default class Locale_switcher extends Component
 
 	render()
 	{
+		const format_message = this.props.intl.formatMessage
+
 		const markup =
 		(
 			<div className="LocaleSwitcher" style={this.props.style}>
-				<FormattedMessage message="home.language" />
+				{format_message(messages.language)}
 
 				<ul style={style.locales}>
 					{locales.map(this.render_locale_link.bind(this))}
@@ -67,6 +80,8 @@ export default class Locale_switcher extends Component
 		window.location.reload()
 	}
 }
+
+export default international(Locale_switcher)
 
 const style = styler
 `

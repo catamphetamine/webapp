@@ -1,9 +1,6 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import asynchronous_middleware from './asynchronous middleware'
 
-// "reducers" are actually "stores"
-// import * as reducers from '../action response handlers'
-
 export default function(api_client, data) 
 {
 	const middleware = asynchronous_middleware(api_client)
@@ -28,15 +25,15 @@ export default function(api_client, data)
 		create_store = applyMiddleware(middleware)(createStore)
 	}
 
-	const reducer = combineReducers(require('../action response handlers'))
+	const reducer = combineReducers(require('../model'))
 	const store = create_store(reducer, data)
 	// store.client = api_client
 
 	if (module.hot)
 	{
-		module.hot.accept('../action response handlers', () =>
+		module.hot.accept('../model', () =>
 		{
-			const next_reducer = combineReducers(require('../action response handlers'))
+			const next_reducer = combineReducers(require('../model'))
 			store.replaceReducer(next_reducer)
 		})
 	}
