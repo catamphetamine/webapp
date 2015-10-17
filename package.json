@@ -116,7 +116,7 @@
     "dev-server-api": "nodemon ./code/api/entry.js",
     "dev-server-rendering": "nodemon ./code/server/entry.js",
     "dev-server": "npm-run-all --parallel dev-server-api dev-server-rendering",
-    "production": "npm-run-all --parallel production-build-client production-server",
+    "production": "npm-run-all production-build-client production-server",
     "production-build-client": "npm-run-all update-schema production-build-client-webpack",
     "production-build-client-webpack": "webpack --verbose --colors --display-error-details --config \"webpack/production build.entry.js\"",
     "production-server-api": "node --harmony ./code/api/entry.js --production",
