@@ -14,6 +14,20 @@ Features
 * To be done: Persistence (PostgreSQL, Bookshelf)
 * Maybe to be done: Locale switch hot reload (without reloading page)
 
+Quick Start
+===========
+
+* `npm install`
+* `npm run dev`
+* wait a bit for Webpack to finish the first build (green stats will appear in the terminal)
+* go to `http://localhost:3000`
+* interact with the development version of the web application
+* `Ctrl + C`
+* `npm run production`
+* wait a bit for Webpack to finish the build (green stats will appear in the terminal)
+* go to `http://localhost:3000`
+* interact with the production version of the web application
+
 Installation
 ==========
 
@@ -77,7 +91,11 @@ pm2 logs webapp
 Сделать
 ====================
 
-попробовать defineMessages as define_messages
+"Locale Data as Modules" - подгрузку Intl модулей для языков мб изменить
+
+
+в вебпаке в продакшене warning на react-intl модули
+
 
 
 вставить в production build и в development rendering server run
@@ -91,6 +109,12 @@ pm2 logs webapp
     }
   }
 }
+
+
+попробовать defineMessages as define_messages
+(сработает ли в этом случае Babel plugin)
+
+
 
 
 перевести title страниц

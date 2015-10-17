@@ -9,6 +9,7 @@
   },
   "homepage": "https://github.com/halt-hammerzeit/webapp",
   "dependencies": {
+    "babel": "^5.8.23",
     "babel-relay-plugin": "^0.3.0",
     "babel-runtime": "^5.6.17",
     "bluebird": "^2.10.0",

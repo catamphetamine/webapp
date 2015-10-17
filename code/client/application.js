@@ -46,31 +46,33 @@ international.load_polyfill(locale)
 			development       : _development_,
 			wrap_component    : component =>
 			{
-				ReactDOM.render(markup_wrapper(component, { store, locale, messages: localized_messages }), content_container)
+				if (!_development_tools_)
+				{
+					return markup_wrapper(component, { store, locale, messages: localized_messages })
+				}
 
 				// Render dev tools after initial client render to prevent warning
 				// "React attempted to reuse markup in a container but the checksum was invalid"
 				// https://github.com/erikras/react-redux-universal-hot-example/pull/210
 
-				if (_development_tools_)
-				{
-					const { DevTools, DebugPanel, LogMonitor } = require('redux-devtools/lib/react')
+				ReactDOM.render(markup_wrapper(component, { store, locale, messages: localized_messages }), content_container)
 
-					console.log(`You are gonna see a warning about "React.findDOMNode is deprecated" in the console. It's normal: redux_devtools hasn't been updated to React 0.14 yet`)
+				const { DevTools, DebugPanel, LogMonitor } = require('redux-devtools/lib/react')
 
-					const markup =
-					(
-						<div>
-							{markup_wrapper(component, { store, locale, messages: localized_messages })}
+				console.log(`You are gonna see a warning about "React.findDOMNode is deprecated" in the console. It's normal: redux_devtools hasn't been updated to React 0.14 yet`)
 
-							<DebugPanel top right bottom key="debugPanel">
-								<DevTools store={store} monitor={LogMonitor}/>
-							</DebugPanel>
-						</div>
-					)
+				const markup =
+				(
+					<div>
+						{markup_wrapper(component, { store, locale, messages: localized_messages })}
 
-					return markup
-				}
+						<DebugPanel top right bottom key="debugPanel">
+							<DevTools store={store} monitor={LogMonitor}/>
+						</DebugPanel>
+					</div>
+				)
+
+				return markup
 			},
 			routes            : () => routes({ store }),
 			// history           : create_history(),

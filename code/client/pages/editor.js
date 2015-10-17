@@ -19,7 +19,13 @@ export default class Editor extends Component
 			<div>
 				{webpage_title("Rich Text Editor")}
 
-				<div contentEditable="true" style={style.editor}></div>
+				<div contentEditable="true" style={style.editor} ref={function(element)
+				{
+					if (element != null)
+					{
+						element.focus()
+					}
+				}}/>
 			</div>
 		)
 

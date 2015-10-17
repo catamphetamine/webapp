@@ -27,7 +27,7 @@ configuration.plugins = configuration.plugins.concat
 		'process.env':
 		{
 			// Useful to reduce the size of client-side libraries, e.g. react
-			NODE_ENV: JSON.stringify('production')
+			NODE_ENV: JSON.stringify('development') // 'development' to see non-minified React errors
 		},
 
 		_websocket_url_: JSON.stringify(websocket_url),
@@ -52,13 +52,13 @@ configuration.plugins = configuration.plugins.concat
 	new webpack.optimize.OccurenceOrderPlugin(),
 
 	// Compresses javascript files
-	new webpack.optimize.UglifyJsPlugin
-	({
-		compress:
-		{
-			warnings: false
-		}
-	}),
+	// new webpack.optimize.UglifyJsPlugin
+	// ({
+	// 	compress:
+	// 	{
+	// 		warnings: false
+	// 	}
+	// }),
 
 	new webpack_isomorphic_tools_plugin(require('./isomorphic.js'))
 )
