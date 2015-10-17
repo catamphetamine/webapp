@@ -1,8 +1,8 @@
 # maybe some logs
-/logs/**/*
+/logs
 
 # webpack build target folder
-/build/**/*
+/build
 
 # npm modules
 # https://docs.npmjs.com/misc/faq#should-i-check-my-node-modules-folder-into-git

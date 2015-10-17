@@ -2,6 +2,7 @@
 
 import fs from 'fs'
 import path from 'path'
+import mkdirp from 'mkdirp'
 import { Schema } from '../../code/schema'
 import { graphql }  from 'graphql'
 import { introspectionQuery as introspection_query, printSchema as print_schema } from 'graphql/utilities'
@@ -28,9 +29,13 @@ async () =>
 	}
 }()
 
+const schema_path = path.join(__dirname, '../../build/schema.graphql')
+
+mkdirp.sync(path.dirname(schema_path))
+
 // Save user readable type system shorthand of schema
 fs.writeFileSync
 (
-	path.join(__dirname, '../../build/schema.graphql'),
+	schema_path,
 	print_schema(Schema)
 )
