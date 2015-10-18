@@ -24,8 +24,8 @@ const router = koa_router()
 web.keys = ['hammertime']
 web.use(session(web))
 
-web.use(body_parser())
-// this.request.body
+// Usage: this.request.body
+web.use(body_parser({ formLimit: '100mb' }))
 
 // handle errors
 web.use(function* (next)
@@ -38,10 +38,11 @@ web.use(function* (next)
 	{
 		// log the error
 		log.error(error)
+
 		// this.app.emit('error', error, this)
 
-		this.status = error.status || 500
-		this.body = 'Internal error'
+		this.status = error.code || 500
+		this.message = error.message || 'Internal error'
 	}
 })
 
@@ -55,7 +56,7 @@ for (let method of ['get', 'put', 'patch', 'post', 'delete'])
 	{
 		router[method](path, function*(next)
 		{
-			const result = action()
+			const result = action({ ...this.query, ...this.request.body, ...this.params })
 
 			if (result instanceof Promise)
 			{
@@ -87,117 +88,14 @@ web
 	.use(router.routes())
 	.use(router.allowedMethods())
 
-// const api_methods = {}
-
-// for (let action of Object.keys(actions))
-// {
-// 	if (action === '__esModule')
-// 	{
-// 		continue
-// 	}
-
-// 	for (let method of Object.keys(actions[action]))
-// 	{
-// 		api_methods['/' + action + '/' + method] = actions[action][method]
-// 	}
-// }
-
-// function find_api_method_by_path(path, request_path, http_method)
-// {
-// 	// request_path is used later to get parameters from the initial Url
-// 	if (!http_method)
-// 	{
-// 		http_method = request_path
-// 		request_path = path
-// 	}
-
-// 	// find api method by path
-// 	let action = api_methods[path]
-
-// 	// api method not found - trim the path and try again
-// 	if (!action)
-// 	{
-// 		const slash_index = path.lastIndexOf('/')
-// 		if (slash_index === 0)
-// 		{
-// 			return
-// 		}
-
-// 		return find_api_method_by_path(path.substring(0, slash_index - 1), request_path, http_method)
-// 	}
-
-// 	if (typeof action !== 'function')
-// 	{
-// 		switch (http_method)
-// 		{
-// 			case 'get':
-// 				// find api method by path
-// 				action = action.get
-// 				break
-
-// 			case 'post':
-// 				// find api method by path
-// 				action = action.create || action.call
-// 				break
-
-// 			case 'put':
-// 				// find api method by path
-// 				action = action.update
-// 				break
-
-// 			case 'delete':
-// 				action = action.delete
-// 				break
-// 		}
-// 	}
-
-// 	// if api method not found
-// 	if (typeof action !== 'function')
-// 	{
-// 		return
-// 	}
-
-// 	// extract parameters from the other part of the path
-// 	let parameters = request_path
-// 		.slice(path.length)
-// 		.split('/')
-// 		.filter(part => part != '')
-
-// 	// make parameters either into a single parameter or into a hash object
-// 	if (parameters.length === 0)
-// 	{
-// 		parameters = undefined
-// 	}
-// 	else if (parameters.length === 1)
-// 	{
-// 		parameters = parameters.first()
-// 	}
-// 	else
-// 	{
-// 		let key
-// 		let values = {}
-
-// 		for (let part in parameters)
-// 		{
-// 			if (exists(key))
-// 			{
-// 				values[key] = part
-// 				key = undefined
-// 			}
-// 			else if (typeof part === 'string')
-// 			{
-// 				key = part
-// 			}
-// 		}
-
-// 		parameters = values
-// 	}
-
-// 	// done
-// 	return { action, parameters }
-// }
-
-// const Method_not_found = custom_error('Method_not_found')
+global.Errors =
+{
+	Syntax_error  : custom_error('Syntax error',  { code: 400 }),
+	Unauthorized  : custom_error('Unauthorized',  { code: 401 }),
+	Access_denied : custom_error('Access denied', { code: 403 }),
+	Not_found     : custom_error('Not found',     { code: 404 }),
+	Input_missing : custom_error('Missing input', { code: 422 })
+}
 
 // function api()
 // {

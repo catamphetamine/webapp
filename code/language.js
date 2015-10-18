@@ -403,7 +403,7 @@ Object.defineProperty(Function.prototype, 'periodical',
 // временная заглушка для переводов на языки
 // global._ = (key) -> key
 
-global.custom_error = function(name, parameters)
+global.custom_error = function(name, { code, message })
 {
 	class Custom_error extends Error
 	{
@@ -411,17 +411,14 @@ global.custom_error = function(name, parameters)
 		{
 			super()
 
-			if (exists(parameters))
+			if (exists(code))
 			{
-				if (exists(parameters.code))
-				{
-					this.code = parameters.code
-				}
+				this.code = code
+			}
 
-				if (exists(parameters.message))
-				{
-					this.message = parameters.message
-				}
+			if (exists(message))
+			{
+				this.message = message
 			}
 
 			if (exists(argument))

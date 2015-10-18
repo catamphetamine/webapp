@@ -59,8 +59,8 @@ web.use(mount('/assets', statics(path.join(Root_folder, 'build', 'assets'),
 // // Proxy to API server
 web.use(mount('/api', koa_proxy({ host: `http://${configuration.api_server.http.host}:${configuration.api_server.http.port}` })))
 
-web.use(body_parser())
-// this.request.body
+// Usage: this.request.body
+web.use(body_parser({ formLimit: '100mb' }))
 
 web.keys = ['hammertime']
 web.use(session(web))
