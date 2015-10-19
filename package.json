@@ -27,6 +27,7 @@
     "express": "^4.13.1",
     "express-session": "^1.11.3",
     "flux": "^2.0.3",
+    "fs-extra": "^0.24.0",
     "graphql": "^0.4.7",
     "graphql-relay": "^0.3.2",
     "history": "^1.12.5",
@@ -75,7 +76,7 @@
     "strip-json-comments": "^1.0.2",
     "superagent": "^1.2.0",
     "warning": "^2.1.0",
-    "webpack-isomorphic-tools": "^0.9.3"
+    "webpack-isomorphic-tools": "^1.0.0"
   },
   "devDependencies": {
     "autoprefixer-loader": "^3.1.0",
@@ -95,7 +96,6 @@
     "istanbul": "^0.3.17",
     "json-loader": "^0.5.2",
     "jsx-loader": "^0.13.1",
-    "mkdirp": "^0.5.1",
     "mocha": "^2.2.5",
     "node-libs-browser": "^0.5.0",
     "node-sass": "^3.2.0",

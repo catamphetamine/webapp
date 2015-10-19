@@ -1,8 +1,7 @@
 #!/usr/bin/env babel-node --optional es7.asyncFunctions
 
-import fs from 'fs'
 import path from 'path'
-import mkdirp from 'mkdirp'
+import fs from 'fs-extra'
 import { Schema } from '../../code/schema'
 import { graphql }  from 'graphql'
 import { introspectionQuery as introspection_query, printSchema as print_schema } from 'graphql/utilities'
@@ -21,7 +20,7 @@ async () =>
 	}
 	else
 	{
-		fs.writeFileSync
+		fs.outputFileSync
 		(
 			path.join(__dirname, '../../build/relay schema.json'),
 			JSON.stringify(result, null, 2)
@@ -29,13 +28,9 @@ async () =>
 	}
 }()
 
-const schema_path = path.join(__dirname, '../../build/schema.graphql')
-
-mkdirp.sync(path.dirname(schema_path))
-
 // Save user readable type system shorthand of schema
-fs.writeFileSync
+fs.outputFileSync
 (
-	schema_path,
+	path.join(__dirname, '../../build/schema.graphql'),
 	print_schema(Schema)
 )

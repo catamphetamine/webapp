@@ -11,6 +11,7 @@ import { get as get_users, add as add_user, remove as delete_user } from '../../
 	({
 		users   : store.users.data,
 		loading : store.users.loading,
+		loaded  : store.users.loaded,
 		error   : store.users.error
 	}),
 	dispatch => bind_action_creators({ get_users, add_user, delete_user }, dispatch)
@@ -24,6 +25,7 @@ export default class Page extends Component
 		delete_user   : PropTypes.func.isRequired,
 		users         : PropTypes.array,
 		loading       : PropTypes.bool,
+		loaded        : PropTypes.bool,
 		error         : PropTypes.object
 	}
 
@@ -53,7 +55,7 @@ export default class Page extends Component
 
 	render()
 	{
-		const { error, loading, users } = this.props
+		const { error, loaded, users } = this.props
 
 		if (error)
 		{
@@ -77,7 +79,7 @@ export default class Page extends Component
 				<div style={style.container}>
 					<p>This is an example of REST API usage with no database persistence</p>
 
-					{this.render_users(loading, users)}
+					{this.render_users(loaded, users)}
 				</div>
 			</section>
 		)
@@ -85,9 +87,9 @@ export default class Page extends Component
 		return markup
 	}
 
-	render_users(loading, users)
+	render_users(loaded, users)
 	{
-		if (loading)
+		if (!loaded)
 		{
 			return <div style={style.users}>Loading users</div>
 		}
