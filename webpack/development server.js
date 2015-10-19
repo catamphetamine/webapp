@@ -33,7 +33,7 @@ configuration.plugins = configuration.plugins.concat
 		_server_            : false,
 		_production_        : false,
 		_development_       : true,
-		_development_tools_ : true  // <-------- DISABLE redux-devtools HERE
+		_development_tools_ : false  // <-------- DISABLE redux-devtools HERE
 	}),
 
 	// faster code reload on changes

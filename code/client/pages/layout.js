@@ -147,7 +147,8 @@ class Layout extends Component
 					<ul style={style.menu}>
 						<li style={style.menu.item}><Link to="/editor" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Editor'}</Link></li>
 						<li style={style.menu.item}><Link to="/about" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'About'}</Link></li>
-						<li style={style.menu.item}><Link to="/showcase" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Showcase'}</Link></li>
+						<li style={style.menu.item}><Link to="/example" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Example'}</Link></li>
+						<li style={style.menu.item}><Link to="/showcase" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'React components showcase'}</Link></li>
 					</ul>
 				</nav>
 
@@ -167,12 +168,17 @@ const style = styler
 `
 	home
 		color       : black
-		font-size   : 16pt
+		font-size   : 26pt
 		margin-left : 1em
+		text-decoration : none
+		
+		border-bottom-width : 0.08em
+		border-bottom-style : dotted
+		border-bottom-color : black
 
 		active:
-			text-decoration : none
-			cursor          : default
+			cursor              : default
+			border-bottom-width : 0
 
 	locale_switcher
 		display     : inline-block

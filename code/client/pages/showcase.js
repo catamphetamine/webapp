@@ -1,5 +1,3 @@
-// require('./about.less' )
-
 import React, { Component, PropTypes } from 'react'
 import { webpage_title } from '../webpage head'
 import { connect } from 'react-redux'
@@ -11,13 +9,13 @@ import styler from 'react-styling'
 (
 	store => ({ })
 )
-export default class Showcase extends Component
+export default class Page extends Component
 {
 	render()
 	{
 		const markup = 
 		(
-			<div>
+			<section className="content">
 				{webpage_title("UI Showcase")}
 
 				<header>
@@ -38,7 +36,7 @@ export default class Showcase extends Component
 				</ul>
 				
         		{this.props.children}
-			</div>
+			</section>
 		)
 
 		return markup

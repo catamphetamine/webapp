@@ -5,23 +5,6 @@ import styler from 'react-styling'
 
 import { connect } from 'react-redux'
 
-const style = styler
-`
-	button
-		margin      : 1em auto
-		padding     : 1em 2em
-		outline     : none
-		font-size   : 16
-		font-weight : 600
-		background  : #C94E50
-		color       : #FFFFFF
-		border      : none
-
-	container
-		padding    : 2em
-		text-align : center
-`
-
 @connect
 (
 	store => ({ })
@@ -76,3 +59,20 @@ export default class Dialog extends Component
 		return markup
 	}
 }
+
+const style = styler
+`
+	button
+		margin      : 1em auto
+		padding     : 1em 2em
+		outline     : none
+		font-size   : 16
+		font-weight : 600
+		background  : #C94E50
+		color       : #FFFFFF
+		border      : none
+
+	container
+		padding    : 2em
+		text-align : center
+`

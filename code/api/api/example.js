@@ -13,18 +13,15 @@ api.get('/example/users', function()
 
 api.get('/example/user/:id', function({ id })
 {
-	// https://github.com/alexmingoia/koa-router/issues/195
-	id = parseInt(id)
-
 	if (!users.has(id))
 	{
 		throw new Errors.Not_found(`User ${id} not found`)
 	}
 	
-	return users.get(id) 
+	return { ...users.get(id), id: id }
 })
 
-api.put('/example/user', function({ name })
+api.post('/example/user', function({ name })
 {
 	if (!exists(name))
 	{
@@ -32,7 +29,7 @@ api.put('/example/user', function({ name })
 	}
 
 	id_counter++
-	const id = id_counter
+	const id = String(id_counter)
 
 	users.set(id, { name: name })
 
@@ -41,9 +38,6 @@ api.put('/example/user', function({ name })
 
 api.patch('/example/user/:id', function({ id, name })
 {
-	// https://github.com/alexmingoia/koa-router/issues/195
-	id = parseInt(id)
-
 	if (!users.has(id))
 	{
 		throw new Errors.Not_found(`User ${id} not found`)
@@ -54,9 +48,6 @@ api.patch('/example/user/:id', function({ id, name })
 
 api.delete('/example/user/:id', function({ id })
 {
-	// https://github.com/alexmingoia/koa-router/issues/195
-	id = parseInt(id)
-
 	if (!users.has(id))
 	{
 		throw new Errors.Not_found(`User ${id} not found`)

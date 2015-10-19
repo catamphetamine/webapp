@@ -16,7 +16,7 @@ export default class Editor extends Component
 	{
 		const markup = 
 		(
-			<div>
+			<section className="content">
 				{webpage_title("Rich Text Editor")}
 
 				<div contentEditable="true" style={style.editor} ref={function(element)
@@ -26,7 +26,7 @@ export default class Editor extends Component
 						element.focus()
 					}
 				}}/>
-			</div>
+			</section>
 		)
 
 		return markup

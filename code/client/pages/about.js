@@ -29,16 +29,6 @@ export default class About extends Component
 		store : PropTypes.object.isRequired
 	}
 
-	static preload(store)
-	{
-		const promises = []
-		// if (!are_settings_loaded(store.getState()))
-		// {
-			promises.push(store.dispatch(get_settings()))
-		// }
-		return Promise.all(promises)
-	}
-
 	componentDidMount()
 	{
 		// to do: remove second loading here for client-side navigation
@@ -77,11 +67,12 @@ export default class About extends Component
 		{
 			content = 
 			(
-				<div>
+				<section className="content">
 					<p>These values were loaded dynamically from the server (via ajax) using REST api:</p>
+
 					<div>Putin: {settings.putin}</div>
 					<div>Version: {settings.version}</div>
-				</div>
+				</section>
 			)
 		}
 		else
@@ -103,6 +94,18 @@ export default class About extends Component
 		// <div>Copyright © 2015</div>
 
 		return markup
+	}
+
+	static preload(store)
+	{
+		const promises = []
+
+		// if (!are_settings_loaded(store.getState()))
+		// {
+			promises.push(store.dispatch(get_settings()))
+		// }
+		
+		return Promise.all(promises)
 	}
 }
 

@@ -9,14 +9,18 @@ import { Router, Route, IndexRoute } from 'react-router'
 // // maybe move this to the function (if needed)
 // const NestedRootContainer = RelayNestedRoutes(React, Relay)
 
-import Layout    from './pages/layout.js'
-import Editor    from './pages/editor.js'
-import About     from './pages/about.js'
-import Home      from './pages/home.js'
-import Showcase  from './pages/showcase.js'
-import Not_found from './pages/not found.js'
-import Dialog    from './pages/showcase/dialog.js'
-import Form      from './pages/showcase/form.js'
+import Layout           from './pages/layout.js'
+import Not_found        from './pages/not found.js'
+import Editor           from './pages/editor.js'
+import About            from './pages/about.js'
+import Home             from './pages/home.js'
+import Showcase         from './pages/showcase.js'
+import Dialog_showcase  from './pages/showcase/dialog.js'
+import Form_showcase    from './pages/showcase/form.js'
+import Example          from './pages/example.js'
+import Simple_example   from './pages/example/simple example.js'
+import Database_example from './pages/example/database example.js'
+import Simple_graphQL_example  from './pages/example/simple graphql example.js'
 
 const Layout_queries = 
 {
@@ -46,9 +50,14 @@ export default function({ store, history })
 			<IndexRoute component={Home} queries={Home_queries}/>
 			<Route path="editor" component={Editor}/>
 			<Route path="about" component={About}/>
+			<Route path="example" component={Example}>
+				<Route path="simple" component={Simple_example}/>
+				<Route path="database" component={Database_example}/>
+				<Route path="graphql" component={Simple_graphQL_example}/>
+			</Route>
 			<Route path="showcase" component={Showcase}>
-				<Route path="dialog" component={Dialog}/>
-				<Route path="form" component={Form}/>
+				<Route path="dialog" component={Dialog_showcase}/>
+				<Route path="form" component={Form_showcase}/>
 			</Route>
 			<Route path="*" component={Not_found}/>
 		</Route>
