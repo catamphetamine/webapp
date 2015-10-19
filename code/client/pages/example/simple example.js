@@ -12,6 +12,7 @@ import { get as get_users, add as add_user, remove as delete_user } from '../../
 		users   : store.users.data,
 		loading : store.users.loading,
 		loaded  : store.users.loaded,
+		stale   : store.users.stale,
 		error   : store.users.error
 	}),
 	dispatch => bind_action_creators({ get_users, add_user, delete_user }, dispatch)
@@ -26,6 +27,7 @@ export default class Page extends Component
 		users         : PropTypes.array,
 		loading       : PropTypes.bool,
 		loaded        : PropTypes.bool,
+		stale         : PropTypes.bool,
 		error         : PropTypes.object
 	}
 
@@ -52,6 +54,19 @@ export default class Page extends Component
 			this.constructor.preload(this.context.store)
 		}
 	}
+
+	componentWillReceiveProps(next_props)
+	{
+		if (!this.props.stale && next_props.stale)
+		{
+			this.refresh()
+		}
+	}
+
+	// shouldComponentUpdate(next_props, next_state)
+	// {
+	// 	// may skip rendering if next_props = props + stale: true
+	// }
 
 	render()
 	{
@@ -113,21 +128,23 @@ export default class Page extends Component
 		const markup = 
 		(
 			<div style={style.users}>
-				Users:
+				Users
 
 				<button onClick={this.add_user} style={style.users.add}>Add user</button>
 				
 				<button onClick={this.refresh} style={style.users.refresh}>Refresh</button>
 
-				<ul style={style.users.list}>
-					{users.map(user =>
-					{
-						return <li key={user.id}>
-							#{user.id} {user.name}
-							<span onClick={event => this.delete_user(user.id)} style={style.users.delete}>delete</span>
-						</li>
-					})}
-				</ul>
+				<div>
+					<ul style={style.users.list}>
+						{users.map(user =>
+						{
+							return <li key={user.id}>
+								#{user.id} {user.name}
+								<button onClick={event => this.delete_user(user.id)} style={style.users.delete}>delete</button>
+							</li>
+						})}
+					</ul>
+				</div>
 			</div>
 		)
 
@@ -150,14 +167,14 @@ export default class Page extends Component
 
 		this.props.add_user({ name: name })
 
-		this.refresh()
+		// this.refresh()
 	}
 
 	delete_user(id)
 	{
 		this.props.delete_user(id)
 
-		this.refresh()
+		// this.refresh()
 	}
 
 	static preload(store)
@@ -181,17 +198,17 @@ const style = styler
 		margin-top : 2em
 
 		list
-			text-align : left
+			display         : inline-block
+			list-style-type : none
+			padding-left    : 1em
 
 		refresh
-			margin-left : 1em
+			margin-left : 0.5em
 
 		add
 			margin-left : 1em
 
 		delete
-			margin-left   : 1em
-			color         : blue
-			border-bottom : 1px dashed black
-			cursor        : pointer
+			margin-left : 1em
+			float       : right
 `

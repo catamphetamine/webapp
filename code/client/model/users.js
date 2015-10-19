@@ -10,7 +10,8 @@ const handlers =
 		const new_state = 
 		{
 			...state,
-			loading : true
+			loading : true,
+			error   : false
 		}
 
 		return new_state
@@ -23,6 +24,8 @@ const handlers =
 			...state,
 			loading : false,
 			loaded  : true,
+			error   : false,
+			stale   : false,
 			data    : action.result
 		}
 
@@ -58,7 +61,8 @@ const handlers =
 		const new_state = 
 		{
 			...state,
-			adding : false
+			adding : false,
+			stale  : true
 		}
 
 		return new_state
@@ -92,7 +96,8 @@ const handlers =
 		const new_state = 
 		{
 			...state,
-			deleting : false
+			deleting : false,
+			stale  : true
 		}
 
 		return new_state
@@ -104,6 +109,41 @@ const handlers =
 		{
 			...state,
 			deleting : false,
+			error  : action.error
+		}
+
+		return new_state
+	},
+
+	'renaming user': (state, action) =>
+	{
+		const new_state = 
+		{
+			...state,
+			renaming : true
+		}
+
+		return new_state
+	},
+
+	'user renamed': (state, action) =>
+	{
+		const new_state = 
+		{
+			...state,
+			renaming : false,
+			stale  : true
+		}
+
+		return new_state
+	},
+
+	'renaming user failed': (state, action) =>
+	{
+		const new_state = 
+		{
+			...state,
+			renaming : false,
 			error  : action.error
 		}
 

@@ -27,7 +27,7 @@
 	src         : url('../fonts/PT Sans/PTS76F_W.woff') format('woff');
 }
 
-body
+body, button
 {
 	font-family : 'PT Sans';
 	font-size   : 20pt;
@@ -35,7 +35,20 @@ body
 
 button
 {
-	font-size   : 85%;
+	background: none;
+	border: none;
+	outline: none;
+	padding: 0;
+
+	font-weight: bold;
+    color: #29ADFF;
+
+	transition: all 30ms ease-out;
+
+	&:active
+	{
+		color: #73C9FF;
+	}
 }
 
 h1
