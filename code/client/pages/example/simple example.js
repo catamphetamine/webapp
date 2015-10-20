@@ -128,7 +128,7 @@ export default class Page extends Component
 		const markup = 
 		(
 			<div style={style.users}>
-				Users
+				<span style={style.users.list.title}>Users</span>
 
 				<button onClick={this.add_user} style={style.users.add}>Add user</button>
 				
@@ -139,7 +139,7 @@ export default class Page extends Component
 						{users.map(user =>
 						{
 							return <li key={user.id}>
-								#{user.id} {user.name}
+								<span style={style.users.list.user.id}>{user.id}</span> {user.name}
 								<button onClick={event => this.delete_user(user.id)} style={style.users.delete}>delete</button>
 							</li>
 						})}
@@ -201,6 +201,14 @@ const style = styler
 			display         : inline-block
 			list-style-type : none
 			padding-left    : 1em
+
+			title
+				font-weight : bold
+
+			user
+				id
+					margin-right : 0.1em
+					color        : #9f9f9f
 
 		refresh
 			margin-left : 0.5em

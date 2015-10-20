@@ -19,7 +19,7 @@ Quick Start
 
 * `npm install`
 * `npm run dev`
-* wait a bit for Webpack to finish the first build (it'll say "webpack built [hash] in [time]ms")
+* wait a bit for Webpack to finish the first build (green stats will appear in the terminal)
 * go to `http://localhost:3000`
 * interact with the development version of the web application
 * `Ctrl + C`
@@ -91,11 +91,13 @@ pm2 logs webapp
 Сделать
 ====================
 
-стилизовать страницу example нормально, кнопки сделать не скевоморфными
-
-
-user: delete, patch
+user: patch (rename)
 add user: validation
+
+
+сделать загрузку файла (и получение его потом по url) - аватар, у которого будет несколько размеров (маленький, большой)
+
+
 
 крутилки на добавление, удаление, переименование, загрузку.
 
@@ -111,6 +113,12 @@ add user: validation
 
 
 "Locale Data as Modules" - подгрузку Intl модулей для языков мб изменить
+
+
+
+
+http://city41.github.io/bookends/
+
 
 
 
