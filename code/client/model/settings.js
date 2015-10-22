@@ -23,19 +23,19 @@ const handlers =
 			...state,
 			loading : false,
 			loaded  : true,
-			data    : result.result
+			data    : result
 		}
 
 		return new_state
 	},
 
-	'settings retrieval failed': (result, state) =>
+	'settings retrieval failed': (error, state) =>
 	{
 		const new_state = 
 		{
 			...state,
 			loading : false,
-			error   : result.error
+			error   : error
 		}
 
 		return new_state

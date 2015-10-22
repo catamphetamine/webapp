@@ -27,7 +27,7 @@
 	src         : url('../fonts/PT Sans/PTS76F_W.woff') format('woff');
 }
 
-body, button
+body, button, input, textarea, select
 {
 	font-family : 'PT Sans';
 	font-size   : 20pt;
@@ -35,13 +35,13 @@ body, button
 
 button
 {
-	background: none;
-	border: none;
-	outline: none;
-	padding: 0;
+	background : none;
+	border     : none;
+	outline    : none;
+	padding    : 0;
 
-	font-weight: bold;
-    color: #29ADFF;
+	font-weight : bold;
+	color       : #29ADFF;
 
 	transition: all 30ms ease-out;
 
