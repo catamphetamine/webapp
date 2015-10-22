@@ -109,4 +109,4 @@ export default class About extends Component
 	}
 }
 
-const are_settings_loaded = (global_state) => global_state.settings && global_state.settings.loaded
+// const are_settings_loaded = (global_state) => global_state.settings && global_state.settings.loaded

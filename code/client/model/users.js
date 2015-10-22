@@ -5,47 +5,45 @@ const initial_state =
 
 const handlers =
 {
-	'retrieving users': (state, action) =>
+	'retrieving users': (result, state) =>
 	{
 		const new_state = 
 		{
 			...state,
-			loading : true,
-			error   : false
+			loading       : true,
+			loading_error : undefined
 		}
 
 		return new_state
 	},
 
-	'users retrieved': (state, action) =>
+	'users retrieved': (result, state) =>
 	{
 		const new_state = 
 		{
 			...state,
 			loading : false,
 			loaded  : true,
-			error   : false,
 			stale   : false,
-			data    : action.result
+			users   : result
 		}
 
 		return new_state
 	},
 
-	'users retrieval failed': (state, action) =>
+	'users retrieval failed': (error, state) =>
 	{
 		const new_state = 
 		{
 			...state,
-			loading : false,
-			loaded  : true,
-			error   : action.error
+			loading       : false,
+			loading_error : error
 		}
 
 		return new_state
 	},
 
-	'adding user': (state, action) =>
+	'adding user': (result, state) =>
 	{
 		const new_state = 
 		{
@@ -56,7 +54,7 @@ const handlers =
 		return new_state
 	},
 
-	'user added': (state, action) =>
+	'user added': (result, state) =>
 	{
 		const new_state = 
 		{
@@ -68,19 +66,30 @@ const handlers =
 		return new_state
 	},
 
-	'adding user failed': (state, action) =>
+	'adding user failed': (error, state) =>
 	{
 		const new_state = 
 		{
 			...state,
-			adding : false,
-			error  : action.error
+			adding       : false,
+			adding_error : error
 		}
 
 		return new_state
 	},
 
-	'deleting user': (state, action) =>
+	'adding error dismissed': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			adding_error : undefined
+		}
+
+		return new_state
+	},
+
+	'deleting user': (result, state) =>
 	{
 		const new_state = 
 		{
@@ -91,7 +100,7 @@ const handlers =
 		return new_state
 	},
 
-	'user deleted': (state, action) =>
+	'user deleted': (result, state) =>
 	{
 		const new_state = 
 		{
@@ -103,19 +112,19 @@ const handlers =
 		return new_state
 	},
 
-	'deleting user failed': (state, action) =>
+	'deleting user failed': (error, state) =>
 	{
 		const new_state = 
 		{
 			...state,
-			deleting : false,
-			error  : action.error
+			deleting       : false,
+			deleting_error : error
 		}
 
 		return new_state
 	},
 
-	'renaming user': (state, action) =>
+	'renaming user': (result, state) =>
 	{
 		const new_state = 
 		{
@@ -126,25 +135,84 @@ const handlers =
 		return new_state
 	},
 
-	'user renamed': (state, action) =>
+	'user renamed': (result, state) =>
 	{
 		const new_state = 
 		{
 			...state,
 			renaming : false,
-			stale  : true
+			stale    : true
 		}
 
 		return new_state
 	},
 
-	'renaming user failed': (state, action) =>
+	'renaming user failed': (error, state) =>
 	{
 		const new_state = 
 		{
 			...state,
-			renaming : false,
-			error  : action.error
+			renaming       : false,
+			renaming_error : error
+		}
+
+		return new_state
+	},
+
+	'renaming user failed': (error, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			renaming       : false,
+			renaming_error : error
+		}
+
+		return new_state
+	},
+
+	'uploading user picture': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			uploading_picture: true
+		}
+
+		return new_state
+	},
+
+	'user picture uploaded': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			uploading_picture: false
+		}
+
+		new_state.users.filter(user => user.id === result.user_id)[0].picture = result.picture
+
+		return new_state
+	},
+
+	'uploading user picture failed': (error, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			uploading_picture       : false,
+			uploading_picture_error : error
+		}
+
+		return new_state
+	},
+
+	'uploading user picture error dismissed': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			uploading_picture_error : undefined
 		}
 
 		return new_state
@@ -155,7 +223,7 @@ const handlers =
 
 // applies a handler based on the action type
 // (is copy & paste'd for all action response handlers)
-export default function(state = initial_state, action = {})
+export default function(state = initial_state, action_data = {})
 {
-	return (handlers[action.type] || (state => state))(state, action)
+	return (handlers[action_data.type] || ((result, state) => state))(action_data.result || action_data.error || action_data, state)
 }

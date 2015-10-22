@@ -1,14 +1,18 @@
-var minimist = require('minimist')
+// use bluebird for Promises
+require('babel-runtime/core-js/promise').default = require('bluebird')
+
+require('babel/register')
+
 var path = require('path')
 
 global.Root_folder = path.resolve(__dirname, '..', '..')
 
+var minimist = require('minimist')
 var command_line_arguments = minimist(process.argv.slice(2))
 
 global._production_ = command_line_arguments.production
 global._development_ = command_line_arguments.development || process.env.NODE_ENV === 'development'
 
-require('babel/register')
+require('bluebird').promisifyAll(require('fs-extra'))
 
-require(path.resolve(__dirname, 'web server'))
-require(path.resolve(__dirname, 'database'))
+require('./web server')

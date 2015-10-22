@@ -3,8 +3,7 @@ import path          from 'path'
 import http          from 'http'
 import https         from 'https'
 import os            from 'os'
-import url           from  'url'
-import socket_io     from 'socket.io'
+import url           from 'url'
 import log           from './log'
 import configuration from '../configuration'
 
@@ -16,7 +15,6 @@ import session     from 'koa-session'
 // import body_parser from 'koa-body-parsers'
 import body_parser from 'koa-bodyparser'
 import compress    from 'koa-compress'
-import statics     from 'koa-static-cache'
 import koa_logger  from 'koa-bunyan'
 import koa_proxy   from 'koa-proxy'
 import mount       from 'koa-mount'
@@ -43,18 +41,6 @@ web.use(koa_logger(log,
 // хз, нужно ли сжатие в node.js: мб лучше поставить впереди nginx'ы, 
 // и ими сжимать, чтобы не нагружать процесс node.js
 web.use(compress())
-
-// serve statics
-// (don't serve "index.html" files)
-//
-// https://github.com/koajs/koa/issues/466
-//
-web.use(mount('/assets', statics(path.join(Root_folder, 'build', 'assets'), 
-{
-	maxAge  : 365 * 24 * 60 * 60,
-	gzip    : true,
-	dynamic : true
-})))
 
 // // Proxy to API server
 web.use(mount('/api', koa_proxy({ host: `http://${configuration.api_server.http.host}:${configuration.api_server.http.port}` })))
@@ -96,20 +82,6 @@ web.on('error', function(error, context)
 // http server
 const http_web_server = http.createServer()
 
-// websocket server
-const websocket = socket_io.listen(http_web_server)
-// don't serve client scripts
-websocket.serveClient(false)
-
-websocket.on('connection', socket =>
-{
-	socket.emit('news', { message: `'Hello World!' from server` })
-	socket.on('something', data =>
-	{
-		log.info(data)
-	})
-})
-
 // enable Koa for handling http requests
 http_web_server.on('request', web.callback())
 
@@ -129,15 +101,15 @@ http_web_server.on('request', web.callback())
 // })
 
 // поднять http сервер
-http_web_server.listen(configuration.webserver.http.port, error =>
+http_web_server.listen(configuration.webpage_server.http.port, error =>
 {
 	if (error)
 	{
 		return log.error(error)
 	}
 
-	log.info(`Web server is listening`)
-	log.info(`Now go to http://${configuration.webserver.http.host}:${configuration.webserver.http.port}`)
+	log.info(`Webpage server is listening at http://${configuration.webpage_server.http.host}:${configuration.webpage_server.http.port}`)
+
 })
 
 export default web

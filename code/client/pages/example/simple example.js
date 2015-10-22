@@ -3,19 +3,24 @@ import { webpage_title } from '../../webpage head'
 import styler from 'react-styling'
 import { connect } from 'react-redux'
 import { bindActionCreators as bind_action_creators } from 'redux'
-import { get as get_users, add as add_user, remove as delete_user } from '../../actions/users'
+import { get as get_users, add as add_user, remove as delete_user, dismiss_adding_error, upload_picture, dismiss_uploading_picture_error } from '../../actions/users'
+import Button from '../../components/button'
 
 @connect
 (
 	store => 
 	({
-		users   : store.users.data,
-		loading : store.users.loading,
-		loaded  : store.users.loaded,
-		stale   : store.users.stale,
-		error   : store.users.error
+		users         : store.users.users,
+		loading       : store.users.loading,
+		loaded        : store.users.loaded,
+		stale         : store.users.stale,
+		loading_error : store.users.loading_error,
+		adding_error  : store.users.adding_error,
+
+		uploading_picture       : store.users.uploading_picture,
+		uploading_picture_error : store.users.uploading_picture_error
 	}),
-	dispatch => bind_action_creators({ get_users, add_user, delete_user }, dispatch)
+	dispatch => bind_action_creators({ get_users, add_user, delete_user, dismiss_adding_error, upload_picture, dismiss_uploading_picture_error }, dispatch)
 )
 export default class Page extends Component
 {
@@ -28,7 +33,11 @@ export default class Page extends Component
 		loading       : PropTypes.bool,
 		loaded        : PropTypes.bool,
 		stale         : PropTypes.bool,
-		error         : PropTypes.object
+		loading_error : PropTypes.object,
+		adding_error  : PropTypes.object,
+
+		uploading_picture       : PropTypes.bool,
+		uploading_picture_error : PropTypes.object
 	}
 
 	static contextTypes =
@@ -43,6 +52,8 @@ export default class Page extends Component
 		this.refresh     = this.refresh.bind(this)
 		this.add_user    = this.add_user.bind(this)
 		this.delete_user = this.delete_user.bind(this)
+
+		this.on_picture_file_selected = this.on_picture_file_selected.bind(this)
 	}
 
 	componentDidMount()
@@ -61,6 +72,20 @@ export default class Page extends Component
 		{
 			this.refresh()
 		}
+
+		if (next_props.adding_error)
+		{
+			alert('Failed to add the user')
+
+			this.props.dismiss_adding_error()
+		}
+
+		if (next_props.uploading_picture_error)
+		{
+			alert('Failed to upload user picture')
+
+			this.props.dismiss_uploading_picture_error()
+		}
 	}
 
 	// shouldComponentUpdate(next_props, next_state)
@@ -72,20 +97,6 @@ export default class Page extends Component
 	{
 		const { error, loaded, users } = this.props
 
-		if (error)
-		{
-			const markup = 
-			(
-				<section className="content">
-					{webpage_title("Simple REST API example")}
-
-					<p>Error: {error.stack || error}</p>
-				</section>
-			)
-
-			return markup
-		}
-
 		const markup = 
 		(
 			<section className="content">
@@ -94,7 +105,7 @@ export default class Page extends Component
 				<div style={style.container}>
 					<p>This is an example of REST API usage with no database persistence</p>
 
-					{this.render_users(loaded, users)}
+					{this.render_users(error, loaded, users)}
 				</div>
 			</section>
 		)
@@ -102,8 +113,24 @@ export default class Page extends Component
 		return markup
 	}
 
-	render_users(loaded, users)
+	render_users(error, loaded, users)
 	{
+		if (error)
+		{
+			const markup = 
+			(
+				<div style={style.users}>
+					{'Failed to load the list of users'}
+
+					{/* error.stack || error */}
+
+					<button onClick={this.refresh} style={style.users.refresh}>Try again</button>
+				</div>
+			)
+
+			return markup
+		}
+
 		if (!loaded)
 		{
 			return <div style={style.users}>Loading users</div>
@@ -125,6 +152,8 @@ export default class Page extends Component
 			return markup
 		}
 
+		const no_user_picture = require('../../../../assets/images/no user picture 85x85.png')
+
 		const markup = 
 		(
 			<div style={style.users}>
@@ -139,8 +168,29 @@ export default class Page extends Component
 						{users.map(user =>
 						{
 							return <li key={user.id}>
-								<span style={style.users.list.user.id}>{user.id}</span> {user.name}
-								<button onClick={event => this.delete_user(user.id)} style={style.users.delete}>delete</button>
+								<span style={style.user.id}>{user.id}</span>
+
+								<img style={style.user.picture} src={user.picture ? `/assets/images_temporary_store/${user.picture}` : no_user_picture}/>
+
+								<span style={style.user.name}>{user.name}</span>
+
+								<input
+									type="file"
+									ref="upload_picture"
+									style={style.users.upload_picture_input}
+									onChange={event => this.on_picture_file_selected(event, user.id)}/>
+
+								<Button 
+									busy={this.props.uploading_picture} 
+									on_click={event => this.refs.upload_picture.click()} 
+									text="upload picture"
+									style={style.users.upload_picture}/>
+
+								<Button
+									busy={this.props.deleting}
+									on_click={event => this.delete_user(user.id)}
+									text="delete user"
+									style={style.users.delete}/>
 							</li>
 						})}
 					</ul>
@@ -177,6 +227,28 @@ export default class Page extends Component
 		// this.refresh()
 	}
 
+	on_picture_file_selected(event, user_id)
+	{
+		const file = event.target.files[0]
+		this.upload_picture(file, user_id)
+
+		// reset the selected file 
+		// so that onChange would trigger again 
+		// even with the same file
+		event.target.value = null
+	}
+
+	upload_picture(file, user_id)
+	{
+		const data = new FormData()
+
+		data.append('file', file) // $('input[name="fileInput"]')[0].files[0]
+
+		this.props.upload_picture(user_id, data)
+
+		// upload_file(files[0])
+	}
+
 	static preload(store)
 	{
 		const promises = []
@@ -205,18 +277,37 @@ const style = styler
 			title
 				font-weight : bold
 
-			user
-				id
-					margin-right : 0.1em
-					color        : #9f9f9f
-
 		refresh
-			margin-left : 0.5em
+			margin-left : 1em
 
 		add
 			margin-left : 1em
 
 		delete
 			margin-left : 1em
-			float       : right
+
+		upload_picture
+			margin-left    : 1em
+			vertical-align : bottom
+
+		upload_picture_input
+			display : none
+
+	user
+		id
+			color        : #9f9f9f
+
+		name
+			margin-left : 0.3em
+
+		picture
+			width  : 1em
+			height : 1em
+
+			margin-bottom  : 0.05em
+			margin-left    : 0.3em
+
+			border : 1px solid #9f9f9f
+
+			vertical-align : bottom
 `

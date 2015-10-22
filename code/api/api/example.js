@@ -38,6 +38,8 @@ api.post('/example/user', function({ name })
 
 api.patch('/example/user/:id', function({ id, name })
 {
+	// throw new Error(123)
+	
 	if (!users.has(id))
 	{
 		throw new Errors.Not_found(`User ${id} not found`)
@@ -48,10 +50,27 @@ api.patch('/example/user/:id', function({ id, name })
 
 api.delete('/example/user/:id', function({ id })
 {
+	// throw new Error(123)
+
 	if (!users.has(id))
 	{
 		throw new Errors.Not_found(`User ${id} not found`)
 	}
 	
 	users.delete(id)
+})
+
+api.post('/example/user/:id/picture', function({ id, file_name })
+{
+	// testing uploading image spinner
+	// return new Promise((resolve) => setTimeout(resolve, 3000))
+
+	// throw new Error(123)
+
+	if (!users.has(id))
+	{
+		throw new Errors.Not_found(`User ${id} not found`)
+	}
+
+	users.get(id).picture = file_name
 })

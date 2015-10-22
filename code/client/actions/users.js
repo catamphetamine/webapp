@@ -1,3 +1,5 @@
+import http from '../libraries/http'
+
 export function get()
 {
 	const action =
@@ -51,4 +53,35 @@ export function rename()
 	}
 
 	return action
+}
+
+export function dismiss_adding_error()
+{
+	return { type: 'adding error dismissed' }
+}
+
+export function upload_picture(user_id, data)
+{
+	const action =
+	{
+		promise: api => 
+		{
+			return http.post(`/upload_image`, data).then(result =>
+			{
+				return api.post(`/example/user/${user_id}/picture`, { file_name: result.file_name })
+				.then(() =>
+				{
+					return { user_id: user_id, picture: result.file_name }
+				})
+			})
+		},
+		types: ['uploading user picture', 'user picture uploaded', 'uploading user picture failed']
+	}
+
+	return action
+}
+
+export function dismiss_uploading_picture_error()
+{
+	return { type: 'uploading user picture error dismissed' }
 }

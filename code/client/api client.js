@@ -1,12 +1,6 @@
 import superagent from 'superagent'
 
-/*
- * This silly underscore is here to avoid a mysterious "ReferenceError: ApiClient is not defined" error.
- * See Issue #14. https://github.com/erikras/react-redux-universal-hot-example/issues/14
- *
- * Remove it at your own risk.
- */
-class ApiClient_
+export default class ApiClient
 {
 	// Constructs a new instance of Api Client.
 	// Optionally takes an Http Request as a reference to mimic (for example, cookies).
@@ -32,6 +26,8 @@ class ApiClient_
 		{
 			this[method] = (path, data, options) =>
 			{
+				// options = options || {}
+
 				const http_method = http_methods[method]
 
 				if (!http_method)
@@ -39,11 +35,11 @@ class ApiClient_
 					throw new Error(`Api method not found: ${method}`)
 				}
 
-				const url = this.format_url(path)
+				const url = format_url(path)
 
 				return new Promise((resolve, reject) =>
 				{
-					let request = superagent[http_method](url)
+					const request = superagent[http_method](url)
 
 					if (data)
 					{
@@ -85,24 +81,19 @@ class ApiClient_
 			}
 		}
 	}
-
-	/* This was originally a standalone function outside of this class, but babel kept breaking, and this fixes it  */
-	format_url(path)
-	{
-		// add slash in the beginning
-		let normalized_path = path[0] !== '/' ? '/' + path : path
-
-		if (_server_)
-		{
-			// Prepend host and port of the API server to the path.
-			return `http://${configuration.api_server.http.host}:${configuration.api_server.http.port}${normalized_path}`
-		}
-
-		// Prepend `/api` to relative URL, to proxy to API server.
-		return '/api' + normalized_path
-	}
 }
 
-const ApiClient = ApiClient_
+function format_url(path)
+{
+	// add slash in the beginning
+	let normalized_path = path[0] !== '/' ? '/' + path : path
 
-export default ApiClient
+	if (_server_)
+	{
+		// Prepend host and port of the API server to the path.
+		return `http://${configuration.api_server.http.host}:${configuration.api_server.http.port}${normalized_path}`
+	}
+
+	// Prepend `/api` to relative URL, to proxy to API server.
+	return '/api' + normalized_path
+}

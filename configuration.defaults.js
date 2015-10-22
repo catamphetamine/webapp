@@ -16,6 +16,23 @@ module.exports =
 			database: 'webapp'
 		}
 	},
+	image_server:
+	{
+		http: 
+		{
+			host: '127.0.0.1',
+			port: 3003
+		},
+		temporary_files_directory: 'build/assets/images_temporary_store'
+	},
+	webpage_server: 
+	{
+		http: 
+		{
+			host: '127.0.0.1',
+			port: 3004
+		}
+	},
 	webserver: 
 	{
 		http: 

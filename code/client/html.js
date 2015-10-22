@@ -35,7 +35,7 @@ export default class Html extends Component
 		const required_assets = Html.require_assets()
 
 		// when server-side rendering is disabled, component will be undefined
-		// (but server-side rendering is always on so this code may be removed)
+		// (but server-side rendering is always on so this if condition may be removed)
 		const content = component ? ReactDOMServer.renderToString(component) : ''
 
 		const html = 

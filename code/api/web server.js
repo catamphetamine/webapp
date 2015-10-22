@@ -8,14 +8,10 @@ import koa_router   from 'koa-router'
 import configuration from '../configuration'
 global.configuration = configuration
 
-// import json_rpc      from './json rpc'
-
-import log           from './log'
+import log from './log'
 
 import path from 'path'
 import fs   from 'fs'
-
-// json_rpc.add('utility', utility)
 
 const web = koa()
 
@@ -56,11 +52,11 @@ for (let method of ['get', 'put', 'patch', 'post', 'delete'])
 	{
 		router[method](path, function*(next)
 		{
-			const result = action({ ...this.query, ...this.request.body, ...this.params })
+			const result = action({ ...this.request.body, ...this.query, ...this.params })
 
 			if (result instanceof Promise)
 			{
-				return result.then(result =>
+				yield result.then(result =>
 				{
 					this.body = result
 				},
@@ -69,8 +65,10 @@ for (let method of ['get', 'put', 'patch', 'post', 'delete'])
 					throw error
 				})
 			}
-
-			this.body = result
+			else
+			{
+				this.body = result
+			}
 		})
 	}
 }
@@ -97,54 +95,6 @@ global.Errors =
 	Input_missing : custom_error('Missing input', { code: 422 })
 }
 
-// function api()
-// {
-// 	return new Promise((resolve, reject) =>
-// 	{
-// 		web.use(mount('/', function*()
-// 		{
-// 			const result = find_api_method_by_path(this.path, this.method.toLowerCase())
-
-// 			if (!result)
-// 			{
-// 				// throw new Method_not_found()
-// 				this.status = 404
-// 				this.message = `Api method not found: ${this.method} "${this.path}"`
-				
-// 				log.error(this.message)
-// 				return
-// 			}
-
-// 			const { action, parameters } = result
-
-// 			yield action(parameters, this.body)
-// 			.then(result =>
-// 			{
-// 				this.body = result
-// 			},
-// 			error =>
-// 			{
-// 				if (error && error.redirect)
-// 				{
-// 					return this.redirect(error.redirect)
-// 				}
-
-// 				throw error
-// 			})
-// 		}))
-
-// 		web.listen(configuration.api_server.http.port, (error) =>
-// 		{
-// 			if (error)
-// 			{
-// 				return reject(error)
-// 			}
-
-// 			resolve()
-// 		})
-// 	})
-// }
-
 web.use(function*()
 {
 	// throw new Method_not_found()
@@ -152,7 +102,6 @@ web.use(function*()
 	this.message = `Api method not found: ${this.method} "${this.path}"`
 	
 	log.error(this.message)
-	return true
 })
 
 web.listen(configuration.api_server.http.port, (error) =>

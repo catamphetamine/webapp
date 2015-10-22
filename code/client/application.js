@@ -14,6 +14,9 @@ import markup_wrapper from './markup wrapper'
 import html from './html'
 html.require_assets()
 
+// import ajax from './libraries/ajax'
+// global.ajax = ajax
+
 import international from './international'
 
 // Load the Intl polyfill and required locale data
