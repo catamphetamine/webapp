@@ -15,4 +15,4 @@ global._development_ = command_line_arguments.development || process.env.NODE_EN
 
 require('bluebird').promisifyAll(require('fs-extra'))
 
-require('./web server')
+require('./main')

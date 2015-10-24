@@ -82,9 +82,9 @@ function colorize(text, style)
 // 	}
 // }
 
-function preamble(level, time, colour)
+function preamble(source, level, time, colour)
 {
-	let preamble = `${time} `
+	let preamble = `[${source}] ${time} `
 	if (level !== 'Generic')
 	{
 		preamble += `${level} `
@@ -92,12 +92,13 @@ function preamble(level, time, colour)
 	return colorize(preamble, colour)
 }
 
-function print(level, message, time)
+function print(source, level, message, time)
 {
 	time = moment(time).format("dddd, MMMM Do YYYY, hh:mm:ss")
 
 	return console.log(preamble
 	(
+		source,
 		level,
 		time,
 		colours[level.toString()] || colours['...']
@@ -105,12 +106,17 @@ function print(level, message, time)
 	+ message)
 }
 
+// for the function below
+const _print = print
+
 console_output.write = data =>
 {
 	if (data.err)
 	{
 		return print_error(data.err)
 	}
+
+	const print = (level, message, time) => _print(data.name, level, message, time)
 
 	switch (data.level)
 	{

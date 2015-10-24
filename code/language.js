@@ -378,11 +378,21 @@ Object.defineProperty(String.prototype, 'repeat',
 // 	})
 // }
 
-// Object.defineProperty(Function.prototype, 'delay', 
-// {
-// 	enumerable: false,
-// 	value: time => setTimeout(this, time)
-// })
+// G:\work\webapp\node_modules\bluebird\js\main\timers.js:24
+// var delay = Promise.delay = function (value, ms) {
+//                           ^
+// TypeError: Cannot assign to read only property 'delay' of function Promise(resolver) {
+//     if (typeof resolver !== "function") {
+//         throw new TypeError("the promise...<omitted>...
+// }
+Object.defineProperty(Function.prototype, 'delay_for', 
+{
+	enumerable: false,
+	value: function(time)
+	{
+		setTimeout(this, time)
+	}
+})
 
 Object.defineProperty(Function.prototype, 'periodical', 
 {
@@ -390,10 +400,19 @@ Object.defineProperty(Function.prototype, 'periodical',
 	value: function (interval)
 	{
 		const action = this
-		const periodical = () =>
+
+		function periodical()
 		{
-			action()
-			periodical.delay(interval)
+			const result = action()
+
+			if (result instanceof Promise)
+			{
+				result.finally(() => periodical.delay_for(interval))
+			}
+			else
+			{
+				periodical.delay_for(interval)
+			}
 		}
 
 		periodical()

@@ -45,6 +45,22 @@ web.use(function* (next)
 	}
 })
 
+let shut_down = false
+
+// in case of maintenance
+web.use(function* (next)
+{
+	if (shut_down)
+	{
+		this.status = 503
+		this.message = 'The image server is shutting down for maintenance'
+	}
+	else
+	{
+		yield next()
+	}
+})
+
 const resize_image = Promise.promisify(imagemagick.resize)
 
 function resize(from, to, settings)
@@ -174,6 +190,8 @@ web.use(function*()
 	}
 })
 
+let connections = 0
+
 web.listen(configuration.image_server.http.port, (error) =>
 {
 	if (error)
@@ -183,3 +201,5 @@ web.listen(configuration.image_server.http.port, (error) =>
 
 	log.info(`Image server is listening at http://${configuration.image_server.http.host}:${configuration.image_server.http.port}`)
 })
+.on('connection', () => connections++)
+.on('close', () => connections--)

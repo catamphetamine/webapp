@@ -92,7 +92,7 @@ global.Errors =
 	Unauthorized  : custom_error('Unauthorized',  { code: 401 }),
 	Access_denied : custom_error('Access denied', { code: 403 }),
 	Not_found     : custom_error('Not found',     { code: 404 }),
-	Input_missing : custom_error('Missing input', { code: 422 })
+	Input_missing : custom_error('Missing input', { code: 500 })
 }
 
 web.use(function*()
