@@ -46,7 +46,11 @@ function clean_up()
 
 	const folder = path.resolve(Root_folder, configuration.image_server.temporary_files_directory)
 
-	return fs_size_async(folder).bind({}).then(function(size)
+	return fs.ensureDirAsync(folder).then(() =>
+	{
+		return fs_size_async(folder)
+	})
+	.bind({}).then(function(size)
 	{
 		this.folder_size_before_clean_up = size
 

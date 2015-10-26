@@ -1,3 +1,5 @@
+import path          from 'path'
+import fs            from 'fs-extra'
 import bunyan        from 'bunyan'
 import stream        from 'stream'
 import util          from 'util'
@@ -150,26 +152,45 @@ console_output.write = data =>
 	}
 }
 
-const development_log = 
-{
-	streams: 
-	[{
-		type: 'raw',
-		stream: console_output
-	}],
-	serializers: 
-	{
-		error    : bunyan.stdSerializers.err,
-		request  : bunyan.stdSerializers.req,
-		response : bunyan.stdSerializers.res,
-	}
-}
-
-const production_log = {}
-
-const log_configuration = process.env.NODE_ENV === 'production' ? production_log : development_log
-
 export default function create(name)
 {
+	const development_log = 
+	{
+		streams: 
+		[{
+			type: 'raw',
+			stream: console_output
+		}],
+		serializers: 
+		{
+			error    : bunyan.stdSerializers.err,
+			request  : bunyan.stdSerializers.req,
+			response : bunyan.stdSerializers.res,
+		}
+	}
+
+	const log_path = path.resolve(Root_folder, 'log', `${name}.txt`)
+
+	fs.ensureDirSync(path.dirname(log_path))
+
+	const production_log =
+	{
+		streams:
+		[{
+			type   : 'rotating-file',
+			path   : log_path,
+			period : '1d',            // daily rotation
+			count  : 3                // keep 3 back copies
+		}],
+		serializers: 
+		{
+			error    : bunyan.stdSerializers.err,
+			request  : bunyan.stdSerializers.req,
+			response : bunyan.stdSerializers.res,
+		}
+	}
+
+	const log_configuration = (_production_ || process.env.NODE_ENV === 'production') ? production_log : development_log
+
 	return bunyan.createLogger(Object.extend({ name: name }, log_configuration))
 }

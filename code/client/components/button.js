@@ -1,17 +1,25 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 import styler from 'react-styling'
 
 export default class Button extends Component
 {
+	static propTypes =
+	{
+		text     : PropTypes.string.isRequired,
+		on_click : PropTypes.func.isRequired,
+		busy     : PropTypes.bool,
+		style    : PropTypes.object
+	}
+
 	render()
 	{
-		const { busy } = this.props
+		const { busy, on_click, text } = this.props
 
 		const markup = 
 		(
 			<div style={merge(style.container, this.props.style)}>
 				<span className="spinner" style={ busy ? style.spinner.show : style.spinner.hide }></span>
-				<button disabled={busy} onClick={this.props.on_click} style={ busy ? style.button.hide : style.button.show }>{this.props.text}</button>
+				<button disabled={busy} onClick={on_click} style={ busy ? style.button.hide : style.button.show }>{text}</button>
 			</div>
 		)
 

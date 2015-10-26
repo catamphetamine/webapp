@@ -102,6 +102,10 @@ http://www.imagemagick.org/script/binary-releases.php
 Сделать
 ====================
 
+image server -> file upload server
+
+image server: imagemagick
+
 сделать application settings get (языки, путь к картинкам) - в начале, перед показом страницы
 
 языки оттуда подставлять в locale switcher
@@ -132,6 +136,13 @@ user: patch (rename)
 add user: validation
 
 крутилки на добавление, удаление, переименование, загрузку.
+
+
+
+
+
+
+upload только при вошедшем пользователе (и ресайз тоже, и api тоже (не все методы - логин, например, публичен должен быть, и пинг, и настройки))
 
 
 
@@ -320,6 +331,7 @@ https://github.com/rackt/react-router/blob/master/examples/huge-apps/app.js
 // Мб перейти с bluebird на обычные Promises
 // Пока bluebird лучше:
 // http://programmers.stackexchange.com/questions/278778/why-are-native-es6-promises-slower-and-more-memory-intensive-than-bluebird
+// к тому же, в bluebird есть обработчик ошибок по умолчанию; есть .cancel(); есть много разного удобного.
 
 Мб использовать это:
 

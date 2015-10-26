@@ -1,0 +1,2 @@
+{"name":"webapp web server","hostname":"kuchumovn-pc","pid":39228,"level":30,"msg":"Web server is listening","time":"2015-10-26T00:56:21.961Z","v":0}
+{"name":"webapp web server","hostname":"kuchumovn-pc","pid":39228,"level":30,"msg":"Now go to http://127.0.0.1:3000","time":"2015-10-26T00:56:21.962Z","v":0}
