@@ -1,5 +1,5 @@
 # maybe some logs
-/logs
+/log
 
 # webpack build target folder
 /build

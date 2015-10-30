@@ -48,7 +48,7 @@ web.use(mount('/api', koa_proxy({ host: `http://${configuration.api_server.http.
 // Usage: this.request.body
 web.use(body_parser({ formLimit: '100mb' }))
 
-web.keys = ['hammertime']
+web.keys = configuration.session_secret_keys
 web.use(session(web))
 // this.session
 

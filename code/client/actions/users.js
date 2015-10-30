@@ -10,7 +10,7 @@ export function get()
 			{
 				return Promise.map(ids, id =>
 				{
-					return api.get(`/example/user/${id}`)
+					return api.get(`/example/users/${id}`)
 				})
 			})
 		},
@@ -26,7 +26,7 @@ export function add(info)
 
 	const action =
 	{
-		promise: api => api.post(`/example/user`, info),
+		promise: api => api.post(`/example/users`, info),
 		types: ['adding user', 'user added', 'adding user failed']
 	}
 
@@ -37,7 +37,7 @@ export function remove(id)
 {
 	const action =
 	{
-		promise: api => api.delete(`/example/user/${id}`),
+		promise: api => api.delete(`/example/users/${id}`),
 		types: ['deleting user', 'user deleted', 'deleting user failed']
 	}
 
@@ -48,7 +48,7 @@ export function rename()
 {
 	const action =
 	{
-		promise: api => api.patch(`/example/user/${id}`),
+		promise: api => api.patch(`/example/users/${id}`),
 		types: ['renaming user', 'user renamed', 'renaming user failed']
 	}
 
@@ -68,7 +68,7 @@ export function upload_picture(user_id, data)
 		{
 			return http.post(`/upload_image`, data).then(result =>
 			{
-				return api.post(`/example/user/${user_id}/picture`, { file_name: result.file_name })
+				return api.post(`/example/users/${user_id}/picture`, { file_name: result.file_name })
 				.then(() =>
 				{
 					return { user_id: user_id, picture: result.file_name }

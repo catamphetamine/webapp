@@ -43,6 +43,7 @@ module.exports =
 			port: 3000
 		}
 	},
+	session_secret_keys: ['hammertime'],
 	development:
 	{
 		webpack:

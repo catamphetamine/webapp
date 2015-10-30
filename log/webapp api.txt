@@ -1,4 +1,0 @@
-{"name":"webapp api","hostname":"kuchumovn-pc","pid":40128,"level":30,"msg":"loading api module example.js","time":"2015-10-26T00:56:21.897Z","v":0}
-{"name":"webapp api","hostname":"kuchumovn-pc","pid":40128,"level":30,"msg":"loading api module utility.js","time":"2015-10-26T00:56:21.946Z","v":0}
-{"name":"webapp api","hostname":"kuchumovn-pc","pid":40128,"level":30,"msg":"skipping database connection","time":"2015-10-26T00:56:22.075Z","v":0}
-{"name":"webapp api","hostname":"kuchumovn-pc","pid":40128,"level":30,"msg":"Api server is listening at http://127.0.0.1:3002","time":"2015-10-26T00:56:22.083Z","v":0}

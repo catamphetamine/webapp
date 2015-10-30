@@ -56,6 +56,9 @@ export default class Html extends Component
 						<link href={assets.styles[style]} key={i} media="screen, projection"
 							rel="stylesheet" type="text/css"/>
 					)}
+
+					{/* resolves the initial style flash (flicker) on page load in development mode */}
+					{ Object.keys(assets.styles).is_empty() ? <style dangerouslySetInnerHTML={{__html: Html.require_assets().style}}/> : null }
 				</head>
 
 				<body>
@@ -95,7 +98,9 @@ Html.require_assets = function()
 	const result =
 	{
 		icon  : require('../../assets/images/icon/32x32.png'),
-		style : require('../../assets/styles/style.scss')
+
+		// there will be no .scss on server in production
+		style :  !(_production_ && _server_) ? require('../../assets/styles/style.scss') : undefined
 	}
 
 	return result

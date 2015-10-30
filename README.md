@@ -8,11 +8,15 @@ Features
 * Isomorphic (universal) rendering
 * Webpack
 * Express / Koa
-* Internationalization with React-intl
+* Internationalization with React-intl (v2)
 * To be done: Authentication
 * To be done: GraphQL + Relay
 * To be done: Persistence (PostgreSQL, Bookshelf)
 * Maybe to be done: Locale switch hot reload (without reloading page)
+* Microservice architecture
+* Bunyan logging (log file rotation is built-in)
+* Protected against Cross Site Request Forgery attacks
+* To be done: native Node.js clustering
 
 Quick Start
 ===========
@@ -34,6 +38,11 @@ Installation
 npm install
 
 Optionally you may want to install ImageMagic for image upload to work
+
+Optionally you may want to install Redis (can be used for user session storage instead of memory storage)
+
+https://github.com/MSOpenTech/redis/releases
+
 
 // sudo npm instal --global pm2
 
@@ -102,6 +111,24 @@ http://www.imagemagick.org/script/binary-releases.php
 Сделать
 ====================
 
+взять страницу ошибки из erikras (красную в dev mode)
+
+isomorphic styles - только в dev mode (в том числе подмена require())
+
+перейти на webpack watch node + issue в erikras откомментить + issue в tools откомментить + создать репо webpack-isomorphic-howto
+
+нормальную загрузку вначале в dev mode
+
+редизайн меню + адаптивный дизайн
+
+koa redis session store (optionally)
+
+если нету imagemagick'а, то просто возвращать нересайженную картинку (npm run demo)
+
+rotating log per worker
+
+выделить log server, куда слать логи (мб через node-ipc, мб просто по http, мб thrift или protobuf - можно попробовать)
+
 image server -> file upload server
 
 image server: imagemagick
@@ -141,9 +168,31 @@ add user: validation
 
 
 
+при вошедшем пользователе - проверить, что генерится страница нормально (то есть как бы работает вход на сервере при запросе страницы, даже если нету сессии, но есть "remember me")
+
+remember me - хранить в базе данных, вместе с полем user_id
+
+если происходит новый логин - добавлять новый remember me в базу (проверять по нескольким совпадение можно)
+
+по каждой remember me писать дату последней активности
+
+
+
+
+
+
+cluster и bunyan
+
+https://github.com/trentm/node-bunyan/issues/117#issuecomment-151124385
+
+
+
+
 
 upload только при вошедшем пользователе (и ресайз тоже, и api тоже (не все методы - логин, например, публичен должен быть, и пинг, и настройки))
 
+если нет Редиса при запуске - должно работать в любом случае.
+можно свой псевдоредис небольшой запустить.
 
 
 
@@ -349,7 +398,13 @@ https://github.com/acdlite/redux-react-router
 
 https://github.com/erikras/react-redux-universal-hot-example/commits/master
 
-Разделить проект на ядро и чисто кастомный код (actions, stores, pages, components)
+Разделить проект на ядро (модуль npm) и чисто кастомный код (actions, stores, pages, components)
+
+можно сделать уведомление (на почту, например, и ограничение функциональности) при заходе с "нового" ip-адреса (опция)
+ip-адреса можно "запоминать", назначая им имя, если ввести пароль
+
+Загрузку видео + плеер
+http://videojs.com/
 
 Прочее
 ====================
@@ -383,9 +438,16 @@ Webpack development server по умолчанию принимает все з�
 в файле webpack/development server.js, в параметре proxy запуска webpack-dev-server'а.
 
 
+Для "профайлинга" сборки проекта Webpack'ом можно использовать Webpack Analyse Tool
+http://stackoverflow.com/questions/32923085/how-to-optimize-webpacks-build-time-using-prefetchplugin-analyse-tool
+
+
 На Windows при запуске в develpoment mode Webpack вызывает событие изменения файлов,
 когда делает их require() в первый раз, поэтому nodemon глючит и начинает много раз
 перезапускаться.
+
+Ещё, на Windows у nodemon'а, который запускается параллельно в нескольких экземплярах, может быть ошибка "EPERM: operation not permitted", которая не исправляется:
+https://github.com/remy/nodemon/issues/709
 
 
 При сборке каждого chunk'а к имени фала добавляется хеш.

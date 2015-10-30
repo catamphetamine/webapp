@@ -42,10 +42,10 @@ export function client({ development, wrap_component, routes, store, content_con
 
 export function server({ disable_server_side_rendering, wrap_component, html, routes, request, preload })
 {
-	const history = create_memory_history()
-	// const history = create_history()
-	const location = history.createLocation(request.originalUrl)
-	// const location = history.createLocation(request.path, request.query)
+	// const history = create_memory_history()
+	// // const history = create_history()
+	// const location = history.createLocation(request.originalUrl)
+	// // const location = history.createLocation(request.path, request.query)
 
 	const markup = () =>
 	{
@@ -58,7 +58,7 @@ export function server({ disable_server_side_rendering, wrap_component, html, ro
 	}
 
 	// , history
-	return router({ location, routes, preload })
+	return router({ location: request.originalUrl, routes, preload }) // , location
 		.then(({ component, redirect }) =>
 		{
 			if (redirect)

@@ -22,7 +22,7 @@ const web = koa()
 
 const router = koa_router()
 
-web.keys = ['hammertime']
+web.keys = configuration.session_secret_keys
 web.use(session(web))
 
 // Usage: this.request.body
@@ -57,7 +57,7 @@ web.use(function* (next)
 	}
 	else
 	{
-		yield next()
+		yield next
 	}
 })
 

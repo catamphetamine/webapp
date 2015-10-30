@@ -11,7 +11,7 @@ api.get('/example/users', function()
 	return Array.from(users.keys())
 })
 
-api.get('/example/user/:id', function({ id })
+api.get('/example/users/:id', function({ id })
 {
 	if (!users.has(id))
 	{
@@ -21,7 +21,7 @@ api.get('/example/user/:id', function({ id })
 	return { ...users.get(id), id: id }
 })
 
-api.post('/example/user', function({ name })
+api.post('/example/users', function({ name })
 {
 	if (!exists(name))
 	{
@@ -36,10 +36,10 @@ api.post('/example/user', function({ name })
 	return id
 })
 
-api.patch('/example/user/:id', function({ id, name })
+api.patch('/example/users/:id', function({ id, name })
 {
 	// throw new Error(123)
-	
+
 	if (!users.has(id))
 	{
 		throw new Errors.Not_found(`User ${id} not found`)
@@ -48,7 +48,7 @@ api.patch('/example/user/:id', function({ id, name })
 	users.get(id).name = name
 })
 
-api.delete('/example/user/:id', function({ id })
+api.delete('/example/users/:id', function({ id })
 {
 	// throw new Error(123)
 
@@ -60,7 +60,7 @@ api.delete('/example/user/:id', function({ id })
 	users.delete(id)
 })
 
-api.post('/example/user/:id/picture', function({ id, file_name })
+api.post('/example/users/:id/picture', function({ id, file_name })
 {
 	// testing uploading image spinner
 	// return new Promise((resolve) => setTimeout(resolve, 3000))
