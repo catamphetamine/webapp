@@ -38,7 +38,12 @@ module.exports =
 				// because they will all be extracted by Extract Text Plugin,
 				// and also because I don't use css-loader "modules" feature.
 
-				// log.error(`Unexpected .scss asset (in production mode): ${module.name}`)
+				var isStyle = regular_expression.test(module.name);
+			        if (isStyle) {
+			          log.error(`Unexpected style asset (in production mode): ${module.name}`);
+			        }
+			
+			        return isStyle;
 			},
 			path: webpack_isomorphic_tools_plugin.style_loader_path_extractor,
 			parser: webpack_isomorphic_tools_plugin.css_loader_parser
