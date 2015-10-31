@@ -16,6 +16,15 @@ Object.extend = function(...objects)
 	const to   = objects[0]
 	const from = objects[1]
 
+	if (!exists(to))
+	{
+		return {}
+	}
+	else if (!exists(from))
+	{
+		return to
+	}
+
 	if (objects.length > 2)
 	{
 		const last = objects.pop()

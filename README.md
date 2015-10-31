@@ -49,6 +49,8 @@ https://github.com/MSOpenTech/redis/releases
 Running (development)
 =====================
 
+(If you have Redis and ImageMagic installed, you may want to set `demo: false` flag in your `configuration.js`)
+
 npm run dev
 
 After it finishes loading go to:
@@ -59,6 +61,8 @@ http://localhost:3000
 
 Running (production)
 =====================
+
+(If you have Redis and ImageMagic installed, you may want to set `demo: false` flag in your `configuration.js`)
 
 Build the project with Webpack and run the web server:
 
@@ -111,15 +115,17 @@ http://www.imagemagick.org/script/binary-releases.php
 Сделать
 ====================
 
-взять страницу ошибки из erikras (красную в dev mode)
-
-isomorphic styles - только в dev mode (в том числе подмена require())
-
-перейти на webpack watch node + issue в erikras откомментить + issue в tools откомментить + создать репо webpack-isomorphic-howto
-
-нормальную загрузку вначале в dev mode
+добавить флаги языков
 
 редизайн меню + адаптивный дизайн
+
+log помещать в global в entry
+
+соединение tcp устанавливать при создании лога, и дальше просто писать
+
+сделать флаг demo, и проверять его на редисе и imagemagick
+
+взять страницу ошибки из erikras (красную в dev mode)
 
 koa redis session store (optionally)
 

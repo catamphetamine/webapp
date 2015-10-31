@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import { PropTypes as React_router_prop_types } from 'react-router'
 
 const locales = ['en-US', 'ru-RU']
 
@@ -11,6 +12,8 @@ import styler from 'react-styling'
 import { text } from '../international components'
 
 import { defineMessages, injectIntl as international } from 'react-intl'
+
+import Uri from '../libraries/uri'
 
 const messages = defineMessages
 ({
@@ -34,6 +37,11 @@ class Locale_switcher extends Component
 	static propTypes =
 	{
 		locale: PropTypes.string.isRequired
+	}
+
+	static contextTypes =
+	{
+		location: React_router_prop_types.location
 	}
 
 	render()
@@ -64,7 +72,9 @@ class Locale_switcher extends Component
 				<a
 					style={locale === current_locale ? style.locale.current.link : style.locale.link}
 					onClick={this.handle_locale_click.bind(this, locale)}
-					href={`?locale=${locale}`}>
+					href={new Uri(this.context.location.pathname + this.context.location.search).parameter('locale', locale).print()}>
+
+					<img src=""/>
 					{ locale }
 				</a>
 			</li>

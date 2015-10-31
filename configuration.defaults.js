@@ -54,5 +54,6 @@ module.exports =
 				port: 3001
 			}
 		}
-	}
+	},
+	demo: true
 }

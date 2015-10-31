@@ -97,7 +97,7 @@ Html.require_assets = function()
 {
 	const result =
 	{
-		icon  : require('../../assets/images/icon/32x32.png'),
+		icon  : require('../../assets/images/icon/cat_64x64.png'), // 32x32.png
 
 		// there will be no .scss on server in production
 		style :  !(_production_ && _server_) ? require('../../assets/styles/style.scss') : undefined
