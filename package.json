@@ -78,7 +78,7 @@
     "strip-json-comments": "^1.0.2",
     "superagent": "^1.2.0",
     "warning": "^2.1.0",
-    "webpack-isomorphic-tools": "^2.0.1"
+    "webpack-isomorphic-tools": "^2.2.0"
   },
   "devDependencies": {
     "autoprefixer-loader": "^3.1.0",

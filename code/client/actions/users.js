@@ -1,4 +1,4 @@
-import http from '../libraries/http'
+import http from '../tools/http'
 
 export function get()
 {

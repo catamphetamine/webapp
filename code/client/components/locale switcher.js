@@ -1,9 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { PropTypes as React_router_prop_types } from 'react-router'
 
-const locales = ['en-US', 'ru-RU']
-
-import { write as cookie } from '../cookie'
+import { write as cookie } from '../tools/cookie'
 
 import { connect } from 'react-redux'
 
@@ -11,9 +9,14 @@ import styler from 'react-styling'
 
 import { text } from '../international components'
 
+import Flag from './flag'
+import Dropdown from './dropdown'
+
 import { defineMessages, injectIntl as international } from 'react-intl'
 
-import Uri from '../libraries/uri'
+import Uri from '../tools/uri'
+
+const locales = ['en-US', 'ru-RU']
 
 const messages = defineMessages
 ({
@@ -22,6 +25,12 @@ const messages = defineMessages
 		id             : 'application.language',
 		description    : 'Web application language',
 		defaultMessage : 'Language'
+	},
+	choose_your_language:
+	{
+		id             : 'application.choose_your_language',
+		description    : 'Tells a user to choose a desired language',
+		defaultMessage : 'Choose your language'
 	}
 })
 
@@ -48,46 +57,24 @@ class Locale_switcher extends Component
 	{
 		const format_message = this.props.intl.formatMessage
 
+		const { locale } = this.props
+
 		const markup =
 		(
 			<div className="LocaleSwitcher" style={this.props.style}>
-				{format_message(messages.language)}
+				<span style={style.label}>{format_message(messages.language)}</span>
 
-				<ul style={style.locales}>
-					{locales.map(this.render_locale_link.bind(this))}
-				</ul>
+				<Dropdown selected={locale} select={::this.set_locale} list={locales.map(locale => ({ key: locale, value: locale, icon: <Flag locale={locale} style={style.locale.flag}/> }))} style={style.locales}/>
 			</div>
 		)
 
 		return markup
 	}
 
-	render_locale_link(locale)
+	set_locale(locale)
 	{
-		const current_locale = this.props.locale
-
-		const markup = 
-		(
-			<li key={locale} style={locale === current_locale ? style.locale.current : style.locale}>
-				<a
-					style={locale === current_locale ? style.locale.current.link : style.locale.link}
-					onClick={this.handle_locale_click.bind(this, locale)}
-					href={new Uri(this.context.location.pathname + this.context.location.search).parameter('locale', locale).print()}>
-
-					<img src=""/>
-					{ locale }
-				</a>
-			</li>
-		)
-
-		return markup
-	}
-
-	handle_locale_click(locale, event)
-	{
-		event.preventDefault()
-		cookie('locale', locale, 365)
-		window.location.reload()
+		cookie('locale', locale)
+		window.location = new Uri(this.context.location.pathname + this.context.location.search).parameter('locale', locale).print()
 	}
 }
 
@@ -95,28 +82,15 @@ export default international(Locale_switcher)
 
 const style = styler
 `
+	label
+		margin-right : 0.6em
+
 	locales
-		display         : inline-block
-		list-style-type : none
-		padding         : 0
-		margin-left     : 0.5em
+		display : inline-block
 
 	locale
-		display        : inline-block
-
-		padding-left   : 0.3em
-		padding-right  : 0.3em
-
-		padding-top    : 0.1em
-		padding-bottom : 0.1em
-
-		link
-			text-decoration : none
-			color           : black
-
-		&current
-			background : black
-
-			link
-				color           : white
+		flag
+			margin-right   : 0.4em
+			margin-bottom  : 0.2em
+			vertical-align : bottom
 `

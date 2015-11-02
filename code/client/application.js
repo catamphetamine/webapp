@@ -14,7 +14,7 @@ import markup_wrapper from './markup wrapper'
 import html from './html'
 html.require_assets()
 
-// import ajax from './libraries/ajax'
+// import ajax from './tools/ajax'
 // global.ajax = ajax
 
 import international from './international'

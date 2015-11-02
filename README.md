@@ -22,7 +22,7 @@ Quick Start
 ===========
 
 * `npm install`
-* `npm run dev`
+* `npm run dev` (nodemon has a bug when starting several nodemon processes in parallel fails; if this command fails - try to run it several times; eventually it will work)
 * wait a bit for Webpack to finish the first build (green stats will appear in the terminal)
 * go to `http://localhost:3000`
 * interact with the development version of the web application
@@ -52,6 +52,8 @@ Running (development)
 (If you have Redis and ImageMagic installed, you may want to set `demo: false` flag in your `configuration.js`)
 
 npm run dev
+
+(nodemon has a bug when starting several nodemon processes in parallel fails; if this command fails - try to run it several times; eventually it will work)
 
 After it finishes loading go to:
 
@@ -115,7 +117,36 @@ http://www.imagemagick.org/script/binary-releases.php
 Сделать
 ====================
 
-добавить флаги языков
+может быть добавить задержку в запуск nodemon'ов
+
+возможно, просто ввести семантический CSS, и стилизовать в style.css
+(некий общенародный стандарт именования классов)
+
+dropdown раскрывать постепенно (и убирать вверх - в обратном направлении)
+
+у dropdown сделать scroll при переполнении
+
+убрать :active у button на dropdown
+
+убрать "font-weight : normal" из dropdown (2 случая - кнопки)
+
+убрать "color       : black" из dropdown (2 случая - кнопки)
+
+в dropdown добавить индикацию мб на раскрытие (:active), и на выбор (:active)
+
+подумать, как делать различные :active, :visited.
+
+нужна ли arrow у dropdown, и либо убрать её из dropdown (+ стили), либо сделать нормально
+
+сделать, чтобы каждый nodemon watch-ил только свой набор файлов
+
+showcase элементов: dropdown, modal, ...
+
+после выбора locale - крутилку на весь экран мб (мб не на весь)
+
+у флага языка сделать dropdown, поместить в футере, мельче шрифтом
+
+меню как в appstore
 
 редизайн меню + адаптивный дизайн
 

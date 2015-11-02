@@ -32,5 +32,5 @@ gh-pages/
 coverage
 
 # webpack-isomorphic-tools
-/webpack-stats.debug.json
+/webpack-stats.json
 /webpack-assets.json

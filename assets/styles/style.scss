@@ -1,36 +1,57 @@
-@font-face
-{
-	font-family : 'PT Sans';
-	font-weight : normal;
-	src         : url('../fonts/PT Sans/PTS55F_W.woff') format('woff');
-}
+// @import 'normalize.css/normalize.css';
 
-@font-face
-{
-	font-family : 'PT Sans';
-	font-style  : italic;
-	src         : url('../fonts/PT Sans/PTS56F_W.woff') format('woff');
-}
+// custom fonts slow down page loading
 
-@font-face
-{
-	font-family : 'PT Sans';
-	font-weight : bold;
-	src         : url('../fonts/PT Sans/PTS75F_W.woff') format('woff');
-}
+// @font-face
+// {
+// 	font-family : 'PT Sans';
+// 	font-weight : normal;
+// 	src         : url('../fonts/PT Sans/PTS55F_W.woff') format('woff');
+// }
 
-@font-face
+// @font-face
+// {
+// 	font-family : 'PT Sans';
+// 	font-style  : italic;
+// 	src         : url('../fonts/PT Sans/PTS56F_W.woff') format('woff');
+// }
+
+// @font-face
+// {
+// 	font-family : 'PT Sans';
+// 	font-weight : bold;
+// 	src         : url('../fonts/PT Sans/PTS75F_W.woff') format('woff');
+// }
+
+// @font-face
+// {
+// 	font-family : 'PT Sans';
+// 	font-weight : bold;
+// 	font-style  : italic;
+// 	src         : url('../fonts/PT Sans/PTS76F_W.woff') format('woff');
+// }
+
+*,
+*:after,
+*:before
 {
-	font-family : 'PT Sans';
-	font-weight : bold;
-	font-style  : italic;
-	src         : url('../fonts/PT Sans/PTS76F_W.woff') format('woff');
+	box-sizing: border-box;
 }
 
 body, button, input, textarea, select
 {
-	font-family : 'PT Sans';
+	// font-family : 'PT Sans';
+	font-family : Arial, Sans, Helvetica;
 	font-size   : 20pt;
+}
+
+// theming
+$active-color: #29ADFF;
+$active-lighter-color: #73C9FF;
+
+a:active
+{
+	color: $active-color;
 }
 
 button
@@ -41,13 +62,13 @@ button
 	padding    : 0;
 
 	font-weight : bold;
-	color       : #29ADFF;
+	color       : $active-color;
 
 	transition: all 30ms ease-out;
 
 	&:active
 	{
-		color: #73C9FF;
+		color: $active-lighter-color;
 	}
 }
 
