@@ -1,5 +1,3 @@
-// @import 'normalize.css/normalize.css';
-
 // custom fonts slow down page loading
 
 // @font-face
@@ -38,6 +36,11 @@
 	box-sizing: border-box;
 }
 
+body
+{
+	margin: 0;
+}
+
 body, button, input, textarea, select
 {
 	// font-family : 'PT Sans';
@@ -47,11 +50,15 @@ body, button, input, textarea, select
 
 // theming
 $active-color: #29ADFF;
+$active-darker-color: #0076BF;
 $active-lighter-color: #73C9FF;
+
+$dropdown-item-vertical-padding: 0.2em;
+$dropdown-item-horizontal-padding: 0.8em;
 
 a:active
 {
-	color: $active-color;
+	color: $active-darker-color;
 }
 
 button
@@ -72,6 +79,11 @@ button
 	}
 }
 
+nav
+{
+	padding-top: 0.4em;
+}
+
 h1
 {
 
@@ -79,12 +91,13 @@ h1
 
 a
 {
-	
+	color: inherit;
 }
 
 .content
 {
-	margin: 2em;
+	margin-left: 2em;
+	margin-right: 2em;
 }
 
 @-moz-keyframes spinner
@@ -153,4 +166,77 @@ a
 	// -moz-animation    : spinner 1250ms infinite linear;
 	// -webkit-animation : spinner 1250ms infinite linear;
 	animation: spinner 1250ms infinite linear;
+}
+
+.dropdown
+{
+	color: black;
+}
+
+.dropdown-item-list
+{
+	border-width : 1px;
+	border-style : solid;
+	border-color : #e7e7e7;
+
+	box-shadow : 0 3px 20px rgba(0, 0, 0, 0.05);
+}
+
+.dropdown-item
+{
+	padding-left  : $dropdown-item-horizontal-padding;
+	padding-right : $dropdown-item-horizontal-padding;
+
+	padding-top    : $dropdown-item-vertical-padding;
+	padding-bottom : $dropdown-item-vertical-padding;
+
+	&:first-child
+	{
+		padding-top    : 2 * $dropdown-item-vertical-padding;
+	}
+
+	&:last-child
+	{
+		padding-bottom : 2 * $dropdown-item-vertical-padding;
+	}
+}
+
+.dropdown-item-selected
+{
+	padding-left: $dropdown-item-horizontal-padding;
+}
+
+.dropdown-item, .dropdown-item-selected
+{
+	color: inherit;
+	font-weight: normal;
+
+	&:active
+	{
+		color: $active-darker-color;
+	}
+}
+
+.menu
+{
+	margin-left    : 0.5em;
+}
+
+.menu-item
+{
+	margin-left    : 0.4em;
+	margin-right   : 0.4em;
+
+	padding-bottom : 0.2em;
+
+	border-bottom-width : 0.2em;
+	border-bottom-color : transparent;
+	border-bottom-style : solid;
+}
+
+.menu-item-selected
+{
+	border-bottom-width : 0.12em;
+	border-bottom-color : $active-color;
+	border-bottom-style : solid;
 }

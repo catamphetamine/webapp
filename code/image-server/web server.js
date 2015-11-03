@@ -8,12 +8,7 @@ import koa_router   from 'koa-router'
 import imagemagick from 'imagemagick'
 // import imagemagick from 'imagemagick-native'
 
-import configuration from '../configuration'
-global.configuration = configuration
-
 import busboy from 'co-busboy'
-
-import log from './log'
 
 import path from 'path'
 import fs   from 'fs-extra'

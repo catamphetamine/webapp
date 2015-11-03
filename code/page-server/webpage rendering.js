@@ -1,9 +1,7 @@
 import React from 'react'
 
-import Html         from './../client/html'
-import api_client   from './../client/api client'
-
-import log from './log'
+import Html         from '../client/html'
+import api_client   from '../client/api client'
 
 import { server }     from '../react-isomorphic-render'
 import create_store   from '../client/redux/store'

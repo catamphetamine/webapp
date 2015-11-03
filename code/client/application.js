@@ -84,7 +84,7 @@ international.load_polyfill(locale)
 	})
 	.catch(error =>
 	{
-		console.error(error)
+		console.error(error.stack || error)
 	})
 
 window.debug = (...parameters) => { console.log.bind(console)(parameters) }

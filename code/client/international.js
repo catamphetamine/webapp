@@ -4,6 +4,8 @@
 // requiring the `Intl` polyfill for browser not supporting it
 // It is used in client.js *before* rendering the root component.
 
+import { addLocaleData as add_locale_data } from 'react-intl'
+
 import is_intl_locale_supported from 'intl-locales-supported'
 
 const international =
@@ -41,32 +43,30 @@ const international =
 	// component.
 	load_locale_data(locale)
 	{
-		const is_locale_supported = is_intl_locale_supported(locale)
-
 		// Make sure ReactIntl is in the global scope: this is required for adding locale-data
 		// Since ReactIntl needs the `Intl` polyfill to be required (sic) we must place
 		// this require here, when loadIntlPolyfill is supposed to be present
 		require('expose?ReactIntl!react-intl')
 
-		return new Promise((resolve) =>
+		return new Promise(resolve =>
 		{
 			// do not remove code duplication (because Webpack won't work as expected)
-			switch (locale)
+			switch (get_language_from_locale(locale))
 			{
 				// russian
 				case 'ru':
-
-					if (!is_locale_supported)
+					if (!is_intl_locale_supported('ru'))
 					{
+						// download intl locale data and react-intl specific locale data for this language
 						require.ensure
 						([
 							'intl/locale-data/jsonp/ru',
-							'react-intl/dist/locale-data/ru'
+							'react-intl/lib/locale-data/ru'
 						],
-						(require) =>
+						require =>
 						{
 							require('intl/locale-data/jsonp/ru')
-							require('react-intl/dist/locale-data/ru')
+							add_locale_data(require('react-intl/lib/locale-data/ru'))
 							debug(`Intl and ReactIntl locale-data for "${locale}" has been downloaded`)
 							resolve()
 						},
@@ -74,9 +74,10 @@ const international =
 					}
 					else
 					{
-						require.ensure(['react-intl/dist/locale-data/ru'], (require) =>
+						// download react-intl specific locale data for this language
+						require.ensure(['react-intl/lib/locale-data/ru'], require =>
 						{
-							require('react-intl/dist/locale-data/ru')
+							add_locale_data(require('react-intl/lib/locale-data/ru'))
 							debug(`ReactIntl locale-data for "${locale}" has been downloaded`)
 							resolve()
 						},
@@ -86,7 +87,7 @@ const international =
 
 				// english
 				default:
-					if (!is_locale_supported)
+					if (!is_intl_locale_supported('en'))
 					{
 						// require.ensure
 						// ([
@@ -102,11 +103,12 @@ const international =
 						// },
 						// 'locale-en')
 
+						// download intl locale data for this language
 						require.ensure
 						([
 							'intl/locale-data/jsonp/en'
 						],
-						(require) =>
+						require =>
 						{
 							require('intl/locale-data/jsonp/en')
 							debug(`Intl and ReactIntl locale-data for "${locale}" has been downloaded`)

@@ -42,14 +42,26 @@ export default class Flag extends Component
 
 		const markup = 
 		(
-			<div style={this.props.style}>
+			<div style={this.props.style ? extend(style.wrapper, this.props.style) : style.wrapper} className="dropdown">
+
+				{/* list container */}
 				<div style={this.state.active ? style.container.expanded : style.container}>
+
+					{/* currently selected item label */}
 					{this.render_selected_item()}
-					<ul ref="list" style={this.state.active ? style.list.expanded : style.list}>
-						{item_list.filter(({ key }) => key !== selected).map(({ key, value, icon }, index) => this.render_list_item(key, value, icon, index === 0, index === item_list.length - 1))}
+
+					{/* a placeholder to make the parent <div/> take the whole width */}
+					<ul ref="list" style={style.list.placeholder} className="dropdown-item-list">
+						{item_list.filter(({ key }) => key !== selected).map(({ key, value, icon }, index) => this.render_list_item(key, value, icon))} {/*, index === 0, index === item_list.length - 1*/}
+					</ul>
+
+					{/* a list to select from */}
+					<ul ref="list" style={this.state.active ? style.list.expanded : style.list} className="dropdown-item-list">
+						{item_list.filter(({ key }) => key !== selected).map(({ key, value, icon }, index) => this.render_list_item(key, value, icon))} {/*, index === 0, index === item_list.length - 1*/}
 					</ul>
 				</div>
 
+				{/* some kind of an arrow */}
 				{/*<div style={this.state.active ? style.arrow.expanded : style.arrow}/>*/}
 			</div>
 		)
@@ -57,26 +69,26 @@ export default class Flag extends Component
 		return markup
 	}
 
-	render_list_item(key, value, icon, first, last)
+	render_list_item(key, value, icon) // , first, last
 	{
 		let item_style = style.list.item
 
-		if (first && last)
-		{
-			item_style = item_style.single
-		}
-		else if (first)
-		{
-			item_style = item_style.first
-		}
-		else if (last)
-		{
-			item_style = item_style.last
-		}
+		// if (first && last)
+		// {
+		// 	item_style = item_style.single
+		// }
+		// else if (first)
+		// {
+		// 	item_style = item_style.first
+		// }
+		// else if (last)
+		// {
+		// 	item_style = item_style.last
+		// }
 
 		const markup =
 		(
-			<li key={key}><button onClick={event => this.item_clicked(key, value, event)} style={item_style}>{icon}{value}</button></li>
+			<li key={key}><button onClick={event => this.item_clicked(key, value, event)} style={item_style} className="dropdown-item">{icon}{value}</button></li>
 		)
 
 		return markup
@@ -93,7 +105,7 @@ export default class Flag extends Component
 
 		const markup =
 		(
-			<button onClick={this.toggle} style={style.selected_item_label}>{selected.icon}{selected.value}</button>
+			<button onClick={this.toggle} style={style.selected_item_label} className="dropdown-item-selected">{selected.icon}{selected.value}</button>
 		)
 
 		return markup
@@ -123,26 +135,23 @@ export default class Flag extends Component
 	}
 }
 
-const list_item_vertical_padding        = '0.2em'
-const list_item_vertical_double_padding = '0.4em'
-
 const style = styler
 `
+	wrapper
+		vertical-align : bottom
+
 	container
-		position : relative // Enable absolute positioning for children and pseudo elements
+		position : relative
 		margin   : 0 auto
 
 		// outline : none
 
 		&expanded
-			color : #29ADFF
+			// color : #29ADFF
 
 	selected_item_label
-		display : inline-block
-		padding : 0.4em
-
-		font-weight : normal
-		color       : black
+		width      : 100%
+		text-align : left
 
 	// arrow
 	// 	width        : 0
@@ -169,12 +178,6 @@ const style = styler
 
 		background : white
 
-		border-width : 1px
-		border-style : solid
-		border-color : #e7e7e7
-
-		box-shadow : 0 3px 20px rgba(0, 0, 0, 0.05)
-
 		// Hiding
 		opacity        : 0
 		pointer-events : none
@@ -190,27 +193,15 @@ const style = styler
 
 			// max-height : 100px
 
+		&placeholder
+			position            : static
+			max-height          : 0
+			border-top-width    : 0
+			border-bottom-width : 0
+			opacity             : 1
+			visibility          : hidden
+
 		item
-			display         : inline-block
-
-			padding-left  : 0.8em
-			padding-right : 0.8em
-
-			padding-top    : ${list_item_vertical_padding}
-			padding-bottom : ${list_item_vertical_padding}
-
+			display     : inline-block
 			white-space : nowrap
-
-			color       : black
-			font-weight : normal
-
-			&first
-				padding-top    : ${list_item_vertical_double_padding}
-
-			&last
-				padding-bottom : ${list_item_vertical_double_padding}
-
-			&single
-				padding-top    : ${list_item_vertical_double_padding}
-				padding-bottom : ${list_item_vertical_double_padding}
 `

@@ -83,7 +83,6 @@ export default international(Locale_switcher)
 const style = styler
 `
 	label
-		margin-right : 0.6em
 
 	locales
 		display : inline-block

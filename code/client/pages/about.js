@@ -49,9 +49,9 @@ export default class About extends Component
 		{
 			content = 
 			(
-				<div>
+				<section className="content">
 					Error: {error.stack || error.message}
-				</div>
+				</section>
 			)
 		}
 		// else if (settings.loading)
@@ -79,7 +79,9 @@ export default class About extends Component
 		{
 			content = 
 			(
-				<div>Loading</div>
+				<section className="content">
+					Loading
+				</section>
 			)
 		}
 

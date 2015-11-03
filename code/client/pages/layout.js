@@ -138,17 +138,33 @@ class Layout extends Component
 				{webpage_head(title, description, meta)}
 
 				<nav>
-					<IndexLink to="/" style={style.home} activeStyle={style.home.active}>
-						{format_message(messages.title)}
-					</IndexLink>
+					{/* header */}
+					{/* http://stackoverflow.com/questions/1022795/vertically-align-floating-divs */}
+					<table style={{ width: '100%' }}>
+						<tbody>
+							<tr>
+								{/* aligned to the left */}
+								<td style={{ verticalAlign: 'bottom' }}>
+									{/* home page link */}
+									<IndexLink to="/" style={style.home} activeStyle={style.home.active}>
+										{format_message(messages.title)}
+									</IndexLink>
+								</td>
 
-					<Locale_switcher style={style.locale_switcher}/>
+								{/* aligned to the right */}
+								<td style={{ verticalAlign: 'bottom', textAlign: 'right' }}>
+									{/* language chooser */}
+									<Locale_switcher style={style.locale_switcher}/>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 
-					<ul style={style.menu}>
-						<li style={style.menu.item}><Link to="/editor" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Editor'}</Link></li>
-						<li style={style.menu.item}><Link to="/about" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'About'}</Link></li>
-						<li style={style.menu.item}><Link to="/example" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Example'}</Link></li>
-						<li style={style.menu.item}><Link to="/showcase" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'React components showcase'}</Link></li>
+					<ul style={style.menu} className="menu">
+						<li style={style.menu.item}><Link to="/editor"   style={style.menu.item.link} activeClassName="menu-item-selected" className="menu-item">{'Editor'}</Link></li>
+						<li style={style.menu.item}><Link to="/about"    style={style.menu.item.link} activeClassName="menu-item-selected" className="menu-item">{'About'}</Link></li>
+						<li style={style.menu.item}><Link to="/example"  style={style.menu.item.link} activeClassName="menu-item-selected" className="menu-item">{'Example'}</Link></li>
+						<li style={style.menu.item}><Link to="/showcase" style={style.menu.item.link} activeClassName="menu-item-selected" className="menu-item">{'React components showcase'}</Link></li>
 					</ul>
 				</nav>
 
@@ -167,25 +183,23 @@ export default international(Layout)
 const style = styler
 `
 	home
-		color       : black
 		font-size   : 26pt
-		margin-left : 1em
+		margin-left : 0.5em
 		text-decoration : none
 		
-		border-bottom-width : 0.08em
-		border-bottom-style : dotted
-		border-bottom-color : black
+		// border-bottom-width : 0.08em
+		// border-bottom-style : dotted
+		// border-bottom-color : black
 
 		active:
 			cursor              : default
 			border-bottom-width : 0
 
 	locale_switcher
-		display     : inline-block
-		margin-left : 3em
 
 	menu
-		list-style-type: none
+		list-style-type : none
+		padding         : 0
 
 		item
 			display: inline-block
@@ -193,14 +207,4 @@ const style = styler
 			link
 				display         : inline-block
 				text-decoration : none
-				color           : #000000
-
-				padding-left    : 0.4em
-				padding-right   : 0.4em
-				padding-top     : 0.2em
-				padding-bottom  : 0.2em
-
-				&current
-					color            : #ffffff
-					background-color : #000000
 `

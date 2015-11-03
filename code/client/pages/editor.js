@@ -38,9 +38,9 @@ const style = styler
 	editor
 		padding      : 0.4em
 
-		border-color : black
+		border-color : #7f7f7f
 		border-style : solid
-		border-size  : 1px
+		border-width : 1px
 
 		outline      : none
 `

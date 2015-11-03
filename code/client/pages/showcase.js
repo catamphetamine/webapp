@@ -63,5 +63,5 @@ const style = styler
 
 				&current
 					color            : #ffffff
-					background-color : #000000
+					background-color : #73C9FF
 `

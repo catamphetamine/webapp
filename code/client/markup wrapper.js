@@ -7,7 +7,7 @@ export default function markup_wrapper(component, { store, locale, messages })
 	const markup = 
 	(
 		<Provider store={store} key="provider">
-			<IntlProvider locale={locale} messages={messages}>
+			<IntlProvider locale={get_language_from_locale(locale)} messages={messages}>
 				{component}
 			</IntlProvider>
 		</Provider>

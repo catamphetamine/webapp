@@ -5,8 +5,6 @@ import https         from 'https'
 import os            from 'os'
 import url           from 'url'
 import socket_io     from 'socket.io'
-import log           from './log'
-import configuration from '../configuration'
 
 import koa         from 'koa'
 import session     from 'koa-session'

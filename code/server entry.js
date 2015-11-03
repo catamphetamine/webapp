@@ -12,3 +12,8 @@ global._production_ = command_line_arguments.production
 global._development_ = command_line_arguments.development || process.env.NODE_ENV === 'development'
 
 require('babel/register')
+
+require('./language')
+
+global.configuration = require('./configuration')
+// console.log('Configuration:', configuration)

@@ -3,16 +3,6 @@ import path from 'path'
 
 export default function load_locale_data(locale)
 {
-	function get_language(locale)
-	{
-		const dash_index = locale.indexOf('-')
-		if (dash_index >= 0)
-		{
-			return locale.substring(0, dash_index)
-		}
-		return locale
-	}
-
 	function load_locale_data(locale)
 	{
 		const messages_path = 'code/client/international'
@@ -26,7 +16,7 @@ export default function load_locale_data(locale)
 			return { locale: locale, messages: require(locale_data_path) }
 		}
 
-		locale_data_path = path.resolve(Root_folder, `${messages_path}/${get_language(locale)}.js`)
+		locale_data_path = path.resolve(Root_folder, `${messages_path}/${get_language_from_locale(locale)}.js`)
 
 		if (fs.existsSync(locale_data_path))
 		{

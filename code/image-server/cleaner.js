@@ -4,7 +4,6 @@ import moment from 'moment'
 import bytes from 'bytes'
 
 import { fs_size } from './utility'
-import log from './log'
 
 const fs_size_async = Promise.promisify(fs_size)
 

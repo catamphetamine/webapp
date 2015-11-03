@@ -496,3 +496,13 @@ global.custom_error = function(name, { code, message })
 
 // 	return Custom_error
 // }
+
+global.get_language_from_locale = function(locale)
+{
+	const dash_index = locale.indexOf('-')
+	if (dash_index >= 0)
+	{
+		return locale.substring(0, dash_index)
+	}
+	return locale
+}
