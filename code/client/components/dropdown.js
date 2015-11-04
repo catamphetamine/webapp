@@ -19,12 +19,12 @@ export default class Flag extends Component
 		super(props)
 
 		this.toggle           = this.toggle.bind(this)
-		// this.item_clicked     = this.item_clicked.bind(this)
+		this.document_clicked = this.document_clicked.bind(this)
 	}
 
 	componentDidMount()
 	{
-		document.addEventListener('click', ::this.document_clicked)
+		document.addEventListener('click', this.document_clicked)
 	}
 
 	componentDidUpdate(previous_props, previous_state)
@@ -37,7 +37,7 @@ export default class Flag extends Component
 
 	componentWillUnmount()
 	{
-		document.removeEventListener('click', ::this.document_clicked)
+		document.removeEventListener('click', this.document_clicked)
 	}
 
 	render()
@@ -165,7 +165,7 @@ export default class Flag extends Component
 
 	document_clicked(event)
 	{
-		this.setState({ active: false })
+		this.setState({ expanded: false })
 	}
 
 	calculate_height()
