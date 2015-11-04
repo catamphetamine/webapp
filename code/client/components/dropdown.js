@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import ReactDOM from 'react-dom'
 import styler from 'react-styling'
 
 export default class Flag extends Component
@@ -19,17 +20,24 @@ export default class Flag extends Component
 
 		this.toggle           = this.toggle.bind(this)
 		// this.item_clicked     = this.item_clicked.bind(this)
-		this.document_clicked = this.document_clicked.bind(this)
 	}
 
 	componentDidMount()
 	{
-		document.addEventListener('click', this.document_clicked)
+		document.addEventListener('click', ::this.document_clicked)
+	}
+
+	componentDidUpdate(previous_props, previous_state)
+	{
+		if (this.state.expanded !== previous_state.expanded)
+		{
+			this.calculate_height()
+		}
 	}
 
 	componentWillUnmount()
 	{
-		document.removeEventListener('click', this.document_clicked)
+		document.removeEventListener('click', ::this.document_clicked)
 	}
 
 	render()
@@ -45,7 +53,7 @@ export default class Flag extends Component
 			<div style={ this.props.style ? extend(style.wrapper, this.props.style) : style.wrapper } className="dropdown">
 
 				{/* list container */}
-				<div style={ this.state.active ? style.container.expanded : style.container }>
+				<div style={ this.state.expanded ? style.container.expanded : style.container }>
 
 					{/* currently selected item label */}
 					{ this.render_selected_item() }
@@ -56,7 +64,7 @@ export default class Flag extends Component
 					</ul>
 
 					{/* a list to select from */}
-					<ul ref="list" style={ this.state.active ? style.list.expanded : style.list } className="dropdown-item-list">
+					<ul ref="list" style={ this.state.expanded ? merge(style.list, { maxHeight: this.state.height + 'px' }) : style.list } className={'dropdown-item-list' + ' ' + (this.state.expanded ? 'dropdown-item-list-expanded' : '')}>
 						{ list.filter(({ key }) => key !== selected).map(({ key, label, icon }, index) => this.render_list_item(key, label, icon))}
 					</ul>
 				</div>
@@ -87,7 +95,12 @@ export default class Flag extends Component
 
 		const markup =
 		(
-			<li key={key} style={list_item_style}><button onClick={event => this.item_clicked(key, label, event)} style={item_style} className="dropdown-item">{icon}{label}</button></li>
+			<li key={key} style={list_item_style}>
+				<button onClick={event => this.item_clicked(key, label, event)} style={item_style} className="dropdown-item">
+					<span className="dropdown-item-icon">{icon}</span>
+					<span className="dropdown-item-label">{label}</span>
+				</button>
+			</li>
 		)
 
 		return markup
@@ -102,13 +115,30 @@ export default class Flag extends Component
 
 		const selected = this.props.list.filter(x => x.key === this.props.selected)[0]
 
+		let label
+
+		if (selected)
+		{
+			label = 
+			(
+				<span>
+					<span className="dropdown-item-icon">{selected.icon}</span>
+					<span className="dropdown-item-label">{selected.label}</span>
+				</span>
+			)
+		}
+		else
+		{
+			label = <span className="dropdown-item-label">{selected.label}</span>
+		}
+
 		const markup =
 		(
 			<button onClick={this.toggle} style={style.selected_item_label} className="dropdown-item-selected">
-				{ selected ? <span>{selected.icon}{selected.label}</span> : this.props.label }
+				{label}
 
 				{/* an arrow */}
-				<div className="dropdown-arrow" style={ this.state.active ? style.arrow.expanded : style.arrow }/>
+				<div className="dropdown-arrow" style={ this.state.expanded ? style.arrow.expanded : style.arrow }/>
 			</button>
 		)
 
@@ -120,7 +150,7 @@ export default class Flag extends Component
 		// event.stopPropagation() // doesn't work
 		event.nativeEvent.stopImmediatePropagation()
 
-		this.setState({ active: !this.state.active })
+		this.setState({ expanded: !this.state.expanded })
 	}
 
 	item_clicked(key, event)
@@ -137,6 +167,47 @@ export default class Flag extends Component
 	{
 		this.setState({ active: false })
 	}
+
+	calculate_height()
+	{
+		const list_dom_node = ReactDOM.findDOMNode(this.refs.list)
+
+		// const images = list_dom_node.querySelectorAll('img')
+
+		// if (images.length > 0)
+		// {
+		// 	return this.preload_images(list_dom_node, images)
+		// }
+
+		this.setState({ height: this.state.expanded ? list_dom_node.scrollHeight : 0 })
+	}
+
+	// // https://github.com/daviferreira/react-sanfona/blob/master/src/AccordionItem/index.jsx#L54
+	// // Wait for images to load before calculating maxHeight
+	// preload_images(node, images)
+	// {
+	// 	let images_loaded = 0
+	//
+	// 	const image_loaded = () =>
+	// 	{
+	// 		images_loaded++
+	//
+	// 		if (images_loaded === images.length)
+	// 		{
+	// 			this.setState
+	// 			({
+	// 				height: this.props.expanded ? node.scrollHeight : 0
+	// 			})
+	// 		}
+	// 	}
+	//
+	// 	for (let i = 0; i < images.length; i += 1)
+	// 	{
+	// 		const image = new Image()
+	// 		image.src = images[i].src
+	// 		image.onload = image.onerror = image_loaded
+	// 	}
+	// }
 }
 
 const style = styler
@@ -147,7 +218,7 @@ const style = styler
 
 	container
 		position : relative
-		margin   : 0 auto
+		// margin   : 0 auto
 
 		&expanded
 
@@ -179,22 +250,14 @@ const style = styler
 		padding         : 0
 		list-style-type : none
 
-		background : white
+		// // Hiding
+		// opacity        : 0
+		// pointer-events : none
 
-		// Hiding
-		opacity        : 0
-		pointer-events : none
+		max-height : 0
+		overflow   : hidden
 
-		// transition: all 300ms ease-out
-
-		// max-height : 0
-		// overflow   : hidden
-
-		&expanded
-			opacity        : 1
-			pointer-events : auto
-
-			// max-height : 100px
+		background-color: white
 
 		&placeholder
 			position            : static

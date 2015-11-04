@@ -73,7 +73,7 @@ export default class Form extends Component
 const style = styler
 `
 	form
-		padding: 1em
+		margin-top: 2em
 
 		input
 			padding: .5em

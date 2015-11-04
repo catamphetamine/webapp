@@ -15,16 +15,14 @@ export default class Page extends Component
 	{
 		const markup = 
 		(
-			<section>
+			<section className="content">
 				{webpage_title("REST API Example")}
 
-				<header>
-					<ul style={style.menu}>
-						<li style={style.menu.item}><Link to="/example/simple" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Simple'}</Link></li>
-						<li style={style.menu.item}><Link to="/example/database" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Database'}</Link></li>
-						<li style={style.menu.item}><Link to="/example/graphql" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'GraphQL'}</Link></li>
-					</ul>
-				</header>
+				<ul style={style.menu}>
+					<li style={style.menu.item}><Link to="/example/simple" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Simple'}</Link></li>
+					<li style={style.menu.item}><Link to="/example/database" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Database'}</Link></li>
+					<li style={style.menu.item}><Link to="/example/graphql" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'GraphQL'}</Link></li>
+				</ul>
 				
         		{this.props.children}
 			</section>
@@ -37,7 +35,9 @@ export default class Page extends Component
 const style = styler
 `
 	menu
-		list-style-type: none
+		list-style-type : none
+		padding : 0
+		margin-top: 0
 
 		item
 			display: inline-block

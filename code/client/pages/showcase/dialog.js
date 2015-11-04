@@ -73,6 +73,6 @@ const style = styler
 		border      : none
 
 	container
-		padding    : 2em
+		margin    : 2em
 		text-align : center
 `

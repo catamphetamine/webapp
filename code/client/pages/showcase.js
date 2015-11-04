@@ -18,14 +18,14 @@ export default class Page extends Component
 			<section className="content">
 				{webpage_title("UI Showcase")}
 
-				<header>
-					<ul style={style.menu}>
-						<li style={style.menu.item}><Link to="/showcase/dialog" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Dialog'}</Link></li>
-						<li style={style.menu.item}><Link to="/showcase/form" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Form'}</Link></li>
-					</ul>
-				</header>
+				<ul style={style.menu}>
+					<li style={style.menu.item}><Link to="/showcase/dialog" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Dialog'}</Link></li>
+					<li style={style.menu.item}><Link to="/showcase/form" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Form'}</Link></li>
+				</ul>
+				
+        		{this.props.children}
 
-				Ещё какие-то компонтенты из интернета:
+				<div style={{ marginTop: '3em' }}>Ещё какие-то компонтенты из интернета:</div>
 
 				<ul>
 					<li><a href="https://github.com/felixrieseberg/React-Dropzone-Component">File drop zone</a></li>
@@ -34,8 +34,6 @@ export default class Page extends Component
 					<li><a href="http://balloob.github.io/react-sidebar/example/">Sidebar</a></li>
 					<li><a href="http://labs.voronianski.com/react-soundplayer/">Sound Player</a></li>
 				</ul>
-				
-        		{this.props.children}
 			</section>
 		)
 
@@ -46,7 +44,9 @@ export default class Page extends Component
 const style = styler
 `
 	menu
-		list-style-type: none
+		list-style-type : none
+		padding : 0
+		margin-top: 0
 
 		item
 			display: inline-block

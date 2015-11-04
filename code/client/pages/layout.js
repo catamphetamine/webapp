@@ -24,6 +24,8 @@ import Locale_switcher from '../components/locale switcher'
 
 import { defineMessages, injectIntl as international } from 'react-intl'
 
+import Menu from '../components/menu'
+
 const messages = defineMessages
 ({
 	title:
@@ -47,6 +49,8 @@ const messages = defineMessages
 )
 class Layout extends Component
 {
+	state = {}
+
 	static propTypes =
 	{
 		children : PropTypes.object.isRequired,
@@ -137,36 +141,29 @@ class Layout extends Component
 			<div>
 				{webpage_head(title, description, meta)}
 
-				<nav>
-					{/* header */}
-					{/* http://stackoverflow.com/questions/1022795/vertically-align-floating-divs */}
-					<table style={{ width: '100%' }}>
-						<tbody>
-							<tr>
-								{/* aligned to the left */}
-								<td style={{ verticalAlign: 'bottom' }}>
-									{/* home page link */}
-									<IndexLink to="/" style={style.home} activeStyle={style.home.active}>
-										{format_message(messages.title)}
-									</IndexLink>
-								</td>
+				{/* header */}
+				<header>
+					{/* language chooser */}
+					<Locale_switcher style={style.locale_switcher}/>
 
-								{/* aligned to the right */}
-								<td style={{ verticalAlign: 'bottom', textAlign: 'right' }}>
-									{/* language chooser */}
-									<Locale_switcher style={style.locale_switcher}/>
-								</td>
-							</tr>
-						</tbody>
-					</table>
+					{/* menu button for small screens */}
+					<button className="menu-button" onClick={::this.toggle_menu}>
+						<div className="menu-icon"/>
+					</button>
 
-					<ul style={style.menu} className="menu">
-						<li style={style.menu.item}><Link to="/editor"   style={style.menu.item.link} activeClassName="menu-item-selected" className="menu-item">{'Editor'}</Link></li>
-						<li style={style.menu.item}><Link to="/about"    style={style.menu.item.link} activeClassName="menu-item-selected" className="menu-item">{'About'}</Link></li>
-						<li style={style.menu.item}><Link to="/example"  style={style.menu.item.link} activeClassName="menu-item-selected" className="menu-item">{'Example'}</Link></li>
-						<li style={style.menu.item}><Link to="/showcase" style={style.menu.item.link} activeClassName="menu-item-selected" className="menu-item">{'React components showcase'}</Link></li>
-					</ul>
-				</nav>
+					{/* home page link */}
+					<div className="logo" style={{ textAlign: 'center' }}>
+						<IndexLink to="/" style={style.home} activeStyle={style.home.active}>
+							{format_message(messages.title)}
+						</IndexLink>
+					</div>
+
+					{/* Navigation */}
+					{/*<nav>*/}
+						{/* main menu */}
+						<Menu show={this.state.show_menu}/>
+					{/*</nav>*/}
+				</header>
 
 				{this.props.children}
 
@@ -176,6 +173,11 @@ class Layout extends Component
 
 		return markup
 	}
+
+	toggle_menu()
+	{
+		this.setState({ show_menu: !this.state.show_menu })
+	}
 }
 
 export default international(Layout)
@@ -184,7 +186,6 @@ const style = styler
 `
 	home
 		font-size   : 26pt
-		margin-left : 0.5em
 		text-decoration : none
 		
 		// border-bottom-width : 0.08em
@@ -196,16 +197,7 @@ const style = styler
 			border-bottom-width : 0
 
 	locale_switcher
-		margin-right : 0.5em
-
-	menu
-		list-style-type : none
-		padding         : 0
-
-		item
-			display: inline-block
-
-			link
-				display         : inline-block
-				text-decoration : none
+		position: absolute
+		right: 0.3em
+		top: 0.6em
 `

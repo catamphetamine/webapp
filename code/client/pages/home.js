@@ -16,7 +16,7 @@ const messages = defineMessages
 	{
 		id             : 'home.header',
 		description    : 'Home page header',
-		defaultMessage : 'A dog'
+		defaultMessage : 'A dawg'
 	}
 })
 
@@ -34,14 +34,14 @@ class Page extends Component
 
 		const markup = 
 		(
-			<section>
+			<section className="content">
 				{webpage_title("Home")}
 
 				<h1 style={style.header}>
 					{format_message(messages.header)}
 				</h1>
 
-				<div style={style.image_container}><img src={husky}/></div>
+				<img src={husky} style={style.image}/>
 			</section>
 		)
 
@@ -56,6 +56,15 @@ const style = styler
 	header
 		text-align: center
 
-	image_container
-		text-align: center
+	image
+		display: block
+
+		margin-left  : auto
+		margin-right : auto
+
+		border-width : 1px
+		border-style : solid
+		border-color : #7f7f7f
+
+		border-radius : 0.5em
 `

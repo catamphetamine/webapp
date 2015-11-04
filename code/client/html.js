@@ -29,35 +29,50 @@ export default class Html extends Component
 	{
 		const { locale, messages, assets, component, store } = this.props
 		
-		// const title = 'Webapp'
-
 		// get the favicon (this code will run on server)
 		const required_assets = Html.require_assets()
 
 		// when server-side rendering is disabled, component will be undefined
-		// (but server-side rendering is always on so this if condition may be removed)
+		// (but server-side rendering is always enabled so this "if" condition may be removed)
 		const content = component ? ReactDOMServer.renderToString(component) : ''
 
 		const html = 
 		(
 			<html lang={locale}>
 				<head>
+					{/* webpage title and various meta tags */}
 					{server_generated_webpage_head()}
 
-					{/* favicon */}
+					{/* "favicon" */}
 					<link rel="shortcut icon" href={required_assets.icon}/>
 
 					{/* use this icon font instead: https://www.google.com/design/icons/ */}
 					{/*<link href={cdn + 'font-awesome/4.3.0/css/font-awesome.min.css'}
 								media="screen, projection" rel="stylesheet" type="text/css" />*/}
 
-					{/* styles (will be present only in production with webpack extract text plugin) */}
+					{/* (will be done only in production mode
+					     with webpack extract text plugin) 
+
+					    mount CSS stylesheets for all entry points
+
+					    (currently there is only one entry point: "main";
+					     and also the "common" chunk) */}
 					{Object.keys(assets.styles).map((style, i) =>
-						<link href={assets.styles[style]} key={i} media="screen, projection"
-							rel="stylesheet" type="text/css"/>
+						<link 
+							href={assets.styles[style]} 
+							key={i} 
+							media="screen, projection"
+							rel="stylesheet" 
+							type="text/css"/>
 					)}
 
-					{/* resolves the initial style flash (flicker) on page load in development mode */}
+					{/* (will be done only in development mode)
+
+					    resolves the initial style flash (flicker) 
+					    on page load in development mode 
+					    (caused by Webpack style-loader mounting CSS styles 
+					     through javascript after page load)
+					    by mounting the entire CSS stylesheet in a <style/> tag */}
 					{ Object.keys(assets.styles).is_empty() ? <style dangerouslySetInnerHTML={{__html: Html.require_assets().style}}/> : null }
 				</head>
 
@@ -66,22 +81,24 @@ export default class Html extends Component
 					<div id="content" dangerouslySetInnerHTML={{__html: content}}/>
 
 					{/* Flux store data will be reloaded into the store on the client */}
-					<script dangerouslySetInnerHTML={{__html: `window._flux_store_data=${serialize(store.getState())};`}} />
+					<script dangerouslySetInnerHTML={{__html: `window._flux_store_data=${serialize(store.getState())}`}}/>
 
 					{/* React-intl messages */}
-					<script dangerouslySetInnerHTML={{__html: `window._localized_messages=${serialize(messages)};`}} />
+					<script dangerouslySetInnerHTML={{__html: `window._localized_messages=${serialize(messages)}`}}/>
 
 					{/* javascripts */}
 
-					{/* a "common.js" chunk (see webpack extract commons plugin) */}
+					{/* the "common.js" chunk (see webpack extract commons plugin) */}
 					<script src={assets.javascript.common}/>
 					
-					{/* current application entry javascript */}
-					{/* (i guess there's always only one of them, e.g. "main.js") */}
-					{Object.keys(assets.javascript).filter(script => script !== 'common')
-					.map((script, i) =>
-						<script src={assets.javascript[script]} key={i}/>
-					)}
+					{/* current application "entry" point javascript
+					    (currently there is only one entry point: "main") */}
+					{Object.keys(assets.javascript)
+						.filter(script => script !== 'common')
+						.map((script, i) =>
+							<script src={assets.javascript[script]} key={i}/>
+						)
+					}
 				</body>
 			</html>
 		)
@@ -97,7 +114,7 @@ Html.require_assets = function()
 {
 	const result =
 	{
-		icon  : require('../../assets/images/icon/cat_64x64.png'), // 32x32.png
+		icon  : require('../../assets/images/icon/cat_64x64.png'), // icon/32x32.png
 
 		// there will be no .scss on server in production
 		style :  !(_production_ && _server_) ? require('../../assets/styles/style.scss') : undefined

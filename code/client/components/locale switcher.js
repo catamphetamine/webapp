@@ -68,7 +68,7 @@ class Locale_switcher extends Component
 
 		const markup =
 		(
-			<div style={{ display: 'inline-block' }}>
+			<div className="language" style={ this.props.style ? extend({ display: 'inline-block' }, this.props.style) : { display: 'inline-block' } }>
 				{/* loading */}
 				<span className="spinner" style={ this.state.setting_locale ? style.spinner.show : style.spinner.hide }></span>
 
@@ -78,7 +78,6 @@ class Locale_switcher extends Component
 					selected={locale} 
 					select={::this.set_locale} 
 					list={locales.map(({ key, label }) => ({ key: key, label: label, icon: <Flag locale={key} style={style.locale.flag}/> }))} 
-					style={this.props.style} 
 					title={format_message(messages.language)}/>
 			</div>
 		)
@@ -113,6 +112,6 @@ const style = styler
 	locale
 		flag
 			margin-right   : 0.4em
-			margin-bottom  : 0.2em
-			vertical-align : bottom
+			margin-bottom  : -0.03em
+			vertical-align : baseline
 `

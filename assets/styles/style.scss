@@ -56,6 +56,8 @@ $active-lighter-color: #73C9FF;
 $dropdown-item-vertical-padding: 0.2em;
 $dropdown-item-horizontal-padding: 0.8em;
 
+$menu-item-compact-vertical-padding: 0.2em;
+
 a:active
 {
 	color: $active-darker-color;
@@ -81,7 +83,8 @@ button
 
 nav
 {
-	padding-top: 0.4em;
+	padding-top:    0.4em;
+	padding-bottom: 0.5em;
 }
 
 h1
@@ -92,12 +95,6 @@ h1
 a
 {
 	color: inherit;
-}
-
-.content
-{
-	margin-left: 2em;
-	margin-right: 2em;
 }
 
 @-moz-keyframes spinner
@@ -175,11 +172,32 @@ a
 
 .dropdown-item-list
 {
+	transition: all 100ms ease-out;
+}
+
+.dropdown-item-list-expanded
+{
+	box-shadow : 0 3px 20px rgba(0, 0, 0, 0.05);
+}
+
+.dropdown-item-list > li
+{
 	border-width : 1px;
 	border-style : solid;
-	border-color : #e7e7e7;
+	border-color : transparent;
 
-	box-shadow : 0 3px 20px rgba(0, 0, 0, 0.05);
+	border-left-color  : #e7e7e7;
+	border-right-color : #e7e7e7;
+
+	&:first-child
+	{
+		border-top-color : #e7e7e7;
+	}
+
+	&:last-child
+	{
+		border-bottom-color : #e7e7e7;
+	}
 }
 
 .dropdown-item
@@ -193,12 +211,12 @@ a
 
 .dropdown-item-list
 {
-	li:first-child
+	> li:first-child
 	{
 		padding-top    : 2 * $dropdown-item-vertical-padding;
 	}
 
-	li:last-child
+	> li:last-child
 	{
 		padding-bottom : 2 * $dropdown-item-vertical-padding;
 	}
@@ -225,9 +243,19 @@ a
 	opacity : 0.3
 }
 
+.content
+{
+	margin-top    : 0.5em;
+	margin-bottom : 1em;
+
+	padding-left  : 1.8em;
+	padding-right : 1.8em;
+}
+
 .menu
 {
 	margin-left    : 0.5em;
+	margin-bottom : -0.15em !important;
 }
 
 .menu-item
@@ -235,16 +263,192 @@ a
 	margin-left    : 0.4em;
 	margin-right   : 0.4em;
 
-	padding-bottom : 0.2em;
+	padding-bottom : 0em;
 
-	border-bottom-width : 0.2em;
+	border-bottom-width : 0.12em;
 	border-bottom-color : transparent;
 	border-bottom-style : solid;
 }
 
 .menu-item-selected
 {
-	border-bottom-width : 0.12em;
 	border-bottom-color : $active-color;
-	border-bottom-style : solid;
+}
+
+.logo
+{
+	display : inline-block;
+	vertical-align : bottom;
+}
+
+header
+{
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+
+	padding-left: 1.0em;
+	padding-right: 1.0em;
+}
+
+// https://css-tricks.com/three-line-menu-navicon/
+
+.menu-icon
+{
+	position: relative;
+	padding-left: 1.25em;
+}
+
+.menu-icon:before
+{
+	content: "";
+
+	position: absolute;
+
+	top  : 0;
+	left : 0;
+
+	width  : 1em;
+	// height : 0.125em;
+    height: 0.63em;
+
+	border-top    : 0.375em double $active-color;
+	border-bottom : 0.125em solid $active-color;
+}
+
+.menu-button
+{
+	display: none;
+
+	&:active
+	{
+		.menu-icon:before
+		{
+			border-color: $active-lighter-color;
+		}
+	}
+}
+
+.language
+{
+	margin-top: 0.2em;
+}
+
+@media (max-width: 1200px)
+{
+	header
+	{
+		position: relative;
+		text-align: center;
+	}
+
+	.logo
+	{
+		display: block;
+	}
+
+	.menu
+	{
+		position: absolute;
+		left: 0;
+
+		margin: 0;
+
+		background-color: white;
+
+		// box-shadow : 0 3px 20px rgba(0, 0, 0, 0.05);
+
+		// border-width : 1px;
+		// border-style : solid;
+		// border-color : #e7e7e7;
+
+		// display: none !important;
+
+		max-height : 0;
+		overflow   : hidden;
+
+		transition: all 130ms ease-out;
+
+		> li
+		{
+			border-width : 1px;
+			border-style : solid;
+			border-color : transparent;
+
+			border-left-color  : #e7e7e7;
+			border-right-color : #e7e7e7;
+
+			&:first-child
+			{
+				border-top-color : #e7e7e7;
+			}
+
+			&:last-child
+			{
+				border-bottom-color : #e7e7e7;
+			}
+		}
+
+		> li
+		{
+			display: block !important;
+
+			padding-top: $menu-item-compact-vertical-padding;
+			padding-bottom: $menu-item-compact-vertical-padding;
+
+			&:first-child
+			{
+				padding-top    : 2 * $menu-item-compact-vertical-padding;
+			}
+
+			&:last-child
+			{
+				padding-bottom : 2 * $menu-item-compact-vertical-padding;
+			}
+		}
+	}
+
+	.menu-shown
+	{
+		// display: block !important;
+		max-height : 200px;
+		box-shadow : 0 3px 20px rgba(0, 0, 0, 0.05);
+	}
+
+	.language
+	{
+		margin-top: 0.25em;
+
+    	&, .dropdown-item-list li, .dropdown-item, .dropdown-item-selected
+		{
+			line-height: 0;
+		}
+
+		.dropdown-item
+		{
+			padding-top: 0;
+			padding-bottom: 0;
+		}
+
+		.dropdown-item-label
+		{
+			display: none;
+		}
+
+		.dropdown-item-icon > img
+		{
+			margin: 0 !important;
+		}
+
+		.dropdown-arrow
+		{
+			margin-bottom : 0.25em !important;
+		}
+	}
+
+	.menu-button
+	{
+		display: block;
+		float: left;
+    	margin-top: 0.45em;
+	}
 }

@@ -13,7 +13,7 @@ export default class Page extends Component
 	{
 		const markup = 
 		(
-			<section className="content">
+			<section>
 				{webpage_title("Simple GraphQL example")}
 
 				<div style={style.container}>

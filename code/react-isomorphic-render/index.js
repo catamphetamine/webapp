@@ -12,28 +12,9 @@ import { ReduxRouter } from 'redux-router'
 
 export function client({ development, wrap_component, routes, content_container })
 {
-	// let query = document.location.search
-	// query = query && query_string.parse(query)
-	// const location = create_location(document.location.pathname, query)
-
-	// const history = create_history()
-	// const location = history.createLocation(document.location.pathname, document.location.search)
-
-	// const promise = router({ location, history, routes })
-	// 	.then(({ component }) =>
-	// 	{
-	// 		ReactDOM.render(wrap_component(component), content_container)
-	// 	},
-	// 	(error) =>
-	// 	{
-	// 		console.error(error.stack || error)
-	// 	})
-
-		const Router = require('react-router').Router
 	const component =
 	(
 		<ReduxRouter routes={routes} />
-		// <Router routes={routes} />
 	)
 
 	ReactDOM.render(wrap_component(component), content_container)
@@ -41,7 +22,6 @@ export function client({ development, wrap_component, routes, content_container 
 	if (development)
 	{
 		window.React = React // enable debugger
-		// const reactRoot = content_container // window.document.getElementById('content')
 
 		if (!content_container || !content_container.firstChild || !content_container.firstChild.attributes || !content_container.firstChild.attributes['data-react-checksum'])
 		{
@@ -52,11 +32,6 @@ export function client({ development, wrap_component, routes, content_container 
 
 export function server({ disable_server_side_rendering, wrap_component, html, url, store }) // , routes, preload
 {
-	// const history = create_memory_history()
-	// // // const history = create_history()
-	// const location = history.createLocation(request.originalUrl)
-	// // // const location = history.createLocation(request.path, request.query)
-
 	const location = url
 
 	const markup = () =>
@@ -69,16 +44,8 @@ export function server({ disable_server_side_rendering, wrap_component, html, ur
 		return Promise.resolve({ markup: markup() })
 	}
 
-	// match(location, (error, redirectLocation, routerState) => 
-	// {
-	// })
-
-
-
 	return new Promise((resolve, reject) =>
 	{
-		// , history
-		console.log('@@@@@@@@@', location)
 		store.dispatch(match(location, (error, redirect_location, router_state) =>
 		{
 			if (redirect_location)
