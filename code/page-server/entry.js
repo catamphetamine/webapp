@@ -1,4 +1,4 @@
-require('../server entry')
+require('../common/server entry')
 
 global._client_ = false
 global._server_ = true

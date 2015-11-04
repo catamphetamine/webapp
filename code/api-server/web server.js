@@ -5,7 +5,7 @@ import mount        from 'koa-mount'
 import graphql_http from 'koa-graphql'
 import koa_router   from 'koa-router'
 
-import configuration from '../configuration'
+import configuration from '../common/configuration'
 global.configuration = configuration
 
 import log from './log'

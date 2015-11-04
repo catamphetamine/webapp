@@ -1,6 +1,4 @@
 {
-	"script": "code/server/entry.js",
-	"watch": ["code/**/*.js"],
 	"ignore":
 	[
 		".git",

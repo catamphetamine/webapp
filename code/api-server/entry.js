@@ -1,4 +1,4 @@
-require('../server entry')
+require('../common/server entry')
 
 require('./web server')
 require('./database')

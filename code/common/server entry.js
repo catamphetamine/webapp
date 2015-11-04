@@ -4,7 +4,7 @@ require('babel-runtime/core-js/promise').default = require('bluebird')
 var minimist = require('minimist')
 var path = require('path')
 
-global.Root_folder = path.resolve(__dirname, '..')
+global.Root_folder = path.resolve(__dirname, '..', '..')
 
 var command_line_arguments = minimist(process.argv.slice(2))
 

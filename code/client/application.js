@@ -1,6 +1,6 @@
 import 'babel/polyfill'
 
-import language       from '../language'
+import language       from '../common/language'
 
 import React          from 'react'
 import ReactDOM       from 'react-dom'

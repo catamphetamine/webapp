@@ -1,4 +1,4 @@
-import language from '../code/language'
+import language from '../code/common/language'
 import path     from 'path'
 
 import webpack             from 'webpack'
@@ -9,7 +9,7 @@ import strip               from 'strip-loader'
 
 import webpack_isomorphic_tools_plugin from 'webpack-isomorphic-tools/plugin'
 
-import application_configuration from '../code/configuration'
+import application_configuration from '../code/common/configuration'
 const websocket_url = `${application_configuration.webserver.http.host}:${application_configuration.webserver.http.port}`
 
 const configuration = Object.clone(base_configuration)

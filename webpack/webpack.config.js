@@ -54,14 +54,14 @@ var configuration =
 				test    : regular_expressions.javascript,
 				include :
 				[
-					path.resolve(root_folder, 'code', 'client'),
-					path.resolve(root_folder, 'code', 'react-isomorphic-render'),
-					path.resolve(root_folder, 'code', 'language.js')
+					path.resolve(root_folder, 'code/client'),
+					path.resolve(root_folder, 'code/react-isomorphic-render'),
+					path.resolve(root_folder, 'code/common/language.js')
 				],
 				loader: 'babel-loader',
 				query:
 				{
-					plugins: [path.resolve(root_folder, 'code', 'babel_relay_plugin')]
+					plugins: [path.resolve(root_folder, 'code/babel_relay_plugin')]
 				}
 			},
 			{

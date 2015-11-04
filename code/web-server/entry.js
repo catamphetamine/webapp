@@ -1,4 +1,4 @@
-require('../server entry')
+require('../common/server entry')
 
 global.log = require('./log')
 

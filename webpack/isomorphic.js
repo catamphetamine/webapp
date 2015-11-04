@@ -3,7 +3,7 @@ var webpack_isomorphic_tools_plugin = require('webpack-isomorphic-tools/plugin')
 
 module.exports = 
 {
-	debug: true,
+	// debug: true,
 
 	webpack_assets_file_path: './build/webpack-assets.json',
 
