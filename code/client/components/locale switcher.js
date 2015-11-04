@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { PropTypes as React_router_prop_types } from 'react-router'
+import { pushState } from 'redux-router'
 
 import { write as cookie } from '../tools/cookie'
 
@@ -16,7 +17,12 @@ import { defineMessages, injectIntl as international } from 'react-intl'
 
 import Uri from '../tools/uri'
 
-const locales = ['en-US', 'ru-RU']
+// брать с сервера, из i18n файлов (key - имя, label - из файла этого считывать)
+const locales = 
+[
+	{ key: 'en-US', label: 'English' },
+	{ key: 'ru-RU', label: 'Русский' }
+]
 
 const messages = defineMessages
 ({
@@ -30,7 +36,7 @@ const messages = defineMessages
 	{
 		id             : 'application.choose_your_language',
 		description    : 'Tells a user to choose a desired language',
-		defaultMessage : 'Choose your language'
+		defaultMessage : 'Language'
 	}
 })
 
@@ -38,19 +44,20 @@ const messages = defineMessages
 (
 	store => 
 	({
-		locale : store.locale.locale
-	})
+		locale : store.locale.locale,
+		url    : store.router.location.pathname + store.router.location.search
+	}),
+
+	// Use an action creator for navigation
+	{ pushState }
 )
 class Locale_switcher extends Component
 {
+	state = {}
+
 	static propTypes =
 	{
 		locale: PropTypes.string.isRequired
-	}
-
-	static contextTypes =
-	{
-		location: React_router_prop_types.location
 	}
 
 	render()
@@ -61,10 +68,18 @@ class Locale_switcher extends Component
 
 		const markup =
 		(
-			<div className="LocaleSwitcher" style={this.props.style}>
-				<span style={style.label}>{format_message(messages.language)}</span>
+			<div style={{ display: 'inline-block' }}>
+				{/* loading */}
+				<span className="spinner" style={ this.state.setting_locale ? style.spinner.show : style.spinner.hide }></span>
 
-				<Dropdown selected={locale} select={::this.set_locale} list={locales.map(locale => ({ key: locale, value: locale, icon: <Flag locale={locale} style={style.locale.flag}/> }))} style={style.locales}/>
+				{/* dropdown list */}
+				<Dropdown 
+					label={format_message(messages.choose_your_language)} 
+					selected={locale} 
+					select={::this.set_locale} 
+					list={locales.map(({ key, label }) => ({ key: key, label: label, icon: <Flag locale={key} style={style.locale.flag}/> }))} 
+					style={this.props.style} 
+					title={format_message(messages.language)}/>
 			</div>
 		)
 
@@ -73,8 +88,11 @@ class Locale_switcher extends Component
 
 	set_locale(locale)
 	{
+		this.setState({ setting_locale: true })
+
 		cookie('locale', locale)
-		window.location = new Uri(this.context.location.pathname + this.context.location.search).parameter('locale', locale).print()
+		window.location.reload()
+		// window.location = new Uri(this.props.url).parameter('locale', locale).print()
 	}
 }
 
@@ -82,10 +100,15 @@ export default international(Locale_switcher)
 
 const style = styler
 `
-	label
+	spinner
+		transition       : opacity 500ms ease-out
+		transition-delay : 150ms
+		margin-bottom    : 0.06em
 
-	locales
-		display : inline-block
+		&show
+			opacity : 1
+		&hide
+			opacity : 0
 
 	locale
 		flag

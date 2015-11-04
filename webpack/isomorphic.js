@@ -5,6 +5,8 @@ module.exports =
 {
 	debug: true,
 
+	webpack_assets_file_path: './build/webpack-assets.json',
+
 	assets:
 	{
 		images:	

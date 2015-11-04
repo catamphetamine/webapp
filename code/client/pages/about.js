@@ -33,10 +33,10 @@ export default class About extends Component
 	{
 		// to do: remove second loading here for client-side navigation
 		// to do: remove loading here for server-side rendered page
-		if (window.client_side_routing)
-		{
-			this.constructor.preload(this.context.store)
-		}
+		// if (window.client_side_routing)
+		// {
+		// 	this.constructor.preload(this.context.store)
+		// }
 	}
 
 	render()
@@ -98,13 +98,13 @@ export default class About extends Component
 		return markup
 	}
 
-	static preload(store)
+	static preload(get_state, dispatch)
 	{
 		const promises = []
 
-		// if (!are_settings_loaded(store.getState()))
+		// if (!are_settings_loaded(store.get_state()))
 		// {
-			promises.push(store.dispatch(get_settings()))
+			promises.push(dispatch(get_settings()))
 		// }
 		
 		return Promise.all(promises)

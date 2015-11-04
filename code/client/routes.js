@@ -40,10 +40,8 @@ const Home_queries =
 		// <Route component={NestedRootContainer}>
 		// </Route>
 
-export default function({ store, history })
+export default function({ store })
 {
-	// <Route ... history={history}
-
 	const routes =
 	(
 		<Route path="/" component={Layout} queries={Layout_queries}>
@@ -62,10 +60,6 @@ export default function({ store, history })
 			<Route path="*" component={Not_found}/>
 		</Route>
 	)
-
-			// <Route component={Require_login} onEnter={Require_login.on_enter(store)}>
-			// 	<Route path="/login_success" component={Login_success}/>
-			// </Route>
 
 	return routes
 }

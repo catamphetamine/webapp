@@ -60,10 +60,10 @@ export default class Page extends Component
 	{
 		// to do: remove second loading here for client-side navigation
 		// to do: remove loading here for server-side rendered page
-		if (window.client_side_routing)
-		{
-			this.constructor.preload(this.context.store)
-		}
+		// if (window.client_side_routing)
+		// {
+		// 	this.constructor.preload(this.context.store)
+		// }
 	}
 
 	componentWillReceiveProps(next_props)
@@ -249,13 +249,13 @@ export default class Page extends Component
 		// upload_file(files[0])
 	}
 
-	static preload(store)
+	static preload(get_state, dispatch)
 	{
 		const promises = []
 
 		// if (!are_settings_loaded(store.getState()))
 		// {
-			promises.push(store.dispatch(get_users()))
+			promises.push(dispatch(get_users()))
 		// }
 
 		return Promise.all(promises)

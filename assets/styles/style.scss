@@ -159,7 +159,7 @@ a
 	width: 0.6em;
 	height: 0.6em;
 
-	border: 0.1em solid #38e;
+	border: 0.05em solid black;
 	border-right-color: transparent;
 	border-radius: 0.3em;
 
@@ -189,13 +189,16 @@ a
 
 	padding-top    : $dropdown-item-vertical-padding;
 	padding-bottom : $dropdown-item-vertical-padding;
+}
 
-	&:first-child
+.dropdown-item-list
+{
+	li:first-child
 	{
 		padding-top    : 2 * $dropdown-item-vertical-padding;
 	}
 
-	&:last-child
+	li:last-child
 	{
 		padding-bottom : 2 * $dropdown-item-vertical-padding;
 	}
@@ -215,6 +218,11 @@ a
 	{
 		color: $active-darker-color;
 	}
+}
+
+.dropdown-arrow
+{
+	opacity : 0.3
 }
 
 .menu

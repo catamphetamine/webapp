@@ -65,7 +65,14 @@ web.use(function*()
 	({
 		preferred_locale : this.getLocaleFromQuery() || this.getLocaleFromCookie() || this.getLocaleFromHeader() || 'en',
 		request          : this.request, 
-		respond          : data => this.body = data, 
+		respond          : ({ markup, status }) =>
+		{
+			this.body = markup
+			if (status)
+			{
+				this.status = status
+			}
+		}, 
 		fail             : error => this.throw(error), 
 		redirect         : to => this.redirect(to)
 	})

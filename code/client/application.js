@@ -10,6 +10,8 @@ import { client }     from '../react-isomorphic-render'
 import create_store   from './redux/store'
 import markup_wrapper from './markup wrapper'
 
+import dev_tools from './redux/dev tools'
+
 // include these assets in webpack build (styles, images)
 import html from './html'
 html.require_assets()
@@ -60,31 +62,22 @@ international.load_polyfill(locale)
 
 				ReactDOM.render(markup_wrapper(component, { store, locale, messages: localized_messages }), content_container)
 
-				const { DevTools, DebugPanel, LogMonitor } = require('redux-devtools/lib/react')
-
 				console.log(`You are gonna see a warning about "React.findDOMNode is deprecated" in the console. It's normal: redux_devtools hasn't been updated to React 0.14 yet`)
 
 				const markup =
 				(
 					<div>
 						{markup_wrapper(component, { store, locale, messages: localized_messages })}
-
-						<DebugPanel top right bottom key="debugPanel">
-							<DevTools store={store} monitor={LogMonitor}/>
-						</DebugPanel>
+						<dev_tools/>
 					</div>
 				)
 
 				return markup
 			},
-			routes            : () => routes({ store }),
+			routes            : routes({ store }),
 			// history           : create_history(),
 			content_container
 		})
-	})
-	.catch(error =>
-	{
-		console.error(error.stack || error)
 	})
 
 window.debug = (...parameters) => { console.log.bind(console)(parameters) }

@@ -196,6 +196,7 @@ const style = styler
 			border-bottom-width : 0
 
 	locale_switcher
+		margin-right : 0.5em
 
 	menu
 		list-style-type : none

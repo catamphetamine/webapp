@@ -15,7 +15,7 @@ Features
 * Maybe to be done: Locale switch hot reload (without reloading page)
 * Microservice architecture
 * Bunyan logging (log file rotation is built-in)
-* Protected against Cross Site Request Forgery attacks
+* // maybe: Protected against Cross Site Request Forgery attacks
 * To be done: native Node.js clustering
 
 Quick Start
@@ -117,10 +117,6 @@ http://www.imagemagick.org/script/binary-releases.php
 Сделать
 ====================
 
-в set_locale в locale switcher - this.context.location.pathname старый остаётся
-
-alert(this.context.location.pathname)
-
 адаптивный дизайн
 
 меню как в appstore
@@ -136,8 +132,6 @@ alert(this.context.location.pathname)
 нужна ли arrow у dropdown, и либо убрать её из dropdown (+ стили), либо сделать нормально
 
 showcase элементов: dropdown, modal, ...
-
-// после выбора locale - крутилку на весь экран мб (мб не на весь)
 
 соединение tcp устанавливать при создании лога, и дальше просто писать
 

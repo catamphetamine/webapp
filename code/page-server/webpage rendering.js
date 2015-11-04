@@ -29,41 +29,42 @@ export function render({ request, respond, fail, redirect, preferred_locale })
 	return server
 	({
 		disable_server_side_rendering : _disable_server_side_rendering_,
-		routes   : () => routes({ store }),
-		preload  : preloader => preloader(store),
-		wrap_component    : component =>
+		// routes   : () => routes({ store }),
+		// preload  : preloader => preloader(store),
+		wrap_component: component =>
 		{
 			return markup_wrapper(component, { store, locale, messages })
 		},
-		request  : request,
+		url: request.originalUrl.replace(/\?$/, ''),
 		html:
 		{
 			with_rendering: component => <Html locale={locale} messages={messages} assets={webpack_isomorphic_tools.assets()} component={component} store={store}/>,
 			without_rendering: () => <Html locale={locale} messages={messages} assets={webpack_isomorphic_tools.assets()} store={store}/>
-		}
+		},
+		store: store
 	})
-	.then(({ markup, redirect_to }) =>
+	.then(({ status, markup, redirect_to }) =>
 	{
 		if (redirect_to)
 		{
 			return redirect(redirect_to)
 		}
 
-		respond(markup)
+		respond({ status, markup })
 	},
 	error =>
 	{
-		if (error.redirect)
-		{
-			return redirect(error.redirect)
-		}
+		// if (error.redirect)
+		// {
+		// 	return redirect(error.redirect)
+		// }
 
 		log.error(error)
 		fail(error)
 
 		if (error.markup)
 		{
-			respond(error.markup)
+			respond({ markup: error.markup })
 		}
 	})
 }
