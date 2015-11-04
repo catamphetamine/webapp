@@ -173,31 +173,23 @@ a
 .dropdown-item-list
 {
 	transition: all 100ms ease-out;
+
+	border-width : 1px;
+	border-style : solid;
+	border-color : transparent;
+
+	// prevent white background showing through the transparent border
+	// http://stackoverflow.com/questions/7473200/transparent-border-expands-background-color-image
+	background-clip: padding-box;
+	// for Safari
+	-webkit-background-clip: padding-box;
 }
 
 .dropdown-item-list-expanded
 {
 	box-shadow : 0 3px 20px rgba(0, 0, 0, 0.05);
-}
-
-.dropdown-item-list > li
-{
-	border-width : 1px;
-	border-style : solid;
-	border-color : transparent;
-
-	border-left-color  : #e7e7e7;
-	border-right-color : #e7e7e7;
-
-	&:first-child
-	{
-		border-top-color : #e7e7e7;
-	}
-
-	&:last-child
-	{
-		border-bottom-color : #e7e7e7;
-	}
+	
+	border-color : #e7e7e7;
 }
 
 .dropdown-item
@@ -361,36 +353,22 @@ header
 
 		// box-shadow : 0 3px 20px rgba(0, 0, 0, 0.05);
 
-		// border-width : 1px;
-		// border-style : solid;
-		// border-color : #e7e7e7;
-
 		// display: none !important;
+
+		border-width : 1px;
+		border-style : solid;
+		border-color : transparent;
+
+		// prevent white background showing through the transparent border
+		// http://stackoverflow.com/questions/7473200/transparent-border-expands-background-color-image
+		background-clip: padding-box;
+		// for Safari
+		-webkit-background-clip: padding-box;
 
 		max-height : 0;
 		overflow   : hidden;
 
 		transition: none;
-
-		> li
-		{
-			border-width : 1px;
-			border-style : solid;
-			border-color : transparent;
-
-			border-left-color  : #e7e7e7;
-			border-right-color : #e7e7e7;
-
-			&:first-child
-			{
-				border-top-color : #e7e7e7;
-			}
-
-			&:last-child
-			{
-				border-bottom-color : #e7e7e7;
-			}
-		}
 
 		> li
 		{
@@ -426,6 +404,10 @@ header
 		// display: block !important;
 		max-height : 200px;
 		box-shadow : 0 3px 20px rgba(0, 0, 0, 0.05);
+
+		border-width : 1px;
+		border-style : solid;
+		border-color : #e7e7e7;
 
 		transition: all 130ms ease-out;
 	}

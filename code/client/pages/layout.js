@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import { PropTypes as React_router_prop_types } from 'react-router'
 import { webpage_head } from '../webpage head'
 
 // использование: @Radium перед классом компонента
@@ -61,7 +62,7 @@ class Layout extends Component
 	static contextTypes =
 	{
 		// router : PropTypes.object.isRequired,
-		history : PropTypes.object.isRequired,
+		history : React_router_prop_types.history.isRequired,
 		store   : PropTypes.object.isRequired
 	}
 
