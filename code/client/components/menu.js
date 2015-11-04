@@ -38,7 +38,7 @@ const messages = defineMessages
 export default class Menu extends Component
 {
 	state = {}
-	
+
 	componentDidUpdate(previous_props, previous_state)
 	{
 		if (this.props.show !== previous_props.show)

@@ -12,7 +12,7 @@ export default class Flag extends Component
 		select   : PropTypes.func.isRequired
 	}
 
-	state = { active: false }
+	state = {}
 
 	constructor(props)
 	{

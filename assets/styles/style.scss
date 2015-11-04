@@ -295,7 +295,9 @@ header
 .menu-icon
 {
 	position: relative;
-	padding-left: 1.25em;
+	// padding-left: 1.25em;
+	width: 1em;
+	height: 1em;
 }
 
 .menu-icon:before
@@ -304,12 +306,13 @@ header
 
 	position: absolute;
 
-	top  : 0;
+	top  : 0.16em;
 	left : 0;
 
 	width  : 1em;
 	// height : 0.125em;
-    height: 0.63em;
+    height : 0.64em;
+    // margin-bottom: 0.37em;
 
 	border-top    : 0.375em double $active-color;
 	border-bottom : 0.125em solid $active-color;
@@ -318,6 +321,7 @@ header
 .menu-button
 {
 	display: none;
+	position: absolute;
 
 	&:active
 	{
@@ -366,7 +370,7 @@ header
 		max-height : 0;
 		overflow   : hidden;
 
-		transition: all 130ms ease-out;
+		transition: none;
 
 		> li
 		{
@@ -407,11 +411,23 @@ header
 		}
 	}
 
+	.menu-item
+	{
+		display: block !important;
+		border: none;
+
+		margin : 0;
+		padding-left    : 0.4em;
+		padding-right   : 0.4em;
+	}
+
 	.menu-shown
 	{
 		// display: block !important;
 		max-height : 200px;
 		box-shadow : 0 3px 20px rgba(0, 0, 0, 0.05);
+
+		transition: all 130ms ease-out;
 	}
 
 	.language
@@ -447,8 +463,26 @@ header
 
 	.menu-button
 	{
+		// display: block;
+		// float: left;
+		position: absolute;
 		display: block;
-		float: left;
-    	margin-top: 0.45em;
+		top: 0.18em;
+		left: 0.4em;
+		padding: 0.6em;
+    	// margin-top: 0.45em;
+	}
+}
+
+@media (max-width: 280px)
+{
+	.language
+	{
+		display: none !important;
+	}
+
+	.menu-button
+	{
+		display: none;
 	}
 }

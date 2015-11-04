@@ -65,13 +65,27 @@ class Layout extends Component
 		store   : PropTypes.object.isRequired
 	}
 
+	constructor(props)
+	{
+		super(props)
+
+		this.document_clicked = this.document_clicked.bind(this)
+	}
+
 	componentDidMount()
 	{
-		window.client_side_routing = true
+		// window.client_side_routing = true
+
+		this.unlisten_history = this.context.history.listen(location => this.state.show_menu = false)
+
+		document.addEventListener('click', this.document_clicked)
 	}
 
 	componentWillUnmount()
 	{
+		this.unlisten_history()
+
+		document.removeEventListener('click', this.document_clicked)
 	}
 
 	componentWillReceiveProps(nextProps)
@@ -177,6 +191,18 @@ class Layout extends Component
 	toggle_menu()
 	{
 		this.setState({ show_menu: !this.state.show_menu })
+	}
+
+	document_clicked(event)
+	{
+		if (event.target.className === 'menu-icon' 
+			|| event.target.className === 'menu-item'
+			|| event.target.className === 'menu-button')
+		{
+			return
+		}
+
+		this.setState({ show_menu: false })
 	}
 }
 
