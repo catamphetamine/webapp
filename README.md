@@ -22,7 +22,7 @@ Quick Start
 ===========
 
 * `npm install`
-* `npm run dev` (nodemon has a bug when starting several nodemon processes in parallel fails; if this command fails - try to run it several times; eventually it will work)
+* `npm run dev`
 * wait a bit for Webpack to finish the first build (green stats will appear in the terminal)
 * go to `http://localhost:3000`
 * interact with the development version of the web application
