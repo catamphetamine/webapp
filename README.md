@@ -117,10 +117,8 @@ http://www.imagemagick.org/script/binary-releases.php
 Сделать
 ====================
 
-при разворачивании dropdown и меню - нижний border не показывается.
-мб оставлять border на ul, убрать его с li, и как-то избавиться от белого border в свёрнутом состоянии.
-
-мб добавить задержку в запуск nodemon'ов
+если в меню много элементов - делать overflow: auto по высоте до низа окна, 
+как здесь: http://www.w3schools.com/cssref/css3_pr_mediaquery.asp
 
 сделать, чтобы каждый nodemon watch-ил только свой набор файлов
 
