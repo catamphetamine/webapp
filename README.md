@@ -6,17 +6,18 @@ Features
 * React-router
 * Redux as Flux
 * Isomorphic (universal) rendering
+* Responsive design
 * Webpack
 * Express / Koa
 * Internationalization with React-intl (v2)
 * To be done: Authentication
 * To be done: GraphQL + Relay
 * To be done: Persistence (PostgreSQL, Bookshelf)
-* Maybe to be done: Locale switch hot reload (without reloading page)
+* To be done: native Node.js clustering
 * Microservice architecture
 * Bunyan logging (log file rotation is built-in)
-* // maybe: Protected against Cross Site Request Forgery attacks
-* To be done: native Node.js clustering
+* // maybe: Protection against Cross Site Request Forgery attacks
+* Maybe to be done: Locale switch hot reload (without reloading page)
 
 Quick Start
 ===========
@@ -117,32 +118,38 @@ http://www.imagemagick.org/script/binary-releases.php
 Сделать
 ====================
 
+вычленить стили в style.scss, small, medium, large
+
+зарелизить react-components, с react и react-router - peerDependencies
+
+у dropdown можно проставлять transition-duration в inline стилях, вычисляя по expansion_velocity (px/sec)
+
+и убрать transition у dropdown из style.scss
+
 если в меню много элементов - делать overflow: auto по высоте до низа окна, 
 как здесь: http://www.w3schools.com/cssref/css3_pr_mediaquery.asp
 
-сделать, чтобы каждый nodemon watch-ил только свой набор файлов
+у dropdown сделать scroll при переполнении
+
+смёржить erikras
 
 сделать диалоговое окошко
 
-у dropdown сделать scroll при переполнении
-
-нужна ли arrow у dropdown, и либо убрать её из dropdown (+ стили), либо сделать нормально
-
 showcase элементов: dropdown, modal, ...
 
-соединение tcp устанавливать при создании лога, и дальше просто писать
+выделить log server, куда слать логи (мб через node-ipc, мб просто по http, мб thrift или protobuf - можно попробовать)
 
-сделать флаг demo, и проверять его на редисе и imagemagick
+log server: соединение tcp устанавливать при создании лога, и дальше просто писать
 
-взять страницу ошибки из erikras (красную в dev mode)
+сделать флаг demo, и проверять его на редисе и imagemagick (без них можно будет)
+
+взять страницу ошибки из erikras (красную в dev mode), чтобы было не просто status 500 Internal server error
 
 koa redis session store (optionally)
 
 если нету imagemagick'а, то просто возвращать нересайженную картинку (npm run demo)
 
 rotating log per worker
-
-выделить log server, куда слать логи (мб через node-ipc, мб просто по http, мб thrift или protobuf - можно попробовать)
 
 image server -> file upload server
 

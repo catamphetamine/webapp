@@ -1,43 +1,42 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
+import { PropTypes as React_router_prop_types } from 'react-router'
 
 import { Link } from 'react-router'
 
 import styler from 'react-styling'
 
-import { defineMessages, injectIntl as international } from 'react-intl'
-
-const messages = defineMessages
-({
-	editor:
-	{
-		id             : 'menu.editor',
-		description    : 'HTML5 editor',
-		defaultMessage : 'Editor'
-	},
-	about:
-	{
-		id             : 'menu.about',
-		description    : 'Whatever',
-		defaultMessage : 'About'
-	},
-	example:
-	{
-		id             : 'menu.example',
-		description    : 'API usage examples',
-		defaultMessage : 'Example'
-	},
-	components_showcase:
-	{
-		id             : 'menu.components_showcase',
-		description    : 'The section shows various React components in action',
-		defaultMessage : 'React components showcase'
-	}
-})
-
 export default class Menu extends Component
 {
 	state = {}
+
+	static contextTypes =
+	{
+		history : React_router_prop_types.history
+	}
+
+	constructor(props)
+	{
+		super(props)
+
+		this.document_clicked = this.document_clicked.bind(this)
+	}
+
+	componentDidMount()
+	{
+		if (this.context.history)
+		{
+			this.unlisten_history = this.context.history.listen(location =>
+			{
+				if (this.props.show)
+				{
+					this.props.toggle()
+				}
+			})
+		}
+
+		document.addEventListener('click', this.document_clicked)
+	}
 
 	componentDidUpdate(previous_props, previous_state)
 	{
@@ -47,17 +46,22 @@ export default class Menu extends Component
 		}
 	}
 
+	componentWillUnmount()
+	{
+		if (this.unlisten_history)
+		{
+			this.unlisten_history()
+		}
+
+		document.removeEventListener('click', this.document_clicked)
+	}
+
 	render()
 	{
-		const translate = this.props.intl.formatMessage
-
 		const markup =
 		(
 			<ul ref="menu" style={ this.props.show ? merge(style.menu, { maxHeight: this.state.height + 'px' }) : style.menu } className={'menu' + ' ' + (this.props.show ? 'menu-shown' : '')}>
-				<li style={style.menu.item}><Link to="/editor"   style={style.menu.item.link} activeClassName="menu-item-selected" className="menu-item">{translate(messages.editor)}</Link></li>
-				<li style={style.menu.item}><Link to="/about"    style={style.menu.item.link} activeClassName="menu-item-selected" className="menu-item">{translate(messages.about)}</Link></li>
-				<li style={style.menu.item}><Link to="/example"  style={style.menu.item.link} activeClassName="menu-item-selected" className="menu-item">{translate(messages.example)}</Link></li>
-				<li style={style.menu.item}><Link to="/showcase" style={style.menu.item.link} activeClassName="menu-item-selected" className="menu-item">{translate(messages.components_showcase)}</Link></li>
+				{ this.props.items.map(item => <li style={style.menu.item}><Link to={item.link} style={style.menu.item.link} activeClassName="menu-item-selected" className="menu-item">{item.name}</Link></li>) }
 			</ul>
 		)
 
@@ -70,9 +74,22 @@ export default class Menu extends Component
 
 		this.setState({ height: this.props.show ? dom_node.scrollHeight : 0 })
 	}
-}
 
-export default international(Menu)
+	document_clicked(event)
+	{
+		if (event.target.className === 'menu-icon' 
+			|| event.target.className === 'menu-item'
+			|| event.target.className === 'menu-button')
+		{
+			return
+		}
+
+		if (this.props.show)
+		{
+			this.props.toggle()
+		}
+	}
+}
 
 const style = styler
 `

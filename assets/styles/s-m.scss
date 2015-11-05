@@ -1,0 +1,123 @@
+header
+{
+	position: relative;
+	text-align: center;
+}
+
+.logo
+{
+	display: block;
+}
+
+.menu
+{
+	position: absolute;
+	left: 0;
+
+	margin: 0;
+
+	background-color: white;
+
+	// box-shadow : 0 3px 20px rgba(0, 0, 0, 0.05);
+
+	// display: none !important;
+
+	border-width : 1px;
+	border-style : solid;
+	border-color : transparent;
+
+	// prevent white background showing through the transparent border
+	// http://stackoverflow.com/questions/7473200/transparent-border-expands-background-color-image
+	background-clip: padding-box;
+	// for Safari
+	-webkit-background-clip: padding-box;
+
+	max-height : 0;
+	overflow   : hidden;
+
+	transition: all 100ms ease-out;
+
+	> li
+	{
+		display: block !important;
+
+		padding-top:    $menu-item-compact-vertical-padding;
+		padding-bottom: $menu-item-compact-vertical-padding;
+
+		&:first-child
+		{
+			padding-top    : 2 * $menu-item-compact-vertical-padding;
+		}
+
+		&:last-child
+		{
+			padding-bottom : 2 * $menu-item-compact-vertical-padding;
+		}
+	}
+}
+
+.menu-item
+{
+	display: block !important;
+	border: none;
+
+	margin : 0;
+	padding-left    : 0.4em;
+	padding-right   : 0.4em;
+}
+
+.menu-shown
+{
+	// display: block !important;
+	max-height : 200px;
+	box-shadow : 0 3px 20px rgba(0, 0, 0, 0.05);
+
+	border-width : 1px;
+	border-style : solid;
+	border-color : #e7e7e7;
+
+	// transition: all 130ms ease-out;
+}
+
+.language
+{
+	margin-top: 0.25em;
+
+	&, .dropdown-item-list li, .dropdown-item, .dropdown-item-selected
+	{
+		line-height: 0;
+	}
+
+	.dropdown-item
+	{
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+
+	.dropdown-item-label
+	{
+		display: none;
+	}
+
+	.dropdown-item-icon > img
+	{
+		margin: 0 !important;
+	}
+
+	.dropdown-arrow
+	{
+		margin-bottom : 0.25em !important;
+	}
+}
+
+.menu-button
+{
+	// display: block;
+	// float: left;
+	position: absolute;
+	display: block;
+	top: 0.18em;
+	left: 0.4em;
+	padding: 0.6em;
+	// margin-top: 0.45em;
+}

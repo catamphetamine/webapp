@@ -1,3 +1,5 @@
+@import "constants.scss";
+
 // custom fonts slow down page loading
 
 // @font-face
@@ -47,16 +49,6 @@ body, button, input, textarea, select
 	font-family : Arial, Sans, Helvetica;
 	font-size   : 20pt;
 }
-
-// theming
-$active-color: #29ADFF;
-$active-darker-color: #0076BF;
-$active-lighter-color: #73C9FF;
-
-$dropdown-item-vertical-padding: 0.2em;
-$dropdown-item-horizontal-padding: 0.8em;
-
-$menu-item-compact-vertical-padding: 0.2em;
 
 a:active
 {
@@ -188,7 +180,7 @@ a
 .dropdown-item-list-expanded
 {
 	box-shadow : 0 3px 20px rgba(0, 0, 0, 0.05);
-	
+
 	border-color : #e7e7e7;
 }
 
@@ -284,32 +276,6 @@ header
 
 // https://css-tricks.com/three-line-menu-navicon/
 
-.menu-icon
-{
-	position: relative;
-	// padding-left: 1.25em;
-	width: 1em;
-	height: 1em;
-}
-
-.menu-icon:before
-{
-	content: "";
-
-	position: absolute;
-
-	top  : 0.16em;
-	left : 0;
-
-	width  : 1em;
-	// height : 0.125em;
-    height : 0.64em;
-    // margin-bottom: 0.37em;
-
-	border-top    : 0.375em double $active-color;
-	border-bottom : 0.125em solid $active-color;
-}
-
 .menu-button
 {
 	display: none;
@@ -329,142 +295,26 @@ header
 	margin-top: 0.2em;
 }
 
-@media (max-width: 1200px)
-{
-	header
-	{
-		position: relative;
-		text-align: center;
-	}
+@media all and (min-width: 1921px) { @import "xl.scss" }
+@media all and (min-width: 1201px) { @import "l-xl.scss" }
+@media all and (min-width: 1201px) { @import "l.scss" }
+@media all and (min-width: 1201px) { @import "l-xl.scss" }
+@media all and (min-width: 1201px) and (max-width: 1920px) { @import "l-xl.scss" }
+@media all and (min-width: 641px)  and (max-width: 1920px) { @import "m-l.scss" }
+@media all and (min-width: 641px)  and (max-width: 1200px) { @import "m.scss" }
+@media all and (min-width: 281px)  and (max-width: 1200px) { @import "s-m.scss" }
+@media all and (min-width: 281px)  and (max-width: 640px)  { @import "s.scss" }
+@media all                         and (max-width: 1200px) { @import "xs-m.scss" }
+@media all                         and (max-width: 640px)  { @import "xs-s.scss" }
+@media all                         and (max-width: 280px)  { @import "xs.scss" }
 
-	.logo
-	{
-		display: block;
-	}
-
-	.menu
-	{
-		position: absolute;
-		left: 0;
-
-		margin: 0;
-
-		background-color: white;
-
-		// box-shadow : 0 3px 20px rgba(0, 0, 0, 0.05);
-
-		// display: none !important;
-
-		border-width : 1px;
-		border-style : solid;
-		border-color : transparent;
-
-		// prevent white background showing through the transparent border
-		// http://stackoverflow.com/questions/7473200/transparent-border-expands-background-color-image
-		background-clip: padding-box;
-		// for Safari
-		-webkit-background-clip: padding-box;
-
-		max-height : 0;
-		overflow   : hidden;
-
-		transition: none;
-
-		> li
-		{
-			display: block !important;
-
-			padding-top: $menu-item-compact-vertical-padding;
-			padding-bottom: $menu-item-compact-vertical-padding;
-
-			&:first-child
-			{
-				padding-top    : 2 * $menu-item-compact-vertical-padding;
-			}
-
-			&:last-child
-			{
-				padding-bottom : 2 * $menu-item-compact-vertical-padding;
-			}
-		}
-	}
-
-	.menu-item
-	{
-		display: block !important;
-		border: none;
-
-		margin : 0;
-		padding-left    : 0.4em;
-		padding-right   : 0.4em;
-	}
-
-	.menu-shown
-	{
-		// display: block !important;
-		max-height : 200px;
-		box-shadow : 0 3px 20px rgba(0, 0, 0, 0.05);
-
-		border-width : 1px;
-		border-style : solid;
-		border-color : #e7e7e7;
-
-		transition: all 130ms ease-out;
-	}
-
-	.language
-	{
-		margin-top: 0.25em;
-
-    	&, .dropdown-item-list li, .dropdown-item, .dropdown-item-selected
-		{
-			line-height: 0;
-		}
-
-		.dropdown-item
-		{
-			padding-top: 0;
-			padding-bottom: 0;
-		}
-
-		.dropdown-item-label
-		{
-			display: none;
-		}
-
-		.dropdown-item-icon > img
-		{
-			margin: 0 !important;
-		}
-
-		.dropdown-arrow
-		{
-			margin-bottom : 0.25em !important;
-		}
-	}
-
-	.menu-button
-	{
-		// display: block;
-		// float: left;
-		position: absolute;
-		display: block;
-		top: 0.18em;
-		left: 0.4em;
-		padding: 0.6em;
-    	// margin-top: 0.45em;
-	}
-}
-
-@media (max-width: 280px)
-{
-	.language
-	{
-		display: none !important;
-	}
-
-	.menu-button
-	{
-		display: none;
-	}
-}
+// @import "xl.scss"     all and (min-width: 1921px);
+// @import "l-xl.scss"   all and (min-width: 1201px);
+// @import "l.scss"      all and (min-width: 1201px) and (max-width: 1920px);
+// @import "m-l.scss"    all and (min-width: 641px)  and (max-width: 1920px);
+// @import "m.scss"      all and (min-width: 641px)  and (max-width: 1200px);
+// @import "s-m.scss"    all and (min-width: 281px)  and (max-width: 1200px);
+// @import "s.scss"      all and (min-width: 281px)  and (max-width: 640px);
+// @import "xs-m.scss"   all and                         (max-width: 1200px);
+// @import "xs-s.scss"   all and                         (max-width: 640px);
+// @import "xs.scss"     all and                         (max-width: 280px);

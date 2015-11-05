@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react'
-import { PropTypes as React_router_prop_types } from 'react-router'
 import { webpage_head } from '../webpage head'
 
 // использование: @Radium перед классом компонента
@@ -26,6 +25,7 @@ import Locale_switcher from '../components/locale switcher'
 import { defineMessages, injectIntl as international } from 'react-intl'
 
 import Menu from '../components/menu'
+import Menu_button from '../components/menu button'
 
 const messages = defineMessages
 ({
@@ -40,6 +40,31 @@ const messages = defineMessages
 		id             : 'application.description',
 		description    : 'Web application description',
 		defaultMessage : 'A generic web application boilerplate'
+	},
+
+	menu_editor:
+	{
+		id             : 'menu.editor',
+		description    : 'HTML5 editor',
+		defaultMessage : 'Editor'
+	},
+	menu_about:
+	{
+		id             : 'menu.about',
+		description    : 'Whatever',
+		defaultMessage : 'About'
+	},
+	menu_example:
+	{
+		id             : 'menu.example',
+		description    : 'API usage examples',
+		defaultMessage : 'Example'
+	},
+	menu_components_showcase:
+	{
+		id             : 'menu.components_showcase',
+		description    : 'The section shows various React components in action',
+		defaultMessage : 'React components showcase'
 	}
 })
 
@@ -61,32 +86,16 @@ class Layout extends Component
 
 	static contextTypes =
 	{
-		// router : PropTypes.object.isRequired,
-		history : React_router_prop_types.history.isRequired,
 		store   : PropTypes.object.isRequired
-	}
-
-	constructor(props)
-	{
-		super(props)
-
-		this.document_clicked = this.document_clicked.bind(this)
 	}
 
 	componentDidMount()
 	{
 		// window.client_side_routing = true
-
-		this.unlisten_history = this.context.history.listen(location => this.state.show_menu = false)
-
-		document.addEventListener('click', this.document_clicked)
 	}
 
 	componentWillUnmount()
 	{
-		this.unlisten_history()
-
-		document.removeEventListener('click', this.document_clicked)
 	}
 
 	componentWillReceiveProps(nextProps)
@@ -111,7 +120,7 @@ class Layout extends Component
 
 	render()
 	{
-		const format_message = this.props.intl.formatMessage
+		const translate = this.props.intl.formatMessage
 
 		// Html document metadata
 
@@ -151,6 +160,21 @@ class Layout extends Component
 
 		// {user && <p>Logged in as <strong>{user.name}</strong>.</p>}
 
+		const menu_items =
+		[{
+			name: translate(messages.menu_editor),
+			link: '/editor'
+		}, {
+			name: translate(messages.menu_about),
+			link: '/about'
+		}, {
+			name: translate(messages.menu_example),
+			link: '/example'
+		}, {
+			name: translate(messages.menu_components_showcase),
+			link: '/showcase'
+		}]
+
 		const markup = 
 		(
 			<div>
@@ -162,21 +186,19 @@ class Layout extends Component
 					<Locale_switcher style={style.locale_switcher}/>
 
 					{/* menu button for small screens */}
-					<button className="menu-button" onClick={::this.toggle_menu}>
-						<div className="menu-icon"/>
-					</button>
+					<Menu_button toggle={::this.toggle_menu}/>
 
 					{/* home page link */}
 					<div className="logo" style={{ textAlign: 'center' }}>
 						<IndexLink to="/" style={style.home} activeStyle={style.home.active}>
-							{format_message(messages.title)}
+							{translate(messages.title)}
 						</IndexLink>
 					</div>
 
 					{/* Navigation */}
 					{/*<nav>*/}
 						{/* main menu */}
-						<Menu show={this.state.show_menu}/>
+						<Menu show={this.state.show_menu} toggle={::this.toggle_menu} items={menu_items}/>
 					{/*</nav>*/}
 				</header>
 
@@ -192,18 +214,6 @@ class Layout extends Component
 	toggle_menu()
 	{
 		this.setState({ show_menu: !this.state.show_menu })
-	}
-
-	document_clicked(event)
-	{
-		if (event.target.className === 'menu-icon' 
-			|| event.target.className === 'menu-item'
-			|| event.target.className === 'menu-button')
-		{
-			return
-		}
-
-		this.setState({ show_menu: false })
 	}
 }
 
