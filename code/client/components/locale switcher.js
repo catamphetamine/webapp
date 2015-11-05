@@ -31,12 +31,6 @@ const messages = defineMessages
 		id             : 'application.language',
 		description    : 'Web application language',
 		defaultMessage : 'Language'
-	},
-	choose_your_language:
-	{
-		id             : 'application.choose_your_language',
-		description    : 'Tells a user to choose a desired language',
-		defaultMessage : 'Language'
 	}
 })
 
@@ -74,7 +68,7 @@ class Locale_switcher extends Component
 
 				{/* dropdown list */}
 				<Dropdown 
-					label={format_message(messages.choose_your_language)} 
+					label={format_message(messages.language)} 
 					selected={locale} 
 					select={::this.set_locale} 
 					list={locales.map(({ key, label }) => ({ key: key, label: label, icon: <Flag locale={key} style={style.locale.flag}/> }))} 
