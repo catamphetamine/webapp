@@ -118,22 +118,21 @@ http://www.imagemagick.org/script/binary-releases.php
 Сделать
 ====================
 
-вычленить стили в style.scss, small, medium, large
+если в меню много элементов - делать overflow: auto по высоте до низа окна, 
+как здесь: http://www.w3schools.com/cssref/css3_pr_mediaquery.asp
 
-зарелизить react-components, с react и react-router - peerDependencies
+у dropdown тоже сделать scroll при переполнении
 
 у dropdown можно проставлять transition-duration в inline стилях, вычисляя по expansion_velocity (px/sec)
 
 и убрать transition у dropdown из style.scss
 
-если в меню много элементов - делать overflow: auto по высоте до низа окна, 
-как здесь: http://www.w3schools.com/cssref/css3_pr_mediaquery.asp
-
-у dropdown сделать scroll при переполнении
+вычленить dropdown, menu, menu-button в react-responsive-ui
+зарелизить react-responsive-ui, с react и react-router - peerDependencies
 
 смёржить erikras
 
-сделать диалоговое окошко
+сделать диалоговое окошко (и зарелизить в react-responsive-ui)
 
 showcase элементов: dropdown, modal, ...
 
@@ -141,7 +140,7 @@ showcase элементов: dropdown, modal, ...
 
 log server: соединение tcp устанавливать при создании лога, и дальше просто писать
 
-сделать флаг demo, и проверять его на редисе и imagemagick (без них можно будет)
+сделать флаг demo, и проверять его на редисе и imagemagick (без них можно будет) + postgresql тоже (не обязателен для demo)
 
 взять страницу ошибки из erikras (красную в dev mode), чтобы было не просто status 500 Internal server error
 

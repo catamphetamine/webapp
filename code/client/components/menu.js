@@ -61,7 +61,7 @@ export default class Menu extends Component
 		const markup =
 		(
 			<ul ref="menu" style={ this.props.show ? merge(style.menu, { maxHeight: this.state.height + 'px' }) : style.menu } className={'menu' + ' ' + (this.props.show ? 'menu-shown' : '')}>
-				{ this.props.items.map(item => <li style={style.menu.item}><Link to={item.link} style={style.menu.item.link} activeClassName="menu-item-selected" className="menu-item">{item.name}</Link></li>) }
+				{ this.props.items.map((item, i) => <li key={i} style={style.menu.item}><Link to={item.link} style={style.menu.item.link} activeClassName="menu-item-selected" className="menu-item">{item.name}</Link></li>) }
 			</ul>
 		)
 
