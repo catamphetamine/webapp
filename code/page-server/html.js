@@ -1,9 +1,11 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOMServer from 'react-dom/server'
 
-import { server_generated_webpage_head } from './webpage head'
+import { server_generated_webpage_head } from '../client/webpage head'
 
 import serialize from 'serialize-javascript'
+
+import html_assets from '../client/html assets'
 
 /**
  * Wrapper component containing HTML metadata and boilerplate tags.
@@ -28,9 +30,6 @@ export default class Html extends Component
 	render()
 	{
 		const { locale, messages, assets, component, store } = this.props
-		
-		// get the favicon (this code will run on server)
-		const required_assets = Html.require_assets()
 
 		// when server-side rendering is disabled, component will be undefined
 		// (but server-side rendering is always enabled so this "if" condition may be removed)
@@ -44,7 +43,7 @@ export default class Html extends Component
 					{server_generated_webpage_head()}
 
 					{/* "favicon" */}
-					<link rel="shortcut icon" href={required_assets.icon}/>
+					<link rel="shortcut icon" href={html_assets.icon()}/>
 
 					{/* use this icon font instead: https://www.google.com/design/icons/ */}
 					{/*<link href={cdn + 'font-awesome/4.3.0/css/font-awesome.min.css'}
@@ -73,7 +72,7 @@ export default class Html extends Component
 					    (caused by Webpack style-loader mounting CSS styles 
 					     through javascript after page load)
 					    by mounting the entire CSS stylesheet in a <style/> tag */}
-					{ Object.keys(assets.styles).is_empty() ? <style dangerouslySetInnerHTML={{__html: Html.require_assets().style}}/> : null }
+					{ Object.keys(assets.styles).is_empty() ? <style dangerouslySetInnerHTML={{__html: html_assets.style()}}/> : null }
 				</head>
 
 				<body>
@@ -105,20 +104,4 @@ export default class Html extends Component
 
 		return html
 	}
-}
-
-// include these assets in webpack build
-// (you'll also need to add the corresponding asset types to isomorphic.js;
-//  otherwise you'll get syntax errors when requiring these files on server)
-Html.require_assets = function()
-{
-	const result =
-	{
-		icon  : require('../../assets/images/icon/cat_64x64.png'), // icon/32x32.png
-
-		// there will be no .scss on server in production
-		style :  !(_production_ && _server_) ? require('../../assets/styles/style.scss') : undefined
-	}
-
-	return result
 }

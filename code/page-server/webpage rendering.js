@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Html         from '../client/html'
+import Html         from './html'
 import api_client   from '../client/api client'
 
 import { server }     from '../react-isomorphic-render'
@@ -24,13 +24,10 @@ export function render({ request, respond, fail, redirect, preferred_locale })
 	let { locale, messages } = load_locale_data(preferred_locale)
 
 	store.dispatch({ type: 'locale set', locale: locale })
-	// store.dispatch({ type: 'locale data loaded', data: { language: locale, messages: locale_data } })
 
 	return server
 	({
 		disable_server_side_rendering : _disable_server_side_rendering_,
-		// routes   : () => routes({ store }),
-		// preload  : preloader => preloader(store),
 		wrap_component: component =>
 		{
 			return markup_wrapper(component, { store, locale, messages })
@@ -54,11 +51,6 @@ export function render({ request, respond, fail, redirect, preferred_locale })
 	},
 	error =>
 	{
-		// if (error.redirect)
-		// {
-		// 	return redirect(error.redirect)
-		// }
-
 		log.error(error)
 		fail(error)
 

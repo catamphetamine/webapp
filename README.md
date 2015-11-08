@@ -40,10 +40,15 @@ npm install
 
 Optionally you may want to install ImageMagic for image upload to work
 
+https://github.com/elad/node-imagemagick-native#installation-windows
+
+http://www.imagemagick.org/script/binary-releases.php
+
 Optionally you may want to install Redis (can be used for user session storage instead of memory storage)
 
 https://github.com/MSOpenTech/redis/releases
 
+Optionally you may want to install MongoDB (can be used to store logs)
 
 // sudo npm instal --global pm2
 
@@ -106,17 +111,17 @@ pm2 logs webapp
 
 Возможна кластеризация, безостановочное самообновление и т.п.
 
-Images
-====================
-
-You'll need to install ImageMagic to make image server work.
-
-https://github.com/elad/node-imagemagick-native#installation-windows
-
-http://www.imagemagick.org/script/binary-releases.php
-
 Сделать
 ====================
+
+соединяться с log server, пока он не запустится (если отвалится, то пересоединяться)
+
+из log server - писать в MongoDB
+
+вместо флага demo - entry в конфиге на redis, mongo, imagemagick
+(если нету чего-то - выдавать баннер в логах с флагом warning)
+
+на странице логов - фильтр по error, warning, info и т.п.
 
 если в меню много элементов - делать overflow: auto по высоте до низа окна, 
 как здесь: http://www.w3schools.com/cssref/css3_pr_mediaquery.asp
@@ -187,6 +192,10 @@ add user: validation
 
 
 
+
+
+
+// мб в будущем: логи слать по ssl
 
 
 // сделать можно загрузку более специфичного 'intl/locale-data/jsonp/ru-...'

@@ -13,8 +13,12 @@ import markup_wrapper from './markup wrapper'
 import dev_tools from './redux/dev tools'
 
 // include these assets in webpack build (styles, images)
-import html from './html'
-html.require_assets()
+import html_assets from './html assets'
+
+for (let asset of Object.keys(html_assets))
+{
+	html_assets[asset]()
+}
 
 // import ajax from './tools/ajax'
 // global.ajax = ajax

@@ -15,5 +15,7 @@ require('babel/register')
 
 require('./language')
 
+require('bluebird').promisifyAll(require('fs-extra'))
+
 global.configuration = require('./configuration')
 // console.log('Configuration:', configuration)

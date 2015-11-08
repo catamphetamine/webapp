@@ -43,6 +43,14 @@ module.exports =
 			port: 3000
 		}
 	},
+	log_server: 
+	{
+		http: 
+		{
+			host: '127.0.0.1',
+			port: 3005
+		}
+	},
 	session_secret_keys: ['hammertime'],
 	development:
 	{
