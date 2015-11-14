@@ -5,9 +5,9 @@ import stream        from 'stream'
 import util          from 'util'
 import moment        from 'moment'
 import Error_printer from 'pretty-error'
+import levels        from './log levels'
 
-const console_output = new stream()
-console_output.writable = true
+import { client as tcp_client } from './tcp'
 
 // import colors from 'colors/safe'
 //
@@ -108,52 +108,57 @@ function print(source, level, message, time)
 	+ message)
 }
 
-// for the function below
-const _print = print
-
-console_output.write = data =>
+export default function create(name, options = {})
 {
-	if (data.err)
+	const console_output = new stream()
+	console_output.writable = true
+
+	// for console_output.write()
+	const _print = print
+
+	console_output.write = data =>
 	{
-		return print_error(data.err)
+		if (data.err)
+		{
+			return print_error(data.err)
+		}
+
+		const print = (level, message, time) => _print(data.name, level, message, time)
+
+		print(levels[data.level] || '...', data.msg, data.time)
+
+		// switch (data.level)
+		// {
+		// 	case 60:
+		// 		print('Fatal', data.msg, data.time)
+		// 		break
+		//
+		// 	case 50:
+		// 		print('Error', data.msg, data.time)
+		// 		break
+		//
+		// 	case 40:
+		// 		print('Warning', data.msg, data.time)
+		// 		break
+		//
+		// 	case 30:
+		// 		print('Generic', data.msg, data.time)
+		// 		break
+		//
+		// 	case 20:
+		// 		print('Debug', data.msg, data.time)
+		// 		break
+		//
+		// 	case 10:
+		// 		print('Trace', data.msg, data.time)
+		// 		break
+		//
+		// 	default:
+		// 		print('...', data.msg, data.time)
+		// 		break
+		// }
 	}
 
-	const print = (level, message, time) => _print(data.name, level, message, time)
-
-	switch (data.level)
-	{
-		case 60:
-			print('Fatal', data.msg, data.time)
-			break
-
-		case 50:
-			print('Error', data.msg, data.time)
-			break
-
-		case 40:
-			print('Warning', data.msg, data.time)
-			break
-
-		case 30:
-			print('Generic', data.msg, data.time)
-			break
-
-		case 20:
-			print('Debug', data.msg, data.time)
-			break
-
-		case 10:
-			print('Trace', data.msg, data.time)
-			break
-
-		default:
-			print('...', data.msg, data.time)
-			break
-	}
-}
-
-export default function create(name)
-{
 	const development_log = 
 	{
 		streams: 
@@ -191,6 +196,22 @@ export default function create(name)
 	}
 
 	const log_configuration = (_production_ || process.env.NODE_ENV === 'production') ? production_log : development_log
+
+	if (options.use_log_server !== false)
+	{
+		const log_server = tcp_client({ host: configuration.log_server.tcp.host, port: configuration.log_server.tcp.port })
+
+		log_server.on('error', function(error)
+		{
+			(log || console).error(`There's been an error related to sending messages to log server. No more log messages will be sent to the log server.`, error)
+		})
+
+		log_configuration.streams.unshift
+		({
+			type: 'raw',
+			stream: log_server
+		})
+	}
 
 	return bunyan.createLogger(extend({ name: name }, log_configuration))
 }

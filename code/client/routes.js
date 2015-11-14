@@ -9,18 +9,19 @@ import { Router, Route, IndexRoute } from 'react-router'
 // // maybe move this to the function (if needed)
 // const NestedRootContainer = RelayNestedRoutes(React, Relay)
 
-import Layout           from './pages/layout.js'
-import Not_found        from './pages/not found.js'
-import Editor           from './pages/editor.js'
-import About            from './pages/about.js'
-import Home             from './pages/home.js'
-import Showcase         from './pages/showcase.js'
-import Dialog_showcase  from './pages/showcase/dialog.js'
-import Form_showcase    from './pages/showcase/form.js'
-import Example          from './pages/example.js'
-import Simple_example   from './pages/example/simple example.js'
-import Database_example from './pages/example/database example.js'
-import Simple_graphQL_example  from './pages/example/simple graphql example.js'
+import Layout           from './pages/layout'
+import Not_found        from './pages/not found'
+import Editor           from './pages/editor'
+import About            from './pages/about'
+import Home             from './pages/home'
+import Showcase         from './pages/showcase'
+import Dialog_showcase  from './pages/showcase/dialog'
+import Form_showcase    from './pages/showcase/form'
+import Example          from './pages/example'
+import Simple_example   from './pages/example/simple example'
+import Database_example from './pages/example/database example'
+import Log              from './pages/log'
+import Simple_graphQL_example  from './pages/example/simple graphql example'
 
 const Layout_queries = 
 {
@@ -57,6 +58,7 @@ export default function({ store })
 				<Route path="dialog" component={Dialog_showcase}/>
 				<Route path="form" component={Form_showcase}/>
 			</Route>
+			<Route path="logs" component={Log}/>
 			<Route path="*" component={Not_found}/>
 		</Route>
 	)

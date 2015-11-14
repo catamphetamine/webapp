@@ -13,6 +13,8 @@ global.no = no
 // extends the first object with all the others
 Object.extend = function(...objects)
 {
+	objects = objects.filter(x => exists(x))
+
 	const to   = objects[0]
 	const from = objects[1]
 

@@ -230,7 +230,7 @@ export default function web_server(options = {})
 			// log the error
 			log.error(error)
 
-			this.status = error.code || 500
+			this.status = typeof error.code === 'number' ? error.code : 500
 			this.message = error.message || 'Internal error'
 		}
 	})

@@ -6,7 +6,9 @@ import { webpage_head } from '../webpage head'
 
 import { Link, IndexLink } from 'react-router'
 
-import styler from 'react-styling'
+// testing `flat` styler
+import styler from 'react-styling/flat'
+
 // import autoprefixer from 'autoprefixer'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
@@ -64,7 +66,13 @@ const messages = defineMessages
 	{
 		id             : 'menu.components_showcase',
 		description    : 'The section shows various React components in action',
-		defaultMessage : 'React components showcase'
+		defaultMessage : 'Showcase'
+	},
+	menu_log:
+	{
+		id             : 'menu.log',
+		description    : 'The section shows log messages from all the parts of the application',
+		defaultMessage : 'Log'
 	}
 })
 
@@ -173,6 +181,9 @@ class Layout extends Component
 		}, {
 			name: translate(messages.menu_components_showcase),
 			link: '/showcase'
+		}, {
+			name: translate(messages.menu_log),
+			link: '/logs'
 		}]
 
 		const markup = 
@@ -190,7 +201,7 @@ class Layout extends Component
 
 					{/* home page link */}
 					<div className="logo" style={{ textAlign: 'center' }}>
-						<IndexLink to="/" style={style.home} activeStyle={style.home.active}>
+						<IndexLink to="/" style={style.home} activeStyle={style.home_active}>
 							{translate(messages.title)}
 						</IndexLink>
 					</div>
@@ -224,17 +235,12 @@ const style = styler
 	home
 		font-size   : 26pt
 		text-decoration : none
-		
-		// border-bottom-width : 0.08em
-		// border-bottom-style : dotted
-		// border-bottom-color : black
 
-		active:
-			cursor              : default
-			border-bottom-width : 0
+		active
+			cursor : default
 
 	locale_switcher
-		position: absolute
-		right: 0.3em
-		top: 0.6em
+		position : absolute
+		right    : 0.3em
+		top      : 0.6em
 `

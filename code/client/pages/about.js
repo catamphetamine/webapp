@@ -1,5 +1,3 @@
-// require('./about.less' )
-
 import React, { Component, PropTypes } from 'react'
 import { webpage_title } from '../webpage head'
 import { bindActionCreators as bind_action_creators } from 'redux'
@@ -24,20 +22,20 @@ export default class About extends Component
 		error        : PropTypes.object
 	}
 
-	static contextTypes =
-	{
-		store : PropTypes.object.isRequired
-	}
+	// static contextTypes =
+	// {
+	// 	store : PropTypes.object.isRequired
+	// }
 
-	componentDidMount()
-	{
-		// to do: remove second loading here for client-side navigation
-		// to do: remove loading here for server-side rendered page
-		// if (window.client_side_routing)
-		// {
-		// 	this.constructor.preload(this.context.store)
-		// }
-	}
+	// componentDidMount()
+	// {
+	// 	// to do: remove second loading here for client-side navigation
+	// 	// to do: remove loading here for server-side rendered page
+	// 	if (window.client_side_routing)
+	// 	{
+	// 		this.constructor.preload(this.context.store)
+	// 	}
+	// }
 
 	render()
 	{

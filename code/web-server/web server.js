@@ -16,6 +16,9 @@ web.proxy('/api', `http://${configuration.api_server.http.host}:${configuration.
 // Proxy /images requests to Image server
 web.proxy('/upload_image', `http://${configuration.image_server.http.host}:${configuration.image_server.http.port}`)
 
+// Proxy /log requests to Log server
+web.proxy('/log', `http://${configuration.log_server.http.host}:${configuration.log_server.http.port}`)
+
 // Proxy all the rest requests to Webpage rendering server
 web.proxy(`http://${configuration.webpage_server.http.host}:${configuration.webpage_server.http.port}`)
 

@@ -8,7 +8,7 @@ Features
 * Isomorphic (universal) rendering
 * Responsive design
 * Webpack
-* Express / Koa
+* Koa
 * Internationalization with React-intl (v2)
 * To be done: Authentication
 * To be done: GraphQL + Relay
@@ -114,6 +114,10 @@ pm2 logs webapp
 Сделать
 ====================
 
+функция, определяющая, вызывать ли preload, не работает с export default international(Page)
+
+сделать перепосылку сообщений (с ID) при неполучении подтверждения
+
 соединяться с log server, пока он не запустится (если отвалится, то пересоединяться)
 
 из log server - писать в MongoDB
@@ -192,6 +196,9 @@ add user: validation
 
 
 
+
+
+monitoring server, который будет принимать статистику по udp и писать в память или MongoDB
 
 
 
@@ -538,3 +545,11 @@ https://github.com/lpiepiora/bower-webpack-plugin
 React Context
 
 http://jaysoo.ca/2015/06/09/react-contexts-and-dependency-injection/
+
+
+Если возникает такая ошибка в клиентском коде:
+
+"Module parse failed: G:\work\webapp\code\common\log levels.js Line 1: Unexpected token
+ You may need an appropriate loader to handle this file type."
+
+то это означает, что данный файл не подключен в webpack.config.js к babel-loader

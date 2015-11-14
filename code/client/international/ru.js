@@ -8,6 +8,7 @@ export default
 	'menu.about'               : 'Прочее',
 	'menu.example'             : 'Пример',
 	'menu.components_showcase' : 'Компоненты',
+	'menu.log'                 : 'Журнал',
 
 	'home.header': 'Собака'
 }

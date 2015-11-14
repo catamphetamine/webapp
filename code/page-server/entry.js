@@ -10,8 +10,6 @@ var webpack_configuration = require('../../webpack/webpack.config')
 var Webpack_isomorphic_tools = require('webpack-isomorphic-tools')
 
 global.webpack_isomorphic_tools = new Webpack_isomorphic_tools(require('../../webpack/isomorphic.js'))
-
-global.webpack_isomorphic_tools
 .development(global._development_)
 .server(webpack_configuration.context, function()
 {

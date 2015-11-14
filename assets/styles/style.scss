@@ -295,6 +295,27 @@ header
 	margin-top: 0.2em;
 }
 
+table
+{
+	border-spacing  : 0;
+	border-collapse : collapse;
+}
+
+th, td
+{
+	padding     : 8px;
+	line-height : 1.42857143;
+    border-top  : 1px solid #ddd;
+}
+
+th
+{
+	vertical-align : bottom;
+	border-bottom  : 2px solid #ddd;
+	border-top     : 0;
+	text-align     : left;
+}
+
 @media all and (min-width: 1921px) { @import "xl.scss" }
 @media all and (min-width: 1201px) { @import "l-xl.scss" }
 @media all and (min-width: 1201px) { @import "l.scss" }
