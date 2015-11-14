@@ -5,7 +5,7 @@ import language       from '../common/language'
 import React          from 'react'
 import ReactDOM       from 'react-dom'
 
-import api_client     from './api client'
+import http_client    from './http client'
 import { client }     from '../react-isomorphic-render'
 import create_store   from './redux/store'
 import markup_wrapper from './markup wrapper'
@@ -39,7 +39,7 @@ international.load_polyfill(locale)
 		delete window._localized_messages
 
 		// create Redux store
-		const store = create_store(new api_client(), window._flux_store_data)
+		const store = create_store(new http_client('/api'), new http_client(), window._flux_store_data)
 		delete window._flux_store_data
 
 		// since react-intl assumes Intl is already in the global scope, 

@@ -35,7 +35,7 @@ module.exports =
 			port: 3004
 		}
 	},
-	webserver: 
+	web_server: 
 	{
 		http: 
 		{

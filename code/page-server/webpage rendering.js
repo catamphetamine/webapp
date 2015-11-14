@@ -1,7 +1,7 @@
 import React from 'react'
 
-import Html         from './html'
-import api_client   from '../client/api client'
+import Html           from './html'
+import http_client    from '../client/http client'
 
 import { server }     from '../react-isomorphic-render'
 import create_store   from '../client/redux/store'
@@ -19,7 +19,7 @@ export function render({ request, respond, fail, redirect, preferred_locale })
 		webpack_isomorphic_tools.refresh()
 	}
 
-	const store = create_store(new api_client(request))
+	const store = create_store(new http_client(request, '/api'), new http_client(request))
 
 	let { locale, messages } = load_locale_data(preferred_locale)
 

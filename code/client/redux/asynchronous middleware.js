@@ -1,5 +1,5 @@
 // сработает при вызове dispatch({ promise: ... })
-export default function middleware(client)
+export default function middleware(api_client, http_client)
 {
 	return ({ dispatch, get_state }) =>
 	{
@@ -24,7 +24,7 @@ export default function middleware(client)
 			next({ ...rest, type: Request })
 
 			// end asynchronous request
-			return promise(client).then
+			return promise(api_client, http_client).then
 			(
 				result => next({ ...rest, result, type: Success }),
 				error => next({...rest, error, type: Failure})

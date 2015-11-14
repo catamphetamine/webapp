@@ -37,10 +37,10 @@ web.proxy(`http://${configuration.webpage_server.http.host}:${configuration.webp
 // })
 
 // поднять http сервер
-web.listen(configuration.webserver.http.port).then(() =>
+web.listen(configuration.web_server.http.port).then(() =>
 {
 	log.info(`Web server is listening`)
-	log.info(`Now go to http://${configuration.webserver.http.host}:${configuration.webserver.http.port}`)
+	log.info(`Now go to http://${configuration.web_server.http.host}:${configuration.web_server.http.port}`)
 },
 error =>
 {

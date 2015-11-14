@@ -69,13 +69,13 @@ function makeRouteHooksSafe(_getRoutes)
 	return store => makeHooksSafe(createRoutes(_getRoutes(store)), store)
 }
 
-export default function(api_client, data) 
+export default function(api_client, http_client, data) 
 {
 	const getRoutes = _server_ ? routes : makeRouteHooksSafe(routes)
 	const reduxReactRouter = _server_ ? reduxReactRouter_server : reduxReactRouter_client
 	const createHistory = _server_ ? createHistory_server : createHistory_client
 
-	const middleware = [asynchronous_middleware(api_client), transition_middleware]
+	const middleware = [asynchronous_middleware(api_client, http_client), transition_middleware]
 	
 	let create_store
 

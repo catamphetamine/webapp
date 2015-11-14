@@ -8,7 +8,7 @@ import webpack_isomorphic_tools_plugin from 'webpack-isomorphic-tools/plugin'
 import base_configuration              from './webpack.config'
 
 import application_configuration from '../code/common/configuration'
-const websocket_url = `${application_configuration.webserver.http.host}:${application_configuration.webserver.http.port}`
+const websocket_url = `${application_configuration.web_server.http.host}:${application_configuration.web_server.http.port}`
 
 const configuration = Object.clone(base_configuration)
 
@@ -89,19 +89,9 @@ extend(javascript_loader.query,
 	}
 })
 
-// proxy:
-// {
-// 	"/api/*": `http://localhost:${application_configuration.webserver.http.port}`
-// }
-
 // http://webpack.github.io/docs/webpack-dev-server.html
 const development_server_options = 
 {
-	// don't know what that it
-	// contentBase : `http://${application_configuration.webserver.http.host}:${application_configuration.webserver.http.port}`,
-	// seems to be wrong
-	// contentBase : `http://${application_configuration.development.webpack.development_server.host}:${application_configuration.development.webpack.development_server.port}`,
-
 	quiet       : true, // don’t output anything to the console
 	noInfo      : true, // suppress boring information
 	hot         : true, // adds the HotModuleReplacementPlugin and switch the server to hot mode. Note: make sure you don’t add HotModuleReplacementPlugin twice

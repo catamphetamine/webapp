@@ -1,5 +1,3 @@
-import http from '../tools/http'
-
 export function get()
 {
 	const action =
@@ -64,7 +62,7 @@ export function upload_picture(user_id, data)
 {
 	const action =
 	{
-		promise: api => 
+		promise: (api, http) => 
 		{
 			return http.post(`/upload_image`, data).then(result =>
 			{
