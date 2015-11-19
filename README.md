@@ -559,3 +559,12 @@ http://jaysoo.ca/2015/06/09/react-contexts-and-dependency-injection/
  You may need an appropriate loader to handle this file type."
 
 то это означает, что данный файл не подключен в webpack.config.js к babel-loader
+
+
+Redis для Windows по умолчанию съедает сразу около 40-ка ГигаБайтов места.
+
+Чтобы исправить это, нужно поправить файлы redis.windows.conf и redis.windows-service.conf:
+
+maxmemory 1gb
+
+(править файлы в Program Files не получится, их можно править, скопировав в другое место и потом перезаписав обратно поверх)

@@ -6,7 +6,7 @@ import graphql_http from 'koa-graphql'
 import koa_router   from 'koa-router'
 import koa_logger   from 'koa-bunyan'
 import compress     from 'koa-compress'
-import statics      from 'koa-static-cache'
+import statics      from 'koa-static'
 import koa_locale   from 'koa-locale'
 import koa_proxy    from 'koa-proxy'
 import busboy       from 'co-busboy'
@@ -298,11 +298,10 @@ export default function web_server(options = {})
 	// can serve static files
 	result.serve_static_files = function(url_path, filesystem_path)
 	{
+		// https://github.com/koajs/static
 		web.use(mount(url_path, statics(filesystem_path, 
 		{
-			maxAge  : 365 * 24 * 60 * 60,
-			gzip    : true,
-			dynamic : true
+			maxAge  : 365 * 24 * 60 * 60 // 1 year
 		})))
 	}
 

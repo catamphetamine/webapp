@@ -17,12 +17,19 @@ util.inherits(Message_decoder, stream.Transform)
 
 Message_decoder.prototype._transform = function(text, encoding, callback)
 {
-	const messages = (this.incomplete_message + text).split(message_delimiter)
+	const messages = (this.incomplete_message + text).split(message_delimiter).filter(text => text.length > 0)
 	this.incomplete_message = messages.pop()
 
 	for (let message of messages)
 	{
-		this.push(JSON.parse(message))
+		try
+		{
+			this.push(JSON.parse(message))
+		}
+		catch (error)
+		{
+			log.error(`Malformed JSON message`, message)
+		}
 	}
 
 	callback()
@@ -39,7 +46,9 @@ util.inherits(Message_encoder, stream.Transform)
 
 Message_encoder.prototype._transform = function(object, encoding, callback)
 {
-	this.push(JSON.stringify(object) + message_delimiter)
+	// append message delimiter to allow for packet fragmentation.
+	// prepend message delimiter to guard against packet loss in case of UDP, etc.
+	this.push(message_delimiter + JSON.stringify(object) + message_delimiter)
 	callback()
 }
 

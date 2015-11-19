@@ -52,7 +52,7 @@
     "koa-proxy": "^0.4.1",
     "koa-router": "^5.2.3",
     "koa-session": "^3.3.1",
-    "koa-static-cache": "^3.1.2",
+    "koa-static": "^1.5.2",
     "log4js": "^0.6.14",
     "minimist": "^1.1.1",
     "moment": "^2.10.6",
@@ -150,7 +150,7 @@
     "_gh-pages": "webpack --action=gh-pages --colors --config ./config",
     "_deploy-gh-pages": "TARGET=gh-pages node ./config/deploy-gh-pages.js"
   },
-  "author": "Nikolay Kuchumov",
+  "author": "Halt Hammerzeit",
   "license": "MIT",
   "engines": {
     "node": "4.1.1"
