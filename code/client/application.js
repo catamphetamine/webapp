@@ -48,7 +48,7 @@ international.load_polyfill(locale)
 		// and not as import on the top of the file.
 		const routes = require('./routes')
 
-		const content_container = document.getElementById('content')
+		const content_container = document.getElementById('react_markup')
 
 		client
 		({

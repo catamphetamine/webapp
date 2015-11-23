@@ -83,7 +83,11 @@ const messages = defineMessages
 )
 class Layout extends Component
 {
-	state = {}
+	state = 
+	{
+		show_menu  : false,
+		menu_width : 0
+	}
 
 	static propTypes =
 	{
@@ -188,34 +192,42 @@ class Layout extends Component
 
 		const markup = 
 		(
-			<div>
+			<div className="layout">
 				{webpage_head(title, description, meta)}
 
-				{/* header */}
-				<header>
-					{/* language chooser */}
-					<Locale_switcher style={style.locale_switcher}/>
+				{/* Navigation */}
+				{/*<nav>*/}
+					{/* main menu */}
+					<Menu show={this.state.show_menu} toggle={::this.toggle_menu} update_width={::this.update_menu_width} items={menu_items}/>
+				{/*</nav>*/}
 
-					{/* menu button for small screens */}
-					<Menu_button toggle={::this.toggle_menu}/>
+				<div className="page" style={ this.state.show_menu ? merge(style.page, { left: this.state.menu_width + 'px' }) : style.page }>
+					{/* header */}
+					<header>
+						{/* language chooser */}
+						<Locale_switcher style={style.locale_switcher}/>
 
-					{/* home page link */}
-					<div className="logo" style={{ textAlign: 'center' }}>
-						<IndexLink to="/" style={style.home} activeStyle={style.home_active}>
-							{translate(messages.title)}
-						</IndexLink>
-					</div>
+						{/* menu button for small screens */}
+						<Menu_button toggle={::this.toggle_menu}/>
 
-					{/* Navigation */}
-					{/*<nav>*/}
-						{/* main menu */}
-						<Menu show={this.state.show_menu} toggle={::this.toggle_menu} items={menu_items}/>
-					{/*</nav>*/}
-				</header>
+						{/* home page link */}
+						<div className="logo" style={{ textAlign: 'center' }}>
+							<IndexLink to="/" style={style.home} activeStyle={style.home_active}>
+								{translate(messages.title)}
+							</IndexLink>
+						</div>
+								
+						{/* Navigation */}
+						{/*<nav>*/}
+							{/* main menu */}
+							<Menu items={menu_items}/>
+						{/*</nav>*/}
+					</header>
 
-				{this.props.children}
+					{this.props.children}
 
-				<footer></footer>
+					<footer></footer>
+				</div>
 			</div>
 		)
 
@@ -226,12 +238,21 @@ class Layout extends Component
 	{
 		this.setState({ show_menu: !this.state.show_menu })
 	}
+
+	update_menu_width(width)
+	{
+		this.setState({ menu_width: width })
+	}
 }
 
 export default international(Layout)
 
 const style = styler
 `
+	page
+		position   : relative
+		left       : 0
+
 	home
 		font-size   : 26pt
 		text-decoration : none

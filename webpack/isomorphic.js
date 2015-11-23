@@ -6,6 +6,7 @@ module.exports =
 	// debug: true,
 
 	webpack_assets_file_path: './build/webpack-assets.json',
+	webpack_stats_file_path: './build/webpack-stats.json',
 
 	assets:
 	{

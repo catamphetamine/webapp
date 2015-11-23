@@ -77,7 +77,7 @@ export default class Html extends Component
 
 				<body>
 					{/* rendered React page */}
-					<div id="content" dangerouslySetInnerHTML={{__html: content}}/>
+					<div id="react_markup" dangerouslySetInnerHTML={{__html: content}}/>
 
 					{/* Flux store data will be reloaded into the store on the client */}
 					<script dangerouslySetInnerHTML={{__html: `window._flux_store_data=${serialize(store.getState())}`}}/>
@@ -98,6 +98,8 @@ export default class Html extends Component
 							<script src={assets.javascript[script]} key={i}/>
 						)
 					}
+
+					<div></div>
 				</body>
 			</html>
 		)

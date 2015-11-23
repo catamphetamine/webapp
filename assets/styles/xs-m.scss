@@ -1,3 +1,140 @@
+header
+{
+	position: relative;
+	text-align: center;
+}
+
+.logo
+{
+	display: block;
+}
+
+.menu
+{
+	position : absolute;
+	left     : 0;
+	top      : 0;
+
+	margin: 0;
+
+	// uncomment for dropdown menu
+	// background-color: white;
+
+	// box-shadow : 0 3px 20px rgba(0, 0, 0, 0.05);
+
+	// display: none !important;
+
+	// uncomment for dropdown menu
+	// border-width : 1px;
+	// border-style : solid;
+	// border-color : transparent;
+
+
+	// uncomment for dropdown menu
+	// // prevent white background showing through the transparent border
+	// // http://stackoverflow.com/questions/7473200/transparent-border-expands-background-color-image
+	// background-clip: padding-box;
+	// // for Safari
+	// -webkit-background-clip: padding-box;
+
+	// // uncomment for dropdown menu
+	// max-height : 0;
+	// overflow   : hidden;
+
+	// // uncomment for dropdown menu
+	// transition: all 100ms ease-out;
+
+	> li
+	{
+		display: block !important;
+
+		padding-top:    $menu-item-compact-vertical-padding;
+		padding-bottom: $menu-item-compact-vertical-padding;
+
+		&:first-child
+		{
+			padding-top    : 2 * $menu-item-compact-vertical-padding;
+		}
+
+		&:last-child
+		{
+			padding-bottom : 2 * $menu-item-compact-vertical-padding;
+		}
+	}
+}
+
+.menu-item
+{
+	display : block !important;
+	border  : none;
+
+	margin : 0;
+
+	padding-top    : 0.1em;
+	padding-bottom : 0.1em;
+
+	padding-left  : 0.7em;
+	padding-right : 1.0em;
+}
+
+.menu-shown
+{
+	// display: block !important;
+
+	// uncomment for dropdown menu
+	// box-shadow : 0 3px 20px rgba(0, 0, 0, 0.05);
+
+	// uncomment for dropdown menu
+	// border-width : 1px;
+	// border-style : solid;
+	// border-color : #e7e7e7;
+
+	// transition: all 130ms ease-out;
+}
+
+.language
+{
+	margin-top: 0.25em;
+
+	&, .dropdown-item-list li, .dropdown-item, .dropdown-item-selected
+	{
+		line-height: 0;
+	}
+
+	.dropdown-item
+	{
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+
+	.dropdown-item-label
+	{
+		display: none;
+	}
+
+	.dropdown-item-icon > img
+	{
+		margin: 0 !important;
+	}
+
+	.dropdown-arrow
+	{
+		margin-bottom : 0.25em !important;
+	}
+}
+
+.menu-button
+{
+	// display: block;
+	// float: left;
+	position: absolute;
+	display: block;
+	top: 0.18em;
+	left: 0.4em;
+	padding: 0.6em;
+	// margin-top: 0.45em;
+}
+
 .menu-icon
 {
 	position: relative;
@@ -17,9 +154,53 @@
 
 	width  : 1em;
 	// height : 0.125em;
-    height : 0.64em;
-    // margin-bottom: 0.37em;
+	height : 0.64em;
+	// margin-bottom: 0.37em;
 
 	border-top    : 0.375em double $active-color;
 	border-bottom : 0.125em solid $active-color;
+}
+
+.page
+{
+	background : white;
+	box-shadow : 0 0 20px rgba(0, 0, 0, 1);
+	transition : left 210ms ease-out;
+}
+
+.menu, body
+{
+	background: #505050;
+}
+
+.menu
+{
+	color: #d3d3d3;
+	min-height: 100%;
+}
+
+.menu-item:active
+{
+	color: #efefef;
+}
+
+.page
+{
+	min-width: 100%;
+}
+
+.layout
+{
+	display    : flex;
+	min-height : 100%;
+}
+
+.menu
+{
+	display: none !important;
+}
+
+.menu-collapsible
+{
+	display: block !important;
 }

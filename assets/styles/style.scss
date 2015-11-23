@@ -38,6 +38,12 @@
 	box-sizing: border-box;
 }
 
+html, body, #react_markup
+{
+	min-height: 100%;
+	height: 100%;
+}
+
 body
 {
 	margin: 0;
@@ -48,6 +54,18 @@ body, button, input, textarea, select
 	// font-family : 'PT Sans';
 	font-family : Arial, Sans, Helvetica;
 	font-size   : 20pt;
+}
+
+// stretches .page to 100% of html
+footer
+{
+	height: 1px;
+}
+
+img
+{
+	max-width: 100%;
+    height: auto;
 }
 
 a:active
@@ -316,18 +334,18 @@ th
 	text-align     : left;
 }
 
-@media all and (min-width: 1921px) { @import "xl.scss" }
-@media all and (min-width: 1201px) { @import "l-xl.scss" }
-@media all and (min-width: 1201px) { @import "l.scss" }
-@media all and (min-width: 1201px) { @import "l-xl.scss" }
-@media all and (min-width: 1201px) and (max-width: 1920px) { @import "l-xl.scss" }
-@media all and (min-width: 641px)  and (max-width: 1920px) { @import "m-l.scss" }
-@media all and (min-width: 641px)  and (max-width: 1200px) { @import "m.scss" }
-@media all and (min-width: 281px)  and (max-width: 1200px) { @import "s-m.scss" }
-@media all and (min-width: 281px)  and (max-width: 640px)  { @import "s.scss" }
-@media all                         and (max-width: 1200px) { @import "xs-m.scss" }
-@media all                         and (max-width: 640px)  { @import "xs-s.scss" }
-@media all                         and (max-width: 280px)  { @import "xs.scss" }
+@media all and (min-width: 1601pt) { @import "xl.scss" }
+@media all and (min-width: 901pt) { @import "l-xl.scss" }
+@media all and (min-width: 901pt) { @import "l.scss" }
+@media all and (min-width: 901pt) { @import "l-xl.scss" }
+@media all and (min-width: 901pt) and (max-width: 1600pt)  { @import "l-xl.scss" }
+@media all and (min-width: 601pt)  and (max-width: 1600pt) { @import "m-l.scss" }
+@media all and (min-width: 601pt)  and (max-width: 900pt)  { @import "m.scss" }
+@media all and (min-width: 241pt)  and (max-width: 900pt)  { @import "s-m.scss" }
+@media all and (min-width: 241pt)  and (max-width: 600pt)  { @import "s.scss" }
+@media all                         and (max-width: 900pt)  { @import "xs-m.scss" }
+@media all                         and (max-width: 600pt)  { @import "xs-s.scss" }
+@media all                         and (max-width: 240pt)  { @import "xs.scss" }
 
 // @import "xl.scss"     all and (min-width: 1921px);
 // @import "l-xl.scss"   all and (min-width: 1201px);
