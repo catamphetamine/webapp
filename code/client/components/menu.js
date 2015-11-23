@@ -52,14 +52,14 @@ export default class Menu extends Component
 		// document.addEventListener('click', this.document_clicked)
 	}
 
-	// componentDidUpdate(previous_props, previous_state)
-	// {
-	// 	if (this.props.show !== previous_props.show)
-	// 	{
-	// 		// this.calculate_height()
-	// 		this.calculate_width()
-	// 	}
-	// }
+	componentDidUpdate(previous_props, previous_state)
+	{
+		if (this.props.show !== previous_props.show)
+		{
+			// this.calculate_height()
+			this.calculate_width()
+		}
+	}
 
 	componentWillUnmount()
 	{
@@ -120,8 +120,6 @@ export default class Menu extends Component
 	{
 		const dom_node = ReactDOM.findDOMNode(this.refs.menu)
 
-		console.log(this.refs.menu)
-
 		this.props.update_width(dom_node.offsetWidth)
 	}
 
@@ -144,8 +142,6 @@ export default class Menu extends Component
 const style = styler
 `
 	menu
-		display : inline-block
-
 		margin-top    : 0
 		margin-bottom : 0
 
