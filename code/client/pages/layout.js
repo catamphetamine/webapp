@@ -29,6 +29,9 @@ import { defineMessages, injectIntl as international } from 'react-intl'
 import Menu from '../components/menu'
 import Menu_button from '../components/menu button'
 
+// when adjusting this transition time also adjust it in styles/xs-m.scss
+const transition_time = 210
+
 const messages = defineMessages
 ({
 	title:
@@ -86,7 +89,9 @@ class Layout extends Component
 	state = 
 	{
 		show_menu  : false,
-		menu_width : 0
+		menu_width : 0,
+
+		page_moved_aside : false
 	}
 
 	static propTypes =
@@ -192,7 +197,7 @@ class Layout extends Component
 
 		const markup = 
 		(
-			<div className="layout">
+			<div className={ this.state.page_moved_aside ? 'layout layout-with-page-aside' : 'layout' }>
 				{webpage_head(title, description, meta)}
 
 				{/* Navigation */}
@@ -200,8 +205,8 @@ class Layout extends Component
 					{/* main menu */}
 					<Menu show={this.state.show_menu} toggle={::this.toggle_menu} update_width={::this.update_menu_width} items={menu_items}/>
 				{/*</nav>*/}
-
-				<div className="page" style={ this.state.show_menu ? merge(style.page, { left: this.state.menu_width + 'px' }) : style.page }>
+    
+				<div className="page" style={ this.state.show_menu ? merge(style.page, { transform: `translate3d(${this.state.menu_width}px, 0px, 0px)` }) : style.page }>
 					{/* header */}
 					<header>
 						{/* language chooser */}
@@ -216,7 +221,7 @@ class Layout extends Component
 								{translate(messages.title)}
 							</IndexLink>
 						</div>
-								
+
 						{/* Navigation */}
 						{/*<nav>*/}
 							{/* main menu */}
@@ -236,7 +241,19 @@ class Layout extends Component
 
 	toggle_menu()
 	{
-		this.setState({ show_menu: !this.state.show_menu })
+		if (!this.state.show_menu)
+		{
+			return this.setState({ show_menu: !this.state.show_menu, page_moved_aside: !this.state.page_moved_aside })
+		}
+
+		this.setState({ show_menu: !this.state.show_menu }, () =>
+		{
+			setTimeout(() =>
+			{
+				this.setState({ page_moved_aside: this.state.show_menu })
+			}, 
+			transition_time)
+		})
 	}
 
 	update_menu_width(width)
@@ -250,8 +267,8 @@ export default international(Layout)
 const style = styler
 `
 	page
-		position   : relative
-		left       : 0
+		position : relative
+		z-index  : 1
 
 	home
 		font-size   : 26pt

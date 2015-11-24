@@ -165,10 +165,14 @@ header
 {
 	background : white;
 	box-shadow : 0 0 20px rgba(0, 0, 0, 1);
-	transition : left 210ms ease-out;
+
+	// when adjusting this transition time also adjust it in pages/layout.js
+	transition : transform 210ms ease-out;
+
+	transform  : translate3d(0px, 0px, 0px);
 }
 
-.menu, body
+.menu
 {
 	background: #505050;
 }
@@ -177,11 +181,23 @@ header
 {
 	color: #d3d3d3;
 	min-height: 100%;
+
+	position : fixed;
+	left     : 0;
+	top      : 0;
+	bottom   : 0;
+
+	overflow-y: auto;
 }
 
 .menu-item:active
 {
 	color: #efefef;
+}
+
+.layout-with-page-aside
+{
+	overflow-x: hidden;
 }
 
 .page
