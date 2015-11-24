@@ -30,7 +30,7 @@ import Menu from '../components/menu'
 import Menu_button from '../components/menu button'
 
 // when adjusting this transition time also adjust it in styles/xs-m.scss
-const transition_time = 210
+const transition_duration = 210 // milliseconds
 
 const messages = defineMessages
 ({
@@ -252,7 +252,7 @@ class Layout extends Component
 			{
 				this.setState({ page_moved_aside: this.state.show_menu })
 			}, 
-			transition_time)
+			transition_duration)
 		})
 	}
 
@@ -269,6 +269,7 @@ const style = styler
 	page
 		position : relative
 		z-index  : 1
+		transition-duration : ${transition_duration}ms
 
 	home
 		font-size   : 26pt
