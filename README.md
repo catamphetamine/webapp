@@ -280,8 +280,6 @@ showcase form чтобы имел кнопку с валидацией и зап
 вместо флага demo - entry в конфиге на redis, mongo, imagemagick
 (если нету чего-то - выдавать баннер в логах с флагом warning)
 
-у dropdown можно проставлять transition-duration в inline стилях, вычисляя по expansion_velocity (px/sec)
-
 вычленить dropdown, menu, menu-button в react-responsive-ui
 зарелизить react-responsive-ui, с react и react-router - peerDependencies
 
