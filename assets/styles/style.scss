@@ -361,15 +361,15 @@ th
 }
 
 @media all and (min-width: 901pt)                          { @import "l-xl.scss" }
-@media all and (min-width: 601pt)  and (max-width: 901pt)  { @import "m-l.scss" }
-@media all and (min-width: 241pt)  and (max-width: 900pt)  { @import "s-m.scss" }
+@media all and (min-width: 601pt)  and (max-width: 900pt)  { @import "m-l.scss"  }
+@media all and (min-width: 241pt)  and (max-width: 900pt)  { @import "s-m.scss"  }
 @media all                         and (max-width: 900pt)  { @import "xs-m.scss" }
 @media all                         and (max-width: 600pt)  { @import "xs-s.scss" }
 
 @media all and (min-width: 1601pt)                         { @import "xl.scss" }
-@media all and (min-width: 901pt)  and (max-width: 1600pt) { @import "l.scss" }
-@media all and (min-width: 601pt)  and (max-width: 900pt)  { @import "m.scss" }
-@media all and (min-width: 241pt)  and (max-width: 600pt)  { @import "s.scss" }
+@media all and (min-width: 901pt)  and (max-width: 1600pt) { @import "l.scss"  }
+@media all and (min-width: 601pt)  and (max-width: 900pt)  { @import "m.scss"  }
+@media all and (min-width: 241pt)  and (max-width: 600pt)  { @import "s.scss"  }
 @media all                         and (max-width: 240pt)  { @import "xs.scss" }
 
 // @import "xl.scss"     all and (min-width: 1921px);
