@@ -21,7 +21,13 @@ import Uri from '../tools/uri'
 const locales = 
 [
 	{ key: 'en-US', label: 'English' },
-	{ key: 'ru-RU', label: 'Русский' }
+	{ key: 'ru-RU', label: 'Русский' },
+	// { key: 'test',  label: 'Test Long list' },
+	// { key: 'test2',  label: 'Test Long list' },
+	// { key: 'test3',  label: 'Test Long list' },
+	// { key: 'test4',  label: 'Test Long list' },
+	// { key: 'test5',  label: 'Test Long list' },
+	// { key: 'test6',  label: 'Test Long list' }
 ]
 
 const messages = defineMessages

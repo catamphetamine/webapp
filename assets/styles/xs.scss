@@ -1,16 +1,32 @@
-.language
-{
-	display: none !important;
-}
+// .language
+// {
+// 	display: none !important;
+// }
 
 .menu-button
 {
-	top: 0.18em;
-	left: 0em;
+	top: 0;
+	left: 0;
 	padding: 0.6em;
 }
 
 .logo
 {
-	margin-left: 1.2em;
+	margin-left  : 1.2em;
+	margin-right : 1.2em;
+}
+
+body, button, input, textarea, select
+{
+	font-size : 14pt;
+}
+
+.logo
+{
+	font-size : 14pt
+}
+
+.language
+{
+	top: 0.35em;
 }

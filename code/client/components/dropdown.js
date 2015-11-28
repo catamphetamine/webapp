@@ -2,14 +2,31 @@ import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 import styler from 'react-styling'
 
+const scrollbar_width = '17px'
+
 export default class Flag extends Component
 {
 	static propTypes =
 	{
-		list     : PropTypes.array.isRequired,
-		label    : PropTypes.string,
-		selected : PropTypes.any,
-		select   : PropTypes.func.isRequired
+		list       : PropTypes.array.isRequired,
+		label      : PropTypes.string,
+		selected   : PropTypes.any,
+		select     : PropTypes.func.isRequired,
+
+		max_items  : PropTypes.number,
+
+		transition_item_count_min : PropTypes.number,
+		transition_duration_min : PropTypes.number,
+		transition_duration_max : PropTypes.number
+	}
+
+	static defaultProps = 
+	{
+		max_items : 6,
+
+		transition_item_count_min : 3,
+		transition_duration_min : 70, // milliseconds
+		transition_duration_max : 150 // milliseconds
 	}
 
 	state = {}
@@ -31,7 +48,10 @@ export default class Flag extends Component
 	{
 		if (this.state.expanded !== previous_state.expanded)
 		{
-			this.calculate_height()
+			if (this.state.expanded && this.should_animate())
+			{
+				this.calculate_height()
+			}
 		}
 	}
 
@@ -44,9 +64,51 @@ export default class Flag extends Component
 	{
 		const { list, selected, label } = this.props
 
-		// { label ? (<span>{label}</span>) : false }
+		const item_list = this.list_items()
 
-		// const item_list = list.filter(({ key }) => key !== selected)
+		const overflow = item_list.length > this.props.max_items
+
+		const list_style = clone(style.list.visible)
+
+		if (this.should_animate())
+		{
+			let height = this.state.height
+
+			// on overflow the vertical scrollbar will take up space
+			// reducing padding-right and the only way to fix that
+			// is to add additional padding-right
+			if (overflow)
+			{
+				height = height * (this.props.max_items / item_list.length)
+			}
+
+			if (this.state.expanded)
+			{
+				list_style.maxHeight = height + 'px'
+			}
+			else
+			{
+				list_style.maxHeight = 0
+			}
+
+			list_style.transitionDuration = this.props.transition_duration_min + ((this.props.transition_duration_max - this.props.transition_duration_min) * Math.min(item_list.length / this.props.max_items, 1)) + 'ms'
+		}
+		else
+		{
+			if (this.state.expanded)
+			{
+				list_style.maxHeight = undefined
+			}
+			else
+			{
+				list_style.maxHeight = 0
+			}
+		}
+
+		if (overflow)
+		{
+			list_style.overflowY = 'auto'
+		}
 
 		const markup = 
 		(
@@ -59,13 +121,14 @@ export default class Flag extends Component
 					{ this.render_selected_item() }
 
 					{/* a placeholder to make the parent <div/> take the whole width */}
-					<ul ref="list" style={style.list.placeholder} className="dropdown-item-list">
-						{ list.map(({ key, label, icon }, index) => this.render_list_item(key, label, icon))} {/*, index === 0, index === item_list.length - 1*/ }
+					<ul style={style.list.placeholder} className="dropdown-item-list">
+						{ list.map(({ key, label, icon }, index) => this.render_list_item(key, label, icon, overflow))} {/*, index === 0, index === item_list.length - 1*/ }
 					</ul>
 
 					{/* a list to select from */}
-					<ul ref="list" style={ this.state.expanded ? merge(style.list, { maxHeight: this.state.height + 'px' }) : style.list } className={'dropdown-item-list' + ' ' + (this.state.expanded ? 'dropdown-item-list-expanded' : '')}>
-						{ list.filter(({ key }) => key !== selected).map(({ key, label, icon }, index) => this.render_list_item(key, label, icon))}
+					{/* Math.max(this.state.height, this.props.max_height) */}
+					<ul ref="list" style={list_style} className={'dropdown-item-list' + ' ' + (this.state.expanded ? 'dropdown-item-list-expanded' : '')}>
+						{ item_list.map(({ key, label, icon }, index) => this.render_list_item(key, label, icon, overflow))}
 					</ul>
 				</div>
 			</div>
@@ -74,7 +137,7 @@ export default class Flag extends Component
 		return markup
 	}
 
-	render_list_item(key, label, icon) // , first, last
+	render_list_item(key, label, icon, overflow) // , first, last
 	{
 		let item_style = style.list.item
 
@@ -93,6 +156,12 @@ export default class Flag extends Component
 
 		const list_item_style = (key === this.props.selected) ? { maxHeight: 0, overflow: 'hidden', textAlign: 'left' } : { textAlign: 'left' } 
 
+		// a hack to restore padding-right taken up by a vertical scrollbar
+		if (overflow)
+		{
+			list_item_style.paddingRight = scrollbar_width
+		}
+
 		const markup =
 		(
 			<li key={key} style={list_item_style}>
@@ -108,11 +177,6 @@ export default class Flag extends Component
 
 	render_selected_item()
 	{
-		// if (!this.props.selected)
-		// {
-		// 	return false
-		// }
-
 		const selected = this.props.list.filter(x => x.key === this.props.selected)[0]
 
 		let label
@@ -145,6 +209,16 @@ export default class Flag extends Component
 		return markup
 	}
 
+	list_items()
+	{
+		return this.props.list.filter(({ key }) => key !== this.props.selected)
+	}
+
+	should_animate()
+	{
+		return this.list_items().length >= this.props.transition_item_count_min
+	}
+
 	toggle(event)
 	{
 		// event.stopPropagation() // doesn't work
@@ -171,6 +245,7 @@ export default class Flag extends Component
 	calculate_height()
 	{
 		const list_dom_node = ReactDOM.findDOMNode(this.refs.list)
+		let height = list_dom_node.scrollHeight + list_dom_node.offsetHeight // inner height + 2 * border
 
 		// const images = list_dom_node.querySelectorAll('img')
 
@@ -179,7 +254,7 @@ export default class Flag extends Component
 		// 	return this.preload_images(list_dom_node, images)
 		// }
 
-		this.setState({ height: this.state.expanded ? list_dom_node.scrollHeight : 0 })
+		this.setState({ height: height })
 	}
 
 	// // https://github.com/daviferreira/react-sanfona/blob/master/src/AccordionItem/index.jsx#L54
@@ -255,9 +330,16 @@ const style = styler
 		// pointer-events : none
 
 		max-height : 0
-		overflow   : hidden
+		overflow-y : hidden
 
-		background-color: white
+		&visible
+			overflow-x : hidden
+
+			// when html page is overflown by a long list
+			// this bottom margin takes effect
+			margin-bottom : 1em
+
+			background-color: white
 
 		&placeholder
 			position            : static

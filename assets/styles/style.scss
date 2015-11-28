@@ -46,6 +46,7 @@ html, body, #react_markup
 body
 {
 	margin: 0;
+	overflow-y: scroll;
 }
 
 body, button, input, textarea, select
@@ -53,6 +54,11 @@ body, button, input, textarea, select
 	// font-family : 'PT Sans';
 	font-family : Arial, Sans, Helvetica;
 	font-size   : 20pt;
+}
+
+.logo
+{
+	font-size   : 26pt
 }
 
 // stretches .page to 100% of html
@@ -181,17 +187,23 @@ a
 
 .dropdown-item-list
 {
-	transition: all 100ms ease-out;
+	transition-property        : max-height, border-color, box-shadow, opacity;
+	transition-duration        : 0ms; // don't animate short lists
+	transition-timing-function : ease-out;
 
 	border-width : 1px;
 	border-style : solid;
 	border-color : transparent;
+
+	opacity: 0.85;
 
 	// prevent white background showing through the transparent border
 	// http://stackoverflow.com/questions/7473200/transparent-border-expands-background-color-image
 	background-clip: padding-box;
 	// for Safari
 	-webkit-background-clip: padding-box;
+
+    overflow-y: auto;
 }
 
 .dropdown-item-list-expanded
@@ -199,6 +211,8 @@ a
 	box-shadow : 0 3px 20px rgba(0, 0, 0, 0.05);
 
 	border-color : #e7e7e7;
+
+	opacity: 1;
 }
 
 .dropdown-item
@@ -309,7 +323,20 @@ header
 
 .language
 {
-	margin-top: 0.2em;
+	position : absolute;
+
+	right    : 0.3em;
+	top      : 0.6em;
+
+	.dropdown-item-selected
+	{
+		text-align: right !important;
+	}
+
+	.dropdown-item-icon > img
+	{
+		width: 1.2em;
+	}
 }
 
 table
@@ -333,17 +360,16 @@ th
 	text-align     : left;
 }
 
-@media all and (min-width: 1601pt) { @import "xl.scss" }
-@media all and (min-width: 901pt) { @import "l-xl.scss" }
-@media all and (min-width: 901pt) { @import "l.scss" }
-@media all and (min-width: 901pt) { @import "l-xl.scss" }
-@media all and (min-width: 901pt) and (max-width: 1600pt)  { @import "l-xl.scss" }
-@media all and (min-width: 601pt)  and (max-width: 1600pt) { @import "m-l.scss" }
-@media all and (min-width: 601pt)  and (max-width: 900pt)  { @import "m.scss" }
+@media all and (min-width: 901pt)                          { @import "l-xl.scss" }
+@media all and (min-width: 601pt)  and (max-width: 901pt)  { @import "m-l.scss" }
 @media all and (min-width: 241pt)  and (max-width: 900pt)  { @import "s-m.scss" }
-@media all and (min-width: 241pt)  and (max-width: 600pt)  { @import "s.scss" }
 @media all                         and (max-width: 900pt)  { @import "xs-m.scss" }
 @media all                         and (max-width: 600pt)  { @import "xs-s.scss" }
+
+@media all and (min-width: 1601pt)                         { @import "xl.scss" }
+@media all and (min-width: 901pt)  and (max-width: 1600pt) { @import "l.scss" }
+@media all and (min-width: 601pt)  and (max-width: 900pt)  { @import "m.scss" }
+@media all and (min-width: 241pt)  and (max-width: 600pt)  { @import "s.scss" }
 @media all                         and (max-width: 240pt)  { @import "xs.scss" }
 
 // @import "xl.scss"     all and (min-width: 1921px);

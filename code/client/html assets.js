@@ -10,6 +10,9 @@
 //
 // (you'll also need to add the corresponding asset types to isomorphic.js;
 //  otherwise you'll get syntax errors when requiring these files on server)
+//
+// (this module returns functions to overcome require() caching in development mode)
+//
 export default
 {
 	icon: () => require('../../assets/images/icon/cat_64x64.png'), // icon/32x32.png

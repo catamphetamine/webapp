@@ -272,14 +272,13 @@ const style = styler
 		transition-duration : ${transition_duration}ms
 
 	home
-		font-size   : 26pt
 		text-decoration : none
 
 		active
 			cursor : default
 
-	locale_switcher
-		position : absolute
-		right    : 0.3em
-		top      : 0.6em
+	// locale_switcher
+	// 	position : absolute
+	// 	right    : 0
+	// 	top      : 0
 `

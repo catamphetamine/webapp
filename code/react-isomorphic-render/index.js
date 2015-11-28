@@ -75,7 +75,7 @@ export function server({ disable_server_side_rendering, wrap_component, html, ur
 
 			const get_status_from_routes = matched_routes =>
 			{
-				return matched_routes.reduce((previous, current) => current.status || previous, null)
+				return matched_routes.reduce((previous, current) => (current && current.status) || (previous && current.status))
 			}
 
 			store.getState().router.then(() => 

@@ -65,6 +65,8 @@ Object.clone = function(object)
 	return Object.merge(object)
 }
 
+global.clone = Object.clone
+
 Object.equals = (a, b) => deep_equal(a, b)
 
 Object.get_value_at_path = (where, paths) =>
