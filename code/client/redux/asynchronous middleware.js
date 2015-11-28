@@ -7,6 +7,7 @@ export default function middleware(api_client, http_client)
 		{
 			if (typeof action === 'function')
 			{
+				// or maybe: next(action)
 				return action(dispatch, get_state)
 			}
 
@@ -23,11 +24,12 @@ export default function middleware(api_client, http_client)
 			// start asynchronous request
 			next({ ...rest, type: Request })
 
-			// end asynchronous request
+			// returning promise from a middleware is not required.
+			// can be used like: store.dispatch({ ... }).then(...)
 			return promise(api_client, http_client).then
 			(
 				result => next({ ...rest, result, type: Success }),
-				error => next({...rest, error, type: Failure})
+				error  => next({ ...rest, error,  type: Failure })
 				// error => Promise.reject(next({...rest, error, type: Failure}))
 			)
 		}

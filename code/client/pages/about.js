@@ -3,7 +3,22 @@ import { webpage_title } from '../webpage head'
 import { bindActionCreators as bind_action_creators } from 'redux'
 import { connect } from 'react-redux'
 import { get as get_settings } from '../actions/settings'
+import preload from '../redux/preload'
 
+@preload
+(
+	function(get_state, dispatch)
+	{
+		const promises = []
+
+		// if (!are_settings_loaded(store.get_state()))
+		// {
+			promises.push(dispatch(get_settings()))
+		// }
+		
+		return Promise.all(promises)
+	}
+)
 @connect
 (
 	store => 
@@ -94,18 +109,6 @@ export default class About extends Component
 		// <div>Copyright © 2015</div>
 
 		return markup
-	}
-
-	static preload(get_state, dispatch)
-	{
-		const promises = []
-
-		// if (!are_settings_loaded(store.get_state()))
-		// {
-			promises.push(dispatch(get_settings()))
-		// }
-		
-		return Promise.all(promises)
 	}
 }
 

@@ -6,9 +6,20 @@ import { get as get_log } from '../actions/log'
 import { defineMessages, injectIntl as international } from 'react-intl'
 import log_levels from '../../common/log levels'
 import styler from 'react-styling'
-
+import preload from '../redux/preload'
 // const messages = defineMessages({})
 
+@preload
+(
+	function(get_state, dispatch)
+	{
+		const promises = []
+
+		promises.push(dispatch(get_log()))
+		
+		return Promise.all(promises)
+	}
+)
 @connect
 (
 	store => 
@@ -100,15 +111,6 @@ class Page extends Component
 		)
 
 		return markup
-	}
-
-	static preload(get_state, dispatch)
-	{
-		const promises = []
-
-		promises.push(dispatch(get_log()))
-		
-		return Promise.all(promises)
 	}
 }
 

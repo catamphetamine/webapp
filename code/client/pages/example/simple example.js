@@ -5,7 +5,22 @@ import { connect } from 'react-redux'
 import { bindActionCreators as bind_action_creators } from 'redux'
 import { get as get_users, add as add_user, remove as delete_user, dismiss_adding_error, upload_picture, dismiss_uploading_picture_error } from '../../actions/users'
 import Button from '../../components/button'
+import preload from '../../redux/preload'
 
+@preload
+(
+	function(get_state, dispatch)
+	{
+		const promises = []
+
+		// if (!are_settings_loaded(store.getState()))
+		// {
+			promises.push(dispatch(get_users()))
+		// }
+
+		return Promise.all(promises)
+	}
+)
 @connect
 (
 	store => 
@@ -247,18 +262,6 @@ export default class Page extends Component
 		this.props.upload_picture(user_id, data)
 
 		// upload_file(files[0])
-	}
-
-	static preload(get_state, dispatch)
-	{
-		const promises = []
-
-		// if (!are_settings_loaded(store.getState()))
-		// {
-			promises.push(dispatch(get_users()))
-		// }
-
-		return Promise.all(promises)
 	}
 }
 
