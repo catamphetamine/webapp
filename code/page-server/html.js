@@ -62,7 +62,8 @@ export default class Html extends Component
 							key={i} 
 							media="screen, projection"
 							rel="stylesheet" 
-							type="text/css"/>
+							type="text/css"
+							charSet="UTF-8"/>
 					)}
 
 					{/* (will be done only in development mode)
@@ -72,7 +73,7 @@ export default class Html extends Component
 					    (caused by Webpack style-loader mounting CSS styles 
 					     through javascript after page load)
 					    by mounting the entire CSS stylesheet in a <style/> tag */}
-					{ Object.keys(assets.styles).is_empty() ? <style dangerouslySetInnerHTML={{__html: html_assets.style()}}/> : null }
+					{ Object.keys(assets.styles).is_empty() ? <style dangerouslySetInnerHTML={{__html: html_assets.style()}} charSet="UTF-8"/> : null }
 				</head>
 
 				<body>
@@ -80,22 +81,22 @@ export default class Html extends Component
 					<div id="react_markup" dangerouslySetInnerHTML={{__html: content}}/>
 
 					{/* Flux store data will be reloaded into the store on the client */}
-					<script dangerouslySetInnerHTML={{__html: `window._flux_store_data=${serialize(store.getState())}`}}/>
+					<script dangerouslySetInnerHTML={{__html: `window._flux_store_data=${serialize(store.getState())}`}} charSet="UTF-8"/>
 
 					{/* React-intl messages */}
-					<script dangerouslySetInnerHTML={{__html: `window._localized_messages=${serialize(messages)}`}}/>
+					<script dangerouslySetInnerHTML={{__html: `window._localized_messages=${serialize(messages)}`}} charSet="UTF-8"/>
 
 					{/* javascripts */}
 
 					{/* the "common.js" chunk (see webpack extract commons plugin) */}
-					<script src={assets.javascript.common}/>
+					<script src={assets.javascript.common} charSet="UTF-8"/>
 					
 					{/* current application "entry" point javascript
 					    (currently there is only one entry point: "main") */}
 					{Object.keys(assets.javascript)
 						.filter(script => script !== 'common')
 						.map((script, i) =>
-							<script src={assets.javascript[script]} key={i}/>
+							<script src={assets.javascript[script]} key={i} charSet="UTF-8"/>
 						)
 					}
 

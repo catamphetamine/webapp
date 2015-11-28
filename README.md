@@ -114,6 +114,14 @@ pm2 logs webapp
 Сделать
 ====================
 
+функция, определяющая, вызывать ли preload, не работает с export default international(Page)
+
+
+
+
+
+
+
 endless scroll в логах: выгрузка тех страниц, которые выходят за предел "показывать страниц", + url нормальный (с какой страницы показывать до + "показывать страниц")
 
 на странице логов - фильтр по error, warning, info и т.п.
@@ -121,24 +129,6 @@ endless scroll в логах: выгрузка тех страниц, котор
 из log server - писать в MongoDB (опционально)
 
 на клиенте сделать log, посылающий всё в консоль, и заменить все console.log на log.info и console.error на log.error
-
-
-
-
-смёржить erikras
-
-
-
-
-функция, определяющая, вызывать ли preload, не работает с export default international(Page)
-
-
-
-взять страницу ошибки из erikras (красную в dev mode), чтобы было не просто status 500 Internal server error
-
-для клиентов - обычная status 500
-
-для development - со стектрейсом
 
 
 
@@ -404,7 +394,7 @@ https://github.com/acdlite/redux-react-router
 
 
 Рендеринг React'а вместе с React-router'ом и Redux'ом взят отсюда
-(будет обновляться после 03.10.2015 - мержить к себе новые изменения):
+(будет обновляться после 25.11.2015 - мержить к себе новые изменения):
 
 https://github.com/erikras/react-redux-universal-hot-example/commits/master
 
