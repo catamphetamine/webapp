@@ -16,12 +16,18 @@ import { reduxReactRouter as reduxReactRouter_server } from 'redux-router/server
 import createHistory_server from 'history/lib/createMemoryHistory'
 import createHistory_client from 'history/lib/createBrowserHistory'
 
+// Three different types of scroll behavior available.
+// Documented at https://github.com/rackt/scroll-behavior
+//
+// Possibly currently doesn't make any difference
+import use_scroll from 'scroll-behavior/lib/useStandardScroll'
+
 // Wrap the hooks so they don't fire if they're called before
 // the store is initialised. This only happens when doing the first
 // client render of a route that has an onEnter hook
 function makeHooksSafe(routes, store)
-{
-	if (Array.isArray(routes))
+
+{	if (Array.isArray(routes))
 	{
 		return routes.map((route) => makeHooksSafe(route, store))
 	}
@@ -73,7 +79,7 @@ export default function(api_client, http_client, data)
 {
 	const getRoutes = _server_ ? routes : makeRouteHooksSafe(routes)
 	const reduxReactRouter = _server_ ? reduxReactRouter_server : reduxReactRouter_client
-	const createHistory = _server_ ? createHistory_server : createHistory_client
+	const createHistory = _server_ ? createHistory_server : use_scroll(createHistory_client)
 
 	const middleware = [asynchronous_middleware(api_client, http_client), transition_middleware]
 	
