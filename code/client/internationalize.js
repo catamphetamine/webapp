@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import hoist_statics from 'hoist-non-react-statics'
-import { injectIntl as international } from 'react-intl'
+import { injectIntl } from 'react-intl'
 
 export default function()
 {
 	return function(Wrapped)
 	{
-		Wrapped = international(Wrapped)
+		Wrapped = injectIntl(Wrapped)
 
 		class Wrapper extends Component
 		{
