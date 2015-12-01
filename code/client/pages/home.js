@@ -8,7 +8,8 @@ import styler from 'react-styling'
 
 import { text } from '../international components'
 
-import { defineMessages, injectIntl as international } from 'react-intl'
+import { defineMessages } from 'react-intl'
+import international from '../internationalize'
 
 const messages = defineMessages
 ({
@@ -24,11 +25,12 @@ const messages = defineMessages
 (
 	store => ({ })
 )
-class Page extends Component
+@international()
+export default class Page extends Component
 {
 	render()
 	{
-		const format_message = this.props.intl.formatMessage
+		const translate = this.props.intl.formatMessage
 
 		const husky = require('../../../assets/images/husky.jpg')
 
@@ -38,7 +40,7 @@ class Page extends Component
 				{webpage_title("Home")}
 
 				<h1 style={style.header}>
-					{format_message(messages.header)}
+					{translate(messages.header)}
 				</h1>
 
 				<img src={husky} style={style.image}/>
@@ -48,8 +50,6 @@ class Page extends Component
 		return markup
 	}
 }
-
-export default international(Page)
 
 const style = styler
 `

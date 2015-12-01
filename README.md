@@ -114,19 +114,13 @@ pm2 logs webapp
 Сделать
 ====================
 
-функция, определяющая, вызывать ли preload, не работает с export default international(Page)
-
-
-
-
-
-
-
 endless scroll в логах: выгрузка тех страниц, которые выходят за предел "показывать страниц", + url нормальный (с какой страницы показывать до + "показывать страниц")
 
 на странице логов - фильтр по error, warning, info и т.п.
 
 из log server - писать в MongoDB (опционально)
+
+https://github.com/mafintosh/mongojs
 
 на клиенте сделать log, посылающий всё в консоль, и заменить все console.log на log.info и console.error на log.error
 
@@ -194,6 +188,8 @@ async await
 
 
 koa redis session store (optionally)
+
+https://github.com/DaAwesomeP/koa-session-redis3
 
 
 
@@ -397,7 +393,7 @@ https://github.com/acdlite/redux-react-router
 
 
 Рендеринг React'а вместе с React-router'ом и Redux'ом взят отсюда
-(будет обновляться после 25.11.2015 - мержить к себе новые изменения):
+(будет обновляться после 30.11.2015 - мержить к себе новые изменения):
 
 https://github.com/erikras/react-redux-universal-hot-example/commits/master
 

@@ -10,5 +10,7 @@ export default
 	'menu.components_showcase' : 'Компоненты',
 	'menu.log'                 : 'Журнал',
 
-	'home.header': 'Собака'
+	'home.header': 'Собака',
+
+	'log.entry.message' : 'текст'
 }

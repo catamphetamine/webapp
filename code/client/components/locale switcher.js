@@ -13,7 +13,8 @@ import { text } from '../international components'
 import Flag from './flag'
 import Dropdown from './dropdown'
 
-import { defineMessages, injectIntl as international } from 'react-intl'
+import { defineMessages } from 'react-intl'
+import international from '../internationalize'
 
 import Uri from '../tools/uri'
 
@@ -51,7 +52,8 @@ const messages = defineMessages
 	// Use an action creator for navigation
 	{ pushState }
 )
-class Locale_switcher extends Component
+@international()
+export default class Locale_switcher extends Component
 {
 	state = {}
 
@@ -62,7 +64,7 @@ class Locale_switcher extends Component
 
 	render()
 	{
-		const format_message = this.props.intl.formatMessage
+		const translate = this.props.intl.formatMessage
 
 		const { locale } = this.props
 
@@ -74,11 +76,11 @@ class Locale_switcher extends Component
 
 				{/* dropdown list */}
 				<Dropdown 
-					label={format_message(messages.language)} 
+					label={translate(messages.language)} 
 					selected={locale} 
 					select={::this.set_locale} 
 					list={locales.map(({ key, label }) => ({ key: key, label: label, icon: <Flag locale={key} style={style.locale.flag}/> }))} 
-					title={format_message(messages.language)}/>
+					title={translate(messages.language)}/>
 			</div>
 		)
 
@@ -94,8 +96,6 @@ class Locale_switcher extends Component
 		// window.location = new Uri(this.props.url).parameter('locale', locale).print()
 	}
 }
-
-export default international(Locale_switcher)
 
 const style = styler
 `

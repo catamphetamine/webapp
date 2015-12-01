@@ -24,7 +24,8 @@ import { connect } from 'react-redux'
 
 import Locale_switcher from '../components/locale switcher'
 
-import { defineMessages, injectIntl as international } from 'react-intl'
+import { defineMessages } from 'react-intl'
+import international from '../internationalize'
 
 import Menu from '../components/menu'
 import Menu_button from '../components/menu button'
@@ -84,7 +85,8 @@ const messages = defineMessages
 	store => ({ }), // user: store.auth.user })
 	dispatch => bind_action_creators({ logout }, dispatch)
 )
-class Layout extends Component
+@international()
+export default class Layout extends Component
 {
 	state = 
 	{
@@ -261,8 +263,6 @@ class Layout extends Component
 		this.setState({ menu_width: width })
 	}
 }
-
-export default international(Layout)
 
 const style = styler
 `

@@ -3,11 +3,21 @@ import { webpage_title } from '../webpage head'
 import { bindActionCreators as bind_action_creators } from 'redux'
 import { connect } from 'react-redux'
 import { get as get_log } from '../actions/log'
-import { defineMessages, injectIntl as international } from 'react-intl'
+import { defineMessages } from 'react-intl'
 import log_levels from '../../common/log levels'
 import styler from 'react-styling'
 import preload from '../redux/preload'
-// const messages = defineMessages({})
+import international from '../internationalize'
+
+const messages = defineMessages
+({
+	entry_message:
+	{
+		id             : 'log.entry.message',
+		description    : 'Log entry message text',
+		defaultMessage : 'message'
+	}
+})
 
 @preload
 (
@@ -29,7 +39,8 @@ import preload from '../redux/preload'
 	}),
 	dispatch => bind_action_creators({ get_log }, dispatch)
 )
-class Page extends Component
+@international()
+export default class Page extends Component
 {
 	static propTypes =
 	{
@@ -41,6 +52,8 @@ class Page extends Component
 	render()
 	{
 		const { error, log } = this.props
+
+		const translate = this.props.intl.formatMessage
 
 		let content
 
@@ -65,7 +78,7 @@ class Page extends Component
 								<th>hostname</th>
 								<th>name</th>
 								<th>date</th>
-								<th>message</th>
+								<th>{translate(messages.entry_message)}</th>
 							</tr>
 						</thead>
 
@@ -113,9 +126,6 @@ class Page extends Component
 		return markup
 	}
 }
-
-export default Page
-// export default international(Page)
 
 const style = styler
 `
