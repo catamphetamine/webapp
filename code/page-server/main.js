@@ -1,6 +1,8 @@
 // import look from 'look'
 // look.start()
 
+import React from 'react'
+
 import webpage_server from 'react-isomorphic-render/page-server'
 
 import create_store   from '../client/redux/store'
