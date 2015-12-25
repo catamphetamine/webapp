@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { webpage_title } from '../../webpage head'
-import styler from 'react-styling'
-import { connect } from 'react-redux'
+import { title }            from 'react-isomorphic-render'
+import styler               from 'react-styling'
+import { connect }          from 'react-redux'
 
 @connect
 (
@@ -14,7 +14,7 @@ export default class Page extends Component
 		const markup = 
 		(
 			<section>
-				{webpage_title("Simple REST API example")}
+				{title("Simple REST API example")}
 
 				<div style={style.container}>
 					{'This is an example of REST API usage with database persistence (to be done)'}

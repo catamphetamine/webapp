@@ -178,7 +178,7 @@ export default class Uri
 	}
 }
 
-// testing
+// self testing
 ;(function()
 {
 	function assert(left, right)

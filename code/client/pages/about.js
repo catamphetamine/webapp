@@ -1,22 +1,19 @@
 import React, { Component, PropTypes } from 'react'
-import { webpage_title } from '../webpage head'
-import { bindActionCreators as bind_action_creators } from 'redux'
+
+import { title }   from 'react-isomorphic-render'
+import { preload } from 'react-isomorphic-render/redux'
 import { connect } from 'react-redux'
+
+import { bindActionCreators as bind_action_creators } from 'redux'
+
 import { get as get_settings } from '../actions/settings'
-import preload from '../redux/preload'
 
 @preload
 (
 	function(get_state, dispatch)
 	{
-		const promises = []
-
-		// if (!are_settings_loaded(store.get_state()))
-		// {
-			promises.push(dispatch(get_settings()))
-		// }
-		
-		return Promise.all(promises)
+		// return Promise.all([dispatch(get_users()), ...])
+		return dispatch(get_settings())
 	}
 )
 @connect
@@ -101,7 +98,7 @@ export default class About extends Component
 		const markup = 
 		(
 			<div>
-				{webpage_title("About")}
+				{title("About")}
 				{content}
 			</div>
 		)

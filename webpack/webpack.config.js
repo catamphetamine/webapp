@@ -28,16 +28,16 @@ var configuration =
 	output: 
 	{
 		// filesystem path for static files
-		path: path.resolve(root_folder, 'build', 'assets'),
+		path: path.resolve(root_folder, 'build/assets'),
 
 		// network path for static files
 		publicPath: '/assets/',
 
 		// file name pattern for entry scripts
-		filename: "[name].[hash].js",
+		filename: '[name].[hash].js',
 
 		// file name pattern for chunk scripts
-		chunkFilename: '[name].[chunkhash].js',
+		chunkFilename: '[name].[hash].js',
 
 		// sourceMapFilename: '[file].map'
 	},

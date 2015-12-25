@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react'
-import { webpage_title } from '../webpage head'
-import { connect } from 'react-redux'
 
-import { Link } from 'react-router'
-import styler from 'react-styling'
+import { title }   from 'react-isomorphic-render'
+import { connect } from 'react-redux'
+import { Link }    from 'react-router'
+import styler      from 'react-styling'
 
 @connect
 (
@@ -16,7 +16,7 @@ export default class Page extends Component
 		const markup = 
 		(
 			<section className="content">
-				{webpage_title("REST API Example")}
+				{title("REST API Example")}
 
 				<ul style={style.menu}>
 					<li style={style.menu.item}><Link to="/example/simple" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Simple'}</Link></li>

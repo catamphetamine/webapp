@@ -38,10 +38,7 @@ const Home_queries =
 	// `
 }
 
-		// <Route component={NestedRootContainer}>
-		// </Route>
-
-export default function({ store })
+export default function(store)
 {
 	const routes =
 	(

@@ -45,7 +45,7 @@ configuration.plugins = configuration.plugins.concat
 	// the "allChunks: true" option means that this extracted file will contain 
 	// the styles from all chunks of an entry (each entry can be divided into chunks).
 	// without this option styles would only be extracted from the top-level chunk of an entry.
-	new extract_text_plugin('[name]-[chunkhash].css', { allChunks: true }),
+	new extract_text_plugin('[name]-[contenthash].css', { allChunks: true }),
 
 	// omit duplicate modules
 	new webpack.optimize.DedupePlugin(),
@@ -67,8 +67,8 @@ configuration.plugins = configuration.plugins.concat
 	new webpack_isomorphic_tools_plugin(require('./isomorphic.js'))
 )
 
-// don't know why they write it like this
-configuration.output.filename = '[name]-[chunkhash].js'
+// // don't know why they write it like this
+// configuration.output.filename = '[name]-[hash].js'
 
 // // add strip-loader to javascript loaders
 // configuration.module.loaders.filter(loader =>

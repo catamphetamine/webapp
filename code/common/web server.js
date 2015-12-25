@@ -127,8 +127,16 @@ export default function web_server(options = {})
 
 	if (options.extract_locale)
 	{
-		// get locale from http headers
+		// get locale from Http request
+		// (the second parameter is the Http Get parameter name)
 		koa_locale(web, 'locale')
+
+		// usage:
+		//
+		// .use(function*()
+		// {
+		// 	const preferred_locale = this.getLocaleFromQuery() || this.getLocaleFromCookie() || this.getLocaleFromHeader() || 'en'
+		// })
 	}
 
 	// Set up session middleware

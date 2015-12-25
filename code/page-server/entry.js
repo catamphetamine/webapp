@@ -1,7 +1,8 @@
 require('../common/server entry')
 
-global._client_ = false
 global._server_ = true
+global._client_ = false
+
 global._disable_server_side_rendering_ = false
 
 global.log = require('./log')

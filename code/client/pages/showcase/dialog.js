@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
-// import Boron from 'boron'
-import { webpage_title } from '../../webpage head'
-import styler from 'react-styling'
-
-import { connect } from 'react-redux'
+import { title }            from 'react-isomorphic-render'
+import styler               from 'react-styling'
+import { connect }          from 'react-redux'
 
 @connect
 (
@@ -16,7 +14,7 @@ export default class Dialog extends Component
 		const markup = 
 		(
 			<div>
-				{webpage_title("Dialog Showcase")}
+				{title("Dialog Showcase")}
 
 				<div style={style.container}>
 					<a href="https://github.com/yuanyan/boron/issues/8">https://github.com/yuanyan/boron/issues/8</a>

@@ -1,8 +1,6 @@
-// require('./editor.less')
-
-import React, { Component, PropTypes } from 'react'
-import { webpage_title } from '../webpage head'
-import { connect } from 'react-redux'
+import React, { Component } from 'react'
+import { title }            from 'react-isomorphic-render'
+import { connect }          from 'react-redux'
 
 import styler from 'react-styling'
 
@@ -17,7 +15,7 @@ export default class Editor extends Component
 		const markup = 
 		(
 			<section className="content">
-				{webpage_title("Rich Text Editor")}
+				{title("Rich Text Editor")}
 
 				<div contentEditable="true" style={style.editor} ref={function(element)
 				{

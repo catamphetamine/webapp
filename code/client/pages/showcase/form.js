@@ -1,10 +1,7 @@
-// require('./about.less' )
-
 import React, { Component } from 'react'
-import { webpage_title } from '../../webpage head'
-import styler from 'react-styling'
-
-import { connect } from 'react-redux'
+import { title }            from 'react-isomorphic-render'
+import styler               from 'react-styling'
+import { connect }          from 'react-redux'
 
 @connect
 (
@@ -24,7 +21,7 @@ export default class Form extends Component
 		const markup = 
 		(
 			<div>
-				{webpage_title("Form UI Showcase")}
+				{title("Form UI Showcase")}
 
 				<form style={style.form}>
 					<label style={style.form.label}>{'Text input field'}</label>

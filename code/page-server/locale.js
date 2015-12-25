@@ -24,14 +24,15 @@ export default function load_locale_data(locale)
 		}
 	}
 
-	const result = load_locale_data(locale)
-
-	if (result)
+	if (locale)
 	{
-		return result
+		const result = load_locale_data(locale)
+
+		if (result)
+		{
+			return result
+		}
 	}
 
-	const default_locale = 'en-US'
-
-	return load_locale_data(default_locale)
+	return load_locale_data('en-US')
 }

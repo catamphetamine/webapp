@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { webpage_title } from '../webpage head'
+import { title } from 'react-isomorphic-render'
 import { connect } from 'react-redux'
 
 import { Link } from 'react-router'
@@ -16,7 +16,7 @@ export default class Page extends Component
 		const markup = 
 		(
 			<section className="content">
-				{webpage_title("UI Showcase")}
+				{title("UI Showcase")}
 
 				<ul style={style.menu}>
 					<li style={style.menu.item}><Link to="/showcase/dialog" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Dialog'}</Link></li>

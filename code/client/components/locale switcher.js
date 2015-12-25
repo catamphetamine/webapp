@@ -8,8 +8,6 @@ import { connect } from 'react-redux'
 
 import styler from 'react-styling'
 
-import { text } from '../international components'
-
 import Flag from './flag'
 import Dropdown from './dropdown'
 
@@ -46,7 +44,7 @@ const messages = defineMessages
 	store => 
 	({
 		locale : store.locale.locale,
-		url    : store.router.location.pathname + store.router.location.search
+		// url    : store.router.location.pathname + store.router.location.search
 	}),
 
 	// Use an action creator for navigation

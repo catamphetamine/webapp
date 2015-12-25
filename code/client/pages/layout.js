@@ -1,34 +1,27 @@
 import React, { Component, PropTypes } from 'react'
-import { webpage_head } from '../webpage head'
+
+import { bindActionCreators as bind_action_creators } from 'redux'
+
+// testing `flat` styler
+import styler              from 'react-styling/flat'
+
+import { connect }         from 'react-redux'
+import { Link, IndexLink } from 'react-router'
+import { defineMessages }  from 'react-intl'
+import { head }            from 'react-isomorphic-render'
 
 // использование: @Radium перед классом компонента
 // Radium = require 'radium'
 
-import { Link, IndexLink } from 'react-router'
-
-// testing `flat` styler
-import styler from 'react-styling/flat'
-
 // import autoprefixer from 'autoprefixer'
 
-import { bindActionCreators as bind_action_creators } from 'redux'
 import { logout } from '../actions/authentication'
 
-// import { create_transition_hook } from '../../react-isomorphic-render/router'
+import international   from '../internationalize'
 
-import { text as Text } from '../international components'
-
-import { connect } from 'react-redux'
-
-// import {isLoaded as isAuthLoaded} from '../flux/stores/auth'
-
+import Menu            from '../components/menu'
+import Menu_button     from '../components/menu button'
 import Locale_switcher from '../components/locale switcher'
-
-import { defineMessages } from 'react-intl'
-import international from '../internationalize'
-
-import Menu from '../components/menu'
-import Menu_button from '../components/menu button'
 
 // when adjusting this transition time also adjust it in styles/xs-m.scss
 const transition_duration = 210 // milliseconds
@@ -200,7 +193,7 @@ export default class Layout extends Component
 		const markup = 
 		(
 			<div className={ this.state.page_moved_aside ? 'layout layout-with-page-aside' : 'layout' }>
-				{webpage_head(title, description, meta)}
+				{head(title, description, meta)}
 
 				{/* Navigation */}
 				{/*<nav>*/}

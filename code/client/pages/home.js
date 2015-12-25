@@ -1,14 +1,11 @@
 // require('./editor.less')
 
 import React, { Component, PropTypes } from 'react'
-import { webpage_title } from '../webpage head'
-import { connect } from 'react-redux'
+import { title }                       from 'react-isomorphic-render'
+import { connect }                     from 'react-redux'
+import styler                          from 'react-styling'
+import { defineMessages }              from 'react-intl'
 
-import styler from 'react-styling'
-
-import { text } from '../international components'
-
-import { defineMessages } from 'react-intl'
 import international from '../internationalize'
 
 const messages = defineMessages
@@ -37,7 +34,7 @@ export default class Page extends Component
 		const markup = 
 		(
 			<section className="content">
-				{webpage_title("Home")}
+				{title("Home")}
 
 				<h1 style={style.header}>
 					{translate(messages.header)}

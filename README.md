@@ -24,12 +24,12 @@ Quick Start
 
 * `npm install`
 * `npm run dev`
-* wait a bit for Webpack to finish the first build (green stats will appear in the terminal)
+* wait for it to finish (it will say "Now go to http://127.0.0.1:3000" in the end)
 * go to `http://localhost:3000`
 * interact with the development version of the web application
 * `Ctrl + C`
 * `npm run production`
-* wait a bit for Webpack to finish the build (green stats will appear in the terminal)
+* wait a bit for Webpack to finish the build (green stats will appear in the terminal, plus some `node.js` server running commands)
 * go to `http://localhost:3000`
 * interact with the production version of the web application
 
@@ -393,7 +393,7 @@ https://github.com/acdlite/redux-react-router
 
 
 Рендеринг React'а вместе с React-router'ом и Redux'ом взят отсюда
-(будет обновляться после 30.11.2015 - мержить к себе новые изменения):
+(будет обновляться после 18.12.2015 - мержить к себе новые изменения):
 
 https://github.com/erikras/react-redux-universal-hot-example/commits/master
 

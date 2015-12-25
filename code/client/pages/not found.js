@@ -1,8 +1,6 @@
-// require('./about.less' )
-
 import React, { Component } from 'react'
-import { webpage_title } from '../webpage head'
-import { connect } from 'react-redux'
+import { title }            from 'react-isomorphic-render'
+import { connect }          from 'react-redux'
 
 import styler from 'react-styling'
 
@@ -17,7 +15,7 @@ export default class Not_found extends Component
 		const markup =
 		(
 			<div>
-				{webpage_title("Page not found")}
+				{title("Page not found")}
 
 				<h1 style={style.header}>
 					Page not found

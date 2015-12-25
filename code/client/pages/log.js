@@ -1,13 +1,17 @@
 import React, { Component, PropTypes } from 'react'
-import { webpage_title } from '../webpage head'
+
 import { bindActionCreators as bind_action_creators } from 'redux'
-import { connect } from 'react-redux'
-import { get as get_log } from '../actions/log'
+
+import { connect }        from 'react-redux'
 import { defineMessages } from 'react-intl'
-import log_levels from '../../common/log levels'
-import styler from 'react-styling'
-import preload from '../redux/preload'
-import international from '../internationalize'
+import styler             from 'react-styling'
+import { title }          from 'react-isomorphic-render'
+import { preload }        from 'react-isomorphic-render/redux'
+
+import { get as get_log } from '../actions/log'
+import log_levels         from '../../common/log levels'
+
+import international      from '../internationalize'
 
 const messages = defineMessages
 ({
@@ -23,11 +27,8 @@ const messages = defineMessages
 (
 	function(get_state, dispatch)
 	{
-		const promises = []
-
-		promises.push(dispatch(get_log()))
-		
-		return Promise.all(promises)
+		// return Promise.all([dispatch(get_users()), ...])
+		return dispatch(get_log())
 	}
 )
 @connect
@@ -102,7 +103,7 @@ export default class Page extends Component
 		const markup = 
 		(
 			<div>
-				{webpage_title("Log")}
+				{title("Log")}
 				{content}
 			</div>
 		)
