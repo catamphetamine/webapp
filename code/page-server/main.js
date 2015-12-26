@@ -6,6 +6,7 @@ import React from 'react'
 import webpage_server from 'react-isomorphic-render/page-server'
 
 import create_store   from '../client/redux/store'
+import create_routes  from '../client/routes'
 import markup_wrapper from '../client/markup wrapper'
 import html_assets    from '../client/html assets'
 
@@ -48,6 +49,9 @@ webpage_server
 
 	// a function to create Redux store
 	create_store,
+
+	// creates React-router routes
+	create_routes,
 
 	// internationalization
 	localize: (store, preferred_locale) =>
