@@ -10,6 +10,18 @@ import is_intl_locale_supported from 'intl-locales-supported'
 
 const international =
 {
+	// client-side bootstrap code
+	//
+	// load the Intl polyfill and its locale data before rendering the application
+	load(locale)
+	{
+		// language
+		locale = locale || document.documentElement.getAttribute('lang') || 'en'
+
+		return international.load_polyfill(locale)
+			.then(international.load_locale_data.bind(null, locale))
+	},
+
 	// Returns a promise which is resolved when Intl has been polyfilled
 	load_polyfill(locale)
 	{

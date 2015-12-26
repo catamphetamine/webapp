@@ -23,44 +23,37 @@ for (let asset of Object.keys(html_assets))
 
 import international from './international'
 
-// Load the Intl polyfill and required locale data
-
-// language
-const locale = document.documentElement.getAttribute('lang')
-
 // load the Intl polyfill and its locale data before rendering the application
-international.load_polyfill(locale)
-	.then(international.load_locale_data.bind(null, locale))
-	.then(() =>
-	{
-		// since react-intl assumes Intl is already in the global scope, 
-		// we can't import the routes (which imports react-intl in some of its components) 
-		// before polyfilling Intl. That's why you see require("./routes") here, 
-		// and not as import on the top of the file.
-		const create_routes = require('./routes')
+international.load().then(() =>
+{
+	// since react-intl assumes Intl is already in the global scope, 
+	// we can't import the routes (which imports react-intl in some of its components) 
+	// before polyfilling Intl. That's why you see require("./routes") here, 
+	// and not as import on the top of the file.
+	const create_routes = require('./routes')
 
-		// renders the webpage on the client side
-		render
-		({
-			// enable/disable development mode (true/false)
-			development: _development_,
+	// renders the webpage on the client side
+	render
+	({
+		// enable/disable development mode (true/false)
+		development: _development_,
 
-			// enable/disable Redux dev-tools (true/false)
-			development_tools: _development_tools_,
+		// enable/disable Redux dev-tools (true/false)
+		development_tools: _development_tools_,
 
-			// the DOM element where React markup will be rendered
-			to: document.getElementById('react_markup'),
+		// the DOM element where React markup will be rendered
+		to: document.getElementById('react_markup'),
 
-			// a function to create Redux store
-			create_store,
+		// a function to create Redux store
+		create_store,
 
-			// creates React-router routes
-			create_routes,
+		// creates React-router routes
+		create_routes,
 
-			// wraps React page component into arbitrary markup (e.g. Redux Provider)
-			markup_wrapper
-		})
+		// wraps React page component into arbitrary markup (e.g. Redux Provider)
+		markup_wrapper
 	})
+})
 
 // used in './international' for debug output
 window.debug = (...parameters) => { console.log.bind(console)(parameters) }
