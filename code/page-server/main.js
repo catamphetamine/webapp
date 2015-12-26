@@ -34,6 +34,9 @@ webpage_server
 	// Http Urls to javascripts and (optionally) CSS styles 
 	// which will be insterted into the <head/> element of the resulting Html webpage
 	// (as <script src="..."/> and <link rel="style" href="..."/> respectively)
+	//
+	// Also a website "favicon".
+	//
 	assets: () =>
 	{
 		if (_development_)
@@ -41,7 +44,17 @@ webpage_server
 			webpack_isomorphic_tools.refresh()
 		}
 
-		return webpack_isomorphic_tools.assets()
+		const assets = webpack_isomorphic_tools.assets()
+
+		const result = 
+		{
+			javascript : assets.javascript,
+			styles     : assets.styles,
+
+			icon : html_assets.icon()
+		}
+
+		return result
 	},
 
 	// wraps React page component into arbitrary markup (e.g. Redux Provider)
@@ -65,16 +78,16 @@ webpage_server
 
 	// will be inserted into server rendered webpage <head/>
 	// (use `key`s to prevent React warning)
-	head: () =>
-	{
-		return [<link rel="shortcut icon" href={html_assets.icon()} key="1"/>]
-	},
+	// (optional)
+	// head: () => [...]
 
-	// body: optional, extra <body/> content
+	// extra <body/> content
+	// (optional)
+	// body: () => ...
 
 	// this CSS will be inserted into server rendered webpage <head/> <style/> tag 
 	// (when in development mode only - removes rendering flicker)
-	styles: () => html_assets.style().toString(),
+	style: () => html_assets.style().toString(),
 
 	// bunyan log
 	log: log

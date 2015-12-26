@@ -23,14 +23,7 @@ const messages = defineMessages
 	}
 })
 
-@preload
-(
-	function(get_state, dispatch)
-	{
-		// return Promise.all([dispatch(get_users()), ...])
-		return dispatch(get_log())
-	}
-)
+@preload((dispatch, get_state) => dispatch(get_log()))
 @connect
 (
 	store => 

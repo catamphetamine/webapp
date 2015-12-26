@@ -23,9 +23,9 @@ import Database_example from './pages/example/database example'
 import Log              from './pages/log'
 import Simple_graphQL_example  from './pages/example/simple graphql example'
 
-const Layout_queries = 
-{
-}
+// playing with GraphQL/Relay a bit
+
+const Layout_queries = {}
 
 const Home_queries = 
 {

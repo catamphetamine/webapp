@@ -8,14 +8,7 @@ import { bindActionCreators as bind_action_creators } from 'redux'
 
 import { get as get_settings } from '../actions/settings'
 
-@preload
-(
-	function(get_state, dispatch)
-	{
-		// return Promise.all([dispatch(get_users()), ...])
-		return dispatch(get_settings())
-	}
-)
+@preload((dispatch, get_state) => dispatch(get_settings()))
 @connect
 (
 	store => 

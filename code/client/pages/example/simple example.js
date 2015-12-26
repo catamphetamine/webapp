@@ -11,14 +11,7 @@ import { get as get_users, add as add_user, remove as delete_user, dismiss_addin
 
 import Button from '../../components/button'
 
-@preload
-(
-	function(get_state, dispatch)
-	{
-		// return Promise.all([dispatch(get_users()), ...])
-		return dispatch(get_users())
-	}
-)
+@preload((dispatch, get_state) => dispatch(get_users()))
 @connect
 (
 	store => 
