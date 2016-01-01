@@ -3,7 +3,6 @@ import language from '../code/common/language'
 import express from 'express'
 
 import webpack                         from 'webpack'
-// import webpack_development_server      from 'webpack-dev-server'
 import webpack_isomorphic_tools_plugin from 'webpack-isomorphic-tools/plugin'
 import base_configuration              from './webpack.config'
 
@@ -45,7 +44,7 @@ configuration.plugins = configuration.plugins.concat
 	// // when you fix the error.
 	// new webpack.NoErrorsPlugin(),
 
-	new webpack_isomorphic_tools_plugin(require('./isomorphic.js')).development()
+	new webpack_isomorphic_tools_plugin(require('./webpack-isomorphic-tools.js')).development()
 )
 
 // enable webpack development server

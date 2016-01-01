@@ -1,13 +1,13 @@
-var path                     = require('path')
-var webpack                  = require('webpack')
+var path    = require('path')
+var webpack = require('webpack')
 
 var root_folder = path.resolve(__dirname, '..')
 
 var assets_source_folder = path.resolve(root_folder, 'assets')
 
-var Webpack_isomorphic_tools_plugin = require('webpack-isomorphic-tools/plugin')
-var webpack_isomorphic_tools_configuration = require('./isomorphic')
-var webpack_isomorphic_tools_plugin = new Webpack_isomorphic_tools_plugin(webpack_isomorphic_tools_configuration)
+var Webpack_isomorphic_tools_plugin        = require('webpack-isomorphic-tools/plugin')
+var webpack_isomorphic_tools_configuration = require('./webpack-isomorphic-tools')
+var webpack_isomorphic_tools_plugin        = new Webpack_isomorphic_tools_plugin(webpack_isomorphic_tools_configuration)
 
 var regular_expressions =
 {

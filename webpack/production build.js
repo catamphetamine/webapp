@@ -64,7 +64,7 @@ configuration.plugins = configuration.plugins.concat
 		}
 	}),
 
-	new webpack_isomorphic_tools_plugin(require('./isomorphic.js'))
+	new webpack_isomorphic_tools_plugin(require('./webpack-isomorphic-tools.js'))
 )
 
 // // don't know why they write it like this

@@ -142,6 +142,12 @@ export default class Layout extends Component
 		const meta =
 		{
 			charSet: 'utf-8',
+			name:
+			{
+				// i don't fully understand what it does
+				// https://css-tricks.com/probably-use-initial-scale1/
+				viewport: 'width=device-width, initial-scale=1.0'
+			},
 			property:
 			{
 				'og:site_name': title,

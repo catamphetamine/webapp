@@ -393,7 +393,7 @@ https://github.com/acdlite/redux-react-router
 
 
 Рендеринг React'а вместе с React-router'ом и Redux'ом взят отсюда
-(будет обновляться после 18.12.2015 - мержить к себе новые изменения):
+(будет обновляться после 30.12.2015 - мержить к себе новые изменения):
 
 https://github.com/erikras/react-redux-universal-hot-example/commits/master
 
