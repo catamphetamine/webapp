@@ -24,7 +24,7 @@ import Menu_button     from '../components/menu button'
 import Locale_switcher from '../components/locale switcher'
 
 // when adjusting this transition time also adjust it in styles/xs-m.scss
-const transition_duration = 210 // milliseconds
+const menu_transition_duration = 210 // milliseconds
 
 const messages = defineMessages
 ({
@@ -47,12 +47,12 @@ const messages = defineMessages
 		description    : 'HTML5 editor',
 		defaultMessage : 'Editor'
 	},
-	menu_about:
-	{
-		id             : 'menu.about',
-		description    : 'Whatever',
-		defaultMessage : 'About'
-	},
+	// menu_about:
+	// {
+	// 	id             : 'menu.about',
+	// 	description    : 'Whatever',
+	// 	defaultMessage : 'About'
+	// },
 	menu_example:
 	{
 		id             : 'menu.example',
@@ -183,9 +183,9 @@ export default class Layout extends Component
 			name: translate(messages.menu_editor),
 			link: '/editor'
 		}, {
-			name: translate(messages.menu_about),
-			link: '/about'
-		}, {
+		// 	name: translate(messages.menu_about),
+		// 	link: '/about'
+		// }, {
 			name: translate(messages.menu_example),
 			link: '/example'
 		}, {
@@ -204,7 +204,7 @@ export default class Layout extends Component
 				{/* Navigation */}
 				{/*<nav>*/}
 					{/* main menu */}
-					<Menu show={this.state.show_menu} toggle={::this.toggle_menu} update_width={::this.update_menu_width} items={menu_items}/>
+					<Menu show={this.state.page_moved_aside} toggle={::this.toggle_menu} update_width={::this.update_menu_width} items={menu_items}/>
 				{/*</nav>*/}
     
 				<div className="page" style={ this.state.show_menu ? merge(style.page, { transform: `translate3d(${this.state.menu_width}px, 0px, 0px)` }) : style.page }>
@@ -232,7 +232,9 @@ export default class Layout extends Component
 
 					{this.props.children}
 
-					<footer></footer>
+					<footer>
+						<div><a href="https://github.com/halt-hammerzeit">halt-hammerzeit@github.com</a></div>
+					</footer>
 				</div>
 			</div>
 		)
@@ -253,7 +255,7 @@ export default class Layout extends Component
 			{
 				this.setState({ page_moved_aside: this.state.show_menu })
 			}, 
-			transition_duration)
+			menu_transition_duration)
 		})
 	}
 
@@ -268,13 +270,14 @@ const style = styler
 	page
 		position : relative
 		z-index  : 1
-		transition-duration : ${transition_duration}ms
+		transition-duration : ${menu_transition_duration}ms
 
 	home
 		text-decoration : none
 
 		active
 			cursor : default
+			color  : inherit
 
 	// locale_switcher
 	// 	position : absolute

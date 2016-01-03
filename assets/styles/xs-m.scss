@@ -48,9 +48,6 @@ header
 	{
 		display: block !important;
 
-		padding-top:    $menu-item-compact-vertical-padding;
-		padding-bottom: $menu-item-compact-vertical-padding;
-
 		&:first-child
 		{
 			padding-top    : 2 * $menu-item-compact-vertical-padding;
@@ -70,8 +67,8 @@ header
 
 	margin : 0;
 
-	padding-top    : 0.1em;
-	padding-bottom : 0.1em;
+	padding-top:    $menu-item-compact-vertical-padding;
+	padding-bottom: $menu-item-compact-vertical-padding;
 
 	padding-left  : 0.7em;
 	padding-right : 1.0em;
@@ -149,16 +146,14 @@ header
 
 	position: absolute;
 
-	top  : 0.16em;
+	top  : 0.2em;
 	left : 0;
 
-	width  : 1em;
-	// height : 0.125em;
-	height : 0.64em;
-	// margin-bottom: 0.37em;
+	width: 1em;
+	height: 0.125em;
 
-	border-top    : 0.375em double $active-color;
-	border-bottom : 0.125em solid $active-color;
+	border-top    : 0.375em double;
+	border-bottom : 0.125em solid;
 }
 
 .page
@@ -180,7 +175,7 @@ header
 
 .menu
 {
-	color: #d3d3d3;
+	color: #dfdfdf;
 	min-height: 100%;
 
 	position : fixed;
@@ -206,18 +201,22 @@ header
 	min-width: 100%;
 }
 
-.layout
-{
-	display    : flex;
-	min-height : 100%;
-}
-
 .menu
 {
 	display: none;
 }
 
-.menu-collapsible
+// .menu-collapsible
+// {
+// 	display: block;
+// }
+
+// .menu-collapsible
+// {
+// 	display: none;
+// }
+
+.menu-shown
 {
-	display: block;
+	display: block
 }

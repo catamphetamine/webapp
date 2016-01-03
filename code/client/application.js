@@ -41,9 +41,6 @@ international.load().then(() =>
 		// enable/disable Redux dev-tools (true/false)
 		development_tools: _development_tools_,
 
-		// the DOM element where React markup will be rendered
-		to: document.getElementById('react_markup'),
-
 		// a function to create Redux store
 		create_store,
 

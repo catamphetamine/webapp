@@ -31,17 +31,24 @@
 // 	src         : url('../fonts/PT Sans/PTS76F_W.woff') format('woff');
 // }
 
-*,
-*:after,
-*:before
-{
-	box-sizing: border-box;
-}
+// *,
+// *:after,
+// *:before
+// {
+// 	box-sizing: border-box;
+// }
 
-html, body, #react_markup
+html, body, #react_markup, .layout
 {
 	height: 100%;
 }
+
+// ...
+// {
+// 	min-height: 100%;
+// 	// http://stackoverflow.com/questions/8468066/child-inside-parent-with-min-height-100-not-inheriting-height
+// 	height: 1px;
+// }
 
 body
 {
@@ -55,16 +62,44 @@ body, button, input, textarea, select
 	font-family : Arial, Sans, Helvetica;
 }
 
-// stretches .page to 100% of html
+.page
+{
+	display        : flex;
+	flex-direction : column;
+
+	min-height: 100%;
+	// height: 1px;
+}
+
 footer
 {
-	height: 1px;
+	// height: 1px;
+	background: #efefef;
+	color: rgb(102, 102, 102);
+
+	padding-top    : 1em;
+	padding-bottom : 1em;
+
+	padding-left  : 1em;
+	padding-right : 1em;
+
+	font-size: 0.8em;
+
+	> div
+	{
+		text-align: center;
+	}
 }
 
 img
 {
 	max-width: 100%;
     height: auto;
+}
+
+a
+{
+	text-decoration: none;
 }
 
 a:active
@@ -249,13 +284,15 @@ a
 
 .dropdown-arrow
 {
-	opacity : 0.3
+	opacity: 0.3;
 }
 
 .content
 {
-	margin-top    : 0.5em;
-	margin-bottom : 1em;
+	flex-grow: 1;
+
+	margin-top    : 2em;
+	margin-bottom : 2.5em;
 
 	padding-left  : 1.8em;
 	padding-right : 1.8em;
@@ -264,7 +301,13 @@ a
 .menu
 {
 	margin-left    : 0.5em;
-	margin-bottom : -0.15em !important;
+	margin-bottom : -0.01em !important;
+    vertical-align: bottom;
+
+	li:not(:last-child)
+	{
+		margin-right: 1em;
+	}
 }
 
 .menu-item
@@ -288,15 +331,36 @@ a
 {
 	display : inline-block;
 	vertical-align : bottom;
+    margin-right: 4em;
 }
 
 header
 {
-	padding-top: 0.5em;
-	padding-bottom: 0.5em;
+	padding-top    : 0.5em;
+	padding-bottom : 0.5em;
 
-	padding-left: 1.0em;
-	padding-right: 1.0em;
+	padding-left  : 1.0em;
+	padding-right : 1.0em;
+
+	background   : $black-background;
+	color        : $black-background-text-color;
+	border-color : $black-background-text-color;
+
+	button, a, .dropdown-item-selected
+	{
+		color: $black-background-text-color;
+
+		&:active
+		{
+			color: $black-background-text-color-active;
+		}
+	}
+
+	.dropdown-arrow
+	{
+		color: $black-background-text-color;
+		opacity: 0.8;
+	}
 }
 
 // https://css-tricks.com/three-line-menu-navicon/
@@ -310,7 +374,8 @@ header
 	{
 		.menu-icon:before
 		{
-			border-color: $active-lighter-color;
+			// border-color: $active-lighter-color;
+			border-color: $black-background-text-color-active;
 		}
 	}
 }
@@ -352,6 +417,9 @@ th
 	border-bottom  : 2px solid #ddd;
 	border-top     : 0;
 	text-align     : left;
+
+    color       : #7f7f7f;
+    font-weight : normal;
 }
 
 // https://github.com/sass/libsass/issues/1766

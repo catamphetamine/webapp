@@ -45,7 +45,7 @@ export default function(store)
 		<Route path="/" component={Layout} queries={Layout_queries}>
 			<IndexRoute component={Home} queries={Home_queries}/>
 			<Route path="editor" component={Editor}/>
-			<Route path="about" component={About}/>
+			{/*<Route path="about" component={About}/>*/}
 			<Route path="example" component={Example}>
 				<Route path="simple" component={Simple_example}/>
 				<Route path="database" component={Database_example}/>
