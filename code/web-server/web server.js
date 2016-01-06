@@ -5,8 +5,11 @@ import web_server from '../common/web server'
 
 const web = web_server({  })
 
-// serve static files
+// serve assets
 web.serve_static_files('/assets', path.join(Root_folder, 'build', 'assets'))
+
+// serve uploaded files (pictures, etc)
+web.serve_static_files('/upload', path.join(Root_folder, configuration.upload_folder))
 
 // if it's not a static file url:
 

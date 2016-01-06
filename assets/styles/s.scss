@@ -17,12 +17,19 @@ body, button, input, textarea, select
 
 .language
 {
-	margin-top: 0;
+	margin-top: 0.25em;
+	margin-right: 0.5em;
 
 	.dropdown-item-icon > img
 	{
 		width: 1em;
 	}
+}
+
+.authentication
+{
+	top: 0.4em;
+	right: 0.5em;
 }
 
 header

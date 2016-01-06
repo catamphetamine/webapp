@@ -22,6 +22,7 @@ import international   from '../internationalize'
 import Menu            from '../components/menu'
 import Menu_button     from '../components/menu button'
 import Locale_switcher from '../components/locale switcher'
+import Authentication  from '../components/authentication'
 
 // when adjusting this transition time also adjust it in styles/xs-m.scss
 const menu_transition_duration = 210 // milliseconds
@@ -210,9 +211,6 @@ export default class Layout extends Component
 				<div className="page" style={ this.state.show_menu ? merge(style.page, { transform: `translate3d(${this.state.menu_width}px, 0px, 0px)` }) : style.page }>
 					{/* header */}
 					<header>
-						{/* language chooser */}
-						<Locale_switcher style={style.locale_switcher}/>
-
 						{/* menu button for small screens */}
 						<Menu_button toggle={::this.toggle_menu}/>
 
@@ -228,12 +226,18 @@ export default class Layout extends Component
 							{/* main menu */}
 							<Menu items={menu_items}/>
 						{/*</nav>*/}
+
+						{/* login */}
+						<Authentication/>
 					</header>
 
 					{this.props.children}
 
 					<footer>
 						<div><a href="https://github.com/halt-hammerzeit">halt-hammerzeit@github.com</a></div>
+
+						{/* language chooser */}
+						<Locale_switcher style={style.locale_switcher}/>
 					</footer>
 				</div>
 			</div>
@@ -269,7 +273,7 @@ const style = styler
 `
 	page
 		position : relative
-		z-index  : 1
+		z-index  : 0 // 1
 		transition-duration : ${menu_transition_duration}ms
 
 	home

@@ -34,3 +34,9 @@ coverage
 # webpack-isomorphic-tools
 /webpack-stats.json
 /webpack-assets.json
+
+# uploaded files before processing
+/upload_temporary_storage
+
+# uploaded pictures, etc
+/upload

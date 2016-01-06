@@ -23,7 +23,7 @@ module.exports =
 			host: '127.0.0.1',
 			port: 3003
 		},
-		temporary_files_directory: 'build/assets/images_temporary_store',
+		temporary_files_directory: 'upload_temporary_storage',
 		temporary_image_expiration_interval: { days: 1 }, 
 		clean_up_interval: { hours: 1 }
 	},
@@ -68,5 +68,5 @@ module.exports =
 			}
 		}
 	},
-	demo: true
+	upload_folder: 'upload'
 }

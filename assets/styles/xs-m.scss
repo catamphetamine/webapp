@@ -92,6 +92,7 @@ header
 .language
 {
 	margin-top: 0.25em;
+	margin-right: 1em;
 
 	&, .dropdown-item-list li, .dropdown-item, .dropdown-item-selected
 	{
@@ -122,14 +123,13 @@ header
 
 .menu-button
 {
-	// display: block;
-	// float: left;
-	position: absolute;
-	display: block;
-	top: 0.18em;
-	left: 0.4em;
+	position : absolute;
+	display : block;
+
+	top  : 0.18em;
+	left : 0.4em;
+
 	padding: 0.6em;
-	// margin-top: 0.45em;
 }
 
 .menu-icon
