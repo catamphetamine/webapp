@@ -4,6 +4,7 @@ import styler               from 'react-styling'
 import { connect }          from 'react-redux'
 
 import Checkbox from '../../components/checkbox'
+import Dropdown from '../../components/dropdown'
 
 @connect
 (
@@ -42,8 +43,13 @@ export default class Form extends Component
 					<textarea name="description" style={style.form.textarea} value={this.state.textarea_value} onChange={this.on_textarea_text_changed}/>
 					You entered: {this.state.textarea_value}
 
-					<label style={style.form.label}>{'Checkbox'}</label>
-					<Checkbox style={style.form.checkbox} label="Checkbox" on_change={value => console.log(value)}/>
+					<label style={style.form.label}>Checkbox</label>
+					<Checkbox style={style.form.checkbox} label="Checkbox" on_change={ checked => this.setState({ checked: checked }) }/>
+					You checked: {this.state.checked ? 'checked' : 'unchecked'}
+
+					<label style={style.form.label}>Dropdown</label>
+					<Dropdown style={style.form.checkbox} selected={this.state.selected} list={[{ key: 'A', label: 'Apple' }, { key: 'B', label: 'Banana' }, { key: 'C', label: 'Cranberry' }]} label="Choose" select={ selected => this.setState({ selected: selected}) }/>
+					You selected: {this.state.selected ? this.state.selected : 'nothing'}
 				</form>
 			</div>
 		)
@@ -85,20 +91,22 @@ const style = styler
 
 		select
 			padding: .5em
-			margin-top: 1em
+			margin-top: 0em
 			margin-right: 1em
 
 		textarea
 			padding: .5em
-			margin-top: 1em
+			margin-top: 0em
 			margin-right: 1em
 
 		label
 			display: block
 			margin-top: 1em
+			margin-bottom: 1em
 			font-weight: bold
 
 		checkbox
 			display: block
 			margin-top: 1em
+			margin-bottom: 1em
 `

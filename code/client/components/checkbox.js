@@ -86,7 +86,7 @@ export default class Checkbox extends Component
 
 		this.setState({ checked: !this.state.checked, path_style: undefined })
 
-		this.props.on_change(this.state.checked)
+		this.props.on_change(!this.state.checked)
 	}
 
 	label_clicked(event)

@@ -62,7 +62,7 @@ export default class Flag extends Component
 
 	render()
 	{
-		const { list, selected, label } = this.props
+		const { list } = this.props
 
 		const item_list = this.list_items()
 
@@ -112,7 +112,7 @@ export default class Flag extends Component
 
 		const markup = 
 		(
-			<div style={ this.props.style ? extend(style.wrapper, this.props.style) : style.wrapper } className="dropdown">
+			<div style={ this.props.style ? merge(style.wrapper, this.props.style) : style.wrapper } className="dropdown">
 
 				{/* list container */}
 				<div style={ this.state.expanded ? style.container.expanded : style.container }>
@@ -165,7 +165,7 @@ export default class Flag extends Component
 		const markup =
 		(
 			<li key={key} style={list_item_style}>
-				<button onClick={event => this.item_clicked(key, label, event)} style={item_style} className="dropdown-item">
+				<button onClick={event => this.item_clicked(key, event)} style={item_style} className="dropdown-item">
 					<span className="dropdown-item-icon">{icon}</span>
 					<span className="dropdown-item-label">{label}</span>
 				</button>
@@ -193,7 +193,7 @@ export default class Flag extends Component
 		}
 		else
 		{
-			label = <span className="dropdown-item-label">{selected.label}</span>
+			label = <span className="dropdown-item-label">{this.props.label}</span>
 		}
 
 		const markup =
@@ -221,6 +221,8 @@ export default class Flag extends Component
 
 	toggle(event)
 	{
+		event.preventDefault()
+
 		// event.stopPropagation() // doesn't work
 		event.nativeEvent.stopImmediatePropagation()
 
@@ -229,6 +231,8 @@ export default class Flag extends Component
 
 	item_clicked(key, event)
 	{
+		event.preventDefault()
+
 		if (key === this.props.selected)
 		{
 			return
