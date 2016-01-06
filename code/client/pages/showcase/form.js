@@ -56,8 +56,8 @@ export default class Form extends Component
 					You selected: {this.state.selected ? this.state.selected : 'nothing'}
 
 					<label style={style.form.label}>Switch</label>
-					<div>
-						iOS style switch
+					<div style={style.form.switch_container}>
+						<label style={style.form.switch_label}>iOS style switch</label>
 						<Switch style={style.form.switch} value={this.state.switched} on_change={ switched => this.setState({ switched: switched }) }/>
 					</div>
 					You switched: {this.state.switched ? 'on' : 'off'}
@@ -112,17 +112,26 @@ const style = styler
 
 		label
 			display: block
-			margin-top: 1em
-			margin-bottom: 1em
-			font-weight: bold
+			margin-top: 1.6em
+			margin-bottom: 0.8em
+			font-size: 1.4em
+			// font-weight: bold
 
 		checkbox
 			display: block
 			margin-top: 1em
 			margin-bottom: 1em
 
-		switch
+		switch_container
 			// margin-top: 1em
 			margin-bottom: 1em
-			margin-left: 1em
+
+		switch_label
+			display: inline-block
+			margin-bottom: 0.14em
+
+		switch
+			// margin-top: 1em
+			margin-left: 1.5em
+			vertical-align: bottom
 `

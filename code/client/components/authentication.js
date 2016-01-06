@@ -172,9 +172,11 @@ export default class Authentication extends Component
 
 				<input type="text" placeholder={translate(messages.password)} style={style.input}/>
 
-				<button style={style.forgot_password} onClick={::this.forgot_password}>{translate(messages.forgot_password)}</button>
+				<div style={style.sign_in_buttons}>
+					<button className="secondary" style={style.forgot_password} onClick={::this.forgot_password}>{translate(messages.forgot_password)}</button>
 
-				<button style={style.form_action} onClick={::this.sign_in}>{translate(messages.sign_in)}</button>
+					<button style={style.form_action} onClick={::this.sign_in}>{translate(messages.sign_in)}</button>
+				</div>
 			</form>
 		)
 
@@ -272,7 +274,7 @@ const style = styler
 
 	or_register
 		float : right
-		margin-top : 0.4em
+		margin-top : 0.42em
 
 		register
 			text-transform : lowercase
@@ -294,4 +296,7 @@ const style = styler
 	input
 		width : 100%
 		margin-bottom: 1em
+
+	sign_in_buttons
+		margin-top: 1.5em
 `

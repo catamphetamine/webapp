@@ -2,40 +2,36 @@
 
 // custom fonts slow down page loading
 
+@font-face
+{
+	font-family : 'Scada';
+	font-style  : normal;
+	font-weight : 400;
+	src         : url('../fonts/Scada/Scada-Regular.ttf') format('truetype');
+}
+
+@font-face
+{
+	font-family : 'Scada';
+	font-style  : italic;
+	font-weight : 400;
+	src         : url('../fonts/Scada/Scada-Italic.ttf') format('truetype');
+}
+
 // @font-face
 // {
-// 	font-family : 'PT Sans';
-// 	font-weight : normal;
-// 	src         : url('../fonts/PT Sans/PTS55F_W.woff') format('woff');
+// 	font-family : 'Scada';
+// 	font-style  : normal;
+// 	font-weight : 700;
+// 	src         : url('../fonts/Scada/Scada-Bold.ttf') format('truetype');
 // }
 
 // @font-face
 // {
-// 	font-family : 'PT Sans';
+// 	font-family : 'Scada';
 // 	font-style  : italic;
-// 	src         : url('../fonts/PT Sans/PTS56F_W.woff') format('woff');
-// }
-
-// @font-face
-// {
-// 	font-family : 'PT Sans';
-// 	font-weight : bold;
-// 	src         : url('../fonts/PT Sans/PTS75F_W.woff') format('woff');
-// }
-
-// @font-face
-// {
-// 	font-family : 'PT Sans';
-// 	font-weight : bold;
-// 	font-style  : italic;
-// 	src         : url('../fonts/PT Sans/PTS76F_W.woff') format('woff');
-// }
-
-// *,
-// *:after,
-// *:before
-// {
-// 	box-sizing: border-box;
+// 	font-weight : 700;
+// 	src         : url('../fonts/Scada/Scada-BoldItalic.ttf') format('truetype');
 // }
 
 html, body, #react_markup, .layout
@@ -59,7 +55,7 @@ body
 body, button, input[type="text"], textarea, select
 {
 	// font-family : 'PT Sans';
-	font-family : Arial, Helvetica, Sans;
+	font-family : Scada, Arial, Helvetica;
 }
 
 input[type="text"]
@@ -102,6 +98,8 @@ input[type="text"]
 {
 	display        : flex;
 	flex-direction : column;
+
+	transition: none;
 
 	min-height: 100%;
 	// for IE11
@@ -154,14 +152,27 @@ button
 	outline    : none;
 	padding    : 0;
 
-	font-weight : bold;
-	color       : $active-color;
+	// font-weight : bold;
+	// color       : $active-color;
+	color       : $button-color;
 
-	transition: all 30ms ease-out;
+	transition: color 30ms ease-out;
 
 	&:active
 	{
-		color: $active-lighter-color;
+		// color: $active-lighter-color;
+		color: $active-color;
+	}
+}
+
+button.secondary
+{
+	color : $secondary-button-color;
+
+	&:active
+	{
+		// color: $active-lighter-color;
+		color: $secondary-button-active-color;
 	}
 }
 
@@ -370,6 +381,19 @@ a
 {
 	color : $active-lighter-color;
 	// border-bottom-color : $active-color;
+}
+
+.menu-collapsible
+{
+	a
+	{
+		color: inherit;
+	}
+
+	li
+	{
+		margin-right: 0 !important;
+	}
 }
 
 .logo

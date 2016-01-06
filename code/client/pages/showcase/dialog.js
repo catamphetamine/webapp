@@ -62,9 +62,8 @@ const style = styler
 `
 	button
 		margin      : 1em auto
-		padding     : 1em 2em
+		padding     : 0.7em 2em
 		outline     : none
-		font-size   : 16
 		font-weight : 600
 		background  : #C94E50
 		color       : #FFFFFF

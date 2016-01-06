@@ -25,7 +25,7 @@ export default class Page extends Component
 				
         		{this.props.children}
 
-				<div style={{ marginTop: '3em' }}>Ещё какие-то компонтенты из интернета:</div>
+				<div style={{ marginTop: '3em' }}>Ещё какие-то компоненты из интернета:</div>
 
 				<ul>
 					<li><a href="https://github.com/felixrieseberg/React-Dropzone-Component">File drop zone</a></li>
