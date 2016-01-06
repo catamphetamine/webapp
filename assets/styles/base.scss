@@ -1,0 +1,159 @@
+@import "constants.scss";
+
+@font-face
+{
+	font-family : 'Scada';
+	font-style  : normal;
+	font-weight : 400;
+	src         : url('../fonts/Scada/Scada-Regular.ttf') format('truetype');
+}
+
+@font-face
+{
+	font-family : 'Scada';
+	font-style  : italic;
+	font-weight : 400;
+	src         : url('../fonts/Scada/Scada-Italic.ttf') format('truetype');
+}
+
+// @font-face
+// {
+// 	font-family : 'Scada';
+// 	font-style  : normal;
+// 	font-weight : 700;
+// 	src         : url('../fonts/Scada/Scada-Bold.ttf') format('truetype');
+// }
+
+// @font-face
+// {
+// 	font-family : 'Scada';
+// 	font-style  : italic;
+// 	font-weight : 700;
+// 	src         : url('../fonts/Scada/Scada-BoldItalic.ttf') format('truetype');
+// }
+
+html, body, #react_markup, .layout
+{
+	height: 100%;
+}
+
+// ...
+// {
+// 	min-height: 100%;
+// 	// http://stackoverflow.com/questions/8468066/child-inside-parent-with-min-height-100-not-inheriting-height
+// 	height: 1px;
+// }
+
+body
+{
+	margin: 0;
+	overflow-y: scroll;
+}
+
+body, button, input[type="text"], textarea, select
+{
+	// font-family : 'PT Sans';
+	font-family : Scada, Arial, Helvetica;
+}
+
+// input[type="checkbox"]
+// {
+// 	width: 0.9em;
+// 	height: 0.9em;
+//
+// 	margin-right: 0.3em;
+// 	margin-bottom: 0.15em;
+//
+// 	vertical-align: bottom;
+// }
+
+input[type="text"]
+{
+	display: block;
+	width: 18em;
+	// width: 100%;
+
+	margin: 0;
+	padding: 0.4em;
+
+	appearance: none;
+
+	box-sizing: border-box;
+
+	border: none;
+	border-bottom: solid 2px #c9c9c9;
+	transition: border 0.1s;
+
+	&:focus
+	{
+		outline: none;
+
+		border-bottom: solid 2px $active-color;
+	}
+}
+
+img
+{
+	max-width: 100%;
+    height: auto;
+}
+
+h1, h2
+{
+	font-weight : normal;
+}
+
+a
+{
+	color: $active-darker-color;
+	text-decoration: none;
+
+	&:active
+	{
+		color: $active-darker-color;
+	}
+}
+
+button
+{
+	background : none;
+	border     : none;
+	outline    : none;
+	padding    : 0;
+
+	// font-weight : bold;
+	// color       : $active-color;
+	color       : $button-color;
+
+	transition: color 30ms ease-out;
+
+	&:active
+	{
+		// color: $active-lighter-color;
+		color: $active-color;
+	}
+}
+
+table
+{
+	border-spacing  : 0;
+	border-collapse : collapse;
+}
+
+th, td
+{
+	padding     : 8px;
+	line-height : 1.42857143;
+    border-top  : 1px solid #ddd;
+}
+
+th
+{
+	vertical-align : bottom;
+	border-bottom  : 2px solid #ddd;
+	border-top     : 0;
+	text-align     : left;
+
+    color       : #7f7f7f;
+    font-weight : normal;
+}

@@ -1,0 +1,12 @@
+@import "constants.scss";
+
+button.secondary
+{
+	color : $secondary-button-color;
+
+	&:active
+	{
+		// color: $active-lighter-color;
+		color: $secondary-button-active-color;
+	}
+}

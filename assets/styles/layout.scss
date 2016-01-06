@@ -1,0 +1,140 @@
+@import "constants.scss";
+
+.page
+{
+	display        : flex;
+	flex-direction : column;
+
+	transition: none;
+
+	min-height: 100%;
+	// for IE11
+	height: 1px;
+}
+
+footer
+{
+	// can be removed later
+	position: relative;
+
+	// height: 1px;
+	background: #efefef;
+	color: rgb(102, 102, 102);
+
+	padding-top    : 1.3em;
+	padding-bottom : 1.2em;
+
+	padding-left  : 1em;
+	padding-right : 1em;
+
+	font-size: 0.8em;
+
+	> div
+	{
+		text-align: center;
+	}
+}
+
+nav
+{
+	padding-top:    0.4em;
+	padding-bottom: 0.5em;
+}
+
+.content
+{
+	flex-grow: 1;
+	// flex: 1;
+
+	margin-top    : 2em;
+	margin-bottom : 2.5em;
+
+	padding-left  : 1.8em;
+	padding-right : 1.8em;
+}
+
+.menu
+{
+	// flex-grow: 1;
+	// flex-shrink: 1;
+	
+	margin-left    : 0.5em;
+	margin-bottom : -0.01em !important;
+    vertical-align: bottom;
+
+	li:not(:last-child)
+	{
+		margin-right: 1em;
+	}
+}
+
+.menu-item
+{
+	margin-left    : 0.4em;
+	margin-right   : 0.4em;
+
+	padding-bottom : 0em;
+
+	border-bottom-width : 0.12em;
+	border-bottom-color : transparent;
+	border-bottom-style : solid;
+}
+
+.menu-item-selected
+{
+	color : $active-lighter-color;
+	// border-bottom-color : $active-color;
+}
+
+.menu-collapsible
+{
+	a
+	{
+		color: inherit;
+	}
+
+	li
+	{
+		margin-right: 0 !important;
+	}
+}
+
+.logo
+{
+	// flex-grow: 1;
+	// flex-shrink: 1;
+
+	display : inline-block;
+	vertical-align : bottom;
+}
+
+header
+{
+	// display: flex;
+
+	padding-top    : 0.5em;
+	padding-bottom : 0.5em;
+
+	padding-left  : 1.0em;
+	padding-right : 1.0em;
+
+	background   : $header-background;
+	color        : $header-background-text-color;
+	border-color : $header-background-text-color;
+
+	button, a, .dropdown-item-selected
+	{
+		color: $header-background-text-color;
+
+		&:active
+		{
+			color: $header-background-text-color-active;
+		}
+	}
+
+	.dropdown-arrow
+	{
+		color: $header-background-text-color;
+		opacity: 0.8;
+	}
+}
