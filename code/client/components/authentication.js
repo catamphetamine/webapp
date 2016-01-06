@@ -140,11 +140,11 @@ export default class Authentication extends Component
 				<input type="text" placeholder={translate(messages.password)} style={style.input}/>
 
 				<div>
-					<Checkbox style={style.terms_of_service} on_change={::this.accept_terms_of_service} label={translate(messages.i_accept)}/>
+					<Checkbox style={style.terms_of_service} checked={this.state.terms_of_service_accepted} on_change={::this.accept_terms_of_service} label={translate(messages.i_accept)}/>
 
 					&nbsp;<a target="_blank" href="https://www.dropbox.com/terms">{translate(messages.the_terms_of_service)}</a>
 				</div>
-				
+
 				<button style={style.form_action} onClick={::this.register}>{translate(messages.register)}</button>
 			</form>
 		)
@@ -204,7 +204,7 @@ export default class Authentication extends Component
 
 	hide_sign_in_form()
 	{
-		this.setState({ show_sign_in_form: false })
+		this.setState({ show_sign_in_form: false, register: false })
 	}
 
 	sign_in()

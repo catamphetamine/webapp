@@ -56,10 +56,10 @@ body
 	overflow-y: scroll;
 }
 
-body, button, input, textarea, select
+body, button, input[type="text"], textarea, select
 {
 	// font-family : 'PT Sans';
-	font-family : Arial, Sans, Helvetica;
+	font-family : Arial, Helvetica, Sans;
 }
 
 input[type="text"]
@@ -87,16 +87,16 @@ input[type="text"]
 	}
 }
 
-input[type="checkbox"]
-{
-	width: 0.9em;
-	height: 0.9em;
-
-	margin-right: 0.3em;
-	margin-bottom: 0.15em;
-
-	vertical-align: bottom;
-}
+// input[type="checkbox"]
+// {
+// 	width: 0.9em;
+// 	height: 0.9em;
+//
+// 	margin-right: 0.3em;
+// 	margin-bottom: 0.15em;
+//
+// 	vertical-align: bottom;
+// }
 
 .page
 {

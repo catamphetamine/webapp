@@ -6,72 +6,89 @@ import ReactDOM from 'react-dom'
 
 export default class Checkbox extends Component
 {
-	state =
-	{
-		checked: false
-	}
-
+	state = {}
+	
 	static propTypes =
 	{
+		checked   : PropTypes.bool,
 		label     : PropTypes.string.isRequired,
 		on_change : PropTypes.func.isRequired,
 		style     : PropTypes.object
 	}
 
+	componentDidMount()
+	{
+		if (this.props.checked)
+		{
+			this.draw_checkmark()
+		}
+	}
+
 	componentDidUpdate(previous_props, previous_state)
 	{
-		if (this.state.checked !== previous_state.checked)
+		if (this.props.checked !== previous_props.checked)
 		{
-			if (this.state.checked)
+			if (this.props.checked)
 			{
-				const path_element = ReactDOM.findDOMNode(this.refs.path)
-
-				const animation = { speed : .1, easing : 'ease-in-out' }
-
-				const i = 0
-
-				const path_style = {}
-
-				var length = path_element.getTotalLength() // in pixels
-				path_style.strokeDasharray = length + ' ' + length
-
-				// if (i === 0)
-				// {
-					path_element.style.strokeDashoffset = Math.floor(length) - 1
-				// }
-				// else path_element.style.strokeDashoffset = length;
-
-				// Trigger a layout so styles are calculated & the browser
-				// picks up the starting position before animating
-				path_element.getBoundingClientRect()
-
-				// Define our transition
-				path_style.transition = path_element.style.WebkitTransition = path_element.style.MozTransition  = 'stroke-dashoffset ' + animation.speed + 's ' + animation.easing + ' ' + i * animation.speed + 's'
-
-				// Go!
-				path_style.strokeDashoffset = '0'
-
-				// path_element.style = path_style
-
-				this.setState({ path_style: extend(path_style, style.svg_path) })
+				this.draw_checkmark()
 			}
 		}
 	}
 
+	draw_checkmark()
+	{
+		// for (var i = 0, i < paths.length; i++) {
+
+		const i = 0
+
+		const path_element = ReactDOM.findDOMNode(this.refs.path)
+
+		const animation = { speed : .1, easing : 'ease-in-out' }
+
+		const path_style = {}
+
+		const length = path_element.getTotalLength() // in pixels
+		path_style.strokeDasharray = `${length} ${length}`
+
+		// if (i === 0)
+		// {
+			path_element.style.strokeDashoffset = Math.floor(length) - 1
+		// }
+		// else 
+		// {
+		// 	path_element.style.strokeDashoffset = length
+		// }
+
+		// Trigger a layout so styles are calculated & the browser
+		// picks up the starting position before animating
+		path_element.getBoundingClientRect()
+
+		// Define our transition
+		path_style.transition = 
+		path_element.style.WebkitTransition = 
+		path_element.style.MozTransition = 
+			`stroke-dashoffset ${animation.speed}s ${animation.easing} ${i * animation.speed}s`
+
+		// Go
+		path_style.strokeDashoffset = '0'
+
+		this.setState({ path_style: extend(path_style, style.svg_path) })
+	}
+
 	render()
 	{
-		const { on_change, label } = this.props
+		const { checked, on_change, label } = this.props
 
 		const path = ['M16.667,62.167c3.109,5.55,7.217,10.591,10.926,15.75 c2.614,3.636,5.149,7.519,8.161,10.853c-0.046-0.051,1.959,2.414,2.692,2.343c0.895-0.088,6.958-8.511,6.014-7.3 c5.997-7.695,11.68-15.463,16.931-23.696c6.393-10.025,12.235-20.373,18.104-30.707C82.004,24.988,84.802,20.601,87,16']
 
 		const markup = 
 		(
 			<div className="checkbox" style={ this.props.style ? merge(style.container, this.props.style) : style.container}>
-				<input ref="checkbox" type="checkbox" onChange={::this.toggle} style={style.checkbox.input}/>
-				<div className="checkbox_border" style={ !this.state.checked ? style.checkbox.label_before : style.checkbox.label_before.when_checked }></div>
-				<a className="checkbox_label" href="#" style={style.label} onClick={::this.label_clicked}>{label}</a>
+				<input ref="checkbox" type="checkbox" onChange={::this.toggle} style={style.checkbox.input} value={checked}/>
+				<div className="checkbox_border" style={ !checked ? style.checkbox.label_before : style.checkbox.label_before.when_checked }></div>
+				<label className="checkbox_label" style={style.label} onClick={::this.toggle}>{label}</label>
 				<svg viewBox="0 0 100 100" style={style.checkbox.svg}>
-					{ this.state.checked ? <path ref="path" d={path} style={this.state.path_style}></path> : null }
+					{ checked ? <path ref="path" d={path} style={this.state.path_style}></path> : null }
 				</svg>
 			</div>
 		)
@@ -81,29 +98,12 @@ export default class Checkbox extends Component
 
 	toggle()
 	{
-		// const checkbox = ReactDOM.findDOMNode(this.refs.checkbox)
-		// checkbox.checked
+		if (this.props.checked)
+		{
+			this.setState({ path_style: undefined })
+		}
 
-		this.setState({ checked: !this.state.checked, path_style: undefined })
-
-		this.props.on_change(!this.state.checked)
-	}
-
-	label_clicked(event)
-	{
-		event.preventDefault()
-
-		this.toggle()
-	}
-
-	label_mouse_down()
-	{
-		this.setState({ label_active: true })
-	}
-
-	label_mouse_up()
-	{
-		this.setState({ label_active: false })
+		this.props.on_change(!this.props.checked)
 	}
 }
 
@@ -120,6 +120,11 @@ const style = styler
 		vertical-align: bottom
 		color: inherit
 		cursor: default
+
+		-webkit-user-select : none
+		-moz-user-select    : none
+		-ms-user-select     : none
+		user-select         : none
 
 	checkbox
 		position: absolute

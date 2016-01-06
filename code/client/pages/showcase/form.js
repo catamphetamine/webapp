@@ -5,6 +5,7 @@ import { connect }          from 'react-redux'
 
 import Checkbox from '../../components/checkbox'
 import Dropdown from '../../components/dropdown'
+import Switch   from '../../components/switch'
 
 @connect
 (
@@ -16,7 +17,10 @@ export default class Form extends Component
 	{
 		text_value: 'Text',
 		select_value: 'B',
-		textarea_value: 'Lorem ipsum'
+		textarea_value: 'Lorem ipsum',
+		checked: true,
+		// selected: 'A',
+		// switched: true,
 	}
 
 	render()
@@ -44,12 +48,19 @@ export default class Form extends Component
 					You entered: {this.state.textarea_value}
 
 					<label style={style.form.label}>Checkbox</label>
-					<Checkbox style={style.form.checkbox} label="Checkbox" on_change={ checked => this.setState({ checked: checked }) }/>
+					<Checkbox style={style.form.checkbox} label="Checkbox" checked={this.state.checked} on_change={ checked => this.setState({ checked: checked }) }/>
 					You checked: {this.state.checked ? 'checked' : 'unchecked'}
 
 					<label style={style.form.label}>Dropdown</label>
-					<Dropdown style={style.form.checkbox} selected={this.state.selected} list={[{ key: 'A', label: 'Apple' }, { key: 'B', label: 'Banana' }, { key: 'C', label: 'Cranberry' }]} label="Choose" select={ selected => this.setState({ selected: selected}) }/>
+					<Dropdown style={style.form.checkbox} selected={this.state.selected} list={[{ key: 'A', label: 'Apple' }, { key: 'B', label: 'Banana' }, { key: 'C', label: 'Cranberry' }]} label="Choose" select={ selected => this.setState({ selected: selected }) }/>
 					You selected: {this.state.selected ? this.state.selected : 'nothing'}
+
+					<label style={style.form.label}>Switch</label>
+					<div>
+						iOS style switch
+						<Switch style={style.form.switch} value={this.state.switched} on_change={ switched => this.setState({ switched: switched }) }/>
+					</div>
+					You switched: {this.state.switched ? 'on' : 'off'}
 				</form>
 			</div>
 		)
@@ -109,4 +120,9 @@ const style = styler
 			display: block
 			margin-top: 1em
 			margin-bottom: 1em
+
+		switch
+			// margin-top: 1em
+			margin-bottom: 1em
+			margin-left: 1em
 `

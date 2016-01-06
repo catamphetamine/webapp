@@ -1,4 +1,4 @@
-body, button, input, textarea, select
+body, button, input[type="text"], textarea, select
 {
 	font-size   : 20pt;
 }
@@ -11,7 +11,7 @@ body, button, input, textarea, select
 .logo
 {
     margin-right: 4em;
-    
+
 	font-size   : 26pt;
 }
 
