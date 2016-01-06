@@ -159,18 +159,6 @@ const handlers =
 		return new_state
 	},
 
-	'renaming user failed': (error, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			renaming       : false,
-			renaming_error : error
-		}
-
-		return new_state
-	},
-
 	'uploading user picture': (result, state) =>
 	{
 		const new_state = 

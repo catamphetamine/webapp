@@ -3,6 +3,8 @@ import { title }            from 'react-isomorphic-render'
 import styler               from 'react-styling'
 import { connect }          from 'react-redux'
 
+import Checkbox from '../../components/checkbox'
+
 @connect
 (
 	store => ({ })
@@ -39,6 +41,9 @@ export default class Form extends Component
 					<label htmlFor="description" style={style.form.label}>{'Textarea'}</label>
 					<textarea name="description" style={style.form.textarea} value={this.state.textarea_value} onChange={this.on_textarea_text_changed}/>
 					You entered: {this.state.textarea_value}
+
+					<label style={style.form.label}>{'Checkbox'}</label>
+					<Checkbox style={style.form.checkbox} label="Checkbox" on_change={value => console.log(value)}/>
 				</form>
 			</div>
 		)
@@ -76,6 +81,7 @@ const style = styler
 			padding: .5em
 			margin-top: 1em
 			margin-right: 1em
+			margin-bottom: 1em
 
 		select
 			padding: .5em
@@ -91,4 +97,8 @@ const style = styler
 			display: block
 			margin-top: 1em
 			font-weight: bold
+
+		checkbox
+			display: block
+			margin-top: 1em
 `

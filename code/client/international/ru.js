@@ -13,7 +13,7 @@ export default
 	'authentication.forgot_password'     : 'Забыли пароль?',
 
 	'registration.i_accept'             : 'Я принимаю',
-	'registration.the_terms_of_service' : 'Условия обслуживания',
+	'registration.the_terms_of_service' : 'условия обслуживания',
 
 	'menu.editor'              : 'Редактор',
 	'menu.about'               : 'Прочее',

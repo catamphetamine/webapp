@@ -3,12 +3,19 @@ import { title }            from 'react-isomorphic-render'
 import styler               from 'react-styling'
 import { connect }          from 'react-redux'
 
+import Modal from 'react-modal'
+
 @connect
 (
 	store => ({ })
 )
 export default class Dialog extends Component
 {
+	state =
+	{
+		show_dialog: false
+	}
+
 	render()
 	{
 		const markup = 
@@ -17,8 +24,27 @@ export default class Dialog extends Component
 				{title("Dialog Showcase")}
 
 				<div style={style.container}>
-					<a href="https://github.com/yuanyan/boron/issues/8">https://github.com/yuanyan/boron/issues/8</a>
-					{/*['OutlineModal', 'ScaleModal', 'FadeModal', 'FlyModal', 'DropModal', 'WaveModal'].map(name => this.markup_for_button_and_dialog(name))*/}
+					<a href="https://github.com/rackt/react-modal">https://github.com/rackt/react-modal</a>
+
+					<br/>
+					<br/>
+
+					<button style={style.button} onClick={::this.toggle_dialog}>Show</button>
+
+					<Modal
+						isOpen={this.state.show_dialog}
+						onRequestClose={::this.toggle_dialog}
+						// closeTimeoutMS={1000}
+						style={style.modal}>
+
+						<h1>Dialog</h1>
+
+						<p>
+							На этом этапе электрификации все потребители электроэнергии (каковыми являлись исключительно осветительные приборы) использовали постоянный ток, и существовали определенные проблемы с передачей электроэнергии на значительные расстояния. Вследствие этого источник электроэнергии располагался в непосредственной близости от потребителя. Так, например, в случае с Киевскими железнодорожными мастерскими каждый из четырех фонарей имел свою электромагнитную машину Грамма.
+						</p>
+
+						<button style={style.button} onClick={::this.toggle_dialog}>Hide</button>
+					</Modal>
 				</div>
 			</div>
 		)
@@ -26,35 +52,9 @@ export default class Dialog extends Component
 		return markup
 	}
 
-	toggle_dialog(dialog)
+	toggle_dialog()
 	{
-		return () => this.refs[dialog].toggle()
-	}
-
-	markup_for_button_and_dialog(dialog)
-	{
-		const Modal = Boron[dialog]
-
-		const content = 
-		(
-			<div style={style.container}>
-				<h2 style={{ margin: 0, color: '#C94E50', 'font-weight': 400 }}>
-					http://madscript.com/boron/
-				</h2>
-				<button style={style.button} onClick={this.toggle_dialog(dialog)}>Close</button>
-			</div>
-		)
-
-		const markup =
-		(
-			<div>
-				<button style={style.button} onClick={this.toggle_dialog(dialog)}>Open {dialog}</button>
-
-				<Modal ref={dialog}>{content}</Modal>
-			</div>
-		)
-
-		return markup
+		this.setState({ show_dialog: !this.state.show_dialog }) 
 	}
 }
 
@@ -73,4 +73,30 @@ const style = styler
 	container
 		margin    : 2em
 		text-align : center
+
+	modal
+		overlay
+			background-color: rgba(0, 0, 0, 0.2)
+
+		content
+			width: 40em
+			line-height: 1.35em
+
+			// top    : 1.5em
+			// left   : 1.5em
+			// right  : 1.5em
+			// bottom : 1.5em
+
+			padding-left  : 2em
+			padding-right : 2em
+
+			padding-top    : 0.5em
+			padding-bottom : 1.5em
+
+			top                   : 50%
+			left                  : 50%
+			right                 : auto
+			bottom                : auto
+			margin-right          : -50%
+			transform             : translate(-50%, -50%)
 `

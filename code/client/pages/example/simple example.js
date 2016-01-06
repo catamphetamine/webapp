@@ -188,13 +188,13 @@ export default class Page extends Component
 
 								<Button 
 									busy={this.props.uploading_picture} 
-									on_click={event => this.refs.upload_picture.click()} 
+									action={event => this.refs.upload_picture.click()} 
 									text="upload picture"
 									style={style.users.upload_picture}/>
 
 								<Button
 									busy={this.props.deleting}
-									on_click={event => this.delete_user(user.id)}
+									action={event => this.delete_user(user.id)}
 									text="delete user"
 									style={style.users.delete}/>
 							</li>

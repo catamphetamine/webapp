@@ -10,6 +10,7 @@ import international from '../internationalize'
 
 import Uri from '../tools/uri'
 
+import Checkbox from './checkbox'
 import Modal from 'react-modal'
 
 const messages = defineMessages
@@ -124,7 +125,7 @@ export default class Authentication extends Component
 
 		const markup = 
 		(
-			<form style={style.form} onSubmit={ event => event.preventDefault() }>
+			<form className="ac-custom" style={style.form} onSubmit={ event => event.preventDefault() }>
 				<h2 style={style.form_title}>{translate(messages.register)}</h2>
 
 				<div style={style.or_register}>
@@ -138,10 +139,12 @@ export default class Authentication extends Component
 
 				<input type="text" placeholder={translate(messages.password)} style={style.input}/>
 
-				<div style={style.terms_of_service}>
-					<input type="checkbox"/> {translate(messages.i_accept)} <a target="_blank" href="https://www.dropbox.com/terms">{translate(messages.the_terms_of_service)}</a>
-				</div>
+				<div>
+					<Checkbox style={style.terms_of_service} on_change={::this.accept_terms_of_service} label={translate(messages.i_accept)}/>
 
+					&nbsp;<a target="_blank" href="https://www.dropbox.com/terms">{translate(messages.the_terms_of_service)}</a>
+				</div>
+				
 				<button style={style.form_action} onClick={::this.register}>{translate(messages.register)}</button>
 			</form>
 		)
@@ -228,6 +231,11 @@ export default class Authentication extends Component
 	{
 		this.setState({ register: false })
 	}
+
+	accept_terms_of_service(value)
+	{
+		this.setState({ terms_of_service_accepted: value })
+	}
 }
 
 const style = styler
@@ -271,7 +279,7 @@ const style = styler
 			font-weight: normal
 
 	terms_of_service
-		margin-top: 1.5em
+		margin-top: 0.5em
 		margin-bottom: 1.2em
 
 	forgot_password

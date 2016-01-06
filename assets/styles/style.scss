@@ -94,7 +94,7 @@ input[type="checkbox"]
 
 	margin-right: 0.3em;
 	margin-bottom: 0.15em;
-	
+
 	vertical-align: bottom;
 }
 
@@ -104,7 +104,8 @@ input[type="checkbox"]
 	flex-direction : column;
 
 	min-height: 100%;
-	// height: 1px;
+	// for IE11
+	height: 1px;
 }
 
 footer
@@ -329,6 +330,7 @@ a
 .content
 {
 	flex-grow: 1;
+	// flex: 1;
 
 	margin-top    : 2em;
 	margin-bottom : 2.5em;
@@ -481,6 +483,25 @@ th
 
     color       : #7f7f7f;
     font-weight : normal;
+}
+
+// http://tympanus.net/codrops/2013/10/15/animated-checkboxes-and-radio-buttons-with-svg/
+
+.checkbox svg path
+{
+	stroke: $active-color !important;
+	stroke-width: 0.6em !important;
+}
+
+.checkbox input:active + .checkbox_border
+{
+	// border-color: $active-color !important;
+	border-color: #bfbfbf !important;
+}
+
+.checkbox_label:active
+{
+	color: $active-darker-color !important;
 }
 
 // https://github.com/sass/libsass/issues/1766
