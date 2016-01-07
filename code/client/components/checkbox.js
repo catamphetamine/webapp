@@ -10,7 +10,7 @@ export default class Checkbox extends Component
 	
 	static propTypes =
 	{
-		checked   : PropTypes.bool,
+		value     : PropTypes.bool,
 		label     : PropTypes.string.isRequired,
 		on_change : PropTypes.func.isRequired,
 		style     : PropTypes.object
@@ -18,7 +18,7 @@ export default class Checkbox extends Component
 
 	componentDidMount()
 	{
-		if (this.props.checked)
+		if (this.props.value)
 		{
 			this.draw_checkmark()
 		}
@@ -26,9 +26,9 @@ export default class Checkbox extends Component
 
 	componentDidUpdate(previous_props, previous_state)
 	{
-		if (this.props.checked !== previous_props.checked)
+		if (this.props.value !== previous_props.value)
 		{
-			if (this.props.checked)
+			if (this.props.value)
 			{
 				this.draw_checkmark()
 			}
@@ -64,31 +64,33 @@ export default class Checkbox extends Component
 		path_element.getBoundingClientRect()
 
 		// Define our transition
-		path_style.transition = 
-		path_element.style.WebkitTransition = 
-		path_element.style.MozTransition = 
-			`stroke-dashoffset ${animation.speed}s ${animation.easing} ${i * animation.speed}s`
+		// (skips the animation on the initial page render)
+		if (this.was_toggled)
+		{
+			path_style.transition = 
+			path_element.style.WebkitTransition = 
+			path_element.style.MozTransition = 
+				`stroke-dashoffset ${animation.speed}s ${animation.easing} ${i * animation.speed}s`
+		}
 
 		// Go
-		path_style.strokeDashoffset = '0'
+		path_style.strokeDashoffset = 0
 
 		this.setState({ path_style: extend(path_style, style.svg_path) })
 	}
 
 	render()
 	{
-		const { checked, on_change, label } = this.props
-
-		const path = ['M16.667,62.167c3.109,5.55,7.217,10.591,10.926,15.75 c2.614,3.636,5.149,7.519,8.161,10.853c-0.046-0.051,1.959,2.414,2.692,2.343c0.895-0.088,6.958-8.511,6.014-7.3 c5.997-7.695,11.68-15.463,16.931-23.696c6.393-10.025,12.235-20.373,18.104-30.707C82.004,24.988,84.802,20.601,87,16']
+		const { value, on_change, label } = this.props
 
 		const markup = 
 		(
 			<div className="checkbox" style={ this.props.style ? merge(style.container, this.props.style) : style.container}>
-				<input ref="checkbox" type="checkbox" onChange={::this.toggle} style={style.checkbox.input} value={checked}/>
-				<div className="checkbox_border" style={ !checked ? style.checkbox.label_before : style.checkbox.label_before.when_checked }></div>
+				<input ref="checkbox" type="checkbox" onChange={::this.toggle} style={style.checkbox.input} value={value}/>
+				<div className="checkbox_border" style={ !value ? style.checkbox.label_before : style.checkbox.label_before.when_checked }></div>
 				<label className="checkbox_label" style={style.label} onClick={::this.toggle}>{label}</label>
 				<svg viewBox="0 0 100 100" style={style.checkbox.svg}>
-					{ checked ? <path ref="path" d={path} style={this.state.path_style}></path> : null }
+					{ value ? this.render_checkmark() : null }
 				</svg>
 			</div>
 		)
@@ -96,14 +98,50 @@ export default class Checkbox extends Component
 		return markup
 	}
 
+	render_checkmark()
+	{
+		const path = ['M16.667,62.167c3.109,5.55,7.217,10.591,10.926,15.75 c2.614,3.636,5.149,7.519,8.161,10.853c-0.046-0.051,1.959,2.414,2.692,2.343c0.895-0.088,6.958-8.511,6.014-7.3 c5.997-7.695,11.68-15.463,16.931-23.696c6.393-10.025,12.235-20.373,18.104-30.707C82.004,24.988,84.802,20.601,87,16']
+
+		if (_client_)
+		{
+			const path_style =
+			{
+				fill: 'transparent',
+				strokeLinecap: 'round',
+				strokeLinejoin: 'round',
+				// strokeDashoffset: 0,
+				// strokeDasharray: 'none'
+			}
+
+			return <path ref="path" d={path} style={this.state.path_style || path_style}></path>
+		}
+
+		if (_server_)
+		{
+			const path_style =
+			{
+				fill: 'transparent',
+				strokeLinecap: 'round',
+				strokeLinejoin: 'round',
+				// strokeDashoffset: 0,
+				// strokeDasharray: 'none'
+			}
+
+			return <path d={path} style={path_style}></path>
+		}
+	}
+
 	toggle()
 	{
-		if (this.props.checked)
+		// (allows checkmark animation from now on)
+		this.was_toggled = true
+
+		if (this.props.value)
 		{
 			this.setState({ path_style: undefined })
 		}
 
-		this.props.on_change(!this.props.checked)
+		this.props.on_change(!this.props.value)
 	}
 }
 

@@ -140,7 +140,7 @@ export default class Authentication extends Component
 				<input type="text" placeholder={translate(messages.password)} style={style.input}/>
 
 				<div>
-					<Checkbox style={style.terms_of_service} checked={this.state.terms_of_service_accepted} on_change={::this.accept_terms_of_service} label={translate(messages.i_accept)}/>
+					<Checkbox style={style.terms_of_service} value={this.state.terms_of_service_accepted} on_change={::this.accept_terms_of_service} label={translate(messages.i_accept)}/>
 
 					&nbsp;<a target="_blank" href="https://www.dropbox.com/terms">{translate(messages.the_terms_of_service)}</a>
 				</div>

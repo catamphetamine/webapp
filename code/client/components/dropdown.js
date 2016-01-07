@@ -10,7 +10,7 @@ export default class Flag extends Component
 	{
 		list       : PropTypes.array.isRequired,
 		label      : PropTypes.string,
-		selected   : PropTypes.any,
+		value      : PropTypes.any,
 		select     : PropTypes.func.isRequired,
 
 		max_items  : PropTypes.number,
@@ -154,7 +154,7 @@ export default class Flag extends Component
 		// 	item_style = item_style.last
 		// }
 
-		const list_item_style = (key === this.props.selected) ? { maxHeight: 0, overflow: 'hidden', textAlign: 'left' } : { textAlign: 'left' } 
+		const list_item_style = (key === this.props.value) ? { maxHeight: 0, overflow: 'hidden', textAlign: 'left' } : { textAlign: 'left' } 
 
 		// a hack to restore padding-right taken up by a vertical scrollbar
 		if (overflow)
@@ -177,7 +177,7 @@ export default class Flag extends Component
 
 	render_selected_item()
 	{
-		const selected = this.props.list.filter(x => x.key === this.props.selected)[0]
+		const selected = this.props.list.filter(x => x.key === this.props.value)[0]
 
 		let label
 
@@ -211,7 +211,7 @@ export default class Flag extends Component
 
 	list_items()
 	{
-		return this.props.list.filter(({ key }) => key !== this.props.selected)
+		return this.props.list.filter(({ key }) => key !== this.props.value)
 	}
 
 	should_animate()
@@ -233,7 +233,7 @@ export default class Flag extends Component
 	{
 		event.preventDefault()
 
-		if (key === this.props.selected)
+		if (key === this.props.value)
 		{
 			return
 		}

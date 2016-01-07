@@ -48,11 +48,11 @@ export default class Form extends Component
 					You entered: {this.state.textarea_value}
 
 					<label style={style.form.label}>Checkbox</label>
-					<Checkbox style={style.form.checkbox} label="Checkbox" checked={this.state.checked} on_change={ checked => this.setState({ checked: checked }) }/>
+					<Checkbox style={style.form.checkbox} label="Checkbox" value={this.state.checked} on_change={ checked => this.setState({ checked: checked }) }/>
 					You checked: {this.state.checked ? 'checked' : 'unchecked'}
 
 					<label style={style.form.label}>Dropdown</label>
-					<Dropdown style={style.form.checkbox} selected={this.state.selected} list={[{ key: 'A', label: 'Apple' }, { key: 'B', label: 'Banana' }, { key: 'C', label: 'Cranberry' }]} label="Choose" select={ selected => this.setState({ selected: selected }) }/>
+					<Dropdown style={style.form.checkbox} value={this.state.selected} list={[{ key: 'A', label: 'Apple' }, { key: 'B', label: 'Banana' }, { key: 'C', label: 'Cranberry' }]} label="Choose" select={ selected => this.setState({ selected: selected }) }/>
 					You selected: {this.state.selected ? this.state.selected : 'nothing'}
 
 					<label style={style.form.label}>Switch</label>
