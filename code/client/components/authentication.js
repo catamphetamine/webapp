@@ -144,7 +144,7 @@ export default class Authentication extends Component
 				{ user ? this.render_user_info(user) : null }
 
 				<Modal
-					isOpen={!user && this.state.show}
+					isOpen={this.state.password || (!user && this.state.show)}
 					onRequestClose={::this.hide}
 					// closeTimeoutMS={1000}
 					style={style.modal}>
@@ -255,15 +255,24 @@ export default class Authentication extends Component
 		this.setState({ show: false, ...this.pristine_form_state })
 	}
 
-	sign_in()
+	async sign_in()
 	{
-		this.props.sign_in
-		({
-			email    : this.state.email,
-			password : this.state.password
-		})
+		try
+		{
+			await this.props.sign_in
+			({
+				email    : this.state.email,
+				password : this.state.password
+			})
 
-		// alert('to be done')
+			// a sane security measure
+			this.setState({ password: undefined })
+		}
+		catch (error)
+		{
+			alert('User sign in failed.' + '\n\n' + error)
+			console.log(error)
+		}
 	}
 
 	forgot_password()
@@ -271,16 +280,27 @@ export default class Authentication extends Component
 		alert('to be done')
 	}
 
-	register()
+	async register()
 	{
-		this.props.register
-		({
-			name     : this.state.name,
-			email    : this.state.email,
-			password : this.state.password
-		})
+		try
+		{
+			const result = await this.props.register
+			({
+				name     : this.state.name,
+				email    : this.state.email,
+				password : this.state.password
+			})
 
-		// alert('to be done')
+			alert('User registered. Id ' + result.id)
+
+			// a sane security measure
+			this.setState({ password: undefined, register: false })
+		}
+		catch (error)
+		{
+			alert('User registration failed.' + '\n\n' + error)
+			console.log(error)
+		}
 	}
 
 	start_registration()

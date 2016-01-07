@@ -18,8 +18,6 @@ const handlers =
 
 	'user registered': (result, state) =>
 	{
-		alert('User registered. Id ' + result.id)
-
 		const new_state = 
 		{
 			...state,
@@ -32,8 +30,6 @@ const handlers =
 
 	'user registration failed': (error, state) =>
 	{
-		alert('User registertration failed')
-
 		const new_state = 
 		{
 			...state,
@@ -70,8 +66,6 @@ const handlers =
 
 	'user sign in failed': (error, state) =>
 	{
-		alert('User sign in failed')
-
 		const new_state = 
 		{
 			...state,

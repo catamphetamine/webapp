@@ -14,13 +14,13 @@ export default class Not_found extends Component
 	{
 		const markup =
 		(
-			<div>
+			<section className="content">
 				{title("Page not found")}
 
 				<h1 style={style.header}>
 					Page not found
 				</h1>
-			</div>
+			</section>
 		)
 
 		return markup
