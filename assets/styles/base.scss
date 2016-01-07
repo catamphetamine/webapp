@@ -8,13 +8,13 @@
 	src         : url('../fonts/Scada/Scada-Regular.ttf') format('truetype');
 }
 
-@font-face
-{
-	font-family : 'Scada';
-	font-style  : italic;
-	font-weight : 400;
-	src         : url('../fonts/Scada/Scada-Italic.ttf') format('truetype');
-}
+// @font-face
+// {
+// 	font-family : 'Scada';
+// 	font-style  : italic;
+// 	font-weight : 400;
+// 	src         : url('../fonts/Scada/Scada-Italic.ttf') format('truetype');
+// }
 
 // @font-face
 // {
@@ -67,28 +67,77 @@ body, button, input[type="text"], textarea, select
 // 	vertical-align: bottom;
 // }
 
-input[type="text"]
+input[type="text"], textarea
 {
 	display: block;
 	width: 18em;
-	// width: 100%;
 
 	margin: 0;
-	padding: 0.4em;
+	padding: 0.3em;
 
 	appearance: none;
+    resize: none;
 
 	box-sizing: border-box;
 
 	border: none;
-	border-bottom: solid 2px #c9c9c9;
+	border-bottom: $input-border-width solid $input-border-color;
 	transition: border 0.1s;
 
 	&:focus
 	{
 		outline: none;
 
-		border-bottom: solid 2px $active-color;
+		border-bottom: $input-border-width solid $active-color;
+	}
+}
+
+.select
+{
+	position: relative;
+	width: 18em;
+
+	select
+	{
+		width: 100%;
+
+		padding: 0.3em;
+
+		appearance: none;
+
+		border: none;
+		border-bottom: $input-border-width solid $input-border-color;
+
+		transition: border 0.1s;
+
+		&:focus
+		{
+			outline: none;
+
+			border-bottom: $input-border-width solid $active-color;
+		}
+	}
+
+	&:after
+	{
+		position: absolute;
+		top: 0.75em;
+		right: 0.3em;
+
+		/* Styling the down arrow */
+
+		width: 0;
+		height: 0;
+
+		padding: 0;
+
+		content: '';
+
+		border-left: .25em solid transparent;
+		border-right: .25em solid transparent;
+		border-top: .375em solid black;
+
+		pointer-events: none;
 	}
 }
 

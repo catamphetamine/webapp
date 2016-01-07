@@ -111,6 +111,14 @@
 
 	padding-top    : $dropdown-item-vertical-padding;
 	padding-bottom : $dropdown-item-vertical-padding;
+
+	width: 100%;
+	text-align: left;
+
+	&:active
+	{
+		background-color: #f7f7f7;
+	}
 }
 
 .dropdown-item-list

@@ -311,7 +311,7 @@ const style = styler
 		width        : 0
 		height       : 0
 
-		margin-left   : 0.2em
+		margin-left   : 0.3em
 		margin-bottom : 0.15em
 
 		border-width : 0.23em 0.23em 0 0.23em 

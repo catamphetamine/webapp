@@ -5,20 +5,28 @@ export default class Text_input extends Component
 {
 	static propTypes =
 	{
+		name        : PropTypes.string,
 		value       : PropTypes.any,
 		on_change   : PropTypes.func.isRequired,
 		placeholder : PropTypes.string,
+		multiline   : PropTypes.bool,
+		email       : PropTypes.bool,
 		style       : PropTypes.object
 	}
 
 	render()
 	{
-		const { value, on_change, placeholder, style } = this.props
+		const { name, value, on_change, placeholder, multiline, email, style } = this.props
 
-		const markup = 
-		(
-			<input type="text" style={style} value={value} onChange={event => on_change(event.target.value)} placeholder={placeholder}/>
-		)
+		if (multiline)
+		{
+			// maybe add autoresize for textarea (smoothly animated)
+			return <textarea ref="textarea" name={name} style={style} value={value} onChange={event => on_change(event.target.value)} placeholder={placeholder}/>
+		}
+		else
+		{
+			return <input type={email ? 'email' : 'text'} name={name} style={style} value={value} onChange={event => on_change(event.target.value)} placeholder={placeholder}/>
+		}
 
 		return markup
 	}

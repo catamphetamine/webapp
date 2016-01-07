@@ -32,31 +32,33 @@ export default class Form extends Component
 				{title("Form UI Showcase")}
 
 				<form style={style.form}>
-					<label style={style.form.label}>{'Text input field'}</label>
+					<h2 style={style.form.label}>{'Text input field'}</h2>
 					<Text_input style={style.form.input} value={this.state.text_value} on_change={value => this.setState({ text_value: value })} placeholder="Enter text"/>
 					You entered: {this.state.text_value}
 
-					<label style={style.form.label}>{'Select'}</label>
-					<select style={style.form.select} value={this.state.select_value} onChange={this.on_selection_changed}>
-						<option value="A">Apple</option>
-						<option value="B">Banana</option>
-						<option value="C">Cranberry</option>
-					</select>
-					You selected: {this.state.select_value}
-
-					<label htmlFor="description" style={style.form.label}>{'Textarea'}</label>
-					<textarea name="description" style={style.form.textarea} value={this.state.textarea_value} onChange={this.on_textarea_text_changed}/>
+					<h2 style={style.form.label}>{'Textarea'}</h2>
+					<Text_input multiline={true} name="description" style={style.form.textarea} value={this.state.textarea_value} on_change={value => this.setState({ textarea_value: value })} placeholder="Enter text"/>
 					You entered: {this.state.textarea_value}
 
-					<label style={style.form.label}>Checkbox</label>
-					<Checkbox style={style.form.checkbox} label="Checkbox" value={this.state.checked} on_change={ checked => this.setState({ checked: checked }) }/>
-					You checked: {this.state.checked ? 'checked' : 'unchecked'}
+					<h2 style={style.form.label}>{'Select'}</h2>
+					<div className="select" style={style.form.select}>
+						<select value={this.state.select_value} onChange={this.on_selection_changed}>
+							<option value="A">Apple</option>
+							<option value="B">Banana</option>
+							<option value="C">Cranberry</option>
+						</select>
+					</div>
+					You selected: {this.state.select_value}
 
-					<label style={style.form.label}>Dropdown</label>
+					<h2 style={style.form.label}>Dropdown</h2>
 					<Dropdown style={style.form.checkbox} value={this.state.selected} list={[{ key: 'A', label: 'Apple' }, { key: 'B', label: 'Banana' }, { key: 'C', label: 'Cranberry' }]} label="Choose" select={ selected => this.setState({ selected: selected }) }/>
 					You selected: {this.state.selected ? this.state.selected : 'nothing'}
 
-					<label style={style.form.label}>Switch</label>
+					<h2 style={style.form.label}>Checkbox</h2>
+					<Checkbox style={style.form.checkbox} label="Checkbox" value={this.state.checked} on_change={ checked => this.setState({ checked: checked }) }/>
+					You checked: {this.state.checked ? 'checked' : 'unchecked'}
+
+					<h2 style={style.form.label}>Switch</h2>
 					<div style={style.form.switch_container}>
 						<label style={style.form.switch_label}>iOS style switch</label>
 						<Switch style={style.form.switch} value={this.state.switched} on_change={ switched => this.setState({ switched: switched }) }/>
@@ -74,13 +76,6 @@ export default class Form extends Component
 		const value = event.target.value
     	this.setState({ select_value: value })
 	}
-
-	on_textarea_text_changed = event =>
-	{
-		const value = event.target.value
-		// you can validate value here
-    	this.setState({ textarea_value: value })
-	}
 }
 
 const style = styler
@@ -89,20 +84,19 @@ const style = styler
 		margin-top: 2em
 
 		input
-			padding: .5em
 			margin-top: 1em
 			margin-right: 1em
 			margin-bottom: 1em
 
 		select
-			padding: .5em
 			margin-top: 0em
 			margin-right: 1em
+			margin-bottom: 1em
 
 		textarea
-			padding: .5em
 			margin-top: 0em
 			margin-right: 1em
+			margin-bottom: 1em
 
 		label
 			display: block

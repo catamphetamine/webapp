@@ -175,7 +175,7 @@ export default class Authentication extends Component
 
 				<Text_input value={this.state.name} on_change={value => this.setState({ name: value })} placeholder={translate(messages.name)} style={style.input}/>
 
-				<Text_input value={this.state.email} on_change={value => this.setState({ email: value })} placeholder={translate(messages.email)} style={style.input}/>
+				<Text_input email={true} value={this.state.email} on_change={value => this.setState({ email: value })} placeholder={translate(messages.email)} style={style.input}/>
 
 				<Text_input value={this.state.password} on_change={value => this.setState({ password: value })} placeholder={translate(messages.password)} style={style.input}/>
 
@@ -208,7 +208,7 @@ export default class Authentication extends Component
 
 				<div style={style.clearfix}></div>
 
-				<Text_input value={this.state.email} on_change={value => this.setState({ email: value })} placeholder={translate(messages.email)} style={style.input}/>
+				<Text_input email={true} value={this.state.email} on_change={value => this.setState({ email: value })} placeholder={translate(messages.email)} style={style.input}/>
 
 				<Text_input value={this.state.password} on_change={value => this.setState({ password: value })} placeholder={translate(messages.password)} style={style.input}/>
 
