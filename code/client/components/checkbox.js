@@ -102,31 +102,20 @@ export default class Checkbox extends Component
 	{
 		const path = ['M16.667,62.167c3.109,5.55,7.217,10.591,10.926,15.75 c2.614,3.636,5.149,7.519,8.161,10.853c-0.046-0.051,1.959,2.414,2.692,2.343c0.895-0.088,6.958-8.511,6.014-7.3 c5.997-7.695,11.68-15.463,16.931-23.696c6.393-10.025,12.235-20.373,18.104-30.707C82.004,24.988,84.802,20.601,87,16']
 
+		const path_style =
+		{
+			fill           : 'transparent',
+			strokeLinecap  : 'round',
+			strokeLinejoin : 'round'
+		}
+
 		if (_client_)
 		{
-			const path_style =
-			{
-				fill: 'transparent',
-				strokeLinecap: 'round',
-				strokeLinejoin: 'round',
-				// strokeDashoffset: 0,
-				// strokeDasharray: 'none'
-			}
-
 			return <path ref="path" d={path} style={this.state.path_style || path_style}></path>
 		}
 
 		if (_server_)
 		{
-			const path_style =
-			{
-				fill: 'transparent',
-				strokeLinecap: 'round',
-				strokeLinejoin: 'round',
-				// strokeDashoffset: 0,
-				// strokeDasharray: 'none'
-			}
-
 			return <path d={path} style={path_style}></path>
 		}
 	}

@@ -33,7 +33,7 @@ export default class Form extends Component
 
 				<form style={style.form}>
 					<label style={style.form.label}>{'Text input field'}</label>
-					<Text_input style={style.form.input} value={this.state.text_value} on_change={value => this.setState({ text_value: value })}/>
+					<Text_input style={style.form.input} value={this.state.text_value} on_change={value => this.setState({ text_value: value })} placeholder="Enter text"/>
 					You entered: {this.state.text_value}
 
 					<label style={style.form.label}>{'Select'}</label>
