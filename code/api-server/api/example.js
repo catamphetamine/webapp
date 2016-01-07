@@ -31,7 +31,7 @@ api.post('/example/users', function({ name })
 	id_counter++
 	const id = String(id_counter)
 
-	users.set(id, { name: name })
+	users.set(id, { name })
 
 	return id
 })

@@ -10,8 +10,12 @@ import international from '../internationalize'
 
 import Uri from '../tools/uri'
 
-import Checkbox from './checkbox'
+import Text_input from './text input'
+import Checkbox   from './checkbox'
 import Modal from 'react-modal'
+
+import { bindActionCreators as bind_action_creators } from 'redux'
+import { sign_in, register } from '../actions/authentication'
 
 const messages = defineMessages
 ({
@@ -32,6 +36,12 @@ const messages = defineMessages
 		id             : 'authentication.register',
 		description    : 'Register action',
 		defaultMessage : 'Create an account'
+	},
+	name:
+	{
+		id             : 'authentication.name',
+		description    : 'User name',
+		defaultMessage : 'Name'
 	},
 	email:
 	{
@@ -70,20 +80,48 @@ const messages = defineMessages
 	store => 
 	({
 		user : store.authentication.user
-	})
+	}),
+	dispatch => bind_action_creators
+	({
+		sign_in,
+		register
+	},
+	dispatch)
 )
 @international()
 export default class Authentication extends Component
 {
 	state = 
 	{
-		show_sign_in_form : false,
+		show : false
+	}
+
+	pristine_form_state = 
+	{
+		name     : undefined,
+		email    : undefined,
+		password : undefined,
 		register : false
 	}
 
 	static propTypes =
 	{
-		user: PropTypes.object
+		user: PropTypes.object,
+
+		sign_in     : PropTypes.func.isRequired,
+		register    : PropTypes.func.isRequired
+	}
+
+	constructor(properties)
+	{
+		super(properties)
+
+		extend(this.state, this.pristine_form_state)
+	}
+
+	componentDidMount()
+	{
+		this.mounted = true
 	}
 
 	render()
@@ -97,7 +135,7 @@ export default class Authentication extends Component
 			<div className="authentication" style={ this.props.style ? extend({ display: 'inline-block' }, this.props.style) : { display: 'inline-block' } }>
 				
 				{/* Sign in action */}
-				{ !user ? <button onClick={::this.show_sign_in_form}>{translate(messages.sign_in)}</button> : null }
+				{ !user ? <button onClick={::this.show}>{translate(messages.sign_in)}</button> : null }
 
 				{/* Register action */}
 				{/* <button>translate(messages.register)</button> */}
@@ -106,8 +144,8 @@ export default class Authentication extends Component
 				{ user ? this.render_user_info(user) : null }
 
 				<Modal
-					isOpen={this.state.show_sign_in_form}
-					onRequestClose={::this.hide_sign_in_form}
+					isOpen={this.state.show}
+					onRequestClose={::this.hide}
 					// closeTimeoutMS={1000}
 					style={style.modal}>
 
@@ -135,9 +173,11 @@ export default class Authentication extends Component
 
 				<div style={style.clearfix}></div>
 
-				<input type="text" placeholder={translate(messages.email)} style={style.input}/>
+				<Text_input value={this.state.name} on_change={value => this.setState({ name: value })} placeholder={translate(messages.name)} style={style.input}/>
 
-				<input type="text" placeholder={translate(messages.password)} style={style.input}/>
+				<Text_input value={this.state.email} on_change={value => this.setState({ email: value })} placeholder={translate(messages.email)} style={style.input}/>
+
+				<Text_input value={this.state.password} on_change={value => this.setState({ password: value })} placeholder={translate(messages.password)} style={style.input}/>
 
 				<div>
 					<Checkbox style={style.terms_of_service} value={this.state.terms_of_service_accepted} on_change={::this.accept_terms_of_service} label={translate(messages.i_accept)}/>
@@ -168,9 +208,9 @@ export default class Authentication extends Component
 
 				<div style={style.clearfix}></div>
 
-				<input type="text" placeholder={translate(messages.email)} style={style.input}/>
+				<Text_input value={this.state.email} on_change={value => this.setState({ email: value })} placeholder={translate(messages.email)} style={style.input}/>
 
-				<input type="text" placeholder={translate(messages.password)} style={style.input}/>
+				<Text_input value={this.state.password} on_change={value => this.setState({ password: value })} placeholder={translate(messages.password)} style={style.input}/>
 
 				<div style={style.sign_in_buttons}>
 					<button className="secondary" style={style.forgot_password} onClick={::this.forgot_password}>{translate(messages.forgot_password)}</button>
@@ -199,19 +239,25 @@ export default class Authentication extends Component
 		return markup
 	}
 
-	show_sign_in_form()
+	show()
 	{
-		this.setState({ show_sign_in_form: true })
+		this.setState({ show: true })
 	}
 
-	hide_sign_in_form()
+	hide()
 	{
-		this.setState({ show_sign_in_form: false, register: false })
+		this.setState({ show: false, ...this.pristine_form_state })
 	}
 
 	sign_in()
 	{
-		alert('to be done')
+		this.props.sign_in
+		({
+			email    : this.state.email,
+			password : this.state.password
+		})
+
+		// alert('to be done')
 	}
 
 	forgot_password()
@@ -221,7 +267,14 @@ export default class Authentication extends Component
 
 	register()
 	{
-		alert('to be done')
+		this.props.register
+		({
+			name     : this.state.name,
+			email    : this.state.email,
+			password : this.state.password
+		})
+
+		// alert('to be done')
 	}
 
 	start_registration()

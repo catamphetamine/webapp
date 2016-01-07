@@ -3,9 +3,10 @@ import { title }            from 'react-isomorphic-render'
 import styler               from 'react-styling'
 import { connect }          from 'react-redux'
 
-import Checkbox from '../../components/checkbox'
-import Dropdown from '../../components/dropdown'
-import Switch   from '../../components/switch'
+import Text_input from '../../components/text input'
+import Checkbox   from '../../components/checkbox'
+import Dropdown   from '../../components/dropdown'
+import Switch     from '../../components/switch'
 
 @connect
 (
@@ -15,10 +16,10 @@ export default class Form extends Component
 {
 	state = 
 	{
-		text_value: 'Text',
-		select_value: 'B',
-		textarea_value: 'Lorem ipsum',
-		checked: true,
+		text_value     : 'Text',
+		select_value   : 'B',
+		textarea_value : 'Lorem ipsum',
+		checked        : true,
 		// selected: 'A',
 		// switched: true,
 	}
@@ -32,7 +33,7 @@ export default class Form extends Component
 
 				<form style={style.form}>
 					<label style={style.form.label}>{'Text input field'}</label>
-					<input type="text" style={style.form.input} value={this.state.text_value} onChange={this.on_input_text_changed}/>
+					<Text_input style={style.form.input} value={this.state.text_value} on_change={value => this.setState({ text_value: value })}/>
 					You entered: {this.state.text_value}
 
 					<label style={style.form.label}>{'Select'}</label>
@@ -66,13 +67,6 @@ export default class Form extends Component
 		)
 
 		return markup
-	}
-
-	on_input_text_changed = event =>
-	{
-		const value = event.target.value
-		// you can validate value here
-    	this.setState({ text_value: value })
 	}
 
 	on_selection_changed = event =>

@@ -8,6 +8,7 @@ export default
 	'authentication.sign_in_or_register' : 'или',
 	'authentication.register'            : 'Зарегистрироваться',
 	'authentication.sign_in'             : 'Войти',
+	'authentication.name'                : 'Имя пользователя',
 	'authentication.email'               : 'Электропочта',
 	'authentication.password'            : 'Пароль',
 	'authentication.forgot_password'     : 'Забыли пароль?',
