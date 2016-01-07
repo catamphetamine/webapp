@@ -57,12 +57,11 @@ const handlers =
 
 	'user signed in': (result, state) =>
 	{
-		alert('User signed in')
-
 		const new_state = 
 		{
 			...state,
 			signing_in : false,
+			user       : result,
 			// stale  : true
 		}
 

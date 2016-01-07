@@ -184,18 +184,6 @@
 	}
 }
 
-.authentication
-{
-	position: absolute;
-	top: 0.7em;
-	right: 0.8em;
-
-	button
-	{
-		font-weight: normal;
-	}
-}
-
 // http://tympanus.net/codrops/2013/10/15/animated-checkboxes-and-radio-buttons-with-svg/
 
 .checkbox svg path
@@ -213,4 +201,63 @@
 .checkbox_label:active
 {
 	color: $active-darker-color !important;
+}
+
+.user_info
+{
+	display         : flex;
+	flex-direction  : row;
+	justify-content : center;
+
+	max-height: 100%;
+}
+
+.user_name
+{
+	// centers <a/> vertically
+	display         : flex;
+	flex-direction  : column;
+	justify-content : center;
+
+	margin-right: 0.8em;
+
+	a
+	{
+
+	}
+}
+
+.user_picture
+{
+	// display: inline-block;
+
+	// width  : $header-height;
+	// height : $header-height;
+
+    width: $header-height;
+    // height: auto;
+
+	// background-size: cover;
+}
+
+.sign_in
+{
+    position: absolute;
+
+    top   : $header-vertical-padding + 0.2em;
+    right : $header-horizontal-padding - 0.2em;
+}
+
+.authentication
+{
+	position: absolute;
+	top   : 0;
+	right : 0;
+
+	height: 100%;
+
+	button
+	{
+		font-weight: normal;
+	}
 }

@@ -135,7 +135,7 @@ export default class Authentication extends Component
 			<div className="authentication" style={ this.props.style ? extend({ display: 'inline-block' }, this.props.style) : { display: 'inline-block' } }>
 				
 				{/* Sign in action */}
-				{ !user ? <button onClick={::this.show}>{translate(messages.sign_in)}</button> : null }
+				{ !user ? <button className="sign_in" onClick={::this.show}>{translate(messages.sign_in)}</button> : null }
 
 				{/* Register action */}
 				{/* <button>translate(messages.register)</button> */}
@@ -144,7 +144,7 @@ export default class Authentication extends Component
 				{ user ? this.render_user_info(user) : null }
 
 				<Modal
-					isOpen={this.state.show}
+					isOpen={!user && this.state.show}
 					onRequestClose={::this.hide}
 					// closeTimeoutMS={1000}
 					style={style.modal}>
@@ -225,14 +225,20 @@ export default class Authentication extends Component
 
 	render_user_info(user)
 	{
+		const user_picture = user.picture ? `/upload/user_pictures/${user.id}.jpg` : require('../../../assets/images/no user picture 85x85.png')
+
 		const markup = 
 		(
-			<div>
+			<div className="user_info">
 				{/* Username */}
-				<div className="username">{user.username}</div>
+				<div className="user_name"><a href="/">{user.name}</a></div>
 
 				{/* Avatar */}
-				<div className="user_picture" style={{ backgroundImage: 'url(/upload/user_pictures/' + user.id + '.jpg)' }}></div>
+				{/*<div className="user_picture" style={{ backgroundImage: `url("${user_picture}")` }}></div>*/}
+				{/* the wrapping <div/> keeps image aspect ratio */}
+				<div className="user_picture">
+					<img src={user_picture}/>
+				</div>
 			</div>
 		)
 
