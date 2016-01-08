@@ -289,6 +289,9 @@ export default class Flag extends Component
 	// }
 }
 
+const arrow_height = 0.35
+const arrow_width = 0.4
+
 const style = styler
 `
 	wrapper
@@ -311,10 +314,12 @@ const style = styler
 		width        : 0
 		height       : 0
 
-		margin-left   : 0.3em
-		margin-bottom : 0.15em
+		margin-left   : 0.35em
+		margin-bottom : 0.1em
 
-		border-width : 0.23em 0.23em 0 0.23em 
+		opacity: 0.7
+
+		border-width : ${arrow_height}em ${arrow_width / 2}em 0 ${arrow_width / 2}em 
 
 		border-style       : solid
 		border-left-color  : transparent
