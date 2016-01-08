@@ -19,7 +19,6 @@ import Button from '../../components/button'
 		users         : store.users.users,
 		loading       : store.users.loading,
 		loaded        : store.users.loaded,
-		stale         : store.users.stale,
 		loading_error : store.users.loading_error,
 		adding_error  : store.users.adding_error,
 
@@ -45,7 +44,6 @@ export default class Page extends Component
 		users         : PropTypes.array.isRequired,
 		loading       : PropTypes.bool,
 		loaded        : PropTypes.bool,
-		stale         : PropTypes.bool,
 		loading_error : PropTypes.object,
 		adding_error  : PropTypes.object,
 
@@ -78,11 +76,6 @@ export default class Page extends Component
 		// 	this.constructor.preload(this.context.store)
 		// }
 	}
-
-	// shouldComponentUpdate(next_props, next_state)
-	// {
-	// 	// may skip rendering if next_props = props + stale: true
-	// }
 
 	render()
 	{
