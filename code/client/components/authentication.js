@@ -144,7 +144,7 @@ export default class Authentication extends Component
 				{ user ? this.render_user_info(user) : null }
 
 				<Modal
-					isOpen={this.state.password || (!user && this.state.show)}
+					isOpen={exists(this.state.password) || (!user && this.state.show)}
 					onRequestClose={::this.hide}
 					// closeTimeoutMS={1000}
 					style={style.modal}>
@@ -177,7 +177,7 @@ export default class Authentication extends Component
 
 				<Text_input email={true} value={this.state.email} on_change={value => this.setState({ email: value })} placeholder={translate(messages.email)} style={style.input}/>
 
-				<Text_input value={this.state.password} on_change={value => this.setState({ password: value })} placeholder={translate(messages.password)} style={style.input}/>
+				<Text_input password={true} value={this.state.password} on_change={value => this.setState({ password: value })} placeholder={translate(messages.password)} style={style.input}/>
 
 				<div>
 					<Checkbox style={style.terms_of_service} value={this.state.terms_of_service_accepted} on_change={::this.accept_terms_of_service} label={translate(messages.i_accept)}/>
@@ -210,7 +210,7 @@ export default class Authentication extends Component
 
 				<Text_input email={true} value={this.state.email} on_change={value => this.setState({ email: value })} placeholder={translate(messages.email)} style={style.input}/>
 
-				<Text_input value={this.state.password} on_change={value => this.setState({ password: value })} placeholder={translate(messages.password)} style={style.input}/>
+				<Text_input password={true} value={this.state.password} on_change={value => this.setState({ password: value })} placeholder={translate(messages.password)} style={style.input}/>
 
 				<div style={style.sign_in_buttons}>
 					<button className="secondary" style={style.forgot_password} onClick={::this.forgot_password}>{translate(messages.forgot_password)}</button>

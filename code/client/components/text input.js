@@ -11,12 +11,28 @@ export default class Text_input extends Component
 		placeholder : PropTypes.string,
 		multiline   : PropTypes.bool,
 		email       : PropTypes.bool,
+		password    : PropTypes.bool,
 		style       : PropTypes.object
 	}
 
 	render()
 	{
-		const { name, value, on_change, placeholder, multiline, email, style } = this.props
+		const { name, value, on_change, placeholder, multiline, email, password, style } = this.props
+
+		let type
+
+		if (email)
+		{
+			type = 'email'
+		}
+		else if (password)
+		{
+			type = 'password'
+		}
+		else
+		{
+			type = 'text'
+		}
 
 		if (multiline)
 		{
@@ -25,7 +41,7 @@ export default class Text_input extends Component
 		}
 		else
 		{
-			return <input type={email ? 'email' : 'text'} name={name} style={style} value={value} onChange={event => on_change(event.target.value)} placeholder={placeholder}/>
+			return <input type={type} name={name} style={style} value={value} onChange={event => on_change(event.target.value)} placeholder={placeholder}/>
 		}
 
 		return markup

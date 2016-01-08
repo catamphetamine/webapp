@@ -50,7 +50,7 @@ body
 	overflow-y: scroll;
 }
 
-body, button, input[type="text"], textarea, select
+body, button, input, textarea, select
 {
 	// font-family : 'PT Sans';
 	font-family : Scada, Arial, Helvetica;
@@ -67,7 +67,7 @@ body, button, input[type="text"], textarea, select
 // 	vertical-align: bottom;
 // }
 
-input[type="text"], textarea
+input[type="text"], input[type="email"], input[type="password"], textarea
 {
 	display: block;
 	width: 18em;
