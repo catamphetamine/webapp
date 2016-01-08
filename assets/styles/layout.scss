@@ -125,9 +125,6 @@ header
 	color        : $header-background-text-color;
 	border-color : $header-background-text-color;
 
-	min-height: $header-height - 2 * $header-vertical-padding;
-	max-height: $header-height - 2 * $header-vertical-padding;
-
 	button, a, .dropdown-item-selected
 	{
 		color: $header-background-text-color;
