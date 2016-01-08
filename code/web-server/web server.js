@@ -8,6 +8,9 @@ const web = web_server({  })
 // serve assets
 web.serve_static_files('/assets', path.join(Root_folder, 'build', 'assets'))
 
+// remove this after fixing the "simple example" page
+web.serve_static_files('/upload_temporary_store', path.join(Root_folder, configuration.image_server.temporary_files_directory))
+
 // serve uploaded files (pictures, etc)
 web.serve_static_files('/upload', path.join(Root_folder, configuration.upload_folder))
 

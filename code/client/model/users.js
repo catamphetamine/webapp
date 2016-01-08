@@ -24,7 +24,6 @@ const handlers =
 			...state,
 			loading : false,
 			loaded  : true,
-			stale   : false,
 			users   : result
 		}
 
@@ -59,8 +58,7 @@ const handlers =
 		const new_state = 
 		{
 			...state,
-			adding : false,
-			stale  : true
+			adding : false
 		}
 
 		return new_state
@@ -73,17 +71,6 @@ const handlers =
 			...state,
 			adding       : false,
 			adding_error : error
-		}
-
-		return new_state
-	},
-
-	'adding error dismissed': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			adding_error : undefined
 		}
 
 		return new_state
@@ -105,8 +92,7 @@ const handlers =
 		const new_state = 
 		{
 			...state,
-			deleting : false,
-			stale  : true
+			deleting : false
 		}
 
 		return new_state
@@ -140,8 +126,7 @@ const handlers =
 		const new_state = 
 		{
 			...state,
-			renaming : false,
-			stale    : true
+			renaming : false
 		}
 
 		return new_state
@@ -190,17 +175,6 @@ const handlers =
 			...state,
 			uploading_picture       : false,
 			uploading_picture_error : error
-		}
-
-		return new_state
-	},
-
-	'uploading user picture error dismissed': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			uploading_picture_error : undefined
 		}
 
 		return new_state

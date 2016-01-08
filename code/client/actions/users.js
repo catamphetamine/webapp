@@ -50,11 +50,6 @@ export function rename()
 	return action
 }
 
-export function dismiss_adding_error()
-{
-	return { type: 'adding error dismissed' }
-}
-
 export function upload_picture(user_id, data)
 {
 	const action =
@@ -71,9 +66,4 @@ export function upload_picture(user_id, data)
 	}
 
 	return action
-}
-
-export function dismiss_uploading_picture_error()
-{
-	return { type: 'uploading user picture error dismissed' }
 }

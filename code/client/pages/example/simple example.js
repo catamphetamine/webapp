@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
 
-import { get as get_users, add as add_user, remove as delete_user, dismiss_adding_error, upload_picture, dismiss_uploading_picture_error } from '../../actions/users'
+import { get as get_users, add as add_user, remove as delete_user, upload_picture } from '../../actions/users'
 
 import Button from '../../components/button'
 
@@ -26,7 +26,14 @@ import Button from '../../components/button'
 		uploading_picture       : store.users.uploading_picture,
 		uploading_picture_error : store.users.uploading_picture_error
 	}),
-	dispatch => bind_action_creators({ get_users, add_user, delete_user, dismiss_adding_error, upload_picture, dismiss_uploading_picture_error }, dispatch)
+	dispatch => bind_action_creators
+	({
+		get_users, 
+		add_user, 
+		delete_user, 
+		upload_picture
+	},
+	dispatch)
 )
 export default class Page extends Component
 {
@@ -70,28 +77,6 @@ export default class Page extends Component
 		// {
 		// 	this.constructor.preload(this.context.store)
 		// }
-	}
-
-	componentWillReceiveProps(next_props)
-	{
-		if (!this.props.stale && next_props.stale)
-		{
-			this.refresh()
-		}
-
-		if (next_props.adding_error)
-		{
-			alert('Failed to add the user')
-
-			this.props.dismiss_adding_error()
-		}
-
-		if (next_props.uploading_picture_error)
-		{
-			alert('Failed to upload user picture')
-
-			this.props.dismiss_uploading_picture_error()
-		}
 	}
 
 	// shouldComponentUpdate(next_props, next_state)
@@ -176,7 +161,7 @@ export default class Page extends Component
 							return <li key={user.id}>
 								<span style={style.user.id}>{user.id}</span>
 
-								<img style={style.user.picture} src={user.picture ? `/assets/images_temporary_store/${user.picture}` : no_user_picture}/>
+								<img style={style.user.picture} src={user.picture ? `/upload_temporary_store/${user.picture}` : no_user_picture}/>
 
 								<span style={style.user.name}>{user.name}</span>
 
@@ -212,7 +197,7 @@ export default class Page extends Component
 		this.props.get_users()
 	}
 
-	add_user()
+	async add_user()
 	{
 		const name = prompt(`Enter user's name`)
 		
@@ -221,16 +206,28 @@ export default class Page extends Component
 			return
 		}
 
-		this.props.add_user({ name: name })
-
-		// this.refresh()
+		try
+		{
+			await this.props.add_user({ name: name })
+			this.refresh()
+		}
+		catch (error)
+		{
+			alert('Error adding user')
+		}
 	}
 
-	delete_user(id)
+	async delete_user(id)
 	{
-		this.props.delete_user(id)
-
-		// this.refresh()
+		try
+		{
+			await this.props.delete_user(id)
+			this.refresh()
+		}
+		catch (error)
+		{
+			alert('Error deleting user')
+		}
 	}
 
 	on_picture_file_selected(event, user_id)
