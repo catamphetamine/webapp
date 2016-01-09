@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom'
 import styler from 'react-styling'
 
 const scrollbar_width = '17px'
+const add_padding_for_scrollbar = true
+const show_selected_item_in_list = true
 
 export default class Flag extends Component
 {
@@ -24,7 +26,8 @@ export default class Flag extends Component
 	{
 		max_items : 6,
 
-		transition_item_count_min : 3,
+		// transition_item_count_min : 3,
+		transition_item_count_min : 1,
 		transition_duration_min : 60, // milliseconds
 		transition_duration_max : 100 // milliseconds
 	}
@@ -51,6 +54,11 @@ export default class Flag extends Component
 			if (this.state.expanded && this.should_animate())
 			{
 				this.calculate_height()
+
+				if (this.overflown())
+				{
+					list_style.maxHeight = this.overflown_height() + 'px'
+				}
 			}
 		}
 	}
@@ -66,51 +74,50 @@ export default class Flag extends Component
 
 		const item_list = this.list_items()
 
-		const overflow = item_list.length > this.props.max_items
-
 		const list_style = clone(style.list.visible)
 
-		if (this.state.expanded)
+		// old animation, not used now (always false)
+		if (this.animate_using_max_height)
 		{
-			list_style.opacity = 1
-		}
+			list_style.maxHeight = 0
+			list_style.overflowY = 'hidden'
 
-		if (this.should_animate())
-		{
 			let height = this.state.height
 
-			if (overflow)
+			if (this.overflown())
 			{
-				height = height * (this.props.max_items / item_list.length)
+				height = this.overflown_height() + 'px'
+
+				list_style.overflowY = 'auto'
 			}
 
-			if (this.state.expanded)
+			if (this.should_animate())
 			{
-				list_style.maxHeight = height + 'px'
+				if (this.state.expanded)
+				{
+					list_style.maxHeight = height + 'px'
+				}
+				else
+				{
+					list_style.maxHeight = 0
+				}
+
+				list_style.transitionDuration = this.props.transition_duration_min + ((this.props.transition_duration_max - this.props.transition_duration_min) * Math.min(item_list.length / this.props.max_items, 1)) + 'ms'
 			}
 			else
 			{
-				list_style.maxHeight = 0 // height / 2 + 'px'
-			}
-
-			list_style.transitionDuration = this.props.transition_duration_min + ((this.props.transition_duration_max - this.props.transition_duration_min) * Math.min(item_list.length / this.props.max_items, 1)) + 'ms'
-		}
-		else
-		{
-			if (this.state.expanded)
-			{
-				list_style.maxHeight = undefined
-			}
-			else
-			{
-				list_style.maxHeight = 0
+				if (this.state.expanded)
+				{
+					list_style.maxHeight = undefined
+				}
+				else
+				{
+					list_style.maxHeight = 0
+				}
 			}
 		}
 
-		if (overflow)
-		{
-			list_style.overflowY = 'auto'
-		}
+		const overflow = this.overflown()
 
 		const markup = 
 		(
@@ -141,6 +148,8 @@ export default class Flag extends Component
 
 	render_list_item(key, label, icon, overflow) // , first, last
 	{
+		const is_selected = key === this.props.value
+
 		let item_style = style.list.item
 
 		// if (first && last)
@@ -156,22 +165,29 @@ export default class Flag extends Component
 		// 	item_style = item_style.last
 		// }
 
-		const list_item_style = (key === this.props.value) ? { maxHeight: 0, overflow: 'hidden', textAlign: 'left' } : { textAlign: 'left' } 
+		let list_item_style = { textAlign: 'left' } 
+
+		if (!show_selected_item_in_list && is_selected)
+		{
+			list_item_style.maxHeight = 0
+			list_item_style.overflow  = 'hidden'
+		}
 
 		// on overflow the vertical scrollbar will take up space
 		// reducing padding-right and the only way to fix that
 		// is to add additional padding-right
 		//
 		// a hack to restore padding-right taken up by a vertical scrollbar
-		if (overflow)
+		if (overflow && add_padding_for_scrollbar)
 		{
-			list_item_style.paddingRight = scrollbar_width
+			item_style.marginRight = scrollbar_width
+			// list_item_style.paddingRight = scrollbar_width
 		}
 
 		const markup =
 		(
 			<li key={key} style={list_item_style}>
-				<button onClick={event => this.item_clicked(key, event)} style={item_style} className="dropdown-item">
+				<button onClick={event => this.item_clicked(key, event)} style={item_style} className={ "dropdown-item " + (is_selected ? 'dropdown-item-selected-in-list' : '') }>
 					<span className="dropdown-item-icon">{icon}</span>
 					<span className="dropdown-item-label">{label}</span>
 				</button>
@@ -215,14 +231,31 @@ export default class Flag extends Component
 		return markup
 	}
 
+	overflown()
+	{
+		return this.list_items().length > this.props.max_items
+	}
+
+	overflown_height()
+	{
+		return (this.state.height - 2 * this.state.vertical_padding) * (this.props.max_items / this.list_items().length) + this.state.vertical_padding
+	}
+
 	list_items()
 	{
+		if (show_selected_item_in_list)
+		{
+			return this.props.list
+		}
+
 		return this.props.list.filter(({ key }) => key !== this.props.value)
 	}
 
 	should_animate()
 	{
-		return this.list_items().length >= this.props.transition_item_count_min
+		return true
+
+		// return this.list_items().length >= this.props.transition_item_count_min
 	}
 
 	toggle(event)
@@ -256,7 +289,11 @@ export default class Flag extends Component
 	{
 		const list_dom_node = ReactDOM.findDOMNode(this.refs.list)
 		const border = parseInt(window.getComputedStyle(list_dom_node).borderTopWidth)
-		let height = list_dom_node.scrollHeight + 2 * border // inner height + 2 * border
+		const height = list_dom_node.scrollHeight // + 2 * border // inner height + 2 * border
+
+		// console.log(list_dom_node.firstChild.style.paddingTop)
+		console.log(window.getComputedStyle(list_dom_node.firstChild).paddingTop)
+		const vertical_padding = parseInt(window.getComputedStyle(list_dom_node.firstChild).paddingTop)
 
 		// const images = list_dom_node.querySelectorAll('img')
 
@@ -265,7 +302,7 @@ export default class Flag extends Component
 		// 	return this.preload_images(list_dom_node, images)
 		// }
 
-		this.setState({ height: height })
+		this.setState({ height, vertical_padding, border })
 	}
 
 	// // https://github.com/daviferreira/react-sanfona/blob/master/src/AccordionItem/index.jsx#L54
@@ -339,6 +376,7 @@ const style = styler
   
 	list
 		position : absolute
+		z-index  : 1
 
 		margin          : 0
 		padding         : 0
@@ -348,8 +386,8 @@ const style = styler
 		// opacity        : 0
 		// pointer-events : none
 
-		max-height : 0
-		overflow-y : hidden
+		// max-height : 0
+		// overflow-y : hidden
 
 		&visible
 			overflow-x : hidden

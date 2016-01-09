@@ -11,8 +11,9 @@ $input-border-width : 0.1em;
 $input-padding      : 0.3em;
 $input-width        : 18em;
 
-$dropdown-item-vertical-padding: 0.2em;
-$dropdown-item-horizontal-padding: 0.8em;
+$dropdown-item-vertical-padding   : 0.2em;
+$dropdown-item-horizontal-padding : 0.8em;
+$dropdown-item-active-color       : #f7f7f7;
 
 // Undefined variable: "$menu-item-compact-vertical-padding"
 // if placed inside xs-m.scss

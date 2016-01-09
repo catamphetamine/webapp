@@ -51,7 +51,7 @@ export default class Form extends Component
 					You selected: {this.state.select_value}
 
 					<h2 style={style.form.label}>Dropdown</h2>
-					<Dropdown style={style.form.checkbox} value={this.state.selected} list={[{ key: 'A', label: 'Apple' }, { key: 'B', label: 'Banana' }, { key: 'C', label: 'Cranberry' }]} label="Choose" select={ selected => this.setState({ selected: selected }) }/>
+					<Dropdown style={style.form.checkbox} value={this.state.selected} list={[{ key: 'A', label: 'Apple' }, { key: 'B', label: 'Banana' }, { key: 'C', label: 'Cranberry' }, { key: 'D', label: 'Date' }, { key: 'E', label: 'Elderberry' }, { key: 'F', label: 'Fig' }, { key: 'G', label: 'Garlic' }]} label="Choose" select={ selected => this.setState({ selected: selected }) }/>
 					You selected: {this.state.selected ? this.state.selected : 'nothing'}
 
 					<h2 style={style.form.label}>Checkbox</h2>
