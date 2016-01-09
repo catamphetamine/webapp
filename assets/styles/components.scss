@@ -121,6 +121,22 @@
 	}
 }
 
+/*
+.dropdown-item-selected
+{
+	transform  : translateX(0);
+	transition : transform 100ms ease-out;
+}
+
+.dropdown-collapsed
+{
+	.dropdown-item-selected
+	{
+		transform: translateX(-($dropdown-item-horizontal-padding - $input-padding));
+	}
+}
+*/
+
 .dropdown-item-list
 {
 	> li:first-child
@@ -136,7 +152,7 @@
 
 .dropdown-item-selected
 {
-	padding-left: $dropdown-item-horizontal-padding;
+	padding-left: $input-padding; // $dropdown-item-horizontal-padding;
 }
 
 .dropdown-item, .dropdown-item-selected
@@ -153,6 +169,7 @@
 .dropdown-arrow
 {
 	// opacity: ...;
+	color: black;
 }
 
 // https://css-tricks.com/three-line-menu-navicon/

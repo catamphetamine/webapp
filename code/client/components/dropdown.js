@@ -25,8 +25,8 @@ export default class Flag extends Component
 		max_items : 6,
 
 		transition_item_count_min : 3,
-		transition_duration_min : 70, // milliseconds
-		transition_duration_max : 150 // milliseconds
+		transition_duration_min : 60, // milliseconds
+		transition_duration_max : 100 // milliseconds
 	}
 
 	state = {}
@@ -70,13 +70,15 @@ export default class Flag extends Component
 
 		const list_style = clone(style.list.visible)
 
+		if (this.state.expanded)
+		{
+			list_style.opacity = 1
+		}
+
 		if (this.should_animate())
 		{
 			let height = this.state.height
 
-			// on overflow the vertical scrollbar will take up space
-			// reducing padding-right and the only way to fix that
-			// is to add additional padding-right
 			if (overflow)
 			{
 				height = height * (this.props.max_items / item_list.length)
@@ -88,7 +90,7 @@ export default class Flag extends Component
 			}
 			else
 			{
-				list_style.maxHeight = 0
+				list_style.maxHeight = 0 // height / 2 + 'px'
 			}
 
 			list_style.transitionDuration = this.props.transition_duration_min + ((this.props.transition_duration_max - this.props.transition_duration_min) * Math.min(item_list.length / this.props.max_items, 1)) + 'ms'
@@ -112,7 +114,7 @@ export default class Flag extends Component
 
 		const markup = 
 		(
-			<div style={ this.props.style ? merge(style.wrapper, this.props.style) : style.wrapper } className="dropdown">
+			<div style={ this.props.style ? merge(style.wrapper, this.props.style) : style.wrapper } className={"dropdown " + (this.state.expanded ? "dropdown-expanded" : "dropdown-collapsed")}>
 
 				{/* list container */}
 				<div style={ this.state.expanded ? style.container.expanded : style.container }>
@@ -156,6 +158,10 @@ export default class Flag extends Component
 
 		const list_item_style = (key === this.props.value) ? { maxHeight: 0, overflow: 'hidden', textAlign: 'left' } : { textAlign: 'left' } 
 
+		// on overflow the vertical scrollbar will take up space
+		// reducing padding-right and the only way to fix that
+		// is to add additional padding-right
+		//
 		// a hack to restore padding-right taken up by a vertical scrollbar
 		if (overflow)
 		{
@@ -249,7 +255,8 @@ export default class Flag extends Component
 	calculate_height()
 	{
 		const list_dom_node = ReactDOM.findDOMNode(this.refs.list)
-		let height = list_dom_node.scrollHeight + list_dom_node.offsetHeight // inner height + 2 * border
+		const border = parseInt(window.getComputedStyle(list_dom_node).borderTopWidth)
+		let height = list_dom_node.scrollHeight + 2 * border // inner height + 2 * border
 
 		// const images = list_dom_node.querySelectorAll('img')
 
@@ -319,6 +326,8 @@ const style = styler
 
 		opacity: 0.7
 
+		transition: opacity 100ms ease-out
+
 		border-width : ${arrow_height}em ${arrow_width / 2}em 0 ${arrow_width / 2}em 
 
 		border-style       : solid
@@ -326,6 +335,7 @@ const style = styler
 		border-right-color : transparent
 
 		&expanded
+			opacity: 0.3
   
 	list
 		position : absolute

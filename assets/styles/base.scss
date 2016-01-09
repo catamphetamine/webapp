@@ -70,13 +70,12 @@ body, button, input, textarea, select
 input[type="text"], input[type="email"], input[type="password"], textarea
 {
 	display: block;
-	width: 18em;
+	width: $input-width;
 
 	margin: 0;
-	padding: 0.3em;
+	padding: $input-padding;
 
 	appearance: none;
-    resize: none;
 
 	box-sizing: border-box;
 
@@ -92,18 +91,25 @@ input[type="text"], input[type="email"], input[type="password"], textarea
 	}
 }
 
+// uncomment these in case of "autoresize" feature implemented for <textarea/>
+// textarea
+// {
+// 	overflow-y: hidden;
+//	resize: none;
+// }
+
 .select
 {
 	position: relative;
-	width: 18em;
+	width: $input-width;
 
 	select
 	{
 		width: 100%;
 
-		padding: 0.3em;
+		padding: $input-padding;
 
-		appearance: none;
+		// appearance: none;
 
 		border: none;
 		border-bottom: $input-border-width solid $input-border-color;
@@ -118,13 +124,13 @@ input[type="text"], input[type="email"], input[type="password"], textarea
 		}
 	}
 
+	/*
+	// down arrow
 	&:after
 	{
 		position: absolute;
 		top: 0.75em;
 		right: 0.3em;
-
-		/* Styling the down arrow */
 
 		width: 0;
 		height: 0;
@@ -139,6 +145,7 @@ input[type="text"], input[type="email"], input[type="password"], textarea
 
 		pointer-events: none;
 	}
+	*/
 }
 
 img
