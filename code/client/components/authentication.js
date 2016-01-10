@@ -171,7 +171,7 @@ export default class Authentication extends Component
 
 				<div style={style.or_register}>
 					<span>{translate(messages.or)}&nbsp;</span>
-					<Button style={style.or_register.register} action={::this.start_registration} text={translate(messages.register)}/>
+					<Button button_style={style.or_register.register} action={::this.start_registration} text={translate(messages.register)}/>
 				</div>
 
 				<div style={style.clearfix}></div>
@@ -218,7 +218,7 @@ export default class Authentication extends Component
 
 				<div style={style.or_register}>
 					<span>{translate(messages.or)}&nbsp;</span>
-					<Button style={style.or_register.register} action={::this.cancel_registration} text={translate(messages.sign_in)}/>
+					<Button button_style={style.or_register.register} action={::this.cancel_registration} text={translate(messages.sign_in)}/>
 				</div>
 
 				<div style={style.clearfix}></div>
@@ -431,7 +431,7 @@ const style = styler
 
 		register
 			text-transform : lowercase
-			font-weight: normal
+			// font-weight: normal
 
 	terms_of_service
 		margin-top: 0.5em

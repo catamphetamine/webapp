@@ -3,6 +3,11 @@ import styler from 'react-styling'
 
 import React_modal from 'react-modal'
 
+// when changing this also change 
+// your .ReactModal__Overlay and .ReactModal__Content 
+// css transition times accordingly
+const default_close_timeout = 150 // ms
+
 export default class Modal extends Component
 {
 	static propTypes =
@@ -22,7 +27,7 @@ export default class Modal extends Component
 			<React_modal
 				isOpen={isOpen}
 				onRequestClose={onRequestClose}
-				// closeTimeoutMS={closeTimeoutMS}
+				closeTimeoutMS={closeTimeoutMS || default_close_timeout}
 				style={this.props.style ? merge(style.modal, this.props.style) : style.modal}>
 
 				{this.props.children}

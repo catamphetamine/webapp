@@ -351,3 +351,40 @@
 	display: flex !important;
 	align-items: center;
 }
+
+// styling react-modal dialog widget
+
+// when changing css transition times here
+// also change `default_close_timeout` in ./components/modal.js accordingly
+
+.ReactModal__Overlay
+{
+	opacity: 0;
+	transition: opacity 150ms ease-out;
+}
+
+.ReactModal__Overlay--after-open
+{
+	opacity: 1;
+}
+
+.ReactModal__Content
+{
+	transform: scale(0.7);
+	transition: all 150ms ease-out;
+}
+
+.ReactModal__Content--after-open
+{
+	transform: scale(1);
+}
+
+.ReactModal__Overlay--before-close
+{
+	opacity: 0;
+}
+
+.ReactModal__Content--before-close
+{
+	transform: scale(0.7);
+}
