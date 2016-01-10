@@ -187,7 +187,15 @@
 
 .dropdown-item-selected
 {
-	padding-left: $input-padding; // $dropdown-item-horizontal-padding;
+	padding-left  : $input-padding; // $dropdown-item-horizontal-padding;
+	padding-right : $input-padding;
+	
+	padding-bottom : $input-padding;
+	margin-bottom  : -$input-border-width;
+
+	border: none;
+	border-bottom: $input-border-width solid $input-border-color;
+	transition: border 0.1s;
 }
 
 .dropdown-item, .dropdown-item-selected

@@ -103,33 +103,12 @@ input[type="text"], input[type="email"], input[type="password"], textarea
 //	resize: none;
 // }
 
+/*
 .select
 {
 	position: relative;
 	width: $input-width;
 
-	select
-	{
-		width: 100%;
-
-		padding: $input-padding;
-
-		// appearance: none;
-
-		border: none;
-		border-bottom: $input-border-width solid $input-border-color;
-
-		transition: border 0.1s;
-
-		&:focus
-		{
-			outline: none;
-
-			border-bottom: $input-border-width solid $active-color;
-		}
-	}
-
-	/*
 	// down arrow
 	&:after
 	{
@@ -150,7 +129,29 @@ input[type="text"], input[type="email"], input[type="password"], textarea
 
 		pointer-events: none;
 	}
-	*/
+}
+*/
+
+select
+{
+	display: block;
+	width: $input-width;
+
+	padding: $input-padding;
+
+	// appearance: none;
+
+	border: none;
+	border-bottom: $input-border-width solid $input-border-color;
+
+	transition: border 0.1s;
+
+	&:focus
+	{
+		outline: none;
+
+		border-bottom: $input-border-width solid $active-color;
+	}
 }
 
 img

@@ -53,11 +53,9 @@ export default class Flag extends Component
 		{
 			if (this.state.expanded && this.should_animate())
 			{
-				this.calculate_height()
-
-				if (this.overflown())
+				if (!exists(this.state.height))
 				{
-					list_style.maxHeight = this.overflown_height() + 'px'
+					this.calculate_height()
 				}
 			}
 		}
@@ -75,6 +73,11 @@ export default class Flag extends Component
 		const item_list = this.list_items()
 
 		const list_style = clone(style.list.visible)
+
+		if (exists(this.state.list_height))
+		{
+			list_style.maxHeight = this.state.list_height + 'px'
+		}
 
 		// old animation, not used now (always false)
 		if (this.animate_using_max_height)
@@ -236,9 +239,9 @@ export default class Flag extends Component
 		return this.list_items().length > this.props.max_items
 	}
 
-	overflown_height()
+	overflown_height(state = this.state)
 	{
-		return (this.state.height - 2 * this.state.vertical_padding) * (this.props.max_items / this.list_items().length) + this.state.vertical_padding
+		return (state.height - 2 * state.vertical_padding) * (this.props.max_items / this.list_items().length) + state.vertical_padding
 	}
 
 	list_items()
@@ -291,8 +294,6 @@ export default class Flag extends Component
 		const border = parseInt(window.getComputedStyle(list_dom_node).borderTopWidth)
 		const height = list_dom_node.scrollHeight // + 2 * border // inner height + 2 * border
 
-		// console.log(list_dom_node.firstChild.style.paddingTop)
-		console.log(window.getComputedStyle(list_dom_node.firstChild).paddingTop)
 		const vertical_padding = parseInt(window.getComputedStyle(list_dom_node.firstChild).paddingTop)
 
 		// const images = list_dom_node.querySelectorAll('img')
@@ -302,7 +303,14 @@ export default class Flag extends Component
 		// 	return this.preload_images(list_dom_node, images)
 		// }
 
-		this.setState({ height, vertical_padding, border })
+		const state = { height, vertical_padding, border }
+
+		if (this.overflown())
+		{
+			state.list_height = this.overflown_height(state)
+		}
+
+		this.setState(state)
 	}
 
 	// // https://github.com/daviferreira/react-sanfona/blob/master/src/AccordionItem/index.jsx#L54
@@ -346,10 +354,16 @@ const style = styler
 		position : relative
 		// margin   : 0 auto
 
+		-webkit-user-select : none  /* Chrome all / Safari all */
+		-moz-user-select    : none  /* Firefox all */
+		-ms-user-select     : none  /* IE 10+ */
+		user-select         : none  /* Likely future */
+
 		&expanded
 
 	selected_item_label
-		width      : 100%
+		// width      : 100%
+		// display: inline-block;
 		text-align : left
 
 	arrow

@@ -41,13 +41,11 @@ export default class Form extends Component
 					You entered: {this.state.textarea_value}
 
 					<h2 style={style.form.label}>{'Select'}</h2>
-					<div className="select" style={style.form.select}>
-						<select value={this.state.select_value} onChange={this.on_selection_changed}>
-							<option value="A">Apple</option>
-							<option value="B">Banana</option>
-							<option value="C">Cranberry</option>
-						</select>
-					</div>
+					<select style={style.form.select} value={this.state.select_value} onChange={this.on_selection_changed}>
+						<option value="A">Apple</option>
+						<option value="B">Banana</option>
+						<option value="C">Cranberry</option>
+					</select>
 					You selected: {this.state.select_value}
 
 					<h2 style={style.form.label}>Dropdown</h2>
