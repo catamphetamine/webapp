@@ -2,6 +2,8 @@ import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 import styler from 'react-styling'
 
+import { inject } from './common'
+
 export default class Text_input extends Component
 {
 	state = {}
@@ -18,6 +20,13 @@ export default class Text_input extends Component
 		email       : PropTypes.bool,
 		password    : PropTypes.bool,
 		style       : PropTypes.object
+	}
+
+	constructor(options)
+	{
+		super(options)
+
+		inject(this)
 	}
 
 	render()
@@ -42,7 +51,7 @@ export default class Text_input extends Component
 		if (multiline)
 		{
 			// maybe add autoresize for textarea (smoothly animated)
-			return <textarea ref="textarea" name={name} style={style} className={this.state.valid === false ? 'text-input-invalid' : ''} value={value} onFocus={::this.on_focus} onBlur={::this.on_blur} onChange={::this.on_change} placeholder={placeholder}/>
+			return <textarea ref="input" name={name} style={style} className={this.state.valid === false ? 'text-input-invalid' : ''} value={value} onFocus={::this.on_focus} onBlur={::this.on_blur} onChange={::this.on_change} placeholder={placeholder}/>
 		}
 		else
 		{
@@ -50,81 +59,6 @@ export default class Text_input extends Component
 		}
 
 		return markup
-	}
-
-	on_focus()
-	{
-		if (this.preserve_validation_on_focus)
-		{
-			return this.preserve_validation_on_focus = false
-		}
-
-		this.setState({ valid: undefined })
-	}
-
-	on_blur(event)
-	{
-		// const value = event.target.value
-
-		this.validate()
-	}
-
-	on_change(event)
-	{
-		this.setState({ valid: undefined })
-
-		const { on_change } = this.props
-
-		const value = event.target.value
-
-		on_change(value)
-	}
-
-	validate()
-	{
-		const { value, validate } = this.props
-
-		if (!validate)
-		{
-			return
-		}
-
-		if (this.validation)
-		{
-			if (this.validation.cancel)
-			{
-				this.validation.cancel()
-			}
-		}
-
-		const valid = validate(value) ? true : false
-
-		if (is_promise(valid))
-		{
-			this.validation = valid
-
-			this.validation.then(valid =>
-			{
-				this.validation = undefined
-
-				this.setState({ valid })
-			})
-		}
-		else
-		{
-			this.setState({ valid })
-		}
-	}
-
-	focus(options = {})
-	{
-		if (options.preserve_validation)
-		{
-			this.validate()
-			this.preserve_validation_on_focus = true
-		}
-
-		ReactDOM.findDOMNode(this.refs.input || this.refs.textarea).focus()
 	}
 
 	/*
@@ -139,7 +73,7 @@ export default class Text_input extends Component
 	// https://github.com/Dogfalo/materialize/blob/master/js/forms.js#L118
 	autoresize()
 	{
-		const textarea = ReactDOM.findDOMNode(this.refs.textarea)
+		const textarea = ReactDOM.findDOMNode(this.refs.input)
 
 		// Set font properties of hidden_div
 

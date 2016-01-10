@@ -154,6 +154,11 @@
 	}
 }
 
+.dropdown-upward .dropdown-item-list
+{
+	transform-origin: 50% bottom 0px;
+}
+
 .dropdown-item-list-expanded
 {
 	transform: scaleY(1);
@@ -189,7 +194,8 @@
 {
 	padding-left  : $input-padding; // $dropdown-item-horizontal-padding;
 	padding-right : $input-padding;
-	
+
+	padding-top    : $input-padding;
 	padding-bottom : $input-padding;
 	margin-bottom  : -$input-border-width;
 
@@ -249,6 +255,7 @@
 	.dropdown-item-selected
 	{
 		text-align: right !important;
+		border: none;
 	}
 
 	.dropdown-item-icon > img

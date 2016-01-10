@@ -14,6 +14,7 @@ export default class Flag extends Component
 		label      : PropTypes.string,
 		value      : PropTypes.any,
 		select     : PropTypes.func.isRequired,
+		upward     : PropTypes.bool,
 
 		max_items  : PropTypes.number,
 
@@ -68,11 +69,11 @@ export default class Flag extends Component
 
 	render()
 	{
-		const { list } = this.props
+		const { list, upward } = this.props
 
 		const item_list = this.list_items()
 
-		const list_style = clone(style.list.visible)
+		const list_style = clone(upward ? style.list.upward : style.list.downward)
 
 		if (exists(this.state.list_height))
 		{
@@ -124,7 +125,7 @@ export default class Flag extends Component
 
 		const markup = 
 		(
-			<div style={ this.props.style ? merge(style.wrapper, this.props.style) : style.wrapper } className={"dropdown " + (this.state.expanded ? "dropdown-expanded" : "dropdown-collapsed")}>
+			<div style={ this.props.style ? merge(style.wrapper, this.props.style) : style.wrapper } className={"dropdown " + (upward ? "dropdown-upward" : "") + " " + (this.state.expanded ? "dropdown-expanded" : "dropdown-collapsed")}>
 
 				{/* list container */}
 				<div style={ this.state.expanded ? style.container.expanded : style.container }>
@@ -390,27 +391,31 @@ const style = styler
   
 	list
 		position : absolute
+		left : 0
+
 		z-index  : 1
 
 		margin          : 0
 		padding         : 0
 		list-style-type : none
 
-		// // Hiding
-		// opacity        : 0
-		// pointer-events : none
+		overflow-x : hidden
 
-		// max-height : 0
-		// overflow-y : hidden
+		background-color: white
 
-		&visible
-			overflow-x : hidden
+		&downward
+			// top  : 100%
 
 			// when html page is overflown by a long list
 			// this bottom margin takes effect
 			margin-bottom : 1em
 
-			background-color: white
+		&upward
+			bottom: 100%
+
+			// when html page is overflown by a long list
+			// this top margin takes effect
+			margin-top : 1em
 
 		&placeholder
 			position            : static

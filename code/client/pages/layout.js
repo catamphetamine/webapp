@@ -237,7 +237,7 @@ export default class Layout extends Component
 						<div><a href="https://github.com/halt-hammerzeit">halt-hammerzeit@github.com</a></div>
 
 						{/* language chooser */}
-						<Locale_switcher style={style.locale_switcher}/>
+						<Locale_switcher upward={true} style={style.locale_switcher}/>
 					</footer>
 				</div>
 			</div>

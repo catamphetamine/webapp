@@ -2,6 +2,8 @@ import React, { Component, PropTypes } from 'react'
 import styler from 'react-styling'
 import ReactDOM from 'react-dom'
 
+import { inject } from './common'
+
 // http://tympanus.net/codrops/2013/10/15/animated-checkboxes-and-radio-buttons-with-svg/
 
 export default class Checkbox extends Component
@@ -13,8 +15,15 @@ export default class Checkbox extends Component
 		value     : PropTypes.bool,
 		label     : PropTypes.string.isRequired,
 		on_change : PropTypes.func.isRequired,
-		valid     : PropTypes.bool,
+		validate  : PropTypes.func,
 		style     : PropTypes.object
+	}
+
+	constructor(options)
+	{
+		super(options)
+
+		inject(this)
 	}
 
 	componentDidMount()
@@ -82,12 +91,12 @@ export default class Checkbox extends Component
 
 	render()
 	{
-		const { value, on_change, label, valid } = this.props
+		const { value, label } = this.props
 
 		const markup = 
 		(
-			<div className={"checkbox " + (valid === false ? 'checkbox-invalid' : '')} style={ this.props.style ? merge(style.container, this.props.style) : style.container}>
-				<input ref="checkbox" type="checkbox" onChange={::this.toggle} style={style.checkbox.input} value={value}/>
+			<div className={"checkbox " + (this.state.valid === false ? 'checkbox-invalid' : '')} style={ this.props.style ? merge(style.container, this.props.style) : style.container}>
+				<input ref="input" type="checkbox" onFocus={this.on_focus} onBlur={this.on_blur} onChange={::this.toggle} style={style.checkbox.input} value={value}/>
 				<div className="checkbox-border" style={ !value ? style.checkbox.label_before : style.checkbox.label_before.when_checked }></div>
 				<label className="checkbox-label" style={style.label} onClick={::this.toggle}>{label}</label>
 				<svg viewBox="0 0 100 100" style={style.checkbox.svg}>
@@ -123,6 +132,8 @@ export default class Checkbox extends Component
 
 	toggle()
 	{
+		this.reset_validation()
+
 		// (allows checkmark animation from now on)
 		this.was_toggled = true
 

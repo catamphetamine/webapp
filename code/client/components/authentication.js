@@ -209,7 +209,7 @@ export default class Authentication extends Component
 						style={style.terms_of_service}
 						value={this.state.terms_of_service_accepted}
 						on_change={::this.accept_terms_of_service}
-						valid={this.state.terms_of_service_valid}
+						validate={::this.validate_terms_of_service}
 						label={translate(messages.i_accept)}/>
 
 					&nbsp;<a target="_blank" href="https://www.dropbox.com/terms">{translate(messages.the_terms_of_service)}</a>
@@ -319,6 +319,11 @@ export default class Authentication extends Component
 		return value
 	}
 
+	validate_terms_of_service(value)
+	{
+		return value
+	}
+
 	async sign_in(event)
 	{
 		event.preventDefault()
@@ -377,7 +382,7 @@ export default class Authentication extends Component
 
 		if (!this.state.terms_of_service_accepted)
 		{
-			return this.setState({ terms_of_service_valid: false })
+			return this.refs.accept_terms_of_service.focus({ preserve_validation : true })
 		}
 
 		try
@@ -401,8 +406,26 @@ export default class Authentication extends Component
 		}
 	}
 
+	reset_validation()
+	{
+		if (this.refs.name)
+		{
+			this.refs.name.reset_validation()
+		}
+
+		this.refs.email.reset_validation()
+		this.refs.password.reset_validation()
+
+		if (this.refs.accept_terms_of_service)
+		{
+			this.refs.accept_terms_of_service.reset_validation()
+		}
+	}
+
 	start_registration()
 	{
+		this.reset_validation()
+
 		this.setState({ register: true }, () =>
 		{
 			this.refs.name.focus()
@@ -411,6 +434,8 @@ export default class Authentication extends Component
 
 	cancel_registration()
 	{
+		this.reset_validation()
+
 		this.setState({ register: false }, () =>
 		{
 			this.refs.email.focus()
@@ -419,7 +444,7 @@ export default class Authentication extends Component
 
 	accept_terms_of_service(value)
 	{
-		this.setState({ terms_of_service_accepted: value, terms_of_service_valid: undefined })
+		this.setState({ terms_of_service_accepted: value })
 	}
 }
 

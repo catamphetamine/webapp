@@ -78,7 +78,8 @@ export default class Locale_switcher extends Component
 					value={locale} 
 					select={::this.set_locale} 
 					list={locales.map(({ key, label }) => ({ key: key, label: label, icon: <Flag locale={key} style={style.locale.flag}/> }))} 
-					title={translate(messages.language)}/>
+					title={translate(messages.language)}
+					upward={this.props.upward}/>
 			</div>
 		)
 
