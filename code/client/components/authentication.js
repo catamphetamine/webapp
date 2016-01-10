@@ -13,7 +13,9 @@ import Uri from '../tools/uri'
 
 import Text_input from './text input'
 import Checkbox   from './checkbox'
-import Modal from 'react-modal'
+import Button     from './button'
+import Form       from './form'
+import Modal      from './modal'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
 import { sign_in, register } from '../actions/authentication'
@@ -136,7 +138,7 @@ export default class Authentication extends Component
 			<div className="authentication" style={ this.props.style ? extend({ display: 'inline-block' }, this.props.style) : { display: 'inline-block' } }>
 				
 				{/* Sign in action */}
-				{ !user ? <button className="sign_in" onClick={::this.show}>{translate(messages.sign_in)}</button> : null }
+				{ !user ? <Button className="sign_in" action={::this.show} text={translate(messages.sign_in)}/> : null }
 
 				{/* Register action */}
 				{/* <button>translate(messages.register)</button> */}
@@ -158,18 +160,65 @@ export default class Authentication extends Component
 		return markup
 	}
 
+	render_sign_in_form()
+	{
+		const translate = this.props.intl.formatMessage
+
+		const markup = 
+		(
+			<Form style={style.form} action={::this.sign_in} inputs={() => [this.refs.email, this.refs.password]}>
+				<h2 style={style.form_title}>{translate(messages.sign_in)}</h2>
+
+				<div style={style.or_register}>
+					<span>{translate(messages.or)}&nbsp;</span>
+					<Button style={style.or_register.register} action={::this.start_registration} text={translate(messages.register)}/>
+				</div>
+
+				<div style={style.clearfix}></div>
+
+				<Text_input
+					ref="email"
+					email={false}
+					value={this.state.email}
+					validate={::this.validate_email}
+					on_change={value => this.setState({ email: value })}
+					placeholder={translate(messages.email)}
+					on_enter={::this.sign_in}
+					style={style.input}/>
+
+				<Text_input
+					ref="password"
+					password={true}
+					value={this.state.password}
+					validate={::this.validate_password}
+					on_change={value => this.setState({ password: value })}
+					placeholder={translate(messages.password)}
+					on_enter={::this.sign_in}
+					style={style.input}/>
+
+				<div style={style.sign_in_buttons}>
+					<Button className="secondary" style={style.forgot_password} action={::this.forgot_password} text={translate(messages.forgot_password)}/>
+
+					<Button style={style.form_action} submit={true} text={translate(messages.sign_in)}/>
+				</div>
+			</Form>
+		)
+
+		return markup
+	}
+
 	render_registration_form()
 	{
 		const translate = this.props.intl.formatMessage
 
 		const markup = 
 		(
-			<form style={style.form} onSubmit={::this.register}>
+			<Form style={style.form} action={::this.register} inputs={() => [this.refs.name, this.refs.email, this.refs.password, this.refs.accept_terms_of_service]}>
 				<h2 style={style.form_title}>{translate(messages.register)}</h2>
 
 				<div style={style.or_register}>
 					<span>{translate(messages.or)}&nbsp;</span>
-					<button type="button" style={style.or_register.register} onClick={::this.cancel_registration}>{translate(messages.sign_in)}</button>
+					<Button style={style.or_register.register} action={::this.cancel_registration} text={translate(messages.sign_in)}/>
 				</div>
 
 				<div style={style.clearfix}></div>
@@ -215,55 +264,8 @@ export default class Authentication extends Component
 					&nbsp;<a target="_blank" href="https://www.dropbox.com/terms">{translate(messages.the_terms_of_service)}</a>
 				</div>
 
-				<button type="submit" style={style.form_action}>{translate(messages.register)}</button>
-			</form>
-		)
-
-		return markup
-	}
-
-	render_sign_in_form()
-	{
-		const translate = this.props.intl.formatMessage
-
-		const markup = 
-		(
-			<form style={style.form} onSubmit={::this.sign_in}>
-				<h2 style={style.form_title}>{translate(messages.sign_in)}</h2>
-
-				<div style={style.or_register}>
-					<span>{translate(messages.or)}&nbsp;</span>
-					<button type="button" style={style.or_register.register} onClick={::this.start_registration}>{translate(messages.register)}</button>
-				</div>
-
-				<div style={style.clearfix}></div>
-
-				<Text_input
-					ref="email"
-					email={false}
-					value={this.state.email}
-					validate={::this.validate_email}
-					on_change={value => this.setState({ email: value })}
-					placeholder={translate(messages.email)}
-					on_enter={::this.sign_in}
-					style={style.input}/>
-
-				<Text_input
-					ref="password"
-					password={true}
-					value={this.state.password}
-					validate={::this.validate_password}
-					on_change={value => this.setState({ password: value })}
-					placeholder={translate(messages.password)}
-					on_enter={::this.sign_in}
-					style={style.input}/>
-
-				<div style={style.sign_in_buttons}>
-					<button type="button" className="secondary" style={style.forgot_password} onClick={::this.forgot_password}>{translate(messages.forgot_password)}</button>
-
-					<button style={style.form_action} type="submit">{translate(messages.sign_in)}</button>
-				</div>
-			</form>
+				<Button submit={true} style={style.form_action} text={translate(messages.register)}/>
+			</Form>
 		)
 
 		return markup
@@ -324,20 +326,8 @@ export default class Authentication extends Component
 		return value
 	}
 
-	async sign_in(event)
+	async sign_in()
 	{
-		event.preventDefault()
-
-		if (!this.validate_email(this.state.email))
-		{
-			return this.refs.email.focus({ preserve_validation : true })
-		}
-
-		if (!this.validate_password(this.state.password))
-		{
-			return this.refs.password.focus({ preserve_validation : true })
-		}
-
 		try
 		{
 			await this.props.sign_in
@@ -361,30 +351,8 @@ export default class Authentication extends Component
 		alert('to be done')
 	}
 
-	async register(event)
+	async register()
 	{
-		event.preventDefault()
-		
-		if (!this.validate_name(this.state.name))
-		{
-			return this.refs.name.focus({ preserve_validation : true })
-		}
-
-		if (!this.validate_email(this.state.email))
-		{
-			return this.refs.email.focus({ preserve_validation : true })
-		}
-
-		if (!this.validate_password(this.state.password))
-		{
-			return this.refs.password.focus({ preserve_validation : true })
-		}
-
-		if (!this.state.terms_of_service_accepted)
-		{
-			return this.refs.accept_terms_of_service.focus({ preserve_validation : true })
-		}
-
 		try
 		{
 			const result = await this.props.register
@@ -450,29 +418,6 @@ export default class Authentication extends Component
 
 const style = styler
 `
-	modal
-		overlay
-			background-color: rgba(0, 0, 0, 0.2)
-
-		content
-			// top    : 1.5em
-			// left   : 1.5em
-			// right  : 1.5em
-			// bottom : 1.5em
-
-			padding-left  : 2em
-			padding-right : 2em
-
-			padding-top    : 1.5em
-			padding-bottom : 1.5em
-
-			top                   : 50%
-			left                  : 50%
-			right                 : auto
-			bottom                : auto
-			margin-right          : -50%
-			transform             : translate(-50%, -50%)
-
 	form
 		width : 25em
 

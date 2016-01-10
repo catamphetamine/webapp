@@ -30,37 +30,42 @@ export function validate()
 
 	if (!validate)
 	{
-		return
+		return true
 	}
 
-	if (this.validation)
-	{
-		if (this.validation.cancel)
-		{
-			this.validation.cancel()
-		}
-	}
+	// if (this.validation)
+	// {
+	// 	if (this.validation.cancel)
+	// 	{
+	// 		this.validation.cancel()
+	// 	}
+	// }
+	//
+	// const result = validate(value) ? true : false
+	//
+	// if (is_promise(result))
+	// {
+	// 	this.validation = result
+	//
+	// 	return result.then(valid =>
+	// 	{
+	// 		if (this.validation === result)
+	// 		{
+	// 			this.validation = undefined
+	// 		}
+	//
+	// 		this.setState({ valid })
+	// 	})
+	// }
+	// else
+	// {
+	//	this.setState({ valid: result })
+	//	return true
+	// }
 
-	const result = validate(value) ? true : false
-
-	if (is_promise(result))
-	{
-		this.validation = result
-
-		result.then(valid =>
-		{
-			if (this.validation === result)
-			{
-				this.validation = undefined
-			}
-
-			this.setState({ valid })
-		})
-	}
-	else
-	{
-		this.setState({ valid: result })
-	}
+	const valid = validate(value) ? true : false
+	this.setState({ valid })
+	return valid
 }
 
 export function focus(options = {})

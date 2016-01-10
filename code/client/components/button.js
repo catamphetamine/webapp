@@ -5,21 +5,23 @@ export default class Button extends Component
 {
 	static propTypes =
 	{
-		text   : PropTypes.string.isRequired,
-		action : PropTypes.func.isRequired,
-		busy   : PropTypes.bool,
-		style  : PropTypes.object
+		text      : PropTypes.string.isRequired,
+		action    : PropTypes.func,
+		busy      : PropTypes.bool,
+		submit    : PropTypes.bool,
+		className : PropTypes.string,
+		style     : PropTypes.object
 	}
 
 	render()
 	{
-		const { busy, action, text } = this.props
+		const { busy, action, text, submit, className } = this.props
 
 		const markup = 
 		(
-			<div style={merge(style.container, this.props.style)}>
+			<div className={className} style={merge(style.container, this.props.style)}>
 				<span className="spinner" style={ busy ? style.spinner.show : style.spinner.hide }></span>
-				<button disabled={busy} onClick={action} style={ busy ? style.button.hide : style.button.show }>{text}</button>
+				<button type={submit ? 'submit' : 'button'} disabled={busy} onClick={action} style={ busy ? style.button.hide : style.button.show }>{text}</button>
 			</div>
 		)
 
