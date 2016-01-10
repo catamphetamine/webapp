@@ -546,3 +546,8 @@ global.get_language_from_locale = function(locale)
 	}
 	return locale
 }
+
+global.is_promise = function(object)
+{
+	return object instanceof Promise || typeof object.then === 'function'
+}

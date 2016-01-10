@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+// import ReactDOM from 'react-dom'
 import { PropTypes as React_router_prop_types } from 'react-router'
 
 import { connect } from 'react-redux'
@@ -163,29 +164,58 @@ export default class Authentication extends Component
 
 		const markup = 
 		(
-			<form className="ac-custom" style={style.form} onSubmit={ event => event.preventDefault() }>
+			<form style={style.form} onSubmit={::this.register}>
 				<h2 style={style.form_title}>{translate(messages.register)}</h2>
 
 				<div style={style.or_register}>
 					<span>{translate(messages.or)}&nbsp;</span>
-					<button style={style.or_register.register} onClick={::this.cancel_registration}>{translate(messages.sign_in)}</button>
+					<button type="button" style={style.or_register.register} onClick={::this.cancel_registration}>{translate(messages.sign_in)}</button>
 				</div>
 
 				<div style={style.clearfix}></div>
 
-				<Text_input value={this.state.name} on_change={value => this.setState({ name: value })} placeholder={translate(messages.name)} style={style.input}/>
+				<Text_input
+					ref="name"
+					value={this.state.name}
+					validate={::this.validate_name}
+					on_change={value => this.setState({ name: value })}
+					placeholder={translate(messages.name)}
+					on_enter={::this.register}
+					style={style.input}/>
 
-				<Text_input email={true} value={this.state.email} on_change={value => this.setState({ email: value })} placeholder={translate(messages.email)} style={style.input}/>
+				<Text_input
+					ref="email"
+					email={false}
+					value={this.state.email}
+					validate={::this.validate_email}
+					on_change={value => this.setState({ email: value })}
+					placeholder={translate(messages.email)}
+					on_enter={::this.register}
+					style={style.input}/>
 
-				<Text_input password={true} value={this.state.password} on_change={value => this.setState({ password: value })} placeholder={translate(messages.password)} style={style.input}/>
+				<Text_input
+					ref="password"
+					password={true}
+					value={this.state.password}
+					validate={::this.validate_password}
+					on_change={value => this.setState({ password: value })}
+					placeholder={translate(messages.password)}
+					on_enter={::this.register}
+					style={style.input}/>
 
 				<div>
-					<Checkbox style={style.terms_of_service} value={this.state.terms_of_service_accepted} on_change={::this.accept_terms_of_service} label={translate(messages.i_accept)}/>
+					<Checkbox
+						ref="accept_terms_of_service"
+						style={style.terms_of_service}
+						value={this.state.terms_of_service_accepted}
+						on_change={::this.accept_terms_of_service}
+						valid={this.state.terms_of_service_valid}
+						label={translate(messages.i_accept)}/>
 
 					&nbsp;<a target="_blank" href="https://www.dropbox.com/terms">{translate(messages.the_terms_of_service)}</a>
 				</div>
 
-				<button style={style.form_action} onClick={::this.register}>{translate(messages.register)}</button>
+				<button type="submit" style={style.form_action}>{translate(messages.register)}</button>
 			</form>
 		)
 
@@ -198,24 +228,40 @@ export default class Authentication extends Component
 
 		const markup = 
 		(
-			<form style={style.form} onSubmit={ event => event.preventDefault() }>
+			<form style={style.form} onSubmit={::this.sign_in}>
 				<h2 style={style.form_title}>{translate(messages.sign_in)}</h2>
 
 				<div style={style.or_register}>
 					<span>{translate(messages.or)}&nbsp;</span>
-					<button style={style.or_register.register} onClick={::this.start_registration}>{translate(messages.register)}</button>
+					<button type="button" style={style.or_register.register} onClick={::this.start_registration}>{translate(messages.register)}</button>
 				</div>
 
 				<div style={style.clearfix}></div>
 
-				<Text_input email={true} value={this.state.email} on_change={value => this.setState({ email: value })} placeholder={translate(messages.email)} style={style.input}/>
+				<Text_input
+					ref="email"
+					email={false}
+					value={this.state.email}
+					validate={::this.validate_email}
+					on_change={value => this.setState({ email: value })}
+					placeholder={translate(messages.email)}
+					on_enter={::this.sign_in}
+					style={style.input}/>
 
-				<Text_input password={true} value={this.state.password} on_change={value => this.setState({ password: value })} placeholder={translate(messages.password)} style={style.input}/>
+				<Text_input
+					ref="password"
+					password={true}
+					value={this.state.password}
+					validate={::this.validate_password}
+					on_change={value => this.setState({ password: value })}
+					placeholder={translate(messages.password)}
+					on_enter={::this.sign_in}
+					style={style.input}/>
 
 				<div style={style.sign_in_buttons}>
-					<button className="secondary" style={style.forgot_password} onClick={::this.forgot_password}>{translate(messages.forgot_password)}</button>
+					<button type="button" className="secondary" style={style.forgot_password} onClick={::this.forgot_password}>{translate(messages.forgot_password)}</button>
 
-					<button style={style.form_action} onClick={::this.sign_in}>{translate(messages.sign_in)}</button>
+					<button style={style.form_action} type="submit">{translate(messages.sign_in)}</button>
 				</div>
 			</form>
 		)
@@ -247,7 +293,10 @@ export default class Authentication extends Component
 
 	show()
 	{
-		this.setState({ show: true })
+		this.setState({ show: true }, () =>
+		{
+			this.refs.email.focus()
+		})
 	}
 
 	hide()
@@ -255,8 +304,35 @@ export default class Authentication extends Component
 		this.setState({ show: false, ...this.pristine_form_state })
 	}
 
-	async sign_in()
+	validate_name(value)
 	{
+		return value
+	}
+
+	validate_email(value)
+	{
+		return value
+	}
+
+	validate_password(value)
+	{
+		return value
+	}
+
+	async sign_in(event)
+	{
+		event.preventDefault()
+
+		if (!this.validate_email(this.state.email))
+		{
+			return this.refs.email.focus({ preserve_validation : true })
+		}
+
+		if (!this.validate_password(this.state.password))
+		{
+			return this.refs.password.focus({ preserve_validation : true })
+		}
+
 		try
 		{
 			await this.props.sign_in
@@ -280,8 +356,30 @@ export default class Authentication extends Component
 		alert('to be done')
 	}
 
-	async register()
+	async register(event)
 	{
+		event.preventDefault()
+		
+		if (!this.validate_name(this.state.name))
+		{
+			return this.refs.name.focus({ preserve_validation : true })
+		}
+
+		if (!this.validate_email(this.state.email))
+		{
+			return this.refs.email.focus({ preserve_validation : true })
+		}
+
+		if (!this.validate_password(this.state.password))
+		{
+			return this.refs.password.focus({ preserve_validation : true })
+		}
+
+		if (!this.state.terms_of_service_accepted)
+		{
+			return this.setState({ terms_of_service_valid: false })
+		}
+
 		try
 		{
 			const result = await this.props.register
@@ -305,17 +403,23 @@ export default class Authentication extends Component
 
 	start_registration()
 	{
-		this.setState({ register: true })
+		this.setState({ register: true }, () =>
+		{
+			this.refs.name.focus()
+		})
 	}
 
 	cancel_registration()
 	{
-		this.setState({ register: false })
+		this.setState({ register: false }, () =>
+		{
+			this.refs.email.focus()
+		})
 	}
 
 	accept_terms_of_service(value)
 	{
-		this.setState({ terms_of_service_accepted: value })
+		this.setState({ terms_of_service_accepted: value, terms_of_service_valid: undefined })
 	}
 }
 

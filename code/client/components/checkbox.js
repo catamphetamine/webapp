@@ -13,6 +13,7 @@ export default class Checkbox extends Component
 		value     : PropTypes.bool,
 		label     : PropTypes.string.isRequired,
 		on_change : PropTypes.func.isRequired,
+		valid     : PropTypes.bool,
 		style     : PropTypes.object
 	}
 
@@ -81,14 +82,14 @@ export default class Checkbox extends Component
 
 	render()
 	{
-		const { value, on_change, label } = this.props
+		const { value, on_change, label, valid } = this.props
 
 		const markup = 
 		(
-			<div className="checkbox" style={ this.props.style ? merge(style.container, this.props.style) : style.container}>
+			<div className={"checkbox " + (valid === false ? 'checkbox-invalid' : '')} style={ this.props.style ? merge(style.container, this.props.style) : style.container}>
 				<input ref="checkbox" type="checkbox" onChange={::this.toggle} style={style.checkbox.input} value={value}/>
-				<div className="checkbox_border" style={ !value ? style.checkbox.label_before : style.checkbox.label_before.when_checked }></div>
-				<label className="checkbox_label" style={style.label} onClick={::this.toggle}>{label}</label>
+				<div className="checkbox-border" style={ !value ? style.checkbox.label_before : style.checkbox.label_before.when_checked }></div>
+				<label className="checkbox-label" style={style.label} onClick={::this.toggle}>{label}</label>
 				<svg viewBox="0 0 100 100" style={style.checkbox.svg}>
 					{ value ? this.render_checkmark() : null }
 				</svg>

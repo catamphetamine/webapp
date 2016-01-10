@@ -263,9 +263,14 @@
 	border-color: #bfbfbf !important;
 }
 
-.checkbox_label:active
+.checkbox-label:active
 {
 	color: $active-darker-color !important;
+}
+
+.checkbox-invalid .checkbox-border
+{
+	border-color: $input-invalid-border-color !important;
 }
 
 .user_info

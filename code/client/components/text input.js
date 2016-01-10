@@ -4,11 +4,15 @@ import styler from 'react-styling'
 
 export default class Text_input extends Component
 {
+	state = {}
+
 	static propTypes =
 	{
 		name        : PropTypes.string,
 		value       : PropTypes.any,
 		on_change   : PropTypes.func.isRequired,
+		validate    : PropTypes.func,
+		on_enter    : PropTypes.func,
 		placeholder : PropTypes.string,
 		multiline   : PropTypes.bool,
 		email       : PropTypes.bool,
@@ -18,7 +22,7 @@ export default class Text_input extends Component
 
 	render()
 	{
-		const { name, value, on_change, placeholder, multiline, email, password, style } = this.props
+		const { name, value, placeholder, multiline, email, password, on_enter, style } = this.props
 
 		let type
 
@@ -38,14 +42,89 @@ export default class Text_input extends Component
 		if (multiline)
 		{
 			// maybe add autoresize for textarea (smoothly animated)
-			return <textarea ref="textarea" name={name} style={style} value={value} onChange={event => on_change(event.target.value)} placeholder={placeholder}/>
+			return <textarea ref="textarea" name={name} style={style} className={this.state.valid === false ? 'text-input-invalid' : ''} value={value} onFocus={::this.on_focus} onBlur={::this.on_blur} onChange={::this.on_change} placeholder={placeholder}/>
 		}
 		else
 		{
-			return <input type={type} name={name} style={style} value={value} onChange={event => on_change(event.target.value)} placeholder={placeholder}/>
+			return <input ref="input" type={type} name={name} style={style} className={this.state.valid === false ? 'text-input-invalid' : ''} value={value} onFocus={::this.on_focus} onBlur={::this.on_blur} onChange={::this.on_change} placeholder={placeholder}/>
 		}
 
 		return markup
+	}
+
+	on_focus()
+	{
+		if (this.preserve_validation_on_focus)
+		{
+			return this.preserve_validation_on_focus = false
+		}
+
+		this.setState({ valid: undefined })
+	}
+
+	on_blur(event)
+	{
+		// const value = event.target.value
+
+		this.validate()
+	}
+
+	on_change(event)
+	{
+		this.setState({ valid: undefined })
+
+		const { on_change } = this.props
+
+		const value = event.target.value
+
+		on_change(value)
+	}
+
+	validate()
+	{
+		const { value, validate } = this.props
+
+		if (!validate)
+		{
+			return
+		}
+
+		if (this.validation)
+		{
+			if (this.validation.cancel)
+			{
+				this.validation.cancel()
+			}
+		}
+
+		const valid = validate(value) ? true : false
+
+		if (is_promise(valid))
+		{
+			this.validation = valid
+
+			this.validation.then(valid =>
+			{
+				this.validation = undefined
+
+				this.setState({ valid })
+			})
+		}
+		else
+		{
+			this.setState({ valid })
+		}
+	}
+
+	focus(options = {})
+	{
+		if (options.preserve_validation)
+		{
+			this.validate()
+			this.preserve_validation_on_focus = true
+		}
+
+		ReactDOM.findDOMNode(this.refs.input || this.refs.textarea).focus()
 	}
 
 	/*
