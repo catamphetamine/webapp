@@ -38,26 +38,32 @@ export default class Button_group extends Component
 
 		const label = option.label
 
-		let button_style = style.button
+		let button_style = clone(style.button)
+
 
 		if (index === 0)
 		{
 			button_style = button_style.first
+
+			button_style.borderRightWidth = 0
 		}
 		else if (index === options.length - 1)
 		{
 			button_style = button_style.last
 		}
-		// else
-		// {
-		// 	button_style = style.button
-		// }
+		else
+		{
+			button_style.borderRightWidth = 0
+			
+			// button_style = style.button
+		}
 
 		const selected = this.props.value === option.value
 
 		if (selected)
 		{
-			button_style = merge(button_style, style.button.selected)
+			// button_style = merge(button_style, style.button.selected)
+			extend(button_style, style.button.selected)
 		}
 
 		const markup = 

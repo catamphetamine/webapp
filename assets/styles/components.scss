@@ -398,14 +398,16 @@
 .button-group-button
 {
 	color            : black !important;
-	background-color : $background-gray-color;
+	// background-color : $background-gray-color !important;
+	background-color : transparent !important;
+	border : 0.1em solid $button-color;
 
 	&:active
 	{
 		color            : white !important;
 		background-color : $gray-to-active-color !important;
 		// background-color : $button-color !important;
-		
+
 		transition : none !important;
 	}
 }
