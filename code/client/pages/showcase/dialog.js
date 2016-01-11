@@ -3,7 +3,7 @@ import { title }            from 'react-isomorphic-render'
 import styler               from 'react-styling'
 import { connect }          from 'react-redux'
 
-import Modal from 'react-modal'
+import Modal from '../../components/modal'
 
 @connect
 (
@@ -74,28 +74,7 @@ const style = styler
 		text-align : center
 
 	modal
-		overlay
-			background-color: rgba(0, 0, 0, 0.2)
-
 		content
 			width: 40em
 			line-height: 1.35em
-
-			// top    : 1.5em
-			// left   : 1.5em
-			// right  : 1.5em
-			// bottom : 1.5em
-
-			padding-left  : 2em
-			padding-right : 2em
-
-			padding-top    : 0.5em
-			padding-bottom : 1.5em
-
-			top                   : 50%
-			left                  : 50%
-			right                 : auto
-			bottom                : auto
-			margin-right          : -50%
-			transform             : translate(-50%, -50%)
 `
