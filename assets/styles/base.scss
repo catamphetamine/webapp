@@ -67,13 +67,16 @@ body, button, input, textarea, select
 // 	vertical-align: bottom;
 // }
 
-input[type="text"], input[type="email"], input[type="password"], textarea
+input[type="text"], input[type="email"], input[type="password"], textarea, select
 {
 	display: block;
-	width: $input-width;
-
-	margin: 0;
+	width: $input-width-l;
 	padding: $input-padding;
+}
+
+input[type="text"], input[type="email"], input[type="password"], textarea
+{
+	margin: 0;
 
 	appearance: none;
 
@@ -107,7 +110,7 @@ input[type="text"], input[type="email"], input[type="password"], textarea
 .select
 {
 	position: relative;
-	width: $input-width;
+	width: $input-width-l;
 
 	// down arrow
 	&:after
@@ -134,11 +137,6 @@ input[type="text"], input[type="email"], input[type="password"], textarea
 
 select
 {
-	display: block;
-	width: $input-width;
-
-	padding: $input-padding;
-
 	// appearance: none;
 
 	border: none;

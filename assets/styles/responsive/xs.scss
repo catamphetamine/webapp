@@ -3,6 +3,11 @@
 // 	display: none !important;
 // }
 
+input[type="text"], input[type="email"], input[type="password"], textarea, select
+{
+	width: $input-width-xs;
+}
+
 .menu-button
 {
 	top: 0;
@@ -31,7 +36,17 @@ body, button, input, textarea, select
 	// top: 0.35em;
 }
 
-.sign_in
+.sign-in
 {
 	margin-right: 0.4em;
+}
+
+.authentication-form, .registration-form
+{
+	width : 12em;
+
+	h2
+	{
+		font-size: 1.3em;
+	}
 }

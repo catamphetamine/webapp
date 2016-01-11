@@ -334,7 +334,7 @@
 	}
 }
 
-.sign_in
+.sign-in
 {
 	margin-right: 0.8em;
 }
@@ -407,6 +407,9 @@
 		color            : white !important;
 		background-color : $gray-to-active-color !important;
 		// background-color : $button-color !important;
+		// background-color : $active-lighter-color !important;
+		// background-color : $secondary-button-color !important;
+		// background-color : $secondary-button-active-color !important;
 
 		transition : none !important;
 	}
@@ -419,4 +422,9 @@
 	// background-color : $active-color !important;
 	// background-color : #62a8ea !important;
 	// background-color : $active-darker-color !important;
+}
+
+.authentication-form, .registration-form
+{
+	width : 25em;
 }

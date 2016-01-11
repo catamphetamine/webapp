@@ -13,7 +13,9 @@ $input-border-color         : #c9c9c9;
 $input-invalid-border-color : #f44336;
 $input-border-width         : 0.1em;
 $input-padding              : 0.3em;
-$input-width                : 18em;
+$input-width-l              : 18em;
+
+$input-width-xs              : 8em;
 
 $dropdown-item-vertical-padding   : 0.2em;
 $dropdown-item-horizontal-padding : 0.8em;
@@ -33,4 +35,4 @@ $header-vertical-padding: 0.5em;
 $large-screen-width       : 1600pt;
 $medium-screen-width      : 1000pt;
 $small-screen-width       : 600pt;
-$extra-small-screen-width : 240pt;
+$extra-small-screen-width : 250pt;

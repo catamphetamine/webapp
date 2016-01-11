@@ -91,7 +91,8 @@ const style = styler
 
 	modal
 		overlay
-			height : 100%
+			height     : 1px
+			min-height : 100%
 
 			text-align : center
 

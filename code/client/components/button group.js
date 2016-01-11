@@ -54,7 +54,7 @@ export default class Button_group extends Component
 		else
 		{
 			button_style.borderRightWidth = 0
-			
+
 			// button_style = style.button
 		}
 
@@ -88,8 +88,9 @@ const border_radius = '0.2em'
 const style = styler
 `
 	container
-		position : relative
-		display  : inline-block
+		position    : relative
+		display     : inline-block
+		white-space : nowrap
 
 	button
 		padding-left  : 0.8em

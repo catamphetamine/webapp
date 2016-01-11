@@ -138,7 +138,7 @@ export default class Authentication extends Component
 			<div className="authentication" style={ this.props.style ? extend({ display: 'inline-block' }, this.props.style) : { display: 'inline-block' } }>
 				
 				{/* Sign in action */}
-				{ !user ? <Button className="sign_in" action={::this.show} text={translate(messages.sign_in)}/> : null }
+				{ !user ? <Button className="sign-in" action={::this.show} text={translate(messages.sign_in)}/> : null }
 
 				{/* Register action */}
 				{/* <button>translate(messages.register)</button> */}
@@ -166,10 +166,10 @@ export default class Authentication extends Component
 
 		const markup = 
 		(
-			<Form style={style.form} action={::this.sign_in} inputs={() => [this.refs.email, this.refs.password]}>
+			<Form className="authentication-form" style={style.form} action={::this.sign_in} inputs={() => [this.refs.email, this.refs.password]}>
 				<h2 style={style.form_title}>{translate(messages.sign_in)}</h2>
 
-				<div style={style.or_register}>
+				<div style={style.or_register} className="or-register">
 					<span>{translate(messages.or)}&nbsp;</span>
 					<Button button_style={style.or_register.register} action={::this.start_registration} text={translate(messages.register)}/>
 				</div>
@@ -197,9 +197,9 @@ export default class Authentication extends Component
 					style={style.input}/>
 
 				<div style={style.sign_in_buttons}>
-					<Button className="secondary" style={style.forgot_password} action={::this.forgot_password} text={translate(messages.forgot_password)}/>
-
 					<Button style={style.form_action} submit={true} text={translate(messages.sign_in)}/>
+
+					<Button className="secondary" style={style.forgot_password} action={::this.forgot_password} text={translate(messages.forgot_password)}/>
 				</div>
 			</Form>
 		)
@@ -213,10 +213,10 @@ export default class Authentication extends Component
 
 		const markup = 
 		(
-			<Form style={style.form} action={::this.register} inputs={() => [this.refs.name, this.refs.email, this.refs.password, this.refs.accept_terms_of_service]}>
+			<Form className="registration-form" style={style.form} action={::this.register} inputs={() => [this.refs.name, this.refs.email, this.refs.password, this.refs.accept_terms_of_service]}>
 				<h2 style={style.form_title}>{translate(messages.register)}</h2>
 
-				<div style={style.or_register}>
+				<div style={style.or_register} className="or-register">
 					<span>{translate(messages.or)}&nbsp;</span>
 					<Button button_style={style.or_register.register} action={::this.cancel_registration} text={translate(messages.sign_in)}/>
 				</div>
@@ -264,7 +264,7 @@ export default class Authentication extends Component
 					&nbsp;<a target="_blank" href="https://www.dropbox.com/terms">{translate(messages.the_terms_of_service)}</a>
 				</div>
 
-				<Button submit={true} style={style.form_action} text={translate(messages.register)}/>
+				<Button submit={true} style={style.form_action.register} text={translate(messages.register)}/>
 			</Form>
 		)
 
@@ -419,7 +419,6 @@ export default class Authentication extends Component
 const style = styler
 `
 	form
-		width : 25em
 
 	form_title
 		float : left
@@ -435,13 +434,16 @@ const style = styler
 
 	terms_of_service
 		margin-top: 0.5em
-		margin-bottom: 1.2em
+		// margin-bottom: 1.2em
 
 	forgot_password
 		font-weight: normal
 
 	form_action
 		float: right
+
+		&register
+			margin-top: 1em
 
 	clearfix
 		clear : both

@@ -26,7 +26,7 @@ body, button, input, textarea, select
 	}
 }
 
-.sign_in
+.sign-in
 {
 	margin-right: 0.4em;
 }
@@ -38,4 +38,14 @@ header
 
 	padding-left  : 0.8em;
 	padding-right : 0.8em;
+}
+
+.authentication-form, .registration-form
+{
+	width : 12.5em;
+
+	h2
+	{
+		font-size: 1.4em;
+	}
 }

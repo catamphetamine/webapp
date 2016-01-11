@@ -27,7 +27,7 @@ export default class Button extends Component
 
 		const markup = 
 		(
-			<div className={className} style={merge(style.container, this.props.style)}>
+			<div className={'button ' + (submit ? 'button-primary' : '') + (className ? className : '')} style={merge(style.container, this.props.style)}>
 				<span className="spinner" style={ busy ? style.spinner.show : style.spinner.hide }></span>
 
 				<button

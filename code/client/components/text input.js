@@ -51,11 +51,11 @@ export default class Text_input extends Component
 		if (multiline)
 		{
 			// maybe add autoresize for textarea (smoothly animated)
-			return <textarea ref="input" name={name} style={style} className={this.state.valid === false ? 'text-input-invalid' : ''} value={value} onFocus={::this.on_focus} onBlur={::this.on_blur} onChange={::this.on_change} placeholder={placeholder}/>
+			return <textarea ref="input" name={name} style={style} className={'text-input ' + (this.state.valid === false ? 'text-input-invalid' : '')} value={value} onFocus={::this.on_focus} onBlur={::this.on_blur} onChange={::this.on_change} placeholder={placeholder}/>
 		}
 		else
 		{
-			return <input ref="input" type={type} name={name} style={style} className={this.state.valid === false ? 'text-input-invalid' : ''} value={value} onFocus={::this.on_focus} onBlur={::this.on_blur} onChange={::this.on_change} placeholder={placeholder}/>
+			return <input ref="input" type={type} name={name} style={style} className={'text-input ' + (this.state.valid === false ? 'text-input-invalid' : '')} value={value} onFocus={::this.on_focus} onBlur={::this.on_blur} onChange={::this.on_change} placeholder={placeholder}/>
 		}
 
 		return markup
