@@ -59,16 +59,22 @@ export default class Modal extends Component
 const style = styler
 `
 	top_padding
+		width : 100%
+
 		flex-grow   : 1
 		flex-shrink : 1
 		flex-basis  : 20%
 
 	bottom_padding
+		width : 100%
+
 		flex-grow   : 7
 		flex-shrink : 1
 		flex-basis  : 20%
 
 	content
+		display : inline-block
+
 		flex-grow   : 0
 		flex-shrink : 0
 		flex-basis  : auto
@@ -79,18 +85,15 @@ const style = styler
 		padding-top    : 1.5em
 		padding-bottom : 1.5em
 
-		border         : 1px solid rgb(204, 204, 204)
 		border-radius  : 0.2em
 		
 		background-color: white
 
 	modal
 		overlay
-			// horizontal centering
-			display     : flex
-			// vertical centering
-			height      : 100%
-			align-items : center
+			height : 100%
+
+			text-align : center
 
 			background-color: rgba(0, 0, 0, 0.2)
 
@@ -103,15 +106,23 @@ const style = styler
 			right  : auto
 			bottom : auto
 
-			margin-left  : auto
-			margin-right : auto
+			text-align : left
+
+			// margin-left  : auto
+			// margin-right : auto
 
 			padding : 0
 			border : none
 			background-color: transparent
 
-			display : flex
+			// вместо inline-flex можно было бы использовать просто flex,
+			// но тогда этот слой займёт весь экран, а в react-modal
+			// на него вешается onClick со stopPropagation,
+			// поэтому клики на нём не будут закрывать окошко.
+			//
+			display        : inline-flex
 			flex-direction : column
+			// align-items    : center
 
 			// alternative centering (not using flexbox)
 			// top                   : 50%

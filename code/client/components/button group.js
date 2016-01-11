@@ -5,30 +5,38 @@ export default class Button_group extends Component
 {
 	static propTypes =
 	{
-		values       : PropTypes.array.isRequired,
+		options      : PropTypes.arrayOf
+		(
+			PropTypes.shape
+			({
+				value: React.PropTypes.string.isRequired,
+				label: React.PropTypes.string.isRequired
+			})
+		)
+		.isRequired,
 		on_change    : PropTypes.func.isRequired,
 		style        : PropTypes.object
 	}
 
 	render()
 	{
-		const { values } = this.props
+		const { options } = this.props
 
 		const markup = 
 		(
 			<div className="button-group" style={ this.props.style ? merge(style.container, this.props.style) : style.container }>
-				{values.map((value, index) => this.render_button(value, index))}
+				{options.map((option, index) => this.render_button(option, index))}
 			</div>
 		)
 
 		return markup
 	}
 
-	render_button(value, index)
+	render_button(option, index)
 	{
-		const { values } = this.props
+		const { options } = this.props
 
-		const label = value.label
+		const label = option.label
 
 		let button_style = style.button
 
@@ -36,7 +44,7 @@ export default class Button_group extends Component
 		{
 			button_style = button_style.first
 		}
-		else if (index === values.length - 1)
+		else if (index === options.length - 1)
 		{
 			button_style = button_style.last
 		}
@@ -45,7 +53,7 @@ export default class Button_group extends Component
 		// 	button_style = style.button
 		// }
 
-		const selected = this.props.value === value.key
+		const selected = this.props.value === option.value
 
 		if (selected)
 		{
@@ -55,8 +63,9 @@ export default class Button_group extends Component
 		const markup = 
 		(
 			<button
+				key={option.value}
 				type="button"
-				onClick={event => this.props.on_change(value.key)}
+				onClick={event => this.props.on_change(option.value)}
 				className={'button-group-button ' + (selected ? 'button-group-selected' : '')}
 				style={button_style}>
 

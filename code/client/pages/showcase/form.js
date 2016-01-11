@@ -50,7 +50,7 @@ export default class Form extends Component
 					You selected: {this.state.select_value}
 
 					<h2 style={style.form.label}>Dropdown</h2>
-					<Dropdown style={style.form.checkbox} value={this.state.selected} list={[{ key: 'A', label: 'Apple' }, { key: 'B', label: 'Banana' }, { key: 'C', label: 'Cranberry' }, { key: 'D', label: 'Date' }, { key: 'E', label: 'Elderberry' }, { key: 'F', label: 'Fig' }, { key: 'G', label: 'Garlic' }]} label="Choose" select={ selected => this.setState({ selected: selected }) }/>
+					<Dropdown style={style.form.checkbox} value={this.state.selected} options={[{ value: 'A', label: 'Apple' }, { value: 'B', label: 'Banana' }, { value: 'C', label: 'Cranberry' }, { value: 'D', label: 'Date' }, { value: 'E', label: 'Elderberry' }, { value: 'F', label: 'Fig' }, { value: 'G', label: 'Garlic' }]} label="Choose" select={ selected => this.setState({ selected: selected }) }/>
 					You selected: {this.state.selected ? this.state.selected : 'nothing'}
 
 					<h2 style={style.form.label}>Checkbox</h2>
@@ -65,7 +65,7 @@ export default class Form extends Component
 					You switched: {this.state.switched ? 'on' : 'off'}
 
 					<h2 style={style.form.label}>Button group</h2>
-					<Button_group style={style.form.checkbox} values={[{ key: 'A', label: 'Apple' }, { key: 'B', label: 'Banana' }, { key: 'C', label: 'Cranberry' }]} value={this.state.button_group} on_change={ value => this.setState({ button_group: value }) }/>
+					<Button_group style={style.form.checkbox} options={[{ value: 'A', label: 'Apple' }, { value: 'B', label: 'Banana' }, { value: 'C', label: 'Cranberry' }]} value={this.state.button_group} on_change={ value => this.setState({ button_group: value }) }/>
 					You selected: {this.state.button_group ? this.state.button_group : 'nothing'}
 				</form>
 			</div>

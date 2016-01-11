@@ -19,8 +19,8 @@ import Uri from '../tools/uri'
 // брать с сервера, из i18n файлов (key - имя, label - из файла этого считывать)
 const locales = 
 [
-	{ key: 'en-US', label: 'English' },
-	{ key: 'ru-RU', label: 'Русский' },
+	{ value: 'en-US', label: 'English' },
+	{ value: 'ru-RU', label: 'Русский' },
 	// { key: 'test',  label: 'Test Long list' },
 	// { key: 'test2',  label: 'Test Long list' },
 	// { key: 'test3',  label: 'Test Long list' },
@@ -77,7 +77,7 @@ export default class Locale_switcher extends Component
 					label={translate(messages.language)} 
 					value={locale} 
 					select={::this.set_locale} 
-					list={locales.map(({ key, label }) => ({ key: key, label: label, icon: <Flag locale={key} style={style.locale.flag}/> }))} 
+					options={locales.map(({ value, label }) => ({ value, label, icon: <Flag locale={value} style={style.locale.flag}/> }))} 
 					title={translate(messages.language)}
 					upward={this.props.upward}/>
 			</div>
@@ -101,7 +101,7 @@ const style = styler
 	spinner
 		transition       : opacity 500ms ease-out
 		transition-delay : 150ms
-		margin-bottom    : 0.06em
+		margin-bottom    : 0.35em
 
 		&show
 			opacity : 1

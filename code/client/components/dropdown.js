@@ -10,7 +10,15 @@ export default class Flag extends Component
 {
 	static propTypes =
 	{
-		list       : PropTypes.array.isRequired,
+		options    : PropTypes.arrayOf
+		(
+			PropTypes.shape
+			({
+				value: React.PropTypes.string.isRequired,
+				label: React.PropTypes.string.isRequired
+			})
+		)
+		.isRequired,
 		label      : PropTypes.string,
 		value      : PropTypes.any,
 		select     : PropTypes.func.isRequired,
@@ -69,7 +77,7 @@ export default class Flag extends Component
 
 	render()
 	{
-		const { list, upward } = this.props
+		const { options, upward } = this.props
 
 		const item_list = this.list_items()
 
@@ -78,47 +86,6 @@ export default class Flag extends Component
 		if (exists(this.state.list_height))
 		{
 			list_style.maxHeight = this.state.list_height + 'px'
-		}
-
-		// old animation, not used now (always false)
-		if (this.animate_using_max_height)
-		{
-			list_style.maxHeight = 0
-			list_style.overflowY = 'hidden'
-
-			let height = this.state.height
-
-			if (this.overflown())
-			{
-				height = this.overflown_height() + 'px'
-
-				list_style.overflowY = 'auto'
-			}
-
-			if (this.should_animate())
-			{
-				if (this.state.expanded)
-				{
-					list_style.maxHeight = height + 'px'
-				}
-				else
-				{
-					list_style.maxHeight = 0
-				}
-
-				list_style.transitionDuration = this.props.transition_duration_min + ((this.props.transition_duration_max - this.props.transition_duration_min) * Math.min(item_list.length / this.props.max_items, 1)) + 'ms'
-			}
-			else
-			{
-				if (this.state.expanded)
-				{
-					list_style.maxHeight = undefined
-				}
-				else
-				{
-					list_style.maxHeight = 0
-				}
-			}
 		}
 
 		const overflow = this.overflown()
@@ -135,13 +102,13 @@ export default class Flag extends Component
 
 					{/* a placeholder to make the parent <div/> take the whole width */}
 					<ul style={style.list.placeholder} className="dropdown-item-list">
-						{ list.map(({ key, label, icon }, index) => this.render_list_item(key, label, icon, overflow))} {/*, index === 0, index === item_list.length - 1*/ }
+						{ options.map(({ value, label, icon }, index) => this.render_list_item(value, label, icon, overflow))} {/*, index === 0, index === item_list.length - 1*/ }
 					</ul>
 
 					{/* a list to select from */}
 					{/* Math.max(this.state.height, this.props.max_height) */}
 					<ul ref="list" style={list_style} className={'dropdown-item-list' + ' ' + (this.state.expanded ? 'dropdown-item-list-expanded' : '')}>
-						{ item_list.map(({ key, label, icon }, index) => this.render_list_item(key, label, icon, overflow))}
+						{ item_list.map(({ value, label, icon }, index) => this.render_list_item(value, label, icon, overflow))}
 					</ul>
 				</div>
 			</div>
@@ -150,9 +117,9 @@ export default class Flag extends Component
 		return markup
 	}
 
-	render_list_item(key, label, icon, overflow) // , first, last
+	render_list_item(value, label, icon, overflow) // , first, last
 	{
-		const is_selected = key === this.props.value
+		const is_selected = value === this.props.value
 
 		let item_style = style.list.item
 
@@ -190,8 +157,8 @@ export default class Flag extends Component
 
 		const markup =
 		(
-			<li key={key} style={list_item_style}>
-				<button onClick={event => this.item_clicked(key, event)} style={item_style} className={ "dropdown-item " + (is_selected ? 'dropdown-item-selected-in-list' : '') }>
+			<li key={value} style={list_item_style}>
+				<button onClick={event => this.item_clicked(value, event)} style={item_style} className={ "dropdown-item " + (is_selected ? 'dropdown-item-selected-in-list' : '') }>
 					<span className="dropdown-item-icon">{icon}</span>
 					<span className="dropdown-item-label">{label}</span>
 				</button>
@@ -203,7 +170,7 @@ export default class Flag extends Component
 
 	render_selected_item()
 	{
-		const selected = this.props.list.filter(x => x.key === this.props.value)[0]
+		const selected = this.props.options.filter(x => x.value === this.props.value)[0]
 
 		let label
 
@@ -249,10 +216,10 @@ export default class Flag extends Component
 	{
 		if (show_selected_item_in_list)
 		{
-			return this.props.list
+			return this.props.options
 		}
 
-		return this.props.list.filter(({ key }) => key !== this.props.value)
+		return this.props.options.filter(({ value }) => value !== this.props.value)
 	}
 
 	should_animate()
@@ -272,16 +239,16 @@ export default class Flag extends Component
 		this.setState({ expanded: !this.state.expanded })
 	}
 
-	item_clicked(key, event)
+	item_clicked(value, event)
 	{
 		event.preventDefault()
 
-		if (key === this.props.value)
+		if (value === this.props.value)
 		{
 			return
 		}
 
-		this.props.select(key)
+		this.props.select(value)
 	}
 
 	document_clicked(event)
