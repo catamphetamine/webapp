@@ -74,7 +74,6 @@ const style = styler
 		text-align : center
 
 	modal
-		content
-			width: 40em
-			line-height: 1.35em
+		width: 40em
+		line-height: 1.35em
 `
