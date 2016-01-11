@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import ReactDOM from 'react-dom'
 import styler from 'react-styling'
 
 import React_modal from 'react-modal'
@@ -22,33 +23,80 @@ export default class Modal extends Component
 	{
 		const { isOpen, onRequestClose, closeTimeoutMS } = this.props
 
+		// style={this.props.style ? merge(style.modal, this.props.style) : style.modal}>
+
 		const markup = 
 		(
 			<React_modal
+				ref="modal"
 				isOpen={isOpen}
 				onRequestClose={onRequestClose}
 				closeTimeoutMS={closeTimeoutMS || default_close_timeout}
-				style={this.props.style ? merge(style.modal, this.props.style) : style.modal}>
+				className="modal"
+				style={style.modal}>
 
-				{this.props.children}
+				{/* top padding grows less than bottom padding */}
+				<div style={style.top_padding} onClick={::this.click_overlay}></div>
+				
+				{/* dialog window content */}
+				<div className="modal-content" style={this.props.style ? merge(style.content, this.props.style) : style.content}>{this.props.children}</div>
+
+				{/* bottom padding grows more than top padding */}
+				<div style={style.bottom_padding} onClick={::this.click_overlay}></div>
 			</React_modal>
 		)
 
 		return markup
 	}
+
+	click_overlay()
+	{
+		// close overlay on click
+		ReactDOM.findDOMNode(this.refs.modal.portal).click()
+	}
 }
 
 const style = styler
 `
+	top_padding
+		flex-grow   : 1
+		flex-shrink : 1
+		flex-basis  : 20%
+
+	bottom_padding
+		flex-grow   : 7
+		flex-shrink : 1
+		flex-basis  : 20%
+
+	content
+		flex-grow   : 0
+		flex-shrink : 0
+		flex-basis  : auto
+
+		padding-left  : 2em
+		padding-right : 2em
+
+		padding-top    : 1.5em
+		padding-bottom : 1.5em
+
+		border         : 1px solid rgb(204, 204, 204)
+		border-radius  : 0.2em
+		
+		background-color: white
+
 	modal
 		overlay
+			// horizontal centering
 			display     : flex
+			// vertical centering
+			height      : 100%
 			align-items : center
 
 			background-color: rgba(0, 0, 0, 0.2)
 
 		content
 			position : static
+			height : 100%
 
 			top    : auto
 			left   : auto
@@ -58,11 +106,12 @@ const style = styler
 			margin-left  : auto
 			margin-right : auto
 
-			padding-left  : 2em
-			padding-right : 2em
+			padding : 0
+			border : none
+			background-color: transparent
 
-			padding-top    : 1.5em
-			padding-bottom : 1.5em
+			display : flex
+			flex-direction : column
 
 			// alternative centering (not using flexbox)
 			// top                   : 50%
