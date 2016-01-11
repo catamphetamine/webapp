@@ -3,10 +3,11 @@ import { title }            from 'react-isomorphic-render'
 import styler               from 'react-styling'
 import { connect }          from 'react-redux'
 
-import Text_input from '../../components/text input'
-import Checkbox   from '../../components/checkbox'
-import Dropdown   from '../../components/dropdown'
-import Switch     from '../../components/switch'
+import Text_input   from '../../components/text input'
+import Checkbox     from '../../components/checkbox'
+import Dropdown     from '../../components/dropdown'
+import Switch       from '../../components/switch'
+import Button_group from '../../components/button group'
 
 @connect
 (
@@ -62,6 +63,10 @@ export default class Form extends Component
 						<Switch style={style.form.switch} value={this.state.switched} on_change={ switched => this.setState({ switched: switched }) }/>
 					</div>
 					You switched: {this.state.switched ? 'on' : 'off'}
+
+					<h2 style={style.form.label}>Button group</h2>
+					<Button_group style={style.form.checkbox} values={[{ key: 'A', label: 'Apple' }, { key: 'B', label: 'Banana' }, { key: 'C', label: 'Cranberry' }]} value={this.state.button_group} on_change={ value => this.setState({ button_group: value }) }/>
+					You selected: {this.state.button_group ? this.state.button_group : 'nothing'}
 				</form>
 			</div>
 		)

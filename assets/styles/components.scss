@@ -388,3 +388,33 @@
 {
 	transform: scale(0.7);
 }
+
+// end react-modal stying
+
+.button-group
+{
+}
+
+.button-group-button
+{
+	color            : black !important;
+	background-color : $background-gray-color;
+
+	&:active
+	{
+		color            : white !important;
+		background-color : $gray-to-active-color !important;
+		// background-color : $button-color !important;
+		
+		transition : none !important;
+	}
+}
+
+.button-group-selected
+{
+	color            : white !important;
+	background-color : $button-color !important;
+	// background-color : $active-color !important;
+	// background-color : #62a8ea !important;
+	// background-color : $active-darker-color !important;
+}
