@@ -13,6 +13,5 @@ export default class Menu_button extends Component
 		)
 
 		return markup
-
 	}
 }

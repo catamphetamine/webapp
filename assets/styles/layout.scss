@@ -71,11 +71,13 @@ nav
 	margin-left    : 0.4em;
 	margin-right   : 0.4em;
 
+	margin-top : 0.1em;
+
 	padding-bottom : 0em;
 
-	border-bottom-width : 0.12em;
-	border-bottom-color : transparent;
-	border-bottom-style : solid;
+	// border-bottom-width : 0.12em;
+	// border-bottom-color : transparent;
+	// border-bottom-style : solid;
 }
 
 .menu-item-selected
@@ -108,7 +110,9 @@ nav
 
 header
 {
-	// display: flex;
+	display        : flex;
+	flex-direction : row;
+	align-items    : center;
 
 	// .authentication - position: absolute
 	position: relative;

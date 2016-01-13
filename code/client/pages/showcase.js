@@ -28,6 +28,10 @@ export default class Page extends Component
 				<div style={{ marginTop: '3em' }}>Ещё какие-то компоненты из интернета:</div>
 
 				<ul>
+					<li><a href="http://www.material-ui.com/">Material UI</a></li>
+					<li><a href="http://www.materializecss.com/">Materialize CSS</a></li>
+					<li><a href="http://victory.formidable.com/">Victory for D3</a></li>
+					<li><a href="https://github.com/gaearon/react-dnd">React D'n'D</a></li>
 					<li><a href="https://github.com/felixrieseberg/React-Dropzone-Component">File drop zone</a></li>
 					<li><a href="https://github.com/AnSavvides/d3act">D3 + React</a></li>
 					<li><a href="http://blog.siftscience.com/blog/2015/4/6/d-threeact-how-sift-science-made-d3-react-besties">Ещё что-то про графики D3</a></li>

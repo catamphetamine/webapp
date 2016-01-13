@@ -212,7 +212,9 @@ export default class Layout extends Component
 					{/* header */}
 					<header>
 						{/* menu button for small screens */}
-						<Menu_button toggle={::this.toggle_menu}/>
+						<div className="menu-button-container">
+							<Menu_button toggle={::this.toggle_menu}/>
+						</div>
 
 						{/* home page link */}
 						<div className="logo" style={{ textAlign: 'center' }}>

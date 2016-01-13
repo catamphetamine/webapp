@@ -231,7 +231,6 @@
 .menu-button
 {
 	display: none;
-	position: absolute;
 
 	&:active
 	{
@@ -336,6 +335,7 @@
 
 .sign-in
 {
+	margin-top: 0.1em;
 	margin-right: 0.8em;
 }
 
