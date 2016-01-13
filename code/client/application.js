@@ -18,6 +18,14 @@ for (let asset of Object.keys(html_assets))
 	html_assets[asset]()
 }
 
+import inject_tap_event_plugin from 'react-tap-event-plugin'
+
+//Needed for onTouchTap
+//Can go away when react 1.0 release
+//Check this repo:
+//https://github.com/zilverline/react-tap-event-plugin
+inject_tap_event_plugin()
+
 // import ajax from './tools/ajax'
 // global.ajax = ajax
 

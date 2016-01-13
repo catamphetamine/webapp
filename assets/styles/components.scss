@@ -1,6 +1,6 @@
 @import "constants.scss";
 
-
+/*
 @-moz-keyframes spinner
 {
 	0%
@@ -47,8 +47,7 @@
 	}
 }
 
-/* :not(:required) hides this rule from IE9 and below */
-.spinner:not(:required)
+.spinner
 {
 	display: inline-block;
 	box-sizing: border-box;
@@ -67,6 +66,14 @@
 	// -moz-animation    : spinner 1250ms infinite linear;
 	// -webkit-animation : spinner 1250ms infinite linear;
 	animation: spinner 1250ms infinite linear;
+}
+*/
+
+.spinner
+{
+	svg
+	{
+	}
 }
 
 .dropdown
@@ -467,7 +474,7 @@
 		{
 			width: 100%;
 			text-overflow: ellipsis;
-			
+
 			// padding: 0;
 
 			// padding-left: 0;

@@ -114,9 +114,10 @@ pm2 logs webapp
 Сделать
 ====================
 
-стилизовать input file
+Circular Progress из material-ui переделать под em
 
-Circular Progress взять из material-ui
+вставить его в Button и locale switcher
+
 
 
 
@@ -156,6 +157,37 @@ http://stackoverflow.com/questions/24348453/how-to-use-blowfish-to-encrypt-passw
 
 
 загружать locale_data на клиенте через require(), чтобы был hot reload
+
+
+
+
+
+
+
+
+
+Date picker в Showcase
+
+http://www.material-ui.com/#/components/date-picker
+
+
+
+
+Напоминания взять отсюда
+
+http://materializecss.com/dialogs.html
+
+(в showcase)
+
+
+
+
+
+Увеличение фотографий
+
+http://materializecss.com/media.html
+
+(в showcase)
 
 
 

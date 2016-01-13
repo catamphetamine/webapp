@@ -32,6 +32,13 @@
 // 	src         : url('../fonts/Scada/Scada-BoldItalic.ttf') format('truetype');
 // }
 
+html
+{
+	// https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away
+	-ms-touch-action : manipulation;
+	touch-action     : manipulation;
+}
+
 html, body, #react_markup, .layout
 {
 	height: 100%;
@@ -67,11 +74,25 @@ body, button, input, textarea, select
 // 	vertical-align: bottom;
 // }
 
-input[type="text"], input[type="email"], input[type="password"], textarea, select
+input[type="text"], input[type="email"], input[type="password"], textarea, select, .date-picker
 {
 	display: block;
 	width: $input-width-l;
 	padding: $input-padding;
+
+	border: none;
+	border-bottom: $input-border-width solid $input-border-color;
+	transition: border 0.1s;
+}
+
+.date-picker
+{
+	padding-bottom: 0;
+
+	input
+	{
+		padding-bottom: $input-padding;
+	}
 }
 
 input[type="text"], input[type="email"], input[type="password"], textarea
@@ -81,10 +102,6 @@ input[type="text"], input[type="email"], input[type="password"], textarea
 	appearance: none;
 
 	box-sizing: border-box;
-
-	border: none;
-	border-bottom: $input-border-width solid $input-border-color;
-	transition: border 0.1s;
 
 	&:focus
 	{
@@ -137,13 +154,6 @@ input[type="text"], input[type="email"], input[type="password"], textarea
 
 select
 {
-	// appearance: none;
-
-	border: none;
-	border-bottom: $input-border-width solid $input-border-color;
-
-	transition: border 0.1s;
-
 	&:focus
 	{
 		outline: none;

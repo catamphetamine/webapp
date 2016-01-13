@@ -9,6 +9,9 @@ import Dropdown     from '../../components/dropdown'
 import Switch       from '../../components/switch'
 import Button_group from '../../components/button group'
 
+import { DatePicker as Date_picker } from 'material-ui/lib/date-picker'
+import { CircularProgress as Circular_progress } from 'material-ui/lib'
+
 @connect
 (
 	store => ({ })
@@ -93,6 +96,16 @@ export default class Form extends Component
 							<input type="text" placeholder="Upload one or more files" value={this.state.file_list}/>
 						</div>
 					</div>
+
+					<h2 style={style.form.label}>Date picker (part of Material UI)</h2>
+					<div className="date-picker">
+						<Date_picker style={style.form.date_picker} hintText="Portrait Dialog" autoOk={true} container="inline" textFieldStyle={style.form.date_picker.input} hintStyle={style.form.date_picker.hint} underlineShow={false}/>
+					</div>
+
+					<h2 style={style.form.label}>Spinner (part of Material UI)</h2>
+					<div className="spinner">
+						<Circular_progress style={style.form.spinner}/>
+					</div>
 				</form>
 			</div>
 		)
@@ -151,4 +164,23 @@ const style = styler
 			// margin-top: 1em
 			margin-left: 1.5em
 			vertical-align: bottom
+
+		date_picker
+
+			input
+				height: auto
+				width: auto
+
+				font-size: inherit
+				font-family: inherit
+				line-height: inherit
+
+			hint
+				bottom: 0
+				transition: none
+				// transition: all 50ms ease-out
+				// transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms
+
+
+		spinner
 `
