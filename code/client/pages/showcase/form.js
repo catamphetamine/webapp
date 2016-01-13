@@ -67,6 +67,32 @@ export default class Form extends Component
 					<h2 style={style.form.label}>Button group</h2>
 					<Button_group style={style.form.checkbox} options={[{ value: 'A', label: 'Apple' }, { value: 'B', label: 'Banana' }, { value: 'C', label: 'Cranberry' }]} value={this.state.button_group} on_change={ value => this.setState({ button_group: value }) }/>
 					You selected: {this.state.button_group ? this.state.button_group : 'nothing'}
+
+					<h2 style={style.form.label}>File upload</h2>
+					<div className="file-upload">
+						<div className="file-upload-button">
+							<button>File</button>
+							<input multiple="true" type="file" style={style.form.file} onChange={event =>
+							{
+								const files = event.target.files
+								const file_names = []
+
+								// `files` is not an array
+								let i = 0
+								while (i < files.length)
+								{
+									file_names.push(files[i].name)
+									i++
+								}
+
+								this.setState({ file_list : file_names.join(", ") })
+							}}/>
+						</div>
+
+						<div className="file-upload-list">
+							<input type="text" placeholder="Upload one or more files" value={this.state.file_list}/>
+						</div>
+					</div>
 				</form>
 			</div>
 		)

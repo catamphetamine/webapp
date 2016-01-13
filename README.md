@@ -150,6 +150,8 @@ http://stackoverflow.com/questions/24348453/how-to-use-blowfish-to-encrypt-passw
 
 
 
+мобильное меню сделать с поддержкой pan на touchdown, как в materialize css
+
 
 
 

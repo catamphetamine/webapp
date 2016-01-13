@@ -428,3 +428,50 @@
 {
 	width : 25em;
 }
+
+.file-upload
+{
+	position: relative;
+	width: 20em;
+
+	.file-upload-button
+	{
+		float : left;
+		height      : 3rem;
+		line-height : 3rem;
+
+		input
+		{
+			position : absolute;
+
+			top    : 0;
+			right  : 0;
+			left   : 0;
+			bottom : 0;
+
+			width : 100%;
+
+			margin  : 0;
+			padding : 0;
+
+			opacity : 0;
+		}
+	}
+
+	.file-upload-list
+	{
+		overflow: hidden;
+		padding-left: 0.6em;
+
+		input
+		{
+			width: 100%;
+			text-overflow: ellipsis;
+			
+			// padding: 0;
+
+			// padding-left: 0;
+			// padding-right: 0;
+		}
+	}
+}
