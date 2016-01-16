@@ -8,6 +8,7 @@ import Checkbox     from '../../components/checkbox'
 import Dropdown     from '../../components/dropdown'
 import Switch       from '../../components/switch'
 import Button_group from '../../components/button group'
+import Spinner      from '../../components/spinner'
 
 import { DatePicker as Date_picker } from 'material-ui/lib/date-picker'
 import { CircularProgress as Circular_progress } from 'material-ui/lib'
@@ -97,14 +98,12 @@ export default class Form extends Component
 						</div>
 					</div>
 
+					<h2 style={style.form.label}>Spinner</h2>
+					<Spinner style={style.form.spinner}/>
+
 					<h2 style={style.form.label}>Date picker (part of Material UI)</h2>
 					<div className="date-picker">
 						<Date_picker style={style.form.date_picker} hintText="Portrait Dialog" autoOk={true} container="inline" textFieldStyle={style.form.date_picker.input} hintStyle={style.form.date_picker.hint} underlineShow={false}/>
-					</div>
-
-					<h2 style={style.form.label}>Spinner (part of Material UI)</h2>
-					<div className="spinner">
-						<Circular_progress style={style.form.spinner}/>
 					</div>
 				</form>
 			</div>

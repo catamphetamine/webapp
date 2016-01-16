@@ -71,9 +71,10 @@
 
 .spinner
 {
-	svg
-	{
-	}
+	width  : 2em;
+	height : 2em;
+
+	stroke : #000000;
 }
 
 .dropdown
@@ -272,7 +273,7 @@
 
 // http://tympanus.net/codrops/2013/10/15/animated-checkboxes-and-radio-buttons-with-svg/
 
-.checkbox svg path
+.checkbox path
 {
 	stroke: $active-color !important;
 	stroke-width: 0.6em !important;

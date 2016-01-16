@@ -147,7 +147,10 @@ export default class Layout extends Component
 			{
 				// i don't fully understand what it does
 				// https://css-tricks.com/probably-use-initial-scale1/
-				viewport: 'width=device-width, initial-scale=1.0'
+				//
+				// user-scalable=no removes touch event delay ~300ms
+				//
+				viewport: 'width=device-width, initial-scale=1.0, user-scalable=no'
 			},
 			property:
 			{
