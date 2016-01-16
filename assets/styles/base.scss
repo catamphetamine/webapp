@@ -111,11 +111,6 @@ input[type="text"], input[type="email"], input[type="password"], textarea
 	}
 }
 
-.text-input-invalid
-{
-	border-bottom-color: $input-invalid-border-color !important;
-}
-
 // uncomment these in case of "autoresize" feature implemented for <textarea/>
 // textarea
 // {

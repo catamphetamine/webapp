@@ -483,3 +483,23 @@
 		}
 	}
 }
+
+.text-input-invalid .text-input-field
+{
+	border-bottom-color: $input-invalid-border-color !important;
+}
+
+.text-input-error-message
+{
+	padding: $input-padding;
+	padding-bottom: 0;
+
+	color: $input-error-message-color;
+}
+
+.checkbox-error-message
+{
+	padding-top: $input-padding;
+	
+	color: $input-error-message-color;
+}

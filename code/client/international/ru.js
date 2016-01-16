@@ -16,6 +16,14 @@ export default
 	'registration.i_accept'             : 'Я принимаю',
 	'registration.the_terms_of_service' : 'условия обслуживания',
 
+	'registration.name_is_required'                        : 'Придумайте себе имя пользователя',
+	'registration.email_is_required'                       : 'Для регистрации требуется ваша почта',
+	'registration.password_is_required'                    : 'Придумайте себе пароль',
+	'registration.terms_of_service_acceptance_is_required' : 'Для регистрации вам необоходимо принять наши условия обслуживания',
+
+	'authentication.email_is_required'    : 'Введите вашу почту',
+	'authentication.password_is_required' : 'Введите ваш пароль',
+
 	'menu.editor'              : 'Редактор',
 	'menu.about'               : 'Прочее',
 	'menu.example'             : 'Пример',

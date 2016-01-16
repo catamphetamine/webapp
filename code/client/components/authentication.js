@@ -75,7 +75,43 @@ const messages = defineMessages
 		id             : 'registration.the_terms_of_service',
 		description    : 'the terms of service',
 		defaultMessage : 'the terms of service'
-	}
+	},
+	registration_name_is_required:
+	{
+		id             : 'registration.name_is_required',
+		description    : 'Name field value can\'t be empty',
+		defaultMessage : 'Choose a user name'
+	},
+	registration_email_is_required:
+	{
+		id             : 'registration.email_is_required',
+		description    : 'Email field value can\'t be empty',
+		defaultMessage : 'Your email address is required'
+	},
+	registration_password_is_required:
+	{
+		id             : 'registration.password_is_required',
+		description    : 'Password field value can\'t be empty',
+		defaultMessage : 'Choose a password'
+	},
+	registration_terms_of_service_acceptance_is_required:
+	{
+		id             : 'registration.terms_of_service_acceptance_is_required',
+		description    : 'Terms of service acceptance checkbox must be checked',
+		defaultMessage : 'You must agree to our terms of service in order to create an account'
+	},
+	authentication_email_is_required:
+	{
+		id             : 'authentication.email_is_required',
+		description    : 'Email field value can\'t be empty',
+		defaultMessage : 'Enter your email address'
+	},
+	authentication_password_is_required:
+	{
+		id             : 'authentication.password_is_required',
+		description    : 'Password field value can\'t be empty',
+		defaultMessage : 'Enter your password'
+	},
 })
 
 @connect
@@ -138,10 +174,7 @@ export default class Authentication extends Component
 			<div className="authentication" style={ this.props.style ? extend({ display: 'inline-block' }, this.props.style) : { display: 'inline-block' } }>
 				
 				{/* Sign in action */}
-				{ !user ? <Button className="sign-in" action={::this.show} text={translate(messages.sign_in)}/> : null }
-
-				{/* Register action */}
-				{/* <button>translate(messages.register)</button> */}
+				{ !user ? <Button className="sign-in" action={::this.show} text={this.translate(messages.sign_in)}/> : null }
 
 				{/* User info if authenticated */}
 				{ user ? this.render_user_info(user) : null }
@@ -162,16 +195,14 @@ export default class Authentication extends Component
 
 	render_sign_in_form()
 	{
-		const translate = this.props.intl.formatMessage
-
 		const markup = 
 		(
 			<Form className="authentication-form" style={style.form} action={::this.sign_in} inputs={() => [this.refs.email, this.refs.password]}>
-				<h2 style={style.form_title}>{translate(messages.sign_in)}</h2>
+				<h2 style={style.form_title}>{this.translate(messages.sign_in)}</h2>
 
 				<div style={style.or_register} className="or-register">
-					<span>{translate(messages.or)}&nbsp;</span>
-					<Button button_style={style.or_register.register} action={::this.start_registration} text={translate(messages.register)}/>
+					<span>{this.translate(messages.or)}&nbsp;</span>
+					<Button button_style={style.or_register.register} action={::this.start_registration} text={this.translate(messages.register)}/>
 				</div>
 
 				<div style={style.clearfix}></div>
@@ -180,9 +211,9 @@ export default class Authentication extends Component
 					ref="email"
 					email={false}
 					value={this.state.email}
-					validate={::this.validate_email}
+					validate={::this.validate_email_on_sign_in}
 					on_change={value => this.setState({ email: value })}
-					placeholder={translate(messages.email)}
+					placeholder={this.translate(messages.email)}
 					on_enter={::this.sign_in}
 					style={style.input}/>
 
@@ -190,16 +221,16 @@ export default class Authentication extends Component
 					ref="password"
 					password={true}
 					value={this.state.password}
-					validate={::this.validate_password}
+					validate={::this.validate_password_on_sign_in}
 					on_change={value => this.setState({ password: value })}
-					placeholder={translate(messages.password)}
+					placeholder={this.translate(messages.password)}
 					on_enter={::this.sign_in}
 					style={style.input}/>
 
 				<div style={style.sign_in_buttons}>
-					<Button style={style.form_action} submit={true} text={translate(messages.sign_in)}/>
+					<Button style={style.form_action} submit={true} text={this.translate(messages.sign_in)}/>
 
-					<Button className="secondary" style={style.forgot_password} action={::this.forgot_password} text={translate(messages.forgot_password)}/>
+					<Button className="secondary" style={style.forgot_password} action={::this.forgot_password} text={this.translate(messages.forgot_password)}/>
 				</div>
 			</Form>
 		)
@@ -209,16 +240,14 @@ export default class Authentication extends Component
 
 	render_registration_form()
 	{
-		const translate = this.props.intl.formatMessage
-
 		const markup = 
 		(
 			<Form className="registration-form" style={style.form} action={::this.register} inputs={() => [this.refs.name, this.refs.email, this.refs.password, this.refs.accept_terms_of_service]}>
-				<h2 style={style.form_title}>{translate(messages.register)}</h2>
+				<h2 style={style.form_title}>{this.translate(messages.register)}</h2>
 
 				<div style={style.or_register} className="or-register">
-					<span>{translate(messages.or)}&nbsp;</span>
-					<Button button_style={style.or_register.register} action={::this.cancel_registration} text={translate(messages.sign_in)}/>
+					<span>{this.translate(messages.or)}&nbsp;</span>
+					<Button button_style={style.or_register.register} action={::this.cancel_registration} text={this.translate(messages.sign_in)}/>
 				</div>
 
 				<div style={style.clearfix}></div>
@@ -226,9 +255,9 @@ export default class Authentication extends Component
 				<Text_input
 					ref="name"
 					value={this.state.name}
-					validate={::this.validate_name}
+					validate={::this.validate_name_on_registration}
 					on_change={value => this.setState({ name: value })}
-					placeholder={translate(messages.name)}
+					placeholder={this.translate(messages.name)}
 					on_enter={::this.register}
 					style={style.input}/>
 
@@ -236,9 +265,9 @@ export default class Authentication extends Component
 					ref="email"
 					email={false}
 					value={this.state.email}
-					validate={::this.validate_email}
+					validate={::this.validate_email_on_registration}
 					on_change={value => this.setState({ email: value })}
-					placeholder={translate(messages.email)}
+					placeholder={this.translate(messages.email)}
 					on_enter={::this.register}
 					style={style.input}/>
 
@@ -246,9 +275,9 @@ export default class Authentication extends Component
 					ref="password"
 					password={true}
 					value={this.state.password}
-					validate={::this.validate_password}
+					validate={::this.validate_password_on_registration}
 					on_change={value => this.setState({ password: value })}
-					placeholder={translate(messages.password)}
+					placeholder={this.translate(messages.password)}
 					on_enter={::this.register}
 					style={style.input}/>
 
@@ -258,13 +287,15 @@ export default class Authentication extends Component
 						style={style.terms_of_service}
 						value={this.state.terms_of_service_accepted}
 						on_change={::this.accept_terms_of_service}
-						validate={::this.validate_terms_of_service}
-						label={translate(messages.i_accept)}/>
+						validate={::this.validate_terms_of_service}>
 
-					&nbsp;<a target="_blank" href="https://www.dropbox.com/terms">{translate(messages.the_terms_of_service)}</a>
+						{this.translate(messages.i_accept)}
+
+						&nbsp;<a target="_blank" href="https://www.dropbox.com/terms">{this.translate(messages.the_terms_of_service)}</a>
+					</Checkbox>
 				</div>
 
-				<Button submit={true} style={style.form_action.register} text={translate(messages.register)}/>
+				<Button submit={true} style={style.form_action.register} text={this.translate(messages.register)}/>
 			</Form>
 		)
 
@@ -284,13 +315,18 @@ export default class Authentication extends Component
 				{/* Avatar */}
 				{/*<div className="user_picture" style={{ backgroundImage: `url("${user_picture}")` }}></div>*/}
 				{/* the wrapping <div/> keeps image aspect ratio */}
-				<div className="user_picture">
+				{/*<div className="user_picture">
 					<img src={user_picture}/>
-				</div>
+				</div>*/}
 			</div>
 		)
 
 		return markup
+	}
+
+	translate(message)
+	{
+		return this.props.intl.formatMessage(message)
 	}
 
 	show()
@@ -306,24 +342,52 @@ export default class Authentication extends Component
 		this.setState({ show: false, ...this.pristine_form_state })
 	}
 
-	validate_name(value)
+	validate_email_on_sign_in(value)
 	{
-		return value
+		if (!value)
+		{
+			return this.translate(messages.authentication_email_is_required)
+		}
 	}
 
-	validate_email(value)
+	validate_password_on_sign_in(value)
 	{
-		return value
+		if (!value)
+		{
+			return this.translate(messages.authentication_password_is_required)
+		}
 	}
 
-	validate_password(value)
+	validate_name_on_registration(value)
 	{
-		return value
+		if (!value)
+		{
+			return this.translate(messages.registration_name_is_required)
+		}
+	}
+
+	validate_email_on_registration(value)
+	{
+		if (!value)
+		{
+			return this.translate(messages.registration_email_is_required)
+		}
+	}
+
+	validate_password_on_registration(value)
+	{
+		if (!value)
+		{
+			return this.translate(messages.registration_password_is_required)
+		}
 	}
 
 	validate_terms_of_service(value)
 	{
-		return value
+		if (!value)
+		{
+			return this.translate(messages.registration_terms_of_service_acceptance_is_required)
+		}
 	}
 
 	async sign_in()
@@ -449,8 +513,10 @@ const style = styler
 		clear : both
 
 	input
-		width : 100%
-		margin-bottom: 1em
+		margin-bottom : 1em
+
+		input
+			width : 100%
 
 	sign_in_buttons
 		margin-top: 1.5em

@@ -76,7 +76,7 @@ export default class Locale_switcher extends Component
 				<Dropdown 
 					label={translate(messages.language)} 
 					value={locale} 
-					select={::this.set_locale} 
+					on_change={::this.set_locale} 
 					options={locales.map(({ value, label }) => ({ value, label, icon: <Flag locale={value} style={style.locale.flag}/> }))} 
 					title={translate(messages.language)}
 					upward={this.props.upward}/>

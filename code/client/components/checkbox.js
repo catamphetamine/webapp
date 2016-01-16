@@ -13,15 +13,15 @@ export default class Checkbox extends Component
 	static propTypes =
 	{
 		value     : PropTypes.bool,
-		label     : PropTypes.string.isRequired,
+		// label     : PropTypes.string.isRequired,
 		on_change : PropTypes.func.isRequired,
 		validate  : PropTypes.func,
 		style     : PropTypes.object
 	}
 
-	constructor(options)
+	constructor(props)
 	{
-		super(options)
+		super(props)
 
 		inject(this)
 	}
@@ -38,6 +38,8 @@ export default class Checkbox extends Component
 	{
 		if (this.props.value !== previous_props.value)
 		{
+			// this.validate()
+
 			if (this.props.value)
 			{
 				this.draw_checkmark()
@@ -91,17 +93,36 @@ export default class Checkbox extends Component
 
 	render()
 	{
-		const { value, label } = this.props
+		const { value } = this.props
+
+		// style={ this.props.style ? merge(style.container, this.props.style) : style.container}
+
+		// onFocus={this.on_focus} 
+		// onBlur={this.on_blur} 
 
 		const markup = 
 		(
-			<div className={"checkbox " + (this.state.valid === false ? 'checkbox-invalid' : '')} style={ this.props.style ? merge(style.container, this.props.style) : style.container}>
-				<input ref="input" type="checkbox" onFocus={this.on_focus} onBlur={this.on_blur} onChange={::this.toggle} style={style.checkbox.input} value={value}/>
-				<div className="checkbox-border" style={ !value ? style.checkbox.label_before : style.checkbox.label_before.when_checked }></div>
-				<label className="checkbox-label" style={style.label} onClick={::this.toggle}>{label}</label>
-				<svg viewBox="0 0 100 100" style={style.checkbox.svg}>
-					{ value ? this.render_checkmark() : null }
-				</svg>
+			<div className={"checkbox " + (this.state.valid === false ? 'checkbox-invalid' : '')} style={this.props.style}>
+				<div style={style.wrapper}>
+					<input 
+						ref="input" 
+						type="checkbox" 
+						onChange={::this.toggle} 
+						style={style.checkbox.input} 
+						value={value}/>
+
+					<div className="checkbox-border" style={ !value ? style.checkbox.label_before : style.checkbox.label_before.when_checked }/>
+
+					<svg viewBox="0 0 100 100" style={style.checkbox.svg}>
+						{ value ? this.render_checkmark() : null }
+					</svg>
+
+					<label className="checkbox-label" style={style.label} onClick={::this.toggle}>
+						{this.props.children}
+					</label>
+				</div>
+
+				{ this.state.valid === false ? <div className="checkbox-error-message">{this.state.error_message}</div> : null }
 			</div>
 		)
 
@@ -130,8 +151,14 @@ export default class Checkbox extends Component
 		}
 	}
 
-	toggle()
+	toggle(event)
 	{
+		// if a link was clicked - don't treat it as a checkbox label click
+		if (event.target.tagName.toLowerCase() === 'a')
+		{
+			return
+		}
+
 		this.reset_validation()
 
 		// (allows checkmark animation from now on)
@@ -148,8 +175,7 @@ export default class Checkbox extends Component
 
 const style = styler
 `
-	container
-		display: inline-block
+	wrapper
 		position: relative
 
 	label

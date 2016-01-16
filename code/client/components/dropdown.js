@@ -2,6 +2,8 @@ import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 import styler from 'react-styling'
 
+import { inject } from './common'
+
 const scrollbar_width = '17px'
 const add_padding_for_scrollbar = true
 const show_selected_item_in_list = true
@@ -21,9 +23,10 @@ export default class Flag extends Component
 		.isRequired,
 		label      : PropTypes.string,
 		value      : PropTypes.any,
-		select     : PropTypes.func.isRequired,
-		upward     : PropTypes.bool,
+		on_change  : PropTypes.func.isRequired,
+		validate   : PropTypes.func,
 
+		upward     : PropTypes.bool,
 		max_items  : PropTypes.number,
 
 		transition_item_count_min : PropTypes.number,
@@ -46,6 +49,8 @@ export default class Flag extends Component
 	constructor(props)
 	{
 		super(props)
+
+		inject(this)
 
 		this.toggle           = this.toggle.bind(this)
 		this.document_clicked = this.document_clicked.bind(this)
@@ -243,12 +248,7 @@ export default class Flag extends Component
 	{
 		event.preventDefault()
 
-		if (value === this.props.value)
-		{
-			return
-		}
-
-		this.props.select(value)
+		this.on_change(value)
 	}
 
 	document_clicked(event)

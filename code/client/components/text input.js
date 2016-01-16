@@ -14,7 +14,6 @@ export default class Text_input extends Component
 		value       : PropTypes.any,
 		on_change   : PropTypes.func.isRequired,
 		validate    : PropTypes.func,
-		on_enter    : PropTypes.func,
 		placeholder : PropTypes.string,
 		multiline   : PropTypes.bool,
 		email       : PropTypes.bool,
@@ -22,16 +21,29 @@ export default class Text_input extends Component
 		style       : PropTypes.object
 	}
 
-	constructor(options)
+	constructor(props)
 	{
-		super(options)
+		super(props)
 
 		inject(this)
 	}
 
 	render()
 	{
-		const { name, value, placeholder, multiline, email, password, on_enter, style } = this.props
+		const markup = 
+		(
+			<div className={'text-input ' + (this.state.valid === false ? 'text-input-invalid' : '')} style={this.props.style}>
+				{this.render_input()}
+				{ this.state.valid === false ? <div className="text-input-error-message">{this.state.error_message}</div> : null }
+			</div>
+		)
+
+		return markup
+	}
+
+	render_input()
+	{
+		const { name, value, placeholder, multiline, email, password } = this.props
 
 		let type
 
@@ -51,14 +63,12 @@ export default class Text_input extends Component
 		if (multiline)
 		{
 			// maybe add autoresize for textarea (smoothly animated)
-			return <textarea ref="input" name={name} style={style} className={'text-input ' + (this.state.valid === false ? 'text-input-invalid' : '')} value={value} onFocus={::this.on_focus} onBlur={::this.on_blur} onChange={::this.on_change} placeholder={placeholder}/>
+			return <textarea ref="input" name={name} className="text-input-field" style={this.props.style ? this.props.style.input : ''} value={value} onFocus={::this.on_focus} onBlur={::this.on_blur} onChange={::this.on_change} placeholder={placeholder}/>
 		}
 		else
 		{
-			return <input ref="input" type={type} name={name} style={style} className={'text-input ' + (this.state.valid === false ? 'text-input-invalid' : '')} value={value} onFocus={::this.on_focus} onBlur={::this.on_blur} onChange={::this.on_change} placeholder={placeholder}/>
+			return <input ref="input" type={type} name={name} className="text-input-field" style={this.props.style ? this.props.style.input : ''} value={value} onFocus={::this.on_focus} onBlur={::this.on_blur} onChange={::this.on_change} placeholder={placeholder}/>
 		}
-
-		return markup
 	}
 
 	/*
