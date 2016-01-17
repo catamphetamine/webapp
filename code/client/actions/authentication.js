@@ -24,7 +24,7 @@ export function sign_in(info)
 
 export function sign_out(user_id)
 {
-	// to do
+	alert('to be done')
 
 	const action =
 	{

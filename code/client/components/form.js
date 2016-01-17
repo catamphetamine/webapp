@@ -8,20 +8,21 @@ export default class Form extends Component
 	{
 		action    : PropTypes.func.isRequired,
 		inputs    : PropTypes.func,
+		error     : PropTypes.any,
 		className : PropTypes.string,
 		style     : PropTypes.object
 	}
 
 	render()
 	{
-		const { className } = this.props
+		const { error, className } = this.props
 
 		const markup = 
 		(
 			<form className={className} style={this.props.style} onSubmit={::this.submit}>
 				{this.props.children}
 
-				{ this.state.error ? <div className="form-error-message">{this.state.error}</div> : null }
+				{ error ? <div className="form-error-message">{error.message ? error.message : error}</div> : null }
 			</form>
 		)
 
@@ -32,7 +33,7 @@ export default class Form extends Component
 	{
 		event.preventDefault()
 
-		this.reset_error()
+		// this.reset_error()
 
 		const { inputs } = this.props
 
@@ -57,19 +58,21 @@ export default class Form extends Component
 			}
 		}
 
-		try
-		{
-			await this.props.action()
-		}
-		catch (error)
-		{
-			this.setState({ error: error.message })
-			// console.error(error)
-		}
+		this.props.action()
+
+		// try
+		// {
+		// 	await this.props.action()
+		// }
+		// catch (error)
+		// {
+		// 	this.setState({ error: error.message })
+		// 	// console.error(error)
+		// }
 	}
 
-	reset_error()
-	{
-		this.setState({ error: undefined })
-	}
+	// reset_error()
+	// {
+	// 	this.setState({ error: undefined })
+	// }
 }

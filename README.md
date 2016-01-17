@@ -118,14 +118,14 @@ pm2 logs webapp
 
 
 
+при ненахождении пользователя по email'у выдавать ошибку с кодом Not_found в клиентский код
+
 
 
 
 хешировать пароль на сервере (blowfish), через bcrypt (уникальная соль для каждого пароля)
 
 http://stackoverflow.com/questions/24348453/how-to-use-blowfish-to-encrypt-password-in-nodejs
-
-при ненахождении пользователя по email'у выдавать ошибку с кодом Not_found в клиентский код
 
 крутилку на sign in
 

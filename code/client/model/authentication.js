@@ -10,7 +10,8 @@ const handlers =
 		const new_state = 
 		{
 			...state,
-			registering : true
+			registering        : true,
+			registration_error : undefined
 		}
 
 		return new_state
@@ -40,12 +41,24 @@ const handlers =
 		return new_state
 	},
 
+	'reset user registration error': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			registration_error : undefined
+		}
+
+		return new_state
+	},
+
 	'signing user in': (result, state) =>
 	{
 		const new_state = 
 		{
 			...state,
-			signing_in : true
+			signing_in    : true,
+			sign_in_error : undefined
 		}
 
 		return new_state
@@ -71,6 +84,54 @@ const handlers =
 			...state,
 			signing_in    : false,
 			sign_in_error : error
+		}
+
+		return new_state
+	},
+
+	'reset user sign in error': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			sign_in_error : undefined
+		}
+
+		return new_state
+	},
+
+	'signing user out': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			signing_out    : true,
+			sign_out_error : undefined
+		}
+
+		return new_state
+	},
+
+	'user signed out': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			signing_out : false,
+			user       : result,
+			// stale  : true
+		}
+
+		return new_state
+	},
+
+	'user sign out failed': (error, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			signing_out    : false,
+			sign_out_error : error
 		}
 
 		return new_state

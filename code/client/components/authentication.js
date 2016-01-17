@@ -18,7 +18,8 @@ import Form       from './form'
 import Modal      from './modal'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
-import { sign_in, register } from '../actions/authentication'
+
+import { sign_in, sign_out, register } from '../actions/authentication'
 
 const messages = defineMessages
 ({
@@ -122,16 +123,26 @@ const messages = defineMessages
 
 @connect
 (
-	store => 
+	model => 
 	({
-		user : store.authentication.user
+		user           : model.authentication.user,
+		sign_in_error  : model.authentication.sign_in_error,
+		sign_out_error : model.authentication.sign_out_error
 	}),
-	dispatch => bind_action_creators
-	({
-		sign_in,
-		register
-	},
-	dispatch)
+	dispatch =>
+	{
+		const result = bind_action_creators
+		({
+			sign_in,
+			sign_out,
+			register
+		},
+		dispatch)
+
+		result.dispatch = dispatch
+
+		return result
+	}
 )
 @international()
 export default class Authentication extends Component
@@ -151,9 +162,12 @@ export default class Authentication extends Component
 
 	static propTypes =
 	{
-		user: PropTypes.object,
+		user           : PropTypes.object,
+		sign_in_error  : PropTypes.object,
+		sign_out_error : PropTypes.object,
 
 		sign_in     : PropTypes.func.isRequired,
+		sign_out    : PropTypes.func.isRequired,
 		register    : PropTypes.func.isRequired
 	}
 
@@ -203,7 +217,7 @@ export default class Authentication extends Component
 	{
 		const markup = 
 		(
-			<Form ref="form" className="authentication-form" style={style.form} action={::this.sign_in} inputs={() => [this.refs.email, this.refs.password]}>
+			<Form ref="form" className="authentication-form" style={style.form} action={::this.sign_in} inputs={() => [this.refs.email, this.refs.password]} error={this.props.sign_in_error}>
 				<h2 style={style.form_title}>{this.translate(messages.sign_in)}</h2>
 
 				<div style={style.or_register} className="or-register">
@@ -220,7 +234,6 @@ export default class Authentication extends Component
 					validate={::this.validate_email_on_sign_in}
 					on_change={value => this.setState({ email: value })}
 					placeholder={this.translate(messages.email)}
-					on_enter={::this.sign_in}
 					style={style.input}/>
 
 				<Text_input
@@ -230,7 +243,6 @@ export default class Authentication extends Component
 					validate={::this.validate_password_on_sign_in}
 					on_change={value => this.setState({ password: value })}
 					placeholder={this.translate(messages.password)}
-					on_enter={::this.sign_in}
 					style={style.input}/>
 
 				<div style={style.sign_in_buttons}>
@@ -248,7 +260,7 @@ export default class Authentication extends Component
 	{
 		const markup = 
 		(
-			<Form ref="form" className="registration-form" style={style.form} action={::this.register} inputs={() => [this.refs.name, this.refs.email, this.refs.password, this.refs.accept_terms_of_service]}>
+			<Form ref="form" className="registration-form" style={style.form} action={::this.register} inputs={() => [this.refs.name, this.refs.email, this.refs.password, this.refs.accept_terms_of_service]} error={this.props.registration_error}>
 				<h2 style={style.form_title}>{this.translate(messages.register)}</h2>
 
 				<div style={style.or_register} className="or-register">
@@ -264,7 +276,6 @@ export default class Authentication extends Component
 					validate={::this.validate_name_on_registration}
 					on_change={value => this.setState({ name: value })}
 					placeholder={this.translate(messages.name)}
-					on_enter={::this.register}
 					style={style.input}/>
 
 				<Text_input
@@ -274,7 +285,6 @@ export default class Authentication extends Component
 					validate={::this.validate_email_on_registration}
 					on_change={value => this.setState({ email: value })}
 					placeholder={this.translate(messages.email)}
-					on_enter={::this.register}
 					style={style.input}/>
 
 				<Text_input
@@ -284,7 +294,6 @@ export default class Authentication extends Component
 					validate={::this.validate_password_on_registration}
 					on_change={value => this.setState({ password: value })}
 					placeholder={this.translate(messages.password)}
-					on_enter={::this.register}
 					style={style.input}/>
 
 				<div>
@@ -402,8 +411,8 @@ export default class Authentication extends Component
 
 	async sign_in()
 	{
-		// try
-		// {
+		try
+		{
 			await this.props.sign_in
 			({
 				email    : this.state.email,
@@ -412,12 +421,11 @@ export default class Authentication extends Component
 
 			// a sane security measure
 			this.setState({ password: undefined })
-		// }
-		// catch (error)
-		// {
-		// 	alert('User sign in failed.' + '\n\n' + error)
-		// 	console.log(error)
-		// }
+		}
+		catch (error)
+		{
+			// console.error(error)
+		}
 	}
 
 	forgot_password()
@@ -444,13 +452,20 @@ export default class Authentication extends Component
 		catch (error)
 		{
 			alert('User registration failed.' + '\n\n' + error)
-			console.log(error)
+			// console.error(error)
 		}
 	}
 
 	async sign_out()
 	{
-		alert('to be done')
+		try
+		{
+			await this.props.sign_out()
+		}
+		catch (error)
+		{
+			// console.error(error)
+		}
 	}
 
 	reset_validation()
@@ -471,7 +486,7 @@ export default class Authentication extends Component
 
 	start_registration()
 	{
-		this.refs.form.reset_error()
+		this.props.dispatch({ type: 'reset user registration error' })
 
 		this.reset_validation()
 
@@ -483,8 +498,8 @@ export default class Authentication extends Component
 
 	cancel_registration()
 	{
-		this.refs.form.reset_error()
-		
+		this.props.dispatch({ type: 'reset user sign in error' })
+
 		this.reset_validation()
 
 		this.setState({ register: false }, () =>
