@@ -5,9 +5,10 @@ export default
 	'application.language'    : 'Язык',
 
 	'authentication.sign_in'             : 'Войти',
+	'authentication.sign_out'            : 'Выйти',
+
 	'authentication.sign_in_or_register' : 'или',
 	'authentication.register'            : 'Зарегистрироваться',
-	'authentication.sign_in'             : 'Войти',
 	'authentication.name'                : 'Имя пользователя',
 	'authentication.email'               : 'Электропочта',
 	'authentication.password'            : 'Пароль',
