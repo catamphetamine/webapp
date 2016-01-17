@@ -36,6 +36,8 @@ import Button from '../../components/button'
 )
 export default class Page extends Component
 {
+	state = {}
+	
 	static propTypes =
 	{
 		get_users     : PropTypes.func.isRequired,
@@ -127,9 +129,9 @@ export default class Page extends Component
 				<div style={style.users}>
 					No users
 
-					<button onClick={this.add_user} style={style.users.add}>Add user</button>
+					<Button action={this.add_user} style={style.users.add}>Add user</Button>
 
-					<button onClick={this.refresh} style={style.users.refresh}>Refresh</button>
+					<Button action={this.refresh} busy={this.state.refreshing} style={style.users.refresh}>Refresh</Button>
 				</div>
 			)
 
@@ -167,14 +169,18 @@ export default class Page extends Component
 								<Button 
 									busy={this.props.uploading_picture} 
 									action={event => this.refs.upload_picture.click()} 
-									text="upload picture"
-									style={style.users.upload_picture}/>
+									style={style.users.upload_picture}>
+
+									upload picture
+								</Button>
 
 								<Button
 									busy={this.props.deleting}
 									action={event => this.delete_user(user.id)}
-									text="delete user"
-									style={style.users.delete}/>
+									style={style.users.delete}>
+
+									delete user
+								</Button>
 							</li>
 						})}
 					</ul>
@@ -185,9 +191,22 @@ export default class Page extends Component
 		return markup
 	}
 
-	refresh()
+	async refresh()
 	{
-		this.props.get_users()
+		this.setState({ refreshing: true })
+		
+		try
+		{
+			await this.props.get_users()
+		}
+		catch (error)
+		{
+			alert('Error refreshing users')
+		}
+		finally
+		{
+			this.setState({ refreshing: false })
+		}
 	}
 
 	async add_user()

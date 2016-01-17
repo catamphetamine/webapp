@@ -28,6 +28,12 @@ const messages = defineMessages
 		description    : 'Log in action',
 		defaultMessage : 'Sign in'
 	},
+	sign_out:
+	{
+		id             : 'authentication.sign_out',
+		description    : 'Log out action',
+		defaultMessage : 'Sign out'
+	},
 	or:
 	{
 		id             : 'authentication.sign_in_or_register',
@@ -174,7 +180,7 @@ export default class Authentication extends Component
 			<div className="authentication" style={ this.props.style ? extend({ display: 'inline-block' }, this.props.style) : { display: 'inline-block' } }>
 				
 				{/* Sign in action */}
-				{ !user ? <Button className="sign-in" action={::this.show} text={this.translate(messages.sign_in)}/> : null }
+				{ !user ? <Button className="sign-in" action={::this.show}>{this.translate(messages.sign_in)}</Button> : null }
 
 				{/* User info if authenticated */}
 				{ user ? this.render_user_info(user) : null }
@@ -202,7 +208,7 @@ export default class Authentication extends Component
 
 				<div style={style.or_register} className="or-register">
 					<span>{this.translate(messages.or)}&nbsp;</span>
-					<Button button_style={style.or_register.register} action={::this.start_registration} text={this.translate(messages.register)}/>
+					<Button button_style={style.or_register.register} action={::this.start_registration}>{this.translate(messages.register)}</Button>
 				</div>
 
 				<div style={style.clearfix}></div>
@@ -228,9 +234,9 @@ export default class Authentication extends Component
 					style={style.input}/>
 
 				<div style={style.sign_in_buttons}>
-					<Button style={style.form_action} submit={true} text={this.translate(messages.sign_in)}/>
+					<Button style={style.form_action} submit={true}>{this.translate(messages.sign_in)}</Button>
 
-					<Button className="secondary" style={style.forgot_password} action={::this.forgot_password} text={this.translate(messages.forgot_password)}/>
+					<Button className="secondary" style={style.forgot_password} action={::this.forgot_password}>{this.translate(messages.forgot_password)}</Button>
 				</div>
 			</Form>
 		)
@@ -247,7 +253,7 @@ export default class Authentication extends Component
 
 				<div style={style.or_register} className="or-register">
 					<span>{this.translate(messages.or)}&nbsp;</span>
-					<Button button_style={style.or_register.register} action={::this.cancel_registration} text={this.translate(messages.sign_in)}/>
+					<Button button_style={style.or_register.register} action={::this.cancel_registration}>{this.translate(messages.sign_in)}</Button>
 				</div>
 
 				<div style={style.clearfix}></div>
@@ -295,7 +301,7 @@ export default class Authentication extends Component
 					</Checkbox>
 				</div>
 
-				<Button submit={true} style={style.form_action.register} text={this.translate(messages.register)}/>
+				<Button submit={true} style={style.form_action.register}>{this.translate(messages.register)}</Button>
 			</Form>
 		)
 
@@ -310,7 +316,11 @@ export default class Authentication extends Component
 		(
 			<div className="user_info">
 				{/* Username */}
-				<div className="user_name"><a href="/">{user.name}</a></div>
+				{/* <a href="/"></a> */}
+				<div className="user_name">{user.name}</div>
+
+				{/* Sign out action */}
+				<Button className="sign-in" action={::this.sign_out}>{this.translate(messages.sign_out)}</Button>
 
 				{/* Avatar */}
 				{/*<div className="user_picture" style={{ backgroundImage: `url("${user_picture}")` }}></div>*/}
@@ -436,6 +446,11 @@ export default class Authentication extends Component
 			alert('User registration failed.' + '\n\n' + error)
 			console.log(error)
 		}
+	}
+
+	async sign_out()
+	{
+		alert('to be done')
 	}
 
 	reset_validation()

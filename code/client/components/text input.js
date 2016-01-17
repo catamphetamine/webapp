@@ -62,12 +62,14 @@ export default class Text_input extends Component
 
 		if (multiline)
 		{
+			// onBlur={::this.on_blur}
 			// maybe add autoresize for textarea (smoothly animated)
-			return <textarea ref="input" name={name} className="text-input-field" style={this.props.style ? this.props.style.input : ''} value={value} onFocus={::this.on_focus} onBlur={::this.on_blur} onChange={::this.on_change} placeholder={placeholder}/>
+			return <textarea ref="input" name={name} className="text-input-field" style={this.props.style ? this.props.style.input : ''} value={value} onFocus={::this.on_focus} onChange={::this.on_change} placeholder={placeholder}/>
 		}
 		else
 		{
-			return <input ref="input" type={type} name={name} className="text-input-field" style={this.props.style ? this.props.style.input : ''} value={value} onFocus={::this.on_focus} onBlur={::this.on_blur} onChange={::this.on_change} placeholder={placeholder}/>
+			// onBlur={::this.on_blur}
+			return <input ref="input" type={type} name={name} className="text-input-field" style={this.props.style ? this.props.style.input : ''} value={value} onFocus={::this.on_focus} onChange={::this.on_change} placeholder={placeholder}/>
 		}
 	}
 

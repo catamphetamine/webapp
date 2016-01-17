@@ -250,12 +250,21 @@
 	}
 }
 
-.language
+.language-wrapper
 {
 	position: absolute;
-	top: 1.1em;
-	right: 0;
+	top   : 0;
+	right : 0;
 
+	height: 100%;
+
+	// centers children vertically
+	display     : flex;
+	align-items : center;
+}
+
+.language
+{
 	margin-top: 0.1em;
 	margin-right: 1.5em;
 
@@ -356,8 +365,8 @@
 	height: 100%;
 
 	// centers children vertically
-	display: flex !important;
-	align-items: center;
+	display     : flex !important;
+	align-items : center;
 }
 
 // styling react-modal dialog widget
@@ -500,6 +509,6 @@
 .checkbox-error-message
 {
 	padding-top: $input-padding;
-	
+
 	color: $input-error-message-color;
 }

@@ -32,12 +32,22 @@ export default class Form extends Component
 
 		if (inputs)
 		{
+			let focus_on
+
 			for (let input of inputs())
 			{
 				if (!input.validate())
 				{
-					return input.focus({ preserve_validation: true })
+					if (!focus_on)
+					{
+						focus_on = input
+					}
 				}
+			}
+
+			if (focus_on)
+			{
+				return focus_on.focus({ preserve_validation: true })
 			}
 		}
 

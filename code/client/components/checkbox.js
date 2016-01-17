@@ -95,32 +95,28 @@ export default class Checkbox extends Component
 	{
 		const { value } = this.props
 
-		// style={ this.props.style ? merge(style.container, this.props.style) : style.container}
-
 		// onFocus={this.on_focus} 
 		// onBlur={this.on_blur} 
 
 		const markup = 
 		(
-			<div className={"checkbox " + (this.state.valid === false ? 'checkbox-invalid' : '')} style={this.props.style}>
-				<div style={style.wrapper}>
-					<input 
-						ref="input" 
-						type="checkbox" 
-						onChange={::this.toggle} 
-						style={style.checkbox.input} 
-						value={value}/>
+			<div className={"checkbox " + (this.state.valid === false ? 'checkbox-invalid' : '')} style={ this.props.style ? merge(style.container, this.props.style) : style.container}>
+				<input 
+					ref="input" 
+					type="checkbox" 
+					onChange={::this.toggle} 
+					style={style.checkbox.input} 
+					value={value}/>
 
-					<div className="checkbox-border" style={ !value ? style.checkbox.label_before : style.checkbox.label_before.when_checked }/>
+				<div className="checkbox-border" style={ !value ? style.checkbox.label_before : style.checkbox.label_before.when_checked }/>
 
-					<svg viewBox="0 0 100 100" style={style.checkbox.svg}>
-						{ value ? this.render_checkmark() : null }
-					</svg>
+				<svg viewBox="0 0 100 100" style={style.checkbox.svg}>
+					{ value ? this.render_checkmark() : null }
+				</svg>
 
-					<label className="checkbox-label" style={style.label} onClick={::this.toggle}>
-						{this.props.children}
-					</label>
-				</div>
+				<label className="checkbox-label" style={style.label} onClick={::this.toggle}>
+					{this.props.children}
+				</label>
 
 				{ this.state.valid === false ? <div className="checkbox-error-message">{this.state.error_message}</div> : null }
 			</div>
@@ -175,7 +171,7 @@ export default class Checkbox extends Component
 
 const style = styler
 `
-	wrapper
+	container
 		position: relative
 
 	label
@@ -194,10 +190,10 @@ const style = styler
 	checkbox
 		position: absolute
 		left: 0
-		bottom: 0.15em
+		top: 0.05em
 
-		width: 0.9em;
-		height: 0.9em;
+		width  : 0.9em
+		height : 0.9em
 
 		position: absolute;
 		// cursor: pointer;
@@ -222,7 +218,7 @@ const style = styler
 			height: 0.8em
 
 			margin-left: 0.1em
-			margin-bottom: 0.15em
+			margin-top: 0.1em
 
 			pointer-events: none
 

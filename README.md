@@ -114,12 +114,17 @@ pm2 logs webapp
 Сделать
 ====================
 
+
+
+
 сообщение об ошибке действия - помещать в форме где-нибудь под кнопкой мб
 
 
 
 
-вставить Spinner в Button и locale switcher
+
+загружать locale_data на клиенте через require(), чтобы был hot reload
+
 
 
 
@@ -151,19 +156,10 @@ http://stackoverflow.com/questions/24348453/how-to-use-blowfish-to-encrypt-passw
 
 
 
-загружать locale_data на клиенте через require(), чтобы был hot reload
 
 
 
 
-
-
-
-
-
-Date picker в Showcase
-
-http://www.material-ui.com/#/components/date-picker
 
 
 

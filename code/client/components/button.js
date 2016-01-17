@@ -1,11 +1,12 @@
 import React, { Component, PropTypes } from 'react'
 import styler from 'react-styling'
 
+import Spinner from './spinner'
+
 export default class Button extends Component
 {
 	static propTypes =
 	{
-		text         : PropTypes.string.isRequired,
 		action       : PropTypes.func,
 		busy         : PropTypes.bool,
 		submit       : PropTypes.bool,
@@ -16,7 +17,7 @@ export default class Button extends Component
 
 	render()
 	{
-		const { busy, action, text, submit, className } = this.props
+		const { busy, action, submit, className } = this.props
 
 		let button_style = busy ? style.button.hide : style.button.show 
 
@@ -28,7 +29,7 @@ export default class Button extends Component
 		const markup = 
 		(
 			<div className={'button ' + (submit ? 'button-primary' : '') + (className ? className : '')} style={merge(style.container, this.props.style)}>
-				<span className="spinner" style={ busy ? style.spinner.show : style.spinner.hide }></span>
+				<Spinner style={ busy ? style.spinner.show : style.spinner.hide }></Spinner>
 
 				<button
 					type={submit ? 'submit' : 'button'}
@@ -36,7 +37,7 @@ export default class Button extends Component
 					onClick={action}
 					style={button_style}>
 
-					{text}
+					{this.props.children}
 				</button>
 			</div>
 		)
@@ -54,7 +55,11 @@ const style = styler
 	spinner
 		position   : absolute
 		z-index    : -1
-		bottom     : 0.25em
+		top        : 0.1em
+
+		width  : 1em
+		height : 1em
+
 		transition : opacity 300ms ease-out
 
 		&show

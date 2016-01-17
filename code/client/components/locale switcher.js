@@ -8,8 +8,9 @@ import { connect } from 'react-redux'
 
 import styler from 'react-styling'
 
-import Flag from './flag'
+import Flag     from './flag'
 import Dropdown from './dropdown'
+import Spinner  from './spinner'
 
 import { defineMessages } from 'react-intl'
 import international from '../internationalize'
@@ -70,7 +71,7 @@ export default class Locale_switcher extends Component
 		(
 			<div className="language" style={ this.props.style ? extend({ display: 'inline-block' }, this.props.style) : { display: 'inline-block' } }>
 				{/* loading */}
-				<span className="spinner" style={ this.state.setting_locale ? style.spinner.show : style.spinner.hide }></span>
+				<Spinner style={ this.state.setting_locale ? style.spinner.show : style.spinner.hide }/>
 
 				{/* dropdown list */}
 				<Dropdown 
@@ -99,9 +100,13 @@ export default class Locale_switcher extends Component
 const style = styler
 `
 	spinner
+		width  : 1em
+		height : 1em
+
+		margin-bottom    : 0.45em
+
 		transition       : opacity 500ms ease-out
 		transition-delay : 150ms
-		margin-bottom    : 0.35em
 
 		&show
 			opacity : 1
