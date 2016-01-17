@@ -203,7 +203,7 @@ export default class Authentication extends Component
 	{
 		const markup = 
 		(
-			<Form className="authentication-form" style={style.form} action={::this.sign_in} inputs={() => [this.refs.email, this.refs.password]}>
+			<Form ref="form" className="authentication-form" style={style.form} action={::this.sign_in} inputs={() => [this.refs.email, this.refs.password]}>
 				<h2 style={style.form_title}>{this.translate(messages.sign_in)}</h2>
 
 				<div style={style.or_register} className="or-register">
@@ -248,7 +248,7 @@ export default class Authentication extends Component
 	{
 		const markup = 
 		(
-			<Form className="registration-form" style={style.form} action={::this.register} inputs={() => [this.refs.name, this.refs.email, this.refs.password, this.refs.accept_terms_of_service]}>
+			<Form ref="form" className="registration-form" style={style.form} action={::this.register} inputs={() => [this.refs.name, this.refs.email, this.refs.password, this.refs.accept_terms_of_service]}>
 				<h2 style={style.form_title}>{this.translate(messages.register)}</h2>
 
 				<div style={style.or_register} className="or-register">
@@ -314,13 +314,13 @@ export default class Authentication extends Component
 
 		const markup = 
 		(
-			<div className="user_info">
+			<div className="user-info">
 				{/* Username */}
 				{/* <a href="/"></a> */}
-				<div className="user_name">{user.name}</div>
+				<div className="user-name">{user.name}</div>
 
 				{/* Sign out action */}
-				<Button className="sign-in" action={::this.sign_out}>{this.translate(messages.sign_out)}</Button>
+				<Button className="sign-out" action={::this.sign_out}>{this.translate(messages.sign_out)}</Button>
 
 				{/* Avatar */}
 				{/*<div className="user_picture" style={{ backgroundImage: `url("${user_picture}")` }}></div>*/}
@@ -402,8 +402,8 @@ export default class Authentication extends Component
 
 	async sign_in()
 	{
-		try
-		{
+		// try
+		// {
 			await this.props.sign_in
 			({
 				email    : this.state.email,
@@ -412,12 +412,12 @@ export default class Authentication extends Component
 
 			// a sane security measure
 			this.setState({ password: undefined })
-		}
-		catch (error)
-		{
-			alert('User sign in failed.' + '\n\n' + error)
-			console.log(error)
-		}
+		// }
+		// catch (error)
+		// {
+		// 	alert('User sign in failed.' + '\n\n' + error)
+		// 	console.log(error)
+		// }
 	}
 
 	forgot_password()
@@ -471,6 +471,8 @@ export default class Authentication extends Component
 
 	start_registration()
 	{
+		this.refs.form.reset_error()
+
 		this.reset_validation()
 
 		this.setState({ register: true }, () =>
@@ -481,6 +483,8 @@ export default class Authentication extends Component
 
 	cancel_registration()
 	{
+		this.refs.form.reset_error()
+		
 		this.reset_validation()
 
 		this.setState({ register: false }, () =>

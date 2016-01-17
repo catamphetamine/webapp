@@ -304,7 +304,7 @@
 	border-color: $input-invalid-border-color !important;
 }
 
-.user_info
+.user-info
 {
 	display         : flex;
 	flex-direction  : row;
@@ -315,7 +315,7 @@
 	height     : 1px;
 }
 
-.user_name
+.user-name
 {
 	// centers <a/> vertically
 	display         : flex;
@@ -323,6 +323,8 @@
 	justify-content : center;
 
 	margin-right: 0.8em;
+
+	margin-top: $header-vertically-centered-text-margin-top;
 
 	a
 	{
@@ -350,10 +352,18 @@
 	}
 }
 
-.sign-in
+.sign-in, .sign-out
 {
-	margin-top: 0.1em;
+	margin-top: $header-vertically-centered-text-margin-top;
 	margin-right: 0.8em;
+}
+
+.sign-out
+{
+	// centers children vertically
+	display         : flex !important;
+	flex-direction  : column;
+	justify-content : center;
 }
 
 .authentication
@@ -446,6 +456,12 @@
 	width : 25em;
 }
 
+.form-error-message
+{
+	margin-top: 1em;
+	color: $input-error-message-color;
+}
+
 .file-upload
 {
 	position: relative;
@@ -454,6 +470,7 @@
 	.file-upload-button
 	{
 		float : left;
+
 		height      : 3rem;
 		line-height : 3rem;
 

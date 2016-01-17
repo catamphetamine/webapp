@@ -2,6 +2,8 @@ import React, { Component, PropTypes } from 'react'
 
 export default class Form extends Component
 {
+	state = {}
+
 	static propTypes =
 	{
 		action    : PropTypes.func.isRequired,
@@ -18,15 +20,19 @@ export default class Form extends Component
 		(
 			<form className={className} style={this.props.style} onSubmit={::this.submit}>
 				{this.props.children}
+
+				{ this.state.error ? <div className="form-error-message">{this.state.error}</div> : null }
 			</form>
 		)
 
 		return markup
 	}
 
-	submit(event)
+	async submit(event)
 	{
 		event.preventDefault()
+
+		this.reset_error()
 
 		const { inputs } = this.props
 
@@ -51,6 +57,19 @@ export default class Form extends Component
 			}
 		}
 
-		this.props.action()
+		try
+		{
+			await this.props.action()
+		}
+		catch (error)
+		{
+			this.setState({ error: error.message })
+			// console.error(error)
+		}
+	}
+
+	reset_error()
+	{
+		this.setState({ error: undefined })
 	}
 }
