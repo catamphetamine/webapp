@@ -5,12 +5,13 @@ const initial_state =
 
 const handlers =
 {
-	'locale set': (result, state) =>
+	'locale': (result, state) =>
 	{
 		const new_state = 
 		{
 			...state,
-			locale : result.locale
+			locale           : result.locale,
+			preferred_locale : result.preferred_locale
 		}
 
 		return new_state

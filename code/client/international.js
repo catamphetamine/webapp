@@ -60,6 +60,10 @@ const international =
 		// this require here, when loadIntlPolyfill is supposed to be present
 		require('expose?ReactIntl!react-intl')
 
+		// The require.ensure function accepts an additional 3rd parameter. 
+		// This must be a string. 
+		// If two split point pass the same string they use the same chunk.
+
 		return new Promise(resolve =>
 		{
 			// do not remove code duplication (because Webpack won't work as expected)

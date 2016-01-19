@@ -20,8 +20,8 @@ import Uri from '../tools/uri'
 // брать с сервера, из i18n файлов (key - имя, label - из файла этого считывать)
 const locales = 
 [
-	{ value: 'en-US', label: 'English' },
-	{ value: 'ru-RU', label: 'Русский' },
+	{ value: 'en', label: 'English' },
+	{ value: 'ru', label: 'Русский' },
 	// { key: 'test',  label: 'Test Long list' },
 	// { key: 'test2',  label: 'Test Long list' },
 	// { key: 'test3',  label: 'Test Long list' },

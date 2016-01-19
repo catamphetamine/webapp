@@ -10,14 +10,14 @@ Features
 * Webpack
 * Koa
 * Internationalization with React-intl (v2)
+* Translated messages hot reload (aka Hot Module Replacement)
+* Microservice architecture
+* Bunyan logging (log file rotation is built-in)
 * To be done: Authentication
 * To be done: GraphQL + Relay
 * To be done: Persistence (PostgreSQL, Bookshelf)
 * To be done: native Node.js clustering
-* Microservice architecture
-* Bunyan logging (log file rotation is built-in)
 * // maybe: Protection against Cross Site Request Forgery attacks
-* Maybe to be done: Locale switch hot reload (without reloading page)
 
 Quick Start
 ===========
@@ -120,6 +120,8 @@ pm2 logs webapp
 
 при ненахождении пользователя по email'у выдавать ошибку с кодом Not_found в клиентский код
 
+при неправильном пароле - писать, что пароль неправильный
+
 
 
 
@@ -127,9 +129,6 @@ pm2 logs webapp
 
 http://stackoverflow.com/questions/24348453/how-to-use-blowfish-to-encrypt-password-in-nodejs
 
-крутилку на sign in
-
-крутилку на register
 
 
 
@@ -149,6 +148,8 @@ http://stackoverflow.com/questions/24348453/how-to-use-blowfish-to-encrypt-passw
 
 
 
+
+страницы пользователя: feedback, history
 
 
 
@@ -177,8 +178,6 @@ http://materializecss.com/media.html
 
 
 
-
-// мб валидировать все поля при нажатии "войти" или "зарегаться"
 
 
 endless scroll в логах: выгрузка тех страниц, которые выходят за предел "показывать страниц", + url нормальный (с какой страницы показывать до + "показывать страниц")
@@ -304,21 +303,6 @@ showcase: сабмит формы, чтобы она сохраняла в оп�
 (+ чтобы работала при обновлении страницы)
 
 showcase form чтобы имел кнопку с валидацией и записью на сервере в оперативку, и получал бы с сервера
-
-
-
-
-
-
-
-
-
-
-мб hot reload для переводов текста (ru.js)
-
-
-
-
 
 
 
@@ -465,7 +449,7 @@ https://github.com/acdlite/redux-react-router
 
 
 Рендеринг React'а вместе с React-router'ом и Redux'ом взят отсюда
-(будет обновляться после 30.12.2015 - мержить к себе новые изменения):
+(будет обновляться после 14.01.2016 - мержить к себе новые изменения):
 
 https://github.com/erikras/react-redux-universal-hot-example/commits/master
 

@@ -334,9 +334,9 @@ export default class Authentication extends Component
 				{/* Avatar */}
 				{/*<div className="user_picture" style={{ backgroundImage: `url("${user_picture}")` }}></div>*/}
 				{/* the wrapping <div/> keeps image aspect ratio */}
-				{/*<div className="user_picture">
+				<div className="user_picture" onClick={::this.change_user_picture}>
 					<img src={user_picture}/>
-				</div>*/}
+				</div>
 			</div>
 		)
 
@@ -346,6 +346,11 @@ export default class Authentication extends Component
 	translate(message)
 	{
 		return this.props.intl.formatMessage(message)
+	}
+
+	change_user_picture()
+	{
+		alert('to do')
 	}
 
 	show()

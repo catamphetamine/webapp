@@ -32,8 +32,8 @@ export default class Flag extends Component
 
 const flags =
 {
-	'en-US' : require(`../../../assets/images/flags/United-States-of-America.png`),
-	'ru-RU' : require(`../../../assets/images/flags/Russia.png`),
+	'en' : require(`../../../assets/images/flags/United-States-of-America.png`),
+	'ru' : require(`../../../assets/images/flags/Russia.png`),
 	// add flags here
 }
 

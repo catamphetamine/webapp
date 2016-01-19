@@ -71,9 +71,9 @@ webpage_server
 	{
 		let { locale, messages } = load_locale_data(preferred_locale || 'en')
 
-		store.dispatch({ type: 'locale set', locale: locale })
+		store.dispatch({ type: 'locale', locale, preferred_locale })
 
-		return { language: get_language_from_locale(locale), messages }
+		return { locale, messages }
 	},
 
 	// will be inserted into server rendered webpage <head/>
@@ -90,5 +90,5 @@ webpage_server
 	style: () => html_assets.style().toString(),
 
 	// bunyan log
-	log: log
+	log
 })
