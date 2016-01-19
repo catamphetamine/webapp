@@ -8,6 +8,9 @@ import { addLocaleData as add_locale_data } from 'react-intl'
 
 import is_intl_locale_supported from 'intl-locales-supported'
 
+// doesn't matter, just initialize it with something
+let _locale = 'en'
+
 const international =
 {
 	// client-side bootstrap code
@@ -73,7 +76,7 @@ const international =
 				case 'ru':
 					if (!is_intl_locale_supported('ru'))
 					{
-						// download intl locale data and react-intl specific locale data for this language
+						// download both intl locale data and react-intl specific locale data for this language
 						require.ensure
 						([
 							'intl/locale-data/jsonp/ru',
@@ -86,18 +89,18 @@ const international =
 							debug(`Intl and ReactIntl locale-data for "${locale}" has been downloaded`)
 							resolve()
 						},
-						'locale-ru')
+						'locale-ru-with-intl')
 					}
 					else
 					{
-						// download react-intl specific locale data for this language
+						// download just react-intl specific locale data for this language
 						require.ensure(['react-intl/lib/locale-data/ru'], require =>
 						{
 							add_locale_data(require('react-intl/lib/locale-data/ru'))
 							debug(`ReactIntl locale-data for "${locale}" has been downloaded`)
 							resolve()
 						},
-						'locale-ru-no-intl')
+						'locale-ru')
 					}
 					break
 
@@ -130,7 +133,7 @@ const international =
 							debug(`Intl and ReactIntl locale-data for "${locale}" has been downloaded`)
 							resolve()
 						},
-						'locale-en')
+						'locale-en-with-intl')
 					}
 					else
 					{
@@ -140,12 +143,55 @@ const international =
 						// 	debug(`ReactIntl locale-data for "${locale}" has been downloaded`)
 						// 	resolve()
 						// },
-						// 'locale-en-no-intl')
+						// 'locale-en')
 
 						resolve()
 					}
 			}
 		})
+	},
+
+	load_translation: locale =>
+	{
+		// makes Webpack HMR work for this locale for now
+		_locale = locale
+
+		switch (locale)
+		{
+			case 'ru':
+				return new Promise(resolve =>
+				{
+					require.ensure(['./international/ru'], require =>
+					{
+						resolve(require('./international/ru'))
+					})
+				})
+
+			default:
+				return new Promise(resolve =>
+				{
+					require.ensure(['./international/en'], require =>
+					{
+						resolve(require('./international/en'))
+					})
+				})
+		}
+	},
+
+	hot_reload: on_reload =>
+	{
+		// `_development_` flag is needed here
+		// to make sure that Webpack doesn't include
+		// the whole `./international` folder into the `main` bundle
+		// in production mode (because that's the sole point of code splitting)
+		//
+		if (_development_ && module.hot)
+		{
+			module.hot.accept(require.resolve('./international/' + _locale + '.js'), function()
+			{
+				on_reload()
+			})
+		}
 	}
 }
 

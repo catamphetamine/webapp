@@ -29,9 +29,6 @@ inject_tap_event_plugin()
 // import ajax from './tools/ajax'
 // global.ajax = ajax
 
-// doesn't matter, just initialize it with something
-let _locale = 'en'
-
 import international from './international'
 
 // load the Intl polyfill and its locale data before rendering the application
@@ -62,48 +59,9 @@ international.load().then(() =>
 		markup_wrapper,
 
 		// internationalization
-		load_localized_messages: locale =>
-		{
-			// makes Webpack HMR work for this locale for now
-			_locale = locale
-
-			switch (locale)
-			{
-				case 'ru':
-					return new Promise(resolve =>
-					{
-						require.ensure(['./international/ru'], require =>
-						{
-							resolve(require('./international/ru'))
-						})
-					})
-
-				default:
-					return new Promise(resolve =>
-					{
-						require.ensure(['./international/en'], require =>
-						{
-							resolve(require('./international/en'))
-						})
-					})
-			}
-		}
+		load_localized_messages: international.load_translation
 	})
-	.then(({ rerender }) =>
-	{
-		// `_development_` flag is needed here
-		// to make sure that Webpack doesn't include
-		// the whole `./international` folder into the `main` bundle
-		// in production mode (because that's the sole point of code splitting)
-		//
-		if (_development_ && module.hot)
-		{
-			module.hot.accept(require.resolve('./international/' + _locale + '.js'), function()
-			{
-				rerender()
-			})
-		}
-	})
+	.then(({ rerender }) => international.hot_reload(rerender))
 })
 
 // used in './international' for debug output
