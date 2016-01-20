@@ -116,8 +116,10 @@ header
 	// .authentication - position: absolute
 	position: relative;
 
-	padding-top    : $header-vertical-padding;
-	padding-bottom : $header-vertical-padding;
+	// box-sizing: border-box;
+
+	// padding-top    : $header-vertical-padding;
+	// padding-bottom : $header-vertical-padding;
 
 	padding-left  : $header-horizontal-padding;
 	padding-right : $header-horizontal-padding;

@@ -119,6 +119,18 @@ const messages = defineMessages
 		description    : 'Password field value can\'t be empty',
 		defaultMessage : 'Enter your password'
 	},
+	user_not_found:
+	{
+		id             : 'authentication.user_not_found',
+		description    : 'Email not found in the database',
+		defaultMessage : 'User with this email doesn\'t exist'
+	},
+	wrong_password:
+	{
+		id             : 'authentication.wrong_password',
+		description    : 'Passowrd doesn\'t match the one in the database',
+		defaultMessage : 'Wrong password'
+	}
 })
 
 @connect
@@ -217,7 +229,7 @@ export default class Authentication extends Component
 	{
 		const markup = 
 		(
-			<Form ref="form" className="authentication-form" style={style.form} action={::this.sign_in} inputs={() => [this.refs.email, this.refs.password]} error={this.props.sign_in_error}>
+			<Form ref="form" className="authentication-form" style={style.form} action={::this.sign_in} inputs={() => [this.refs.email, this.refs.password]} error={this.props.sign_in_error && this.sign_in_error(this.props.sign_in_error)}>
 				<h2 style={style.form_title}>{this.translate(messages.sign_in)}</h2>
 
 				<div style={style.or_register} className="or-register">
@@ -319,7 +331,7 @@ export default class Authentication extends Component
 
 	render_user_info(user)
 	{
-		const user_picture = user.picture ? `/upload/user_pictures/${user.id}.jpg` : require('../../../assets/images/no user picture 85x85.png')
+		const user_picture = user.picture ? `/upload/user_pictures/${user.id}.jpg` : require('../../../assets/images/no user picture.png')
 
 		const markup = 
 		(
@@ -332,11 +344,12 @@ export default class Authentication extends Component
 				<Button className="sign-out" action={::this.sign_out}>{this.translate(messages.sign_out)}</Button>
 
 				{/* Avatar */}
-				{/*<div className="user_picture" style={{ backgroundImage: `url("${user_picture}")` }}></div>*/}
+				{/*<div className="user-picture" style={{ backgroundImage: `url("${user_picture}")` }}></div>*/}
 				{/* the wrapping <div/> keeps image aspect ratio */}
-				<div className="user_picture" onClick={::this.change_user_picture}>
+				{/* <div className="user-picture" onClick={::this.change_user_picture}>
 					<img src={user_picture}/>
-				</div>
+				</div>*/}
+				<img className="user-picture" src={user_picture}/>
 			</div>
 		)
 
@@ -449,10 +462,13 @@ export default class Authentication extends Component
 				password : this.state.password
 			})
 
-			alert('User registered. Id ' + result.id)
+			this.cancel_registration()
 
 			// a sane security measure
-			this.setState({ password: undefined, register: false })
+			this.setState({ password: undefined }, function()
+			{
+				this.refs.password.focus()
+			})
 		}
 		catch (error)
 		{
@@ -471,6 +487,20 @@ export default class Authentication extends Component
 		{
 			// console.error(error)
 		}
+	}
+
+	sign_in_error(error)
+	{
+		if (error.status === 404)
+		{
+			return this.translate(messages.user_not_found)
+		}
+		else if (error.message === 'Wrong password')
+		{
+			return this.translate(messages.wrong_password)
+		}
+
+		return error
 	}
 
 	reset_validation()

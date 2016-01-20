@@ -114,17 +114,6 @@ pm2 logs webapp
 Сделать
 ====================
 
-загружать locale_data на клиенте через require(), чтобы был hot reload
-
-
-
-при ненахождении пользователя по email'у выдавать ошибку с кодом Not_found в клиентский код
-
-при неправильном пароле - писать, что пароль неправильный
-
-
-
-
 хешировать пароль на сервере (blowfish), через bcrypt (уникальная соль для каждого пароля)
 
 http://stackoverflow.com/questions/24348453/how-to-use-blowfish-to-encrypt-password-in-nodejs

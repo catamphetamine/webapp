@@ -3,9 +3,17 @@ body, button, input, textarea, select
 	font-size : 16pt;
 }
 
+header, .user-picture
+{
+	min-height : 2.2em;
+	max-height : 2.2em;
+}
+
 .logo
 {
-	font-size : 16pt
+	font-size : 16pt;
+
+	margin-top : $header-vertically-centered-text-margin-top;
 }
 
 .menu-button
@@ -31,8 +39,8 @@ body, button, input, textarea, select
 
 header
 {
-	padding-top    : 0.4em;
-	padding-bottom : 0.4em;
+	// padding-top    : 0.4em;
+	// padding-bottom : 0.4em;
 
 	padding-left  : 0.8em;
 	padding-right : 0.8em;

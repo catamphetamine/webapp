@@ -25,6 +25,9 @@ export default
 	'authentication.email_is_required'    : 'Введите вашу почту',
 	'authentication.password_is_required' : 'Введите ваш пароль',
 
+	'authentication.user_not_found' : 'Нет пользователя с такой почтой',
+	'authentication.wrong_password' : 'Неверный пароль',
+
 	'menu.editor'              : 'Редактор',
 	'menu.about'               : 'Прочее',
 	'menu.example'             : 'Пример',

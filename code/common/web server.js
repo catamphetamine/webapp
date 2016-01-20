@@ -177,6 +177,23 @@ export default function web_server(options = {})
 		// })
 	}
 
+	// handle errors
+	web.use(function*(next)
+	{
+		try
+		{
+			yield next
+		}
+		catch (error)
+		{
+			// log the error
+			log.error(error)
+
+			this.status = typeof error.code === 'number' ? error.code : 500
+			this.message = error.message || 'Internal error'
+		}
+	})
+
 	if (options.routing)
 	{
 		const router = koa_router()
@@ -225,23 +242,6 @@ export default function web_server(options = {})
 
 		web.use(router.routes()).use(router.allowedMethods())
 	}
-
-	// handle errors
-	web.use(function*(next)
-	{
-		try
-		{
-			yield next
-		}
-		catch (error)
-		{
-			// log the error
-			log.error(error)
-
-			this.status = typeof error.code === 'number' ? error.code : 500
-			this.message = error.message || 'Internal error'
-		}
-	})
 
 	// server shutting down flag
 	let shut_down = false

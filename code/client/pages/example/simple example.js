@@ -138,7 +138,7 @@ export default class Page extends Component
 			return markup
 		}
 
-		const no_user_picture = require('../../../../assets/images/no user picture 85x85.png')
+		const no_user_picture = require('../../../../assets/images/no user picture.png')
 
 		const markup = 
 		(

@@ -31,6 +31,11 @@ api.post('/sign_in', function({ email, password })
 		throw new Errors.Not_found(`User with email ${email} not found`)
 	}
 
+	if (user.password !== password)
+	{
+		throw new Error(`Wrong password`) 
+	}
+
 	return { id: user.id, name: user.name }
 })
 

@@ -8,14 +8,18 @@ input[type="text"], input[type="email"], input[type="password"], textarea, selec
 	width: $input-width-xs;
 }
 
-.menu-button
+header, .user-picture
 {
+	min-height : 2.0em;
+	max-height : 2.0em;
 }
 
 .logo
 {
 	margin-left  : 1.2em;
 	margin-right : 1.2em;
+	
+	margin-top : $header-vertically-centered-text-margin-top;
 }
 
 body, button, input, textarea, select

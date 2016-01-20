@@ -8,11 +8,18 @@ body, button, input, textarea, select
 	font-size   : 18pt;
 }
 
+header, .user-picture
+{
+	min-height : 2.6em;
+	max-height : 2.6em;
+}
+
 .logo
 {
-    margin-right: 4em;
+	margin-right: 4em;
 
-	font-size   : 26pt;
+	// in firefox there is a bug when it goes invisible for 26pt
+	font-size   : 26.01pt;
 }
 
 .page

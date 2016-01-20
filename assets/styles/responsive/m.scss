@@ -3,6 +3,14 @@ body, button, input, textarea, select
 	font-size : 18pt;
 }
 
+$header-height: 1.3em;
+
+header, .user-picture
+{
+	min-height : 2.3em;
+	max-height : 2.3em;
+}
+
 .logo
 {
 	font-size : 22pt
