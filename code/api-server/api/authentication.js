@@ -3,6 +3,10 @@
 // For debugging you can use "Advanced REST Client" for Google Chrome:
 // https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo
 
+import bcrypt from 'bcrypt'
+
+Promise.promisifyAll(bcrypt)
+
 const users = new Map()
 let id_counter = 0
 
@@ -22,7 +26,7 @@ function find_user_by_email(email)
 	}
 }
 
-api.post('/sign_in', function({ email, password })
+api.post('/sign_in', async function({ email, password })
 {
 	const user = find_user_by_email(email)
 
@@ -31,7 +35,9 @@ api.post('/sign_in', function({ email, password })
 		throw new Errors.Not_found(`User with email ${email} not found`)
 	}
 
-	if (user.password !== password)
+	const matches = await bcrypt.compareAsync(password, user.password)
+
+	if (!matches)
 	{
 		throw new Error(`Wrong password`) 
 	}
@@ -39,7 +45,7 @@ api.post('/sign_in', function({ email, password })
 	return { id: user.id, name: user.name }
 })
 
-api.post('/register', function({ name, email, password })
+api.post('/register', async function({ name, email, password })
 {
 	if (!exists(name))
 	{
@@ -64,7 +70,15 @@ api.post('/register', function({ name, email, password })
 	id_counter++
 	const id = String(id_counter)
 
+	password = await hash_password(password)
+	
 	users.set(id, { name, email, password })
 
 	return { id }
 })
+
+async function hash_password(password)
+{
+	const salt = await bcrypt.genSaltAsync(10)
+	return await bcrypt.hashAsync(password, salt)
+}

@@ -114,15 +114,6 @@ pm2 logs webapp
 Сделать
 ====================
 
-хешировать пароль на сервере (blowfish), через bcrypt (уникальная соль для каждого пароля)
-
-http://stackoverflow.com/questions/24348453/how-to-use-blowfish-to-encrypt-password-in-nodejs
-
-
-
-
-
-
 при sign in какую-нибудь remember me cookie делать
 
 и проставлять поле user в данных сессии на api server (или глобально в Redis)
@@ -138,7 +129,7 @@ http://stackoverflow.com/questions/24348453/how-to-use-blowfish-to-encrypt-passw
 
 
 
-страницы пользователя: feedback, history
+страницы пользователя: profile + history, feedback
 
 
 
