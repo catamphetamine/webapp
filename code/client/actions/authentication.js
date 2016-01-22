@@ -22,14 +22,23 @@ export function sign_in(info)
 	return action
 }
 
-export function sign_out(user_id)
+export function sign_out()
 {
-	alert('to be done')
-
 	const action =
 	{
-		promise: http => http.post(`/api/sign_out`, user_id),
+		promise: http => http.post(`/api/sign_out`),
 		events: ['siging user out', 'user signed out', 'user sign out failed']
+	}
+
+	return action
+}
+
+export function authenticate()
+{
+	const action =
+	{
+		promise: http => http.post(`/api/authenticate`),
+		events: ['authenticating user', 'user authenticated', 'user authentication failed']
 	}
 
 	return action

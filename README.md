@@ -13,6 +13,7 @@ Features
 * Translated messages hot reload (aka Hot Module Replacement)
 * Microservice architecture
 * Bunyan logging (log file rotation is built-in)
+* Correctly handles Http Cookies on server-side
 * To be done: Authentication
 * To be done: GraphQL + Relay
 * To be done: Persistence (PostgreSQL, Bookshelf)
@@ -111,18 +112,109 @@ pm2 logs webapp
 
 Возможна кластеризация, безостановочное самообновление и т.п.
 
+Redis
+=====
+
+The application will run without Redis but user authenication will only work in demo mode.
+
+To enable full support for user authentication Redis must be installed for storing user sessions.
+
+After installing Redis edit the configuration.js file accordingly
+
+```javascript
+redis:
+{
+	host     : 'localhost',
+	port     : 6379,
+	// password : '...' // is optional
+}
+```
+
+To secure Redis from outside intrusion set up your operating system firewall accordingly. Also a password can be set and tunneling through an SSL proxy can be set up between the microservices. Also Redis should be run as an unprivileged `redis` user.
+
+Security
+========
+
+The application should be run as an unprivileged user.
+
+When switching to TLS all cookies should be reset ({ secure: true } option will be set on them automatically upon Https detection).
+
 Сделать
 ====================
 
-при sign in какую-нибудь remember me cookie делать
+authentication выделить в authentication-service
 
-и проставлять поле user в данных сессии на api server (или глобально в Redis)
+все -server пеереименовать в -service
+
+
+
+
+
+при переключении языка - записывать язык в данные пользователя в бд, чтобы потом знать, на каком языке ему слать письма.
+
+
+
+
+имя пользователя - dropdown с пунктами "Профиль", "Уведомления", "Выйти"
+
+если клик на имени пользователя при наличии <Badge/> - переход сразу в "Уведомления".
+
+сделать компонент <Badge/> (взять из тех двух библиотек)
+
+
+
+
+
+способ находить все сессии для данного user.id: lua скрипт, который идёт по всем ключам user:session, и смотрит, равен ли session.user.id нужному user.id
+
+аналогично считается количество пользователей online, количество гостей online
+
+online = 15 минут простоя
+
+мб сессию укоротить с часа до 15 минут
+
+
+
+у пользователя сделать статус (online / offline, "был в сети тогда-то...")
+
+
+
+
+
+
+
+
+вести таблицу активности: последнее время активности пользователя с некоторой сессией
+
+
+на странице мониторинга - количество зареганных пользователей + график, количество сессий + график
+
+
+писать в лог файл все http запросы на web server, чтобы потом если что смотреть, какие дыры нашли
+
+
+
+
+на личной странице пользователя ему одному сделать список IP, для которых есть remember me (мб страны, города), и когда была последняя активность по этим remember me. возможность разлогинивать сессии (уничтожение remember me из базы данных + вызов sign_out для сессии каким-то образом). отображать список текущих сессий (ip, города, страны) и время recent activity
+
+
+
+
+
+
+
 
 
 
 
 мобильное меню сделать с поддержкой pan на touchdown, как в materialize css
 
+
+
+
+
+
+написать метод для api, проверяющий наличие аутентикации, и производящий её, если есть remember me cookie, и выдающий ошибку, если аутентикация по remember me не удалась
 
 
 
@@ -151,6 +243,8 @@ http://materializecss.com/dialogs.html
 http://materializecss.com/media.html
 
 (в showcase)
+
+
 
 
 
@@ -231,11 +325,6 @@ async await
 
 
 
-
-
-koa redis session store (optionally)
-
-https://github.com/DaAwesomeP/koa-session-redis3
 
 
 

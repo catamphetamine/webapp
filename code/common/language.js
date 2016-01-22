@@ -11,6 +11,7 @@ export function is_object(object)
 {
 	return exists(object) && (object !== null) && object.constructor === object_constructor
 }
+global.is_object = is_object
 
 // antonym to "exists()"
 const no = function()

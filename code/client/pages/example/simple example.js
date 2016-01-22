@@ -11,19 +11,19 @@ import { get as get_users, add as add_user, remove as delete_user, upload_pictur
 
 import Button from '../../components/button'
 
-@preload((dispatch, get_state) => dispatch(get_users()))
+@preload((dispatch, get_model) => dispatch(get_users()))
 @connect
 (
-	store => 
+	model => 
 	({
-		users         : store.users.users,
-		loading       : store.users.loading,
-		loaded        : store.users.loaded,
-		loading_error : store.users.loading_error,
-		adding_error  : store.users.adding_error,
+		users         : model.users.users,
+		loading       : model.users.loading,
+		loaded        : model.users.loaded,
+		loading_error : model.users.loading_error,
+		adding_error  : model.users.adding_error,
 
-		uploading_picture       : store.users.uploading_picture,
-		uploading_picture_error : store.users.uploading_picture_error
+		uploading_picture       : model.users.uploading_picture,
+		uploading_picture_error : model.users.uploading_picture_error
 	}),
 	dispatch => bind_action_creators
 	({
@@ -37,7 +37,7 @@ import Button from '../../components/button'
 export default class Page extends Component
 {
 	state = {}
-	
+
 	static propTypes =
 	{
 		get_users     : PropTypes.func.isRequired,

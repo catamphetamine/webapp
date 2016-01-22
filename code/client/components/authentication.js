@@ -3,8 +3,7 @@ import React, { Component, PropTypes } from 'react'
 import { PropTypes as React_router_prop_types } from 'react-router'
 
 import { connect } from 'react-redux'
-
-import styler from 'react-styling'
+import styler      from 'react-styling'
 
 import { defineMessages } from 'react-intl'
 import international from '../internationalize'
@@ -178,9 +177,9 @@ export default class Authentication extends Component
 		sign_in_error  : PropTypes.object,
 		sign_out_error : PropTypes.object,
 
-		sign_in     : PropTypes.func.isRequired,
-		sign_out    : PropTypes.func.isRequired,
-		register    : PropTypes.func.isRequired
+		sign_in      : PropTypes.func.isRequired,
+		sign_out     : PropTypes.func.isRequired,
+		register     : PropTypes.func.isRequired
 	}
 
 	constructor(properties)
@@ -188,11 +187,6 @@ export default class Authentication extends Component
 		super(properties)
 
 		extend(this.state, this.pristine_form_state)
-	}
-
-	componentDidMount()
-	{
-		this.mounted = true
 	}
 
 	render()
@@ -438,17 +432,21 @@ export default class Authentication extends Component
 			})
 
 			// a sane security measure
-			this.setState({ password: undefined })
+			this.setState({ password: undefined, show: false })
 		}
 		catch (error)
 		{
-			// console.error(error)
+			// swallows http errors
+			if (!error.status)
+			{
+				throw error
+			}
 		}
 	}
 
 	forgot_password()
 	{
-		alert('to be done')
+		alert('To be done')
 	}
 
 	async register()
@@ -464,16 +462,21 @@ export default class Authentication extends Component
 
 			this.cancel_registration()
 
-			// a sane security measure
-			this.setState({ password: undefined }, function()
-			{
-				this.refs.password.focus()
-			})
+			// // a sane security measure
+			// this.setState({ password: undefined }, function()
+			// {
+			// 	this.refs.password.focus()
+			// })
+
+			this.sign_in()
 		}
 		catch (error)
 		{
-			alert('User registration failed.' + '\n\n' + error)
-			// console.error(error)
+			// swallows http errors
+			if (!error.status)
+			{
+				throw error
+			}
 		}
 	}
 
@@ -485,7 +488,11 @@ export default class Authentication extends Component
 		}
 		catch (error)
 		{
-			// console.error(error)
+			// swallows http errors
+			if (!error.status)
+			{
+				throw error
+			}
 		}
 	}
 

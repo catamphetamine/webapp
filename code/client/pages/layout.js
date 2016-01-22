@@ -4,7 +4,7 @@ import { bindActionCreators as bind_action_creators } from 'redux'
 
 // testing `flat` styler
 import styler              from 'react-styling/flat'
-
+import { preload }         from 'react-isomorphic-render/redux'
 import { connect }         from 'react-redux'
 import { Link, IndexLink } from 'react-router'
 import { defineMessages }  from 'react-intl'
@@ -23,6 +23,8 @@ import Menu            from '../components/menu'
 import Menu_button     from '../components/menu button'
 import Locale_switcher from '../components/locale switcher'
 import Authentication  from '../components/authentication'
+
+import { authenticate } from '../actions/authentication'
 
 // when adjusting this transition time also adjust it in styles/xs-m.scss
 const menu_transition_duration = 210 // milliseconds
@@ -74,9 +76,13 @@ const messages = defineMessages
 	}
 })
 
+@preload
+({
+	blocking: (dispatch, get_model) => dispatch(authenticate())
+})
 @connect
 (
-	store => ({ }), // user: store.auth.user })
+	store => ({ }),
 	dispatch => bind_action_creators({ logout }, dispatch)
 )
 @international()
@@ -184,9 +190,9 @@ export default class Layout extends Component
 
 		const menu_items =
 		[{
-			name: translate(messages.menu_editor),
-			link: '/editor'
-		}, {
+		// 	name: translate(messages.menu_editor),
+		// 	link: '/editor'
+		// }, {
 		// 	name: translate(messages.menu_about),
 		// 	link: '/about'
 		// }, {

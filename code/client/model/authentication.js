@@ -5,6 +5,42 @@ const initial_state =
 
 const handlers =
 {
+	'authenticating user': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			authenticating       : true,
+			authentication_error : undefined
+		}
+
+		return new_state
+	},
+
+	'user authenticated': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			authenticating : false,
+			user           : result.id ? result : undefined
+		}
+
+		return new_state
+	},
+
+	'user authentication failed': (error, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			authenticating       : false,
+			authentication_error : error
+		}
+
+		return new_state
+	},
+
 	'registering user': (result, state) =>
 	{
 		const new_state = 
@@ -22,8 +58,7 @@ const handlers =
 		const new_state = 
 		{
 			...state,
-			registering : false,
-			// stale  : true
+			registering : false
 		}
 
 		return new_state
@@ -70,8 +105,7 @@ const handlers =
 		{
 			...state,
 			signing_in : false,
-			user       : result,
-			// stale  : true
+			user       : result
 		}
 
 		return new_state
@@ -118,8 +152,7 @@ const handlers =
 		{
 			...state,
 			signing_out : false,
-			user       : result,
-			// stale  : true
+			user        : undefined
 		}
 
 		return new_state

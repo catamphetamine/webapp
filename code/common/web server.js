@@ -1,15 +1,16 @@
-import koa          from 'koa'
-import session      from 'koa-session'
-import body_parser  from 'koa-bodyparser'
-import mount        from 'koa-mount'
-import graphql_http from 'koa-graphql'
-import koa_router   from 'koa-router'
-import koa_logger   from 'koa-bunyan'
-import compress     from 'koa-compress'
-import statics      from 'koa-static'
-import koa_locale   from 'koa-locale'
-import koa_proxy    from 'koa-proxy'
-import busboy       from 'co-busboy'
+import koa           from 'koa'
+import session       from 'koa-generic-session'
+import redis_store   from 'koa-redis'
+import body_parser   from 'koa-bodyparser'
+import mount         from 'koa-mount'
+import graphql_http  from 'koa-graphql'
+import koa_router    from 'koa-router'
+import koa_logger    from 'koa-bunyan'
+import compress      from 'koa-compress'
+import statics       from 'koa-static'
+import koa_locale    from 'koa-locale'
+import koa_proxy     from 'koa-proxy'
+import busboy        from 'co-busboy'
 
 import path from 'path'
 import fs   from 'fs-extra'
@@ -144,7 +145,30 @@ export default function web_server(options = {})
 
 	if (options.session)
 	{
-		web.use(session(web))
+		if (configuration.redis)
+		{
+			web.use(session
+			({
+				key    : 'koa:session',
+				prefix : 'user:session:',
+				// allowEmpty : true,
+				ttl    : 60 * 60 * 1000, // an hour // session timeout, in seconds
+				store  : redis_store
+				({
+					host      : configuration.redis.host,
+					port      : configuration.redis.port,
+					auth_pass : configuration.redis.password // auth_pass
+				})
+			}))
+		}
+		else
+		{
+			web.use(session
+			({
+				key: 'koa:session',
+				// allowEmpty : true
+			}))
+		}
 	}
 
 	if (options.parse_post_requests)
@@ -187,7 +211,10 @@ export default function web_server(options = {})
 		catch (error)
 		{
 			// log the error
-			log.error(error)
+			if (!exists(error.code))
+			{
+				log.error(error)
+			}
 
 			this.status = typeof error.code === 'number' ? error.code : 500
 			this.message = error.message || 'Internal error'
@@ -212,7 +239,19 @@ export default function web_server(options = {})
 			{
 				router[method](path, function*(next)
 				{
-					const result = action({ ...this.request.body, ...this.query, ...this.params })
+					const session = this.session
+					const session_id = this.sessionId
+					const destroy_session = () => this.session = null
+
+					const get_cookie = name => this.cookies.get(name)
+					const set_cookie = (name, value, options) => this.cookies.set(name, value, options)
+					const destroy_cookie = name =>
+					{
+						this.cookies.set(name, null)
+						this.cookies.set(name + '.sig', null)
+					}
+
+					const result = action({ ...this.request.body, ...this.query, ...this.params }, { ip: this.ip, get_cookie, session, session_id, destroy_session, set_cookie, destroy_cookie })
 
 					// http://habrahabr.ru/company/yandex/blog/265569/
 					switch (method)
@@ -221,11 +260,26 @@ export default function web_server(options = {})
 							this.status = 204 // nothing to be returned
 					}
 
+					function postprocess(result)
+					{
+						if (!exists(result))
+						{
+							return {}
+						}
+
+						if (!is_object(result) && !Array.isArray(result))
+						{
+							return { result }
+						}
+
+						return result
+					}
+
 					if (result instanceof Promise)
 					{
 						yield result.then(result =>
 						{
-							this.body = result
+							this.body = postprocess(result)
 						},
 						error =>
 						{
@@ -234,7 +288,7 @@ export default function web_server(options = {})
 					}
 					else
 					{
-						this.body = result
+						this.body = postprocess(result)
 					}
 				})
 			}
