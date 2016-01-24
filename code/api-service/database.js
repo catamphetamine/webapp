@@ -16,11 +16,11 @@ else
 		debug: false,
 		connection:
 		{
-			host     : configuration.api_server.database.host,
-			port     : configuration.api_server.database.port,
-			user     : configuration.api_server.database.user,
-			password : configuration.api_server.database.password,
-			database : configuration.api_server.database.database,
+			host     : configuration.api_service.database.host,
+			port     : configuration.api_service.database.port,
+			user     : configuration.api_service.database.user,
+			password : configuration.api_service.database.password,
+			database : configuration.api_service.database.database,
 			charset  : 'utf8'
 		}
 	}

@@ -1,6 +1,6 @@
 import { server as tcp_server } from '../common/tcp'
 
-const server = tcp_server({ host: configuration.log_server.tcp.host, port: configuration.log_server.tcp.port })
+const server = tcp_server({ host: configuration.log_service.tcp.host, port: configuration.log_service.tcp.port })
 
 global.messages =
 {
@@ -21,7 +21,6 @@ global.messages =
 
 server.on('data', function(message)
 {
-	// log.info(`##################################################### Message received`, message)
 	messages.add(message)
 })
 

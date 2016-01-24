@@ -119,8 +119,9 @@ var configuration =
 
 	plugins:
 	[
-		// extracts common javascript into a separate file
-		new webpack.optimize.CommonsChunkPlugin('common', 'common.[hash].js'),
+		// // extracts common javascript into a separate file
+		// // (use [contenthash] in production)
+		// new webpack.optimize.CommonsChunkPlugin('common', 'common.[hash].js'),
 
 		// // Assign the module and chunk ids by occurrence count. 
 		// // Ids that are used often get lower (shorter) ids. 

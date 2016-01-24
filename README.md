@@ -144,13 +144,6 @@ When switching to TLS all cookies should be reset ({ secure: true } option will 
 
 authentication выделить в authentication-service
 
-все -server пеереименовать в -service
-
-
-
-
-
-при переключении языка - записывать язык в данные пользователя в бд, чтобы потом знать, на каком языке ему слать письма.
 
 
 
@@ -165,18 +158,36 @@ authentication выделить в authentication-service
 
 
 
+
+при переключении языка - записывать язык в данные пользователя в бд, чтобы потом знать, на каком языке ему слать письма.
+
+
+
+
+authentication-service посадить на mongodb (если она есть в configuration.js)
+
+
+
+
+
+
+
+
+генератор session id чтобы проверял в redis'е, нет ли уже такой session id
+(require('uid-safe').sync) (настройка genSid(byte_length) у generic session)
+
+
+
+
+
+
 способ находить все сессии для данного user.id: lua скрипт, который идёт по всем ключам user:session, и смотрит, равен ли session.user.id нужному user.id
 
 аналогично считается количество пользователей online, количество гостей online
 
-online = 15 минут простоя
-
-мб сессию укоротить с часа до 15 минут
-
-
-
 у пользователя сделать статус (online / offline, "был в сети тогда-то...")
 
+online = 15 минут простоя
 
 
 
@@ -202,6 +213,11 @@ online = 15 минут простоя
 
 
 
+
+
+
+
+file-server -> storage-server 
 
 
 
@@ -543,7 +559,7 @@ https://github.com/babel/babel-sublime
 
 
 Чтобы Sublime Text 3 не искал в ненужных папках во время Find in Files,
-можно использовать такой "Where": -build/*
+можно использовать такой "Where": <open folders>,-node_modules/*,-build/*
 
 
 Для общей сборки и для запуска процесса разработки сейчас используется Gulp, но вообще он мало кому нравится, и мб его можно убрать из цепи разработки.

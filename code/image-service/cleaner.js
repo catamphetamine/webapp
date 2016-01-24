@@ -9,12 +9,11 @@ const fs_size_async = Promise.promisify(fs_size)
 
 let most_recent_run_date
 
-const temporary_image_expiration_interval = parse_interval(configuration.image_server.temporary_image_expiration_interval)
-const clean_up_interval                   = parse_interval(configuration.image_server.clean_up_interval)
-// const clean_up_interval = moment(configuration.image_server.clean_up_interval).toDate().getTime() - Date.now()
+const temporary_image_expiration_interval = parse_interval(configuration.image_service.temporary_image_expiration_interval)
+const clean_up_interval                   = parse_interval(configuration.image_service.clean_up_interval)
 
 const dummy_date = new Date()
-const before = moment(dummy_date).subtract(configuration.image_server.clean_up_interval)
+const before = moment(dummy_date).subtract(configuration.image_service.clean_up_interval)
 const clean_up_interval_in_milliseconds = dummy_date.getTime() - before.toDate().getTime()
 
 // parses { days: 1 } into { units: 'days', value: 1 }
@@ -43,7 +42,7 @@ function clean_up()
 
 	const file_expiration_date = get_file_expiration_date(most_recent_run_date)
 
-	const folder = path.resolve(Root_folder, configuration.image_server.temporary_files_directory)
+	const folder = path.resolve(Root_folder, configuration.image_service.temporary_files_directory)
 
 	return fs.ensureDirAsync(folder).then(() =>
 	{

@@ -9,21 +9,24 @@ const web = web_server({  })
 web.serve_static_files('/assets', path.join(Root_folder, 'build', 'assets'))
 
 // remove this after fixing the "simple example" page
-web.serve_static_files('/upload_temporary_store', path.join(Root_folder, configuration.image_server.temporary_files_directory))
+web.serve_static_files('/temporary_storage', path.join(Root_folder, configuration.image_service.temporary_files_directory))
 
 // serve uploaded files (pictures, etc)
-web.serve_static_files('/upload', path.join(Root_folder, configuration.upload_folder))
+web.serve_static_files('/storage', path.join(Root_folder, configuration.upload_folder))
 
 // if it's not a static file url:
 
+// Proxy /authentication requests to API server
+web.proxy('/authentication', `http://${configuration.authentication_service.http.host}:${configuration.authentication_service.http.port}`)
+
 // Proxy /api requests to API server
-web.proxy('/api', `http://${configuration.api_server.http.host}:${configuration.api_server.http.port}`)
+web.proxy('/api', `http://${configuration.api_service.http.host}:${configuration.api_service.http.port}`)
 
 // Proxy /images requests to Image server
-web.proxy('/upload_image', `http://${configuration.image_server.http.host}:${configuration.image_server.http.port}`)
+web.proxy('/upload_image', `http://${configuration.image_service.http.host}:${configuration.image_service.http.port}`)
 
 // Proxy /log requests to Log server
-web.proxy('/log', `http://${configuration.log_server.http.host}:${configuration.log_server.http.port}`)
+web.proxy('/log', `http://${configuration.log_service.http.host}:${configuration.log_service.http.port}`)
 
 // Proxy all the rest requests to Webpage rendering server
 web.proxy(`http://${configuration.webpage_server.http.host}:${configuration.webpage_server.http.port}`)

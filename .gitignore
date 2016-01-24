@@ -36,7 +36,7 @@ coverage
 /webpack-assets.json
 
 # uploaded files before processing
-/upload_temporary_storage
+/temporary_storage
 
 # uploaded pictures, etc
-/upload
+/storage

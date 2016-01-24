@@ -7,9 +7,9 @@ web.get('/', () =>
 	return messages.messages
 })
 
-web.listen(configuration.log_server.http.port).then(() =>
+web.listen(configuration.log_service.http.port).then(() =>
 {
-	log.info(`Log server is listening at http://${configuration.log_server.http.host}:${configuration.log_server.http.port}`)
+	log.info(`Log server is listening at http://${configuration.log_service.http.host}:${configuration.log_service.http.port}`)
 },
 error =>
 {

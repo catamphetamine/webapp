@@ -161,7 +161,7 @@ api.post('/register', async function({ name, email, password })
 
 api.post('/authenticate', async function({}, { session, session_id, ip, get_cookie, set_cookie, destroy_cookie })
 {
-	console.log('*** authenticate. session', session, 'id', session_id)
+	// console.log('*** authenticate. session', session, 'id', session_id)
 
 	if (!session.user)
 	{
@@ -170,9 +170,6 @@ api.post('/authenticate', async function({}, { session, session_id, ip, get_cook
 
 		if (!user)
 		{
-			// the cookie won't be actually destroyed 
-			// because this code is normally run on server-side
-			// where changes to cookies don't take effect
 			destroy_cookie('remember_me')
 			return
 		}

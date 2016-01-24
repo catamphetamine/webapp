@@ -152,7 +152,7 @@ export default function web_server(options = {})
 				key    : 'koa:session',
 				prefix : 'user:session:',
 				// allowEmpty : true,
-				ttl    : 60 * 60 * 1000, // an hour // session timeout, in seconds
+				ttl    : 15 * 60 * 1000, // 15 minutes // session timeout, in seconds
 				store  : redis_store
 				({
 					host      : configuration.redis.host,

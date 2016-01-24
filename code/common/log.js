@@ -199,9 +199,9 @@ export default function create(name, options = {})
 
 	if (options.use_log_server !== false)
 	{
-		const log_server = tcp_client({ host: configuration.log_server.tcp.host, port: configuration.log_server.tcp.port })
+		const log_service = tcp_client({ host: configuration.log_service.tcp.host, port: configuration.log_service.tcp.port })
 
-		log_server.on('error', function(error)
+		log_service.on('error', function(error)
 		{
 			(log || console).error(`There's been an error related to sending messages to log server. No more log messages will be sent to the log server.`, error)
 		})
@@ -209,7 +209,7 @@ export default function create(name, options = {})
 		log_configuration.streams.unshift
 		({
 			type: 'raw',
-			stream: log_server
+			stream: log_service
 		})
 	}
 

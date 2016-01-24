@@ -16,6 +16,9 @@ const configuration = Object.clone(base_configuration)
 
 configuration.devtool = 'source-map'
 
+configuration.output.filename      = configuration.output.filename.replace('[hash]', '[chunkhash]')
+configuration.output.chunkFilename = configuration.output.chunkFilename.replace('[hash]', '[chunkhash]')
+
 configuration.plugins = configuration.plugins.concat
 (
 	// clears the output folder

@@ -1,6 +1,6 @@
 module.exports = 
 {
-	api_server:
+	api_service:
 	{
 		http: 
 		{
@@ -16,14 +16,22 @@ module.exports =
 			database: 'webapp'
 		}
 	},
-	image_server:
+	authentication_service:
+	{
+		http: 
+		{
+			host: '127.0.0.1',
+			port: 3006
+		}
+	},
+	image_service:
 	{
 		http: 
 		{
 			host: '127.0.0.1',
 			port: 3003
 		},
-		temporary_files_directory: 'upload_temporary_storage',
+		temporary_files_directory: 'temporary_storage',
 		temporary_image_expiration_interval: { days: 1 }, 
 		clean_up_interval: { hours: 1 }
 	},
@@ -43,7 +51,7 @@ module.exports =
 			port: 3000
 		}
 	},
-	log_server: 
+	log_service: 
 	{
 		http: 
 		{
@@ -68,5 +76,5 @@ module.exports =
 			}
 		}
 	},
-	upload_folder: 'upload'
+	upload_folder: 'storage'
 }

@@ -81,13 +81,13 @@ function resize(from, to, settings)
 
 web.file_upload
 ({
-	output_folder: path.resolve(Root_folder, configuration.image_server.temporary_files_directory),
+	output_folder: path.resolve(Root_folder, configuration.image_service.temporary_files_directory),
 	root_folder: Root_folder
 })
 
-web.listen(configuration.image_server.http.port).then(() =>
+web.listen(configuration.image_service.http.port).then(() =>
 {
-	log.info(`Image server is listening at http://${configuration.image_server.http.host}:${configuration.image_server.http.port}`)
+	log.info(`Image server is listening at http://${configuration.image_service.http.host}:${configuration.image_service.http.port}`)
 },
 error =>
 {
