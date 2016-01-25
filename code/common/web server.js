@@ -1,6 +1,14 @@
 import koa           from 'koa'
-import session       from 'koa-generic-session'
-import redis_store   from 'koa-redis'
+
+// import session       from 'koa-generic-session'
+// import redis_store   from 'koa-redis'
+
+import session       from './koa-generic-session'
+import redis_store   from './koa-redis'
+
+import redis from 'redis'
+import uid   from 'uid-safe'
+
 import body_parser   from 'koa-bodyparser'
 import mount         from 'koa-mount'
 import graphql_http  from 'koa-graphql'
@@ -17,6 +25,8 @@ import fs   from 'fs-extra'
 
 import http  from 'http'
 import https from 'https'
+
+Promise.promisifyAll(redis)
 
 // Sets up a Web Server instance (based on Koa)
 //
@@ -145,19 +155,52 @@ export default function web_server(options = {})
 
 	if (options.session)
 	{
+		const ttl = 15 * 60 * 1000 // 15 minutes // session timeout, in seconds
+
 		if (configuration.redis)
 		{
+			const redis_client = redis.createClient
+			({
+				host      : configuration.redis.host,
+				port      : configuration.redis.port,
+				auth_pass : configuration.redis.password // auth_pass
+			})
+
+			const prefix = 'user:session:'
+
+			function generate_id()
+			{
+				return uid.sync(24) // 24 is "byte length"; string length is 32 symbols
+			}
+
+			async function is_unique(id)
+			{
+				return !(await redis_client.existsAsync(prefix + id))
+			}
+
+			async function generate_unique_id()
+			{
+				const id = generate_id()
+				if (await is_unique(id))
+				{
+					return id
+				}
+				return generate_unique_id()
+			}
+
 			web.use(session
 			({
-				key    : 'koa:session',
-				prefix : 'user:session:',
-				// allowEmpty : true,
-				ttl    : 15 * 60 * 1000, // 15 minutes // session timeout, in seconds
+				key    : 'session:id',
+				prefix,
+				cookie :
+				{
+					maxAge : ttl
+				},
+				ttl, 
+				genSid : generate_unique_id,
 				store  : redis_store
 				({
-					host      : configuration.redis.host,
-					port      : configuration.redis.port,
-					auth_pass : configuration.redis.password // auth_pass
+					client : redis_client
 				})
 			}))
 		}
@@ -165,8 +208,11 @@ export default function web_server(options = {})
 		{
 			web.use(session
 			({
-				key: 'koa:session',
-				// allowEmpty : true
+				key: 'session:id',
+				cookie :
+				{
+					maxAge : ttl
+				},
 			}))
 		}
 	}
