@@ -209,6 +209,7 @@ export default function web_server(options = {})
 			web.use(session
 			({
 				key: 'session:id',
+				// ttl,
 				cookie :
 				{
 					maxAge : ttl
