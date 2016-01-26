@@ -3,9 +3,9 @@ import web_server from '../common/web server'
 import path from 'path'
 import fs   from 'fs'
 
-export default function()
+export default function(options = {})
 {
-	const web = web_server({ compress: true, session: true, parse_post_requests: true, routing: true })
+	const web = web_server({ ...options, compress: true, parse_post_requests: true, routing: true })
 
 	global.api = {}
 
@@ -32,7 +32,7 @@ export default function()
 		{
 			web.listen(port, host).then(() =>
 			{
-				log.info(`Api server is listening at http://${host || 'localhost'}:${port}`)
+				log.info(`Authentication service is listening at http://${host || 'localhost'}:${port}`)
 			},
 			error =>
 			{

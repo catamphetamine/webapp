@@ -142,15 +142,36 @@ When switching to TLS all cookies should be reset ({ secure: true } option will 
 Сделать
 ====================
 
+в authentication-service:
+
+/record-access -> по данному authentication_token_id писать в базу время последней активности (time) и ip адрес
+
+отсюда же можно будет вычислять, когда был пользователь на сайте (написать метод)
+/latest-access?user=id
+
+/sign_in -> /sign-in
+/sign_out -> /sign-out
+/verify_token -> /verify-token
 
 
-сделать страницы status 500 (как web server, так и page server) и 503
+
+
+
+
+
+сделать страницы status 500 (как web server, так и page server) и 503, 401
 
 
 
 
 
 при переключении языка - записывать язык в данные пользователя в бд, чтобы потом знать, на каком языке ему слать письма.
+
+
+
+
+
+online статус - в Редисе держать что-то типа user:online:id = date, наверное, с TTL = 15 минут
 
 
 

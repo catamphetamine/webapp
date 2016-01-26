@@ -3,11 +3,25 @@ import koa           from 'koa'
 // import session       from 'koa-generic-session'
 // import redis_store   from 'koa-redis'
 
+// forked from the original repo as of 25.01.2016
+// https://github.com/halt-hammerzeit/generic-session
 import session       from './koa-generic-session'
+// forked from the original repo as of 25.01.2016
+// https://github.com/halt-hammerzeit/koa-redis
 import redis_store   from './koa-redis'
 
 import redis from 'redis'
 import uid   from 'uid-safe'
+
+Promise.promisifyAll(redis)
+
+// import jwt from 'koa-jwt'
+
+import jwt from 'jsonwebtoken'
+
+import fetch from 'node-fetch'
+
+// Promise.promisifyAll(jwt)
 
 import body_parser   from 'koa-bodyparser'
 import mount         from 'koa-mount'
@@ -26,8 +40,6 @@ import fs   from 'fs-extra'
 import http  from 'http'
 import https from 'https'
 
-Promise.promisifyAll(redis)
-
 // Sets up a Web Server instance (based on Koa)
 //
 // options:
@@ -37,7 +49,9 @@ Promise.promisifyAll(redis)
 // extract_locale      - extracts locale from Http Request headers 
 //                       and places it into this.locale
 //
-// session             - tracks user session
+// session             - tracks user session (this.session)
+//
+// authentication      - uses a JWT token as a means of user authentication
 //
 // parse_post_requests - parse Http Post requests body
 //
@@ -152,6 +166,130 @@ export default function web_server(options = {})
 
 	// Set up session middleware
 	web.keys = configuration.session_secret_keys
+
+	if (options.authentication)
+	{
+		// web.use(jwt
+		// ({
+		// 	secret      : 'shared-secret',
+		// 	passthrough : true,
+		// 	key         : 'authentication',
+		// 	cookie      : 'authentication'
+		// }))
+
+		function get_jwt_token(context)
+		{
+			let token = context.cookies.get('authentication')
+
+			if (token)
+			{
+				return { token }
+			}
+
+			if (context.header.authorization)
+			{
+				const parts = context.header.authorization.split(' ')
+
+				if (parts.length !== 2)
+				{
+					return { error: 'Bad Authorization header format. Format is "Authorization: Bearer <token>"' }
+				}
+
+				const scheme      = parts[0]
+				const credentials = parts[1]
+
+				if (!/^Bearer$/i.test(scheme))
+				{
+					return { error: 'Bad Authorization header format (scheme). Format is "Authorization: Bearer <token>"' }
+				}
+
+				return { token: credentials }
+			}
+
+			return { error: 'JWT token not found' }
+		}
+
+		function validate_jwt_id(jwt_id, user_id)
+		{
+			return fetch(`http://${configuration.authentication_service.http.host}:${configuration.authentication_service.http.port}/validate_token?token_id=${jwt_id}&user_id=${user_id}`)
+		}
+
+		web.use(function*(next)
+		{
+			// user getter
+			this.user = async function()
+			{
+				if (this._user)
+				{
+					return this._user
+				}
+
+				if (this.authentication_error)
+				{
+					return
+				}
+
+				const { token, error } = get_jwt_token(this)
+
+				if (!token)
+				{
+					this.authentication_error = new result.errors.Unauthenticated(error)
+					return
+				}
+
+				let payload
+
+				for (let secret of web.keys)
+				{
+					try
+					{
+						payload = jwt.verify(token, secret)
+						break
+					}
+					catch (error)
+					{
+						if (!error.name === 'JsonWebTokenError')
+						{
+							throw error
+						}
+					}
+				}
+
+				if (!payload)
+				{
+					this.authentication_error = new result.errors.Unauthenticated('Corrupt token')
+					return
+				}
+
+				const jwt_id = payload.jti
+
+				// subject
+				const user_id = payload.sub
+
+				if (!this.validating_jwt_id)
+				{
+					this.validating_jwt_id = validate_jwt_id(jwt_id, user_id)
+				}
+
+				const is_valid = await this.validating_jwt_id
+
+				delete this.validating_jwt_id
+
+				if (!is_valid)
+				{
+					this.authentication_error = new result.errors.Unauthenticated('Token revoked')
+					return
+				}
+
+				this.jwt_id = jwt_id
+
+				return this._user = { id: user_id }
+			}
+			.bind(this)
+
+			yield next
+		})
+	}
 
 	if (options.session)
 	{
@@ -298,7 +436,28 @@ export default function web_server(options = {})
 						this.cookies.set(name + '.sig', null)
 					}
 
-					const result = action({ ...this.request.body, ...this.query, ...this.params }, { ip: this.ip, get_cookie, session, session_id, destroy_session, set_cookie, destroy_cookie })
+					const get_user = this.user
+					const get_authentication_error = () => this.authentication_error
+					const get_authentication_token_id = () => this.jwt_id
+
+					const result = action({ ...this.request.body, ...this.query, ...this.params },
+					{
+						ip: this.ip,
+						
+						get_cookie,
+						set_cookie,
+						destroy_cookie,
+
+						session,
+						session_id,
+						destroy_session,
+
+						get_user,
+						get_authentication_error,
+						get_authentication_token_id,
+
+						keys: web.keys
+					})
 
 					// http://habrahabr.ru/company/yandex/blog/265569/
 					switch (method)
@@ -398,10 +557,12 @@ export default function web_server(options = {})
 	// standard Http errors
 	result.errors = 
 	{
-		Unauthorized  : custom_error('Unauthorized',  { code: 403 }),
-		Access_denied : custom_error('Access denied', { code: 403 }),
-		Not_found     : custom_error('Not found',     { code: 404 }),
-		Input_missing : custom_error('Missing input', { code: 400 })
+		Unauthenticated : custom_error('Unauthenticated', { code: 401 }),
+		Unauthorized    : custom_error('Unauthorized',    { code: 403 }),
+		Access_denied   : custom_error('Access denied',   { code: 403 }),
+		Not_found       : custom_error('Not found',       { code: 404 }),
+		Input_missing   : custom_error('Missing input',   { code: 400 }),
+		Generic         : custom_error('Server error',    { code: 500 })
 	}
 
 	// can serve static files
