@@ -267,7 +267,7 @@ export default function web_server(options = {})
 				this.validating_jwt_id = validate_jwt_id(jwt_id, user_id)
 			}
 
-			const is_valid = await this.validating_jwt_id
+			const is_valid = (await this.validating_jwt_id).valid
 
 			delete this.validating_jwt_id
 
