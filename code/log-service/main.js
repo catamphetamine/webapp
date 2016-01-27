@@ -19,7 +19,7 @@ global.messages =
 	}
 }
 
-server.on('data', function(message)
+server.input.on('data', function(message)
 {
 	messages.add(message)
 })

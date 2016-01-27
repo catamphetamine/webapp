@@ -252,7 +252,7 @@ Object.defineProperty(Array.prototype, 'clone',
 	enumerable: false,
 	value: function() 
 	{ 
-		return this.splice(0)
+		return this.slice(0)
 	}
 })
 
@@ -287,7 +287,24 @@ Object.defineProperty(String.prototype, 'starts_with',
 	enumerable: false,
 	value: function(substring)
 	{
-		return this.indexOf(substring) === 0
+		let j = substring.length
+
+		if (j > this.length)
+		{
+			return false
+		}
+
+		while (j > 0)
+		{
+			j--
+
+			if (this[j] !== substring[j])
+			{
+				return false
+			}
+		}
+
+		return true
 	}
 })
 
@@ -296,8 +313,26 @@ Object.defineProperty(String.prototype, 'ends_with',
 	enumerable: false,
 	value: function(substring)
 	{
-		const index = this.lastIndexOf(substring)
-		return index >= 0 && index === this.length - substring.length
+		let i = this.length
+		let j = substring.length
+
+		if (j > i)
+		{
+			return false
+		}
+
+		while (j > 0)
+		{
+			i--
+			j--
+
+			if (this[i] !== substring[j])
+			{
+				return false
+			}
+		}
+
+		return true
 	}
 })
 

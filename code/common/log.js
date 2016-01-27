@@ -163,8 +163,8 @@ export default function create(name, options = {})
 	{
 		streams: 
 		[{
-			type: 'raw',
-			stream: console_output
+			type   : 'raw',
+			stream : console_output
 		}],
 		serializers: 
 		{
@@ -203,15 +203,22 @@ export default function create(name, options = {})
 
 		log_service.on('error', function(error)
 		{
-			(log || console).error(`There's been an error related to sending messages to log server. No more log messages will be sent to the log server.`, error)
+			// `log` is a global variable once the logger has been created
+			console.error(`There's been an error related to sending messages to log server. No more log messages will be sent to the log server.`, error)
+		})
+
+		log_service.on('close', function()
+		{
+			// `log` is a global variable once the logger has been created
+			log.info(`No more log messages will be sent to the log server.`)
 		})
 
 		log_configuration.streams.unshift
 		({
-			type: 'raw',
-			stream: log_service
+			type   : 'raw',
+			stream : log_service.output
 		})
 	}
 
-	return bunyan.createLogger(extend({ name: name }, log_configuration))
+	return bunyan.createLogger(extend({ name }, log_configuration))
 }

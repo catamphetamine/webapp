@@ -19,8 +19,6 @@ Promise.promisifyAll(redis)
 
 import jwt from 'jsonwebtoken'
 
-import fetch from 'node-fetch'
-
 // Promise.promisifyAll(jwt)
 
 import body_parser   from 'koa-bodyparser'
@@ -39,6 +37,8 @@ import fs   from 'fs-extra'
 
 import http  from 'http'
 import https from 'https'
+
+import http_client from './http'
 
 // Sets up a Web Server instance (based on Koa)
 //
@@ -211,82 +211,80 @@ export default function web_server(options = {})
 
 		function validate_jwt_id(jwt_id, user_id)
 		{
-			return fetch(`http://${configuration.authentication_service.http.host}:${configuration.authentication_service.http.port}/validate_token?token_id=${jwt_id}&user_id=${user_id}`)
+			return http_client.get
+			({
+				host : configuration.authentication_service.http.host,
+				port : configuration.authentication_service.http.port,
+				path : '/validate_token'
+			},
+			{
+				token_id: jwt_id,
+				user_id
+			})
+		}
+
+		async function authenticate()
+		{
+			const { token, error } = get_jwt_token(this)
+
+			if (!token)
+			{
+				this.authentication_error = new result.errors.Unauthenticated(error)
+				return
+			}
+
+			let payload
+
+			for (let secret of web.keys)
+			{
+				try
+				{
+					payload = jwt.verify(token, secret)
+					break
+				}
+				catch (error)
+				{
+					if (!error.name === 'JsonWebTokenError')
+					{
+						throw error
+					}
+				}
+			}
+
+			if (!payload)
+			{
+				this.authentication_error = new result.errors.Unauthenticated('Corrupt token')
+				return
+			}
+
+			const jwt_id = payload.jti
+
+			// subject
+			const user_id = payload.sub
+
+			if (!this.validating_jwt_id)
+			{
+				this.validating_jwt_id = validate_jwt_id(jwt_id, user_id)
+			}
+
+			const is_valid = await this.validating_jwt_id
+
+			delete this.validating_jwt_id
+
+			if (!is_valid)
+			{
+				this.authentication_error = new result.errors.Unauthenticated('Token revoked')
+				return
+			}
+
+			this.jwt_id = jwt_id
+
+			this.user = { id: user_id }
 		}
 
 		web.use(function*(next)
 		{
-			// user getter
-			this.user = async function()
-			{
-				if (this._user)
-				{
-					return this._user
-				}
-
-				if (this.authentication_error)
-				{
-					return
-				}
-
-				const { token, error } = get_jwt_token(this)
-
-				if (!token)
-				{
-					this.authentication_error = new result.errors.Unauthenticated(error)
-					return
-				}
-
-				let payload
-
-				for (let secret of web.keys)
-				{
-					try
-					{
-						payload = jwt.verify(token, secret)
-						break
-					}
-					catch (error)
-					{
-						if (!error.name === 'JsonWebTokenError')
-						{
-							throw error
-						}
-					}
-				}
-
-				if (!payload)
-				{
-					this.authentication_error = new result.errors.Unauthenticated('Corrupt token')
-					return
-				}
-
-				const jwt_id = payload.jti
-
-				// subject
-				const user_id = payload.sub
-
-				if (!this.validating_jwt_id)
-				{
-					this.validating_jwt_id = validate_jwt_id(jwt_id, user_id)
-				}
-
-				const is_valid = await this.validating_jwt_id
-
-				delete this.validating_jwt_id
-
-				if (!is_valid)
-				{
-					this.authentication_error = new result.errors.Unauthenticated('Token revoked')
-					return
-				}
-
-				this.jwt_id = jwt_id
-
-				return this._user = { id: user_id }
-			}
-			.bind(this)
-
+			yield authenticate.bind(this)()
 			yield next
 		})
 	}
@@ -436,10 +434,6 @@ export default function web_server(options = {})
 						this.cookies.set(name + '.sig', null)
 					}
 
-					const get_user = this.user
-					const get_authentication_error = () => this.authentication_error
-					const get_authentication_token_id = () => this.jwt_id
-
 					const result = action({ ...this.request.body, ...this.query, ...this.params },
 					{
 						ip: this.ip,
@@ -452,11 +446,11 @@ export default function web_server(options = {})
 						session_id,
 						destroy_session,
 
-						get_user,
-						get_authentication_error,
-						get_authentication_token_id,
+						user                    : this.user,
+						authentication_error    : this.authentication_error,
+						authentication_token_id : this.jwt_id,
 
-						keys: web.keys
+						keys : web.keys
 					})
 
 					// http://habrahabr.ru/company/yandex/blog/265569/

@@ -282,15 +282,13 @@ api.post('/register', async function({ name, email, password })
 // 	return { id: session.user.id, name: session.user.name }
 // })
 
-api.post('/authenticate', async function({}, { ip, get_user, get_authentication_error })
+api.post('/authenticate', async function({}, { ip, user })
 {
 	// console.log('*** authenticate')
 
-	const user = await get_user()
-
 	if (!user)
 	{
-		// throw get_authentication_error()
+		// throw authentication_error
 		return
 	}
 
@@ -332,10 +330,8 @@ api.post('/authenticate', async function({}, { ip, get_user, get_authentication_
 // 	destroy_session()
 // })
 
-api.post('/sign_out', async function({}, { destroy_cookie, get_user, get_authentication_token_id })
+api.post('/sign_out', async function({}, { destroy_cookie, user, authentication_token_id })
 {
-	const user = await get_user()
-
 	if (!user)
 	{
 		return
@@ -343,7 +339,7 @@ api.post('/sign_out', async function({}, { destroy_cookie, get_user, get_authent
 
 	// console.log('*** user before sign out', user)
 
-	await revoke_token(get_authentication_token_id(), user.id)
+	await revoke_token(authentication_token_id, user.id)
 
 	// console.log('*** user after sign out', user)
 
