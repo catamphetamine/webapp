@@ -1,3 +1,3 @@
 import api_server from '../common/api server'
 
-api_server({ authentication: true }).start(configuration.authentication_service.http)
+api_server({ name: 'Authentication', authentication: true }).start(configuration.authentication_service.http)

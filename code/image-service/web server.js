@@ -87,7 +87,7 @@ web.file_upload
 
 web.listen(configuration.image_service.http.port).then(() =>
 {
-	log.info(`Image server is listening at http://${configuration.image_service.http.host}:${configuration.image_service.http.port}`)
+	log.info(`Image service is listening at http://${configuration.image_service.http.host}:${configuration.image_service.http.port}`)
 },
 error =>
 {

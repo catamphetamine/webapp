@@ -32,7 +32,7 @@ export default function(options = {})
 		{
 			web.listen(port, host).then(() =>
 			{
-				log.info(`Authentication service is listening at http://${host || 'localhost'}:${port}`)
+				log.info(`${options.name} service is listening at http://${host || 'localhost'}:${port}`)
 			},
 			error =>
 			{

@@ -19,6 +19,8 @@ global.messages =
 	}
 }
 
+server.on('error', error => log.error(error))
+
 server.input.on('data', function(message)
 {
 	messages.add(message)

@@ -1,3 +1,29 @@
+// TCP client and server messaging.
+//
+// Has no durability guarantees 
+// (messages will be lost in case of connection issues)
+//
+// Usage:
+//
+// const messenger = client({ host, port })
+// messenger.send({ ... }).then(reply => ...)
+//
+// messenger.on('error', error => ...)
+//
+// // low level
+// messenger.output.write({ ... })
+//
+// ...
+//
+// const messenger = server({ host, port })
+//
+// messenger.on('message', (data, reply) => ...)
+//
+// messenger.on('error', error => ...)
+//
+// // low level
+// messenger.input.on('data', data => ...)
+
 import net from 'net'
 import stream from 'stream'
 import util from 'util'
@@ -56,7 +82,27 @@ Message_encoder.prototype._transform = function(object, encoding, callback)
 	callback()
 }
 
+// a stream which just sends all the written data into the void
+
+function Annihilator(parameters)
+{
+	stream.Transform.call(this, merge(parameters, { writableObjectMode: true }))
+}
+
+util.inherits(Annihilator, stream.Transform)
+
+Annihilator.prototype._transform = function(object, encoding, callback)
+{
+	callback()
+	// setImmediate(callback)
+}
+
+const annihilator = new Annihilator()
+
 // send and receive messages
+// (experimental)
+// (lossy)
+// (not used yet)
 class Messenger extends EventEmitter
 {
 	static message_timeout = 10 // in seconds
@@ -203,7 +249,8 @@ export function client({ host, port })
 	// connect to the log server via TCP
 	socket.connect({ host, port })
 
-	socket.setDefaultEncoding('utf8')
+	// the data will be interpreted as UTF-8 data, and returned as strings
+	socket.setEncoding('utf8')
 
 	// constants
 	const max_retries = undefined
@@ -222,32 +269,52 @@ export function client({ host, port })
 		// connection_lost = false
 	}
 
+	function connection_lost()
+	{
+		// stop writing encoded JSON messages to the TCP socket
+		message_encoder.unpipe()
+
+		// prevent input buffer overflow by destroying all messages being sent
+		message_encoder.pipe(annihilator)
+	}
+
+	function connection_restored()
+	{
+		// stop destroying all messages being sent
+		message_encoder.unpipe()
+
+		// stop write encoded JSON messages to the TCP socket,
+		message_encoder.pipe(socket)
+	}
+
 	// When the TCP socket connection is successfully established
 	socket.on('connect', function()
 	{
+		// in case of reconnect
+		// if (reconnecting)
+		// {
+		connection_restored()
+		// }
+
 		// reset internal state
 		reset()
-		
+
 		messenger.connected()
 
-		log.info('Connected to TCP server')
+		log.debug('Connected to TCP server')
 	})
 
 	// Emitted when an error occurs on the TCP socket. 
 	// The 'close' event will be called directly following this event.
 	socket.on('error', function(error)
 	{
-		// connection_lost = true
-
-		// log variable exists after TCP connection
-
-		log.info('Lost connection to the TCP server') // , error)
+		log.debug('Lost connection to the TCP server') // , error)
 	})
 
 	// when TCP socket is closed
 	socket.on('close', function(had_error)
 	{
-		// connection_lost = true
+		connection_lost()
 
 		messenger.closed()
 
@@ -264,10 +331,6 @@ export function client({ host, port })
 		// if should not try connecting further
 		if (max_retries === 0)
 		{
-			// stop writing encoded JSON messages to the TCP socket
-			message_encoder.unpipe(socket)
-			socket.unpipe(message_decoder)
-
 			log.info(`Will not try to reconnect further. Destroying socket.`)
 
 			// indicate messenger shutdown
@@ -279,14 +342,11 @@ export function client({ host, port })
 		// then it means that reconnection attempt failed.
 		if (reconnecting)
 		{
-			log.info(`Reconnect failed`)
+			log.debug(`Reconnect failed`)
 
 			// if max retries count limit reached, should stop trying to reconnect
 			if (exists(max_retries) && retries_made === max_retries)
 			{
-				// stop writing encoded JSON messages to the TCP socket
-				message_encoder.unpipe(socket)
-
 				log.info(`Max retries count reached. Will not try to reconnect further.`)
 
 				// indicate messenger shutdown
@@ -299,6 +359,7 @@ export function client({ host, port })
 
 		const reconnect = () =>
 		{
+			// if connection established before the reconnection timer fired, then do nothing
 			if (!reconnecting)
 			{
 				return
@@ -318,11 +379,11 @@ export function client({ host, port })
 	// encodes JSON messages to their textual representation
 	const message_encoder = new Message_encoder()
 
-	// all encoded JSON messages will be sent down the TCP socket
-	message_encoder.pipe(socket)
-
 	// decodes JSON messages from their textual representation
 	const message_decoder = new Message_decoder()
+
+	// receive JSON messages on TCP socket	
+	socket.pipe(message_decoder)
 
 	// all encoded JSON messages received from the TCP server will be decoded
 	socket.pipe(message_decoder)
@@ -402,32 +463,51 @@ export function server({ host, port })
 
 	const server = net.createServer(socket =>
 	{
+		// the data will be interpreted as UTF-8 data, and returned as strings
 		socket.setEncoding('utf8')
-		message_decoder.setDefaultEncoding('utf8')
-		message_encoder.setDefaultEncoding('utf8')
-
-		// socket.pipe(message_decoder).pipe(message_stream)
-
+		
+		// read messages from the socket
 		socket.pipe(message_decoder)
-		message_encoder.pipe(socket)
 
+		function connection_lost()
+		{
+			// stop writing encoded JSON messages to the TCP socket
+			message_encoder.unpipe()
+
+			// prevent input buffer overflow by destroying all messages being sent
+			message_encoder.pipe(annihilator)
+		}
+
+		function connection_restored()
+		{
+			// stop destroying all messages being sent
+			message_encoder.unpipe()
+
+			// stop write encoded JSON messages to the TCP socket,
+			message_encoder.pipe(socket)
+		}
+
+		connection_restored()
+
+		// temporary variable
 		let _error
 
+		// Emitted when an error occurs on the TCP socket. 
+		// The 'close' event will be called directly following this event.
 		socket.on('error', function(error)
 		{
 			log.debug(`Socket error`, error)
 			_error = error
 		})
 
+		// when TCP socket is closed
 		socket.on('close', function(data)
 		{
 			log.debug(`Socket closed`)
 
 			messenger.ended(_error)
 
-			socket.unpipe(message_decoder)
-			message_encoder.unpipe(socket)
-			// message_decoder.unpipe(message_stream)
+			connection_lost()
 		})
 	})
 

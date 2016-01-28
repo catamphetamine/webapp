@@ -157,16 +157,6 @@ When switching to TLS all cookies should be reset ({ secure: true } option will 
 
 
 
-в логах возникает рекурсия при перезапуске приложения:
-
-    log_service.on('error', function(error)
-    {
-      (log || console).error(`There's been an error related to sending messages to log server. No more log messages will be sent to the log server.`, error)
-    })
-
-
-
-
 
 сделать страницы status 500 (как web server, так и page server) и 503, 401
 
