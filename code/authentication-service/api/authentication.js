@@ -169,7 +169,7 @@ function add_authentication_token(user, jwt_id, ip)
 	return Promise.resolve()
 }
 
-api.post('/sign_in', async function({ email, password }, { ip, set_cookie, keys })
+api.post('/sign-in', async function({ email, password }, { ip, set_cookie, keys })
 {
 	const user = await find_user_by_email(email)
 
@@ -206,7 +206,7 @@ api.post('/sign_in', async function({ email, password }, { ip, set_cookie, keys 
 
 // (session based user authentication)
 //
-// api.post('/sign_in', async function({ email, password }, { session, session_id, ip, set_cookie })
+// api.post('/sign-in', async function({ email, password }, { session, session_id, ip, set_cookie })
 // {
 // 	const user = await find_user_by_email(email)
 //
@@ -304,7 +304,7 @@ api.post('/authenticate', async function({}, { ip, user })
 
 // (session based user authentication)
 //
-// api.post('/sign_out', function({}, { session, session_id, destroy_session, destroy_cookie })
+// api.post('/sign-out', function({}, { session, session_id, destroy_session, destroy_cookie })
 // {
 // 	const user = session.user ? find_user_by_id(session.user.id) : undefined
 //
@@ -330,7 +330,7 @@ api.post('/authenticate', async function({}, { ip, user })
 // 	destroy_session()
 // })
 
-api.post('/sign_out', async function({}, { destroy_cookie, user, authentication_token_id })
+api.post('/sign-out', async function({}, { destroy_cookie, user, authentication_token_id })
 {
 	if (!user)
 	{
@@ -346,7 +346,7 @@ api.post('/sign_out', async function({}, { destroy_cookie, user, authentication_
 	destroy_cookie('authentication')
 })
 
-api.get('/validate_token', async function({ token_id, user_id })
+api.get('/validate-token', async function({ token_id, user_id })
 {
 	const token = await find_token_by_id(token_id, user_id)
 

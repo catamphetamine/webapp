@@ -112,7 +112,7 @@ pm2 logs webapp
 
 Возможна кластеризация, безостановочное самообновление и т.п.
 
-Redis
+<!-- Redis
 =====
 
 The application will run without Redis but user authenication will only work in demo mode.
@@ -131,6 +131,7 @@ redis:
 ```
 
 To secure Redis from outside intrusion set up your operating system firewall accordingly. Also a password can be set and tunneling through an SSL proxy can be set up between the microservices. Also Redis should be run as an unprivileged `redis` user.
+ -->
 
 Security
 ========
@@ -138,6 +139,11 @@ Security
 The application should be run as an unprivileged user.
 
 When switching to TLS all cookies should be reset ({ secure: true } option will be set on them automatically upon Https detection).
+
+Architecture
+============
+
+To be described
 
 Сделать
 ====================
@@ -148,11 +154,6 @@ When switching to TLS all cookies should be reset ({ secure: true } option will 
 
 отсюда же можно будет вычислять, когда был пользователь на сайте (написать метод)
 /latest-access?user=id
-
-/sign_in -> /sign-in
-/sign_out -> /sign-out
-/verify_token -> /verify-token
-
 
 
 

@@ -215,7 +215,7 @@ export default function web_server(options = {})
 			({
 				host : configuration.authentication_service.http.host,
 				port : configuration.authentication_service.http.port,
-				path : '/validate_token'
+				path : '/validate-token'
 			},
 			{
 				token_id: jwt_id,

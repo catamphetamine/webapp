@@ -2,7 +2,7 @@ export function sign_in(info)
 {
 	const action =
 	{
-		promise: http => http.post(`/authentication/sign_in`, info),
+		promise: http => http.post(`/authentication/sign-in`, info),
 		events: ['signing user in', 'user signed in', 'user sign in failed']
 	}
 
@@ -13,7 +13,7 @@ export function sign_out()
 {
 	const action =
 	{
-		promise: http => http.post(`/authentication/sign_out`),
+		promise: http => http.post(`/authentication/sign-out`),
 		events: ['siging user out', 'user signed out', 'user sign out failed']
 	}
 
