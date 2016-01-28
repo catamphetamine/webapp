@@ -216,7 +216,7 @@ export default function create(name, options = {})
 		log_configuration.streams.unshift
 		({
 			type   : 'raw',
-			stream : log_service.output
+			stream : log_service.stream
 		})
 	}
 

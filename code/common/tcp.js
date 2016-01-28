@@ -35,7 +35,7 @@ const message_delimiter = '\f' // or '\n'
 
 function Message_decoder(parameters)
 {
-	stream.Transform.call(this, merge(parameters, { readableObjectMode: true }))
+	stream.Transform.call(this, merge(parameters, { readableObjectMode: true, decodeStrings: false }))
 
 	this.incomplete_message = ''
 }
@@ -44,12 +44,18 @@ util.inherits(Message_decoder, stream.Transform)
 
 Message_decoder.prototype._transform = function(text, encoding, callback)
 {
-	const last_message_is_complete = text[text.length - 1] === message_delimiter
+	const last_delimiter_index = text.lastIndexOf(message_delimiter)
 
-	const messages = (this.incomplete_message + text).split(message_delimiter).filter(text => text.length > 0)
-	this.incomplete_message = last_message_is_complete ? '' : messages.pop()
+	if (last_delimiter_index < 0)
+	{
+		this.incomplete_message += text
+		return callback()
+	}
 
-	for (let message of messages)
+	const encoded_messages = text.substring(0, last_delimiter_index)
+	this.incomplete_message = text.substring(last_delimiter_index + 1)
+
+	for (let message of encoded_messages.split(message_delimiter))
 	{
 		try
 		{
@@ -58,8 +64,25 @@ Message_decoder.prototype._transform = function(text, encoding, callback)
 		catch (error)
 		{
 			log.error(`Malformed JSON message`, message, error)
-			this.emit('error', error)
+			return this.emit('error', error)
 		}
+	}
+
+	callback()
+}
+
+Message_decoder.prototype._flush = function(callback)
+{
+	const message = this.incomplete_message
+
+	try
+	{
+		this.push(JSON.parse(message))
+	}
+	catch (error)
+	{
+		log.error(`Malformed JSON message`, message, error)
+		return this.emit('error', error)
 	}
 
 	callback()
@@ -76,9 +99,10 @@ util.inherits(Message_encoder, stream.Transform)
 
 Message_encoder.prototype._transform = function(object, encoding, callback)
 {
-	// append message delimiter to allow for packet fragmentation.
-	// prepend message delimiter to guard against packet loss in case of UDP, etc.
-	this.push(message_delimiter + JSON.stringify(object) + message_delimiter)
+	// // append message delimiter to allow for packet fragmentation.
+	// // prepend message delimiter to guard against packet loss in case of UDP, etc.
+	// this.push(message_delimiter + JSON.stringify(object) + message_delimiter)
+	this.push(JSON.stringify(object) + message_delimiter)
 	callback()
 }
 
@@ -107,40 +131,37 @@ class Messenger extends EventEmitter
 {
 	static message_timeout = 10 // in seconds
 
-	constructor(output, input)
+	constructor(output)
 	{
 		super()
 
 		this.reset()
 
-		this.output = output
-		this.input  = input
+		this.incoming = this.incoming.bind(this)
 
-		this.input.on('data', message =>
+		// the writable stream used for logging
+
+		function Stream(parameters)
 		{
-			if (!message._messenger_id)
+			stream.Transform.call(this, merge(parameters, { objectMode: true }))
+		}
+
+		util.inherits(Stream, stream.Transform)
+
+		const messenger = this
+
+		Stream.prototype._transform = function(object, encoding, callback)
+		{
+			if (this._writableState.getBuffer().length > 1000)
 			{
-				return
+				return log.info(`Dropping message due to buffer overflow`, object)
 			}
 
-			const promise = this.promises[message._messenger_id]
+			this.push(object)
+			callback()
+		}
 
-			if (!promise)
-			{
-				// log.info(`Got reply for an unknown message`, message.data)
-				return this.emit('message', message.data, function reply(data)
-				{
-					this.send(data, message._messenger_id)
-				}
-				.bind(this))
-			}
-
-			promise.resolve(message.data)
-			delete this.promises[message._messenger_id]
-
-			clearTimeout(this.timeouts[message._messenger_id])
-			delete this.timeouts[message._messenger_id]
-		})
+		this.stream = new Stream()
 	}
 
 	reset()
@@ -149,12 +170,27 @@ class Messenger extends EventEmitter
 		this.promises = {}
 		this.timeouts = {}
 
-		this.output = undefined
-		this.input  = undefined
+		if (this.input)
+		{
+			this.input.removeListener('data', this.incoming)
+		}
+
+		this.input  = null
+		this.output = null
 	}
 
 	send(data, _messenger_id = this.next_message_id())
 	{
+		if (!this.output)
+		{
+			throw new Error('Not yet connected')
+		}
+
+		if (this.closed)
+		{
+			throw new Error('The stream has been closed')
+		}
+
 		const message = 
 		{
 			_messenger_id,
@@ -194,11 +230,22 @@ class Messenger extends EventEmitter
 		this.reject_promises()
 
 		this.reset()
+
+		this.stream.unpipe(this.output)
 	}
 
-	connected()
+	connected(input, output)
 	{
 		log.debug(`Messenger connection established`)
+
+		this.input  = input
+		this.output = output
+
+		this.input.on('data', this.incoming)
+
+		this.stream.pipe(this.output)
+
+		this.emit('connect')
 	}
 
 	ended(error)
@@ -207,17 +254,39 @@ class Messenger extends EventEmitter
 
 		this.reset()
 
-		if (this.writable)
-		{
-			this.writable.end()
-		}
-
 		if (error)
 		{
 			this.emit('error', error)
 		}
 
+		this.closed = true
 		this.emit('close')
+	}
+
+	incoming(message)
+	{
+		if (!message._messenger_id)
+		{
+			return
+		}
+
+		const promise = this.promises[message._messenger_id]
+
+		if (!promise)
+		{
+			// log.info(`Got reply for an unknown message`, message.data)
+			return this.emit('message', message.data, function reply(data)
+			{
+				this.send(data, message._messenger_id)
+			}
+			.bind(this))
+		}
+
+		promise.resolve(message.data)
+		delete this.promises[message._messenger_id]
+
+		clearTimeout(this.timeouts[message._messenger_id])
+		delete this.timeouts[message._messenger_id]
 	}
 
 	reject_promises()
@@ -261,6 +330,12 @@ export function client({ host, port })
 	let reconnecting
 	let retries_made
 
+	// encodes JSON messages to their textual representation
+	let message_encoder
+
+	// decodes JSON messages from their textual representation
+	let message_decoder
+
 	// resets internal state
 	function reset()
 	{
@@ -272,19 +347,10 @@ export function client({ host, port })
 	function connection_lost()
 	{
 		// stop writing encoded JSON messages to the TCP socket
-		message_encoder.unpipe()
-
-		// prevent input buffer overflow by destroying all messages being sent
-		message_encoder.pipe(annihilator)
-	}
-
-	function connection_restored()
-	{
-		// stop destroying all messages being sent
-		message_encoder.unpipe()
-
-		// stop write encoded JSON messages to the TCP socket,
-		message_encoder.pipe(socket)
+		if (message_encoder)
+		{
+			message_encoder.end()
+		}
 	}
 
 	// When the TCP socket connection is successfully established
@@ -293,13 +359,30 @@ export function client({ host, port })
 		// in case of reconnect
 		// if (reconnecting)
 		// {
-		connection_restored()
 		// }
+
+		// encodes JSON messages to their textual representation
+		message_encoder = new Message_encoder()
+
+		// stop write encoded JSON messages to the TCP socket,
+		message_encoder.pipe(socket)
+
+		// decodes JSON messages from their textual representation
+		message_decoder = new Message_decoder()
+
+		// on JSON message parse error
+		message_decoder.on('error', error =>
+		{
+			socket.emit('error', error)
+		})
+
+		// receive JSON messages on TCP socket	
+		socket.pipe(message_decoder)
 
 		// reset internal state
 		reset()
 
-		messenger.connected()
+		messenger.connected(message_decoder, message_encoder)
 
 		log.debug('Connected to TCP server')
 	})
@@ -315,6 +398,17 @@ export function client({ host, port })
 	socket.on('close', function(had_error)
 	{
 		connection_lost()
+
+		if (message_decoder)
+		{
+			socket.unpipe(message_decoder)
+			message_decoder.removeAllListeners('error')
+		}
+
+		if (message_encoder)
+		{
+			message_encoder.unpipe(socket)
+		}
 
 		messenger.closed()
 
@@ -376,18 +470,6 @@ export function client({ host, port })
 		reconnect.delay_for(reconnection_delay)
 	})
 
-	// encodes JSON messages to their textual representation
-	const message_encoder = new Message_encoder()
-
-	// decodes JSON messages from their textual representation
-	const message_decoder = new Message_decoder()
-
-	// receive JSON messages on TCP socket	
-	socket.pipe(message_decoder)
-
-	// all encoded JSON messages received from the TCP server will be decoded
-	socket.pipe(message_decoder)
-
 	// create a duplex object stream
 
 	// function Message_stream(parameters)
@@ -428,7 +510,7 @@ export function client({ host, port })
 	// // return the stream
 	// return message_stream
 
-	const messenger = new Messenger(message_encoder, message_decoder)
+	const messenger = new Messenger()
 
 	return messenger
 }
@@ -453,12 +535,6 @@ export function server({ host, port })
 
 	// const message_stream = new Stream()
 
-	// decodes textual message representation into a JSON object message
-	const message_decoder = new Message_decoder()
-
-	// encodes JSON object message into a textual message representation
-	const message_encoder = new Message_encoder()
-
 	// set up a TCP server
 
 	const server = net.createServer(socket =>
@@ -466,28 +542,27 @@ export function server({ host, port })
 		// the data will be interpreted as UTF-8 data, and returned as strings
 		socket.setEncoding('utf8')
 		
+		// decodes textual message representation into a JSON object message
+		const message_decoder = new Message_decoder()
+
+		// on JSON message parse error
+		message_decoder.on('error', error =>
+		{
+			socket.emit('error', error)
+		})
+
 		// read messages from the socket
 		socket.pipe(message_decoder)
 
-		function connection_lost()
-		{
-			// stop writing encoded JSON messages to the TCP socket
-			message_encoder.unpipe()
+		// encodes JSON object message into a textual message representation
+		const message_encoder = new Message_encoder()
 
-			// prevent input buffer overflow by destroying all messages being sent
-			message_encoder.pipe(annihilator)
-		}
+		// write messages to the socket
+		message_encoder.pipe(socket)
 
-		function connection_restored()
-		{
-			// stop destroying all messages being sent
-			message_encoder.unpipe()
+		const messenger = new Messenger()
 
-			// stop write encoded JSON messages to the TCP socket,
-			message_encoder.pipe(socket)
-		}
-
-		connection_restored()
+		messenger.connected(message_decoder, message_encoder)
 
 		// temporary variable
 		let _error
@@ -507,8 +582,13 @@ export function server({ host, port })
 
 			messenger.ended(_error)
 
-			connection_lost()
+			socket.unpipe(message_decoder)
+			message_decoder.removeAllListeners('error')
+
+			message_encoder.unpipe(socket)
 		})
+
+		server.emit('session', messenger)
 	})
 
 	log.info(`Starting TCP server at ${host}:${port}`)
@@ -528,9 +608,7 @@ export function server({ host, port })
 		log.debug(`TCP server is listening`)
 	})
 
-	const messenger = new Messenger(message_encoder, message_decoder)
-
-	return messenger
+	return server
 }
 
 // local machine sockets:

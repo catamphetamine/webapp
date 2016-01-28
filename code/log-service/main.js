@@ -21,9 +21,14 @@ global.messages =
 
 server.on('error', error => log.error(error))
 
-server.input.on('data', function(message)
+server.on('session', messenger =>
 {
-	messages.add(message)
+	messenger.on('error', error => log.error(error))
+
+	messenger.input.on('data', function(message)
+	{
+		messages.add(message)
+	})
 })
 
 require('./web server')

@@ -150,6 +150,8 @@ To be described
 
 в authentication-service:
 
+// поставить обязательную аутентикацию
+
 /record-access -> по данному authentication_token_id писать в базу время последней активности (time) и ip адрес
 
 отсюда же можно будет вычислять, когда был пользователь на сайте (написать метод)
@@ -158,9 +160,27 @@ To be described
 
 
 
+возвращать статус 404 из Page_not_found (react-isomorphic-render)
+если 401, то тоже можно что-то типа Unauthenticated
+если 403, то тоже можно что-то типа Unauthorized
 
-сделать страницы status 500 (как web server, так и page server) и 503, 401
 
+
+
+сделать страницы status 500 (как web server, так и page server) и 503, 401, 403, 404 (статика)
+
+
+
+
+в web server connections можно считать как server.getConnections(callback), а не ++
+
+Callback should take two arguments err and count.
+
+server.close([callback])
+
+Stops the server from accepting new connections and keeps existing connections. 
+
+The optional callback will be called once the 'close' event occurs. Unlike that event, it will be called with an Error as its only argument if the server was not open when it was closed.
 
 
 
