@@ -215,9 +215,8 @@ table
 
 th, td
 {
-	padding     : 8px;
-	line-height : 1.42857143;
-    border-top  : 1px solid #ddd;
+	padding     : 1em;
+	border-top  : 1px solid #ddd;
 }
 
 th
@@ -227,6 +226,6 @@ th
 	border-top     : 0;
 	text-align     : left;
 
-    color       : #7f7f7f;
-    font-weight : normal;
+	color       : #7f7f7f;
+	font-weight : normal;
 }
