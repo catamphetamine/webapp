@@ -169,13 +169,7 @@ export default function web_server(options = {})
 
 	if (options.authentication)
 	{
-		// web.use(jwt
-		// ({
-		// 	secret      : 'shared-secret',
-		// 	passthrough : true,
-		// 	key         : 'authentication',
-		// 	cookie      : 'authentication'
-		// }))
+		const validate_token_url = '/validate-token'
 
 		function get_jwt_token(context)
 		{
@@ -209,17 +203,20 @@ export default function web_server(options = {})
 			return { error: 'JWT token not found' }
 		}
 
-		function validate_jwt_id(jwt_id, user_id)
+		function validate_token(jwt)
 		{
 			return http_client.get
 			({
 				host : configuration.authentication_service.http.host,
 				port : configuration.authentication_service.http.port,
-				path : '/validate-token'
+				path : validate_token_url
 			},
+			{},
 			{
-				token_id: jwt_id,
-				user_id
+				headers:
+				{
+					Authorization: `Bearer ${jwt}`
+				}
 			})
 		}
 
@@ -233,6 +230,8 @@ export default function web_server(options = {})
 				return
 			}
 
+			this.jwt = token
+
 			let payload
 
 			for (let secret of web.keys)
@@ -244,10 +243,21 @@ export default function web_server(options = {})
 				}
 				catch (error)
 				{
-					if (!error.name === 'JsonWebTokenError')
+					// if authentication token expired
+					if (error.name === 'TokenExpiredError')
 					{
-						throw error
+						this.authentication_error = new result.errors.Unauthenticated('Token expired')
+						return
 					}
+
+					// try another `secret`
+					if (error.name === 'JsonWebTokenError')
+					{
+						continue
+					}
+
+					// some other error
+					throw error					
 				}
 			}
 
@@ -262,19 +272,24 @@ export default function web_server(options = {})
 			// subject
 			const user_id = payload.sub
 
-			if (!this.validating_jwt_id)
+			// validate token 
+			// (for example, that it has not been revoked)
+			if (this.path !== validate_token_url)
 			{
-				this.validating_jwt_id = validate_jwt_id(jwt_id, user_id)
-			}
+				if (!this.validating_jwt_id)
+				{
+					this.validating_jwt_id = validate_token(token)
+				}
 
-			const is_valid = (await this.validating_jwt_id).valid
+				const is_valid = (await this.validating_jwt_id).valid
 
-			delete this.validating_jwt_id
+				delete this.validating_jwt_id
 
-			if (!is_valid)
-			{
-				this.authentication_error = new result.errors.Unauthenticated('Token revoked')
-				return
+				if (!is_valid)
+				{
+					this.authentication_error = new result.errors.Unauthenticated('Token revoked')
+					return
+				}
 			}
 
 			this.jwt_id = jwt_id
@@ -448,6 +463,7 @@ export default function web_server(options = {})
 
 						user                    : this.user,
 						authentication_error    : this.authentication_error,
+						authentication_token    : this.jwt,
 						authentication_token_id : this.jwt_id,
 
 						keys : web.keys

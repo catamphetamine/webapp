@@ -282,7 +282,7 @@ api.post('/register', async function({ name, email, password })
 // 	return { id: session.user.id, name: session.user.name }
 // })
 
-api.post('/authenticate', async function({}, { ip, user })
+api.post('/authenticate', async function({}, { user, authentication_token_id, ip })
 {
 	// console.log('*** authenticate')
 
@@ -292,14 +292,17 @@ api.post('/authenticate', async function({}, { ip, user })
 		return
 	}
 
-	const user_data = await find_user_by_id(user.id)
+	user = await find_user_by_id(user.id)
 
-	if (!user_data)
+	if (!user)
 	{
 		return
 	}
 
-	return { id: user.id, name: user_data.name }
+	// update this authentication token's last access IP and time
+	record_access(user, authentication_token_id, ip)
+
+	return { id: user.id, name: user.name }
 })
 
 // (session based user authentication)
@@ -346,9 +349,14 @@ api.post('/sign-out', async function({}, { destroy_cookie, user, authentication_
 	destroy_cookie('authentication')
 })
 
-api.get('/validate-token', async function({ token_id, user_id })
+api.get('/validate-token', async function({}, { authentication_token_id, user })
 {
-	const token = await find_token_by_id(token_id, user_id)
+	if (!user)
+	{
+		return { valid: false }
+	}
+
+	const token = await find_token_by_id(authentication_token_id, user.id)
 
 	if (!token)
 	{
@@ -357,6 +365,27 @@ api.get('/validate-token', async function({ token_id, user_id })
 
 	return { valid: true }
 })
+
+api.post('/record-access', async function({}, { authentication_token_id, user, ip })
+{
+	if (!user)
+	{
+		return
+	}
+
+	await record_access(user, authentication_token_id, ip)
+})
+
+async function record_access(user, authentication_token_id, ip)
+{
+	user = await find_user_by_id(user.id)
+
+	const token = user.authentication_tokens[authentication_token_id]
+	token.ip = ip
+	token.time = new Date()
+
+	await update_user(user)
+}
 
 function check_password(password, hashed_password)
 {
