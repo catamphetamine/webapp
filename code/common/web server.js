@@ -533,13 +533,20 @@ export default function web_server(options = {})
 	result.shut_down = function()
 	{
 		shut_down = true
-	}
 
-	let connections = 0
+		// Stops the server from accepting new connections and keeps existing connections. 
+		//
+		// The optional callback will be called once the 'close' event occurs. 
+		// Unlike that event, it will be called with an Error as its only argument 
+		// if the server was not open when it was closed.
+		//
+		return Promise.promisify(web.close(), { context : web })()
+	}
 
 	result.connections = function()
 	{
-		return connections
+		// http_server.getConnections()
+		return Promise.promisify(web.getConnections(), { context : web })()
 	}
 
 	// // log all errors
@@ -633,8 +640,8 @@ export default function web_server(options = {})
 
 				resolve()
 			})
-			.on('connection', () => connections++)
-			.on('close', () => connections--)
+			// .on('connection', () => connections++)
+			// .on('close', () => connections--)
 		})
 	}
 

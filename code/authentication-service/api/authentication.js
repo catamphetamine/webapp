@@ -157,6 +157,19 @@ api.post('/record-access', async function({}, { authentication_token_id, user, i
 
 api.get('/latest-activity', async function({ user })
 {
+	// try to fetch user's latest activity time from the current session
+	// (is faster and more precise)
+
+	const latest_activity_time = await online_status_store.get(user)
+
+	if (latest_activity_time)
+	{
+		return { time: latest_activity_time }
+	}
+
+	// if there's no current session for the user, 
+	// then try to fetch user's latest activity time from the database
+
 	user = store.find_user_by_id(user)
 
 	if (!user)
@@ -342,6 +355,11 @@ class Memory_online_status_store
 		this.user_sessions = {}
 	}
 
+	get(user_id)
+	{
+		return Promise.resolve(this.user_sessions[user_id])
+	}
+
 	get_and_set(user_id, time)
 	{
 		const previous_time = this.user_sessions[user_id]
@@ -363,6 +381,13 @@ class Redis_online_status_store
 			port      : configuration.redis.port,
 			auth_pass : configuration.redis.password
 		})
+	}
+
+	get(user_id)
+	{
+		return this.client
+			.get(this.prefix + user_id)
+			.then(result => result ? new Date(result) : null)
 	}
 
 	get_and_set(user_id, time)

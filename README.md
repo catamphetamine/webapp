@@ -160,18 +160,6 @@ To be described
 
 
 
-в web server connections можно считать как server.getConnections(callback), а не ++
-
-Callback should take two arguments err and count.
-
-server.close([callback])
-
-Stops the server from accepting new connections and keeps existing connections. 
-
-The optional callback will be called once the 'close' event occurs. Unlike that event, it will be called with an Error as its only argument if the server was not open when it was closed.
-
-
-
 
 при переключении языка - записывать язык в данные пользователя в бд, чтобы потом знать, на каком языке ему слать письма.
 
@@ -179,7 +167,9 @@ The optional callback will be called once the 'close' event occurs. Unlike that 
 
 
 
-online статус - в Редисе держать что-то типа user:online:id = date, наверное, с TTL = 15 минут
+хранить пользователей в mongodb (и токены)
+
+
 
 
 
@@ -200,32 +190,10 @@ online статус - в Редисе держать что-то типа user:o
 
 
 
-authentication-service посадить на mongodb (если она есть в configuration.js)
-
-
-
-
-
-
-
-способ находить все сессии для данного user.id: lua скрипт, который идёт по всем ключам user:session, и смотрит, равен ли session.user.id нужному user.id
-
-аналогично считается количество пользователей online, количество гостей online
-
-у пользователя сделать статус (online / offline, "был в сети тогда-то...")
-
-online = 15 минут простоя
-
-
-
-
-
-
-
-вести таблицу активности: последнее время активности пользователя с некоторой сессией
-
-
 на странице мониторинга - количество зареганных пользователей + график, количество сессий + график
+
+
+
 
 
 писать в лог файл все http запросы на web server, чтобы потом если что смотреть, какие дыры нашли
