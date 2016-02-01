@@ -79,7 +79,7 @@ api.post('/register', async function({ name, email, password })
 
 	if (await store.find_user_by_email(email))
 	{
-		throw new Errors.Generic(`User with email ${email} already exists`)
+		throw new Errors.Generic(`User is already registered for this email`)
 	}
 
 	password = await hash_password(password)

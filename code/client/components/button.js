@@ -54,7 +54,7 @@ const style = styler
 
 	spinner
 		position   : absolute
-		z-index    : -1
+		z-index    : 0 // if -1 then it disappears
 		top        : 0.1em
 
 		width  : 1em

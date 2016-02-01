@@ -122,6 +122,12 @@ const messages = defineMessages
 		id             : 'authentication.wrong_password',
 		description    : 'Passowrd doesn\'t match the one in the database',
 		defaultMessage : 'Wrong password'
+	},
+	email_already_registered:
+	{
+		id             : 'registration.email_already_registered',
+		description    : 'User with this email address is already registered',
+		defaultMessage : 'There already is a user account associated with this email address'
 	}
 })
 
@@ -129,7 +135,11 @@ const messages = defineMessages
 (
 	model => 
 	({
-		sign_in_error  : model.authentication.sign_in_error
+		sign_in_error      : model.authentication.sign_in_error,
+		registration_error : model.authentication.registration_error,
+
+		registering   : model.authentication.registering,
+		siging_in     : model.authentication.siging_in
 	}),
 	dispatch =>
 	{
@@ -162,14 +172,19 @@ export default class Authentication extends Component
 
 	static propTypes =
 	{
-		user          : PropTypes.object,
-		sign_in_error : PropTypes.object,
+		user               : PropTypes.object,
 
-		style         : PropTypes.object,
-		on_sign_in    : PropTypes.func,
+		signing_in         : PropTypes.bool,
+		registering        : PropTypes.bool,
 
-		sign_in       : PropTypes.func.isRequired,
-		register      : PropTypes.func.isRequired
+		sign_in_error      : PropTypes.object,
+		registration_error : PropTypes.object,
+
+		style              : PropTypes.object,
+		on_sign_in         : PropTypes.func,
+
+		sign_in            : PropTypes.func.isRequired,
+		register           : PropTypes.func.isRequired
 	}
 
 	constructor(properties)
@@ -228,9 +243,9 @@ export default class Authentication extends Component
 					style={style.input}/>
 
 				<div style={style.sign_in_buttons}>
-					<Button style={style.form_action} submit={true}>{this.translate(messages.sign_in)}</Button>
-
 					<Button className="secondary" style={style.forgot_password} action={::this.forgot_password}>{this.translate(messages.forgot_password)}</Button>
+
+					<Button style={style.form_action} submit={true} busy={this.props.signing_in}>{this.translate(messages.sign_in)}</Button>
 				</div>
 			</Form>
 		)
@@ -248,7 +263,7 @@ export default class Authentication extends Component
 				style={this.props.style ? merge(style.form, this.props.style) : style.form} 
 				action={::this.register} 
 				inputs={() => [this.refs.name, this.refs.email, this.refs.password, this.refs.accept_terms_of_service]} 
-				error={this.props.registration_error}>
+				error={this.props.registration_error && this.registration_error(this.props.registration_error)}>
 
 				<h2 style={style.form_title}>{this.translate(messages.register)}</h2>
 
@@ -299,7 +314,7 @@ export default class Authentication extends Component
 					</Checkbox>
 				</div>
 
-				<Button submit={true} style={style.form_action.register}>{this.translate(messages.register)}</Button>
+				<Button submit={true} style={style.form_action.register} busy={this.props.signing_in || this.props.registering}>{this.translate(messages.register)}</Button>
 			</Form>
 		)
 
@@ -408,15 +423,15 @@ export default class Authentication extends Component
 				password : this.state.password
 			})
 
-			this.cancel_registration()
+			await this.sign_in()
+
+			// this.cancel_registration()
 
 			// // a sane security measure
 			// this.setState({ password: undefined }, function()
 			// {
 			// 	this.refs.password.focus()
 			// })
-
-			await this.sign_in()
 		}
 		catch (error)
 		{
@@ -437,6 +452,16 @@ export default class Authentication extends Component
 		else if (error.message === 'Wrong password')
 		{
 			return this.translate(messages.wrong_password)
+		}
+
+		return error
+	}
+
+	registration_error(error)
+	{
+		if (error.message === 'User is already registered for this email')
+		{
+			return this.translate(messages.email_already_registered)
 		}
 
 		return error
@@ -513,11 +538,16 @@ const style = styler
 	forgot_password
 		font-weight: normal
 
+		float: left
+
 	form_action
-		float: right
+
+		text-align: right
+		display: block
 
 		&register
 			margin-top: 1em
+			// margin-bottom: 1em
 
 	clearfix
 		clear : both

@@ -21,6 +21,7 @@ export default
 	'registration.email_is_required'                       : 'Для регистрации требуется ваша почта',
 	'registration.password_is_required'                    : 'Придумайте себе пароль',
 	'registration.terms_of_service_acceptance_is_required' : 'Для регистрации вам необоходимо принять наши условия обслуживания',
+	'registration.email_already_registered'                : 'Этот почтовый адрес уже был зарегистрирован ранее',
 
 	'authentication.email_is_required'    : 'Введите вашу почту',
 	'authentication.password_is_required' : 'Введите ваш пароль',
