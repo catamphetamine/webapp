@@ -148,14 +148,16 @@ To be described
 Сделать
 ====================
 
-возвращать статус 404 из Page_not_found (react-isomorphic-render)
-если 401, то тоже можно что-то типа Unauthenticated
-если 403, то тоже можно что-то типа Unauthorized
+сделать функцию authorize для маршрутов, которая будет принимать privileges, и проверять её по базе.
+делать всем privileges: [logs].
+закрыть страницу /logs на привилегию logs
 
 
 
 
-сделать страницы status 500 (как web server, так и page server) и 503, 401, 403, 404 (статика)
+
+
+сделать статические страницы (nginx) для status 500 (как web server, так и page server) и 503, 401, 403, 404
 
 
 

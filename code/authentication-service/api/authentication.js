@@ -406,6 +406,11 @@ store.connect()
 const online_status_store = configuration.redis ? new Redis_online_status_store() : new Memory_online_status_store()
 online_status_store.connect()
 
+// if (online_status_store instanceof Memory_online_status_store)
+// {
+// 	log.warn('Redis connection not configured. Therefore user online status is stored in RAM.')
+// }
+
 // old session based code
 //
 // function find_user_by_remember_me_token(remember_me_token)

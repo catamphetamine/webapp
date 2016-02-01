@@ -10,10 +10,15 @@ import { Router, Route, IndexRoute } from 'react-router'
 // const NestedRootContainer = RelayNestedRoutes(React, Relay)
 
 import Layout           from './pages/layout'
-import Not_found        from './pages/not found'
+import Not_found        from './pages/errors/not found'
+import Unauthenticated  from './pages/errors/unauthenticated'
+import Unauthorized     from './pages/errors/unauthorized'
 import Editor           from './pages/editor'
 import About            from './pages/about'
 import Home             from './pages/home'
+import Sign_in          from './pages/sign in'
+import Profile          from './pages/user/profile'
+import Account          from './pages/user/account'
 import Showcase         from './pages/showcase'
 import Dialog_showcase  from './pages/showcase/dialog'
 import Form_showcase    from './pages/showcase/form'
@@ -22,6 +27,10 @@ import Simple_example   from './pages/example/simple example'
 import Database_example from './pages/example/database example'
 import Log              from './pages/log'
 import Simple_graphQL_example  from './pages/example/simple graphql example'
+
+import _authenticate from './authenticate'
+
+const authenticate = _authenticate()
 
 // playing with GraphQL/Relay a bit
 
@@ -44,19 +53,32 @@ export default function(store)
 	(
 		<Route path="/" component={Layout} queries={Layout_queries}>
 			<IndexRoute component={Home} queries={Home_queries}/>
-			<Route path="editor" component={Editor}/>
+
 			{/*<Route path="about" component={About}/>*/}
 			<Route path="example" component={Example}>
 				<Route path="simple" component={Simple_example}/>
 				<Route path="database" component={Database_example}/>
 				<Route path="graphql" component={Simple_graphQL_example}/>
 			</Route>
+
 			<Route path="showcase" component={Showcase}>
 				<Route path="dialog" component={Dialog_showcase}/>
 				<Route path="form" component={Form_showcase}/>
 			</Route>
+
+			{ /* Routes requiring login */ }
+			<Route path="user">
+				<Route path="profile" component={authenticate(Profile)}/>
+				<Route path="account" component={authenticate(Account)}/>
+			</Route>
+
 			<Route path="logs" component={Log}/>
-			<Route path="*" component={Not_found}/>
+
+			<Route path="sign-in" component={Sign_in}/>
+
+			<Route path="unauthenticated" status={401} component={Unauthenticated}/>
+			<Route path="unauthorized" status={403} component={Unauthorized}/>
+			<Route path="*" status={404} component={Not_found}/>
 		</Route>
 	)
 

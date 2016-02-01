@@ -21,6 +21,10 @@ import jwt from 'jsonwebtoken'
 
 // Promise.promisifyAll(jwt)
 
+import http_proxy from 'http-proxy'
+
+let proxy
+
 import body_parser   from 'koa-bodyparser'
 import mount         from 'koa-mount'
 import graphql_http  from 'koa-graphql'
@@ -29,8 +33,10 @@ import koa_logger    from 'koa-bunyan'
 import compress      from 'koa-compress'
 import statics       from 'koa-static'
 import koa_locale    from 'koa-locale'
-import koa_proxy     from 'koa-proxy'
 import busboy        from 'co-busboy'
+
+// doesn't work well with redirects, is an amateurish project
+// import koa_proxy     from 'koa-proxy'
 
 import path from 'path'
 import fs   from 'fs-extra'
@@ -534,13 +540,24 @@ export default function web_server(options = {})
 	{
 		shut_down = true
 
+		// pending promises
+		const pending = []
+
+		// shut down http proxy
+		if (proxy)
+		{
+			pending.push(proxy.closeAsync())
+		}
+
 		// Stops the server from accepting new connections and keeps existing connections. 
 		//
 		// The optional callback will be called once the 'close' event occurs. 
 		// Unlike that event, it will be called with an Error as its only argument 
 		// if the server was not open when it was closed.
 		//
-		return Promise.promisify(web.close(), { context : web })()
+		pending.push(Promise.promisify(web.close, { context : web })())
+
+		return Promise.all(pending)
 	}
 
 	result.connections = function()
@@ -657,14 +674,26 @@ export default function web_server(options = {})
 	// can proxy http requests
 	result.proxy = (from, to) =>
 	{
+		proxy = http_proxy.createProxyServer({})
+
+		Promise.promisifyAll(proxy)
+
+		function proxy_middleware(to)
+		{
+			return function*(next)
+			{
+				yield proxy.webAsync(this.req, this.res, { target: to })
+			}
+		}
+
 		if (exists(to))
 		{
-			web.use(mount(from, koa_proxy({ host: to })))
+			web.use(mount(from, proxy_middleware(to)))
 		}
 		else
 		{
 			to = from
-			web.use(koa_proxy({ host: to }))
+			web.use(proxy_middleware(to))
 		}
 	}
 

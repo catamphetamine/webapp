@@ -12,7 +12,7 @@ export default function()
 		{
 			render()
 			{
-				return <Wrapped {...this.props} />
+				return <Wrapped {...this.props} translate={function(message) { return this.intl.formatMessage(message) }} />
 			}
 		}
 

@@ -4,11 +4,25 @@ import { connect }          from 'react-redux'
 
 import styler from 'react-styling'
 
+import { defineMessages } from 'react-intl'
+import international      from '../../internationalize'
+
+const messages = defineMessages
+({
+	header:
+	{
+		id             : 'not_found.header',
+		description    : 'Not found page header',
+		defaultMessage : 'Page not found'
+	}
+})
+
 @connect
 (
 	store => ({ })
 )
-export default class Not_found extends Component
+@international()
+export default class Page extends Component
 {
 	render()
 	{
@@ -18,7 +32,7 @@ export default class Not_found extends Component
 				{title("Page not found")}
 
 				<h1 style={style.header}>
-					Page not found
+					{this.props.translate(messages.header)}
 				</h1>
 			</section>
 		)

@@ -4,15 +4,15 @@ import { connect }                     from 'react-redux'
 import styler                          from 'react-styling'
 import { defineMessages }              from 'react-intl'
 
-import international from '../internationalize'
+import international from '../../internationalize'
 
 const messages = defineMessages
 ({
 	header:
 	{
-		id             : 'home.header',
-		description    : 'Home page header',
-		defaultMessage : 'A dawg'
+		id             : 'user.account.header',
+		description    : 'User account page header',
+		defaultMessage : 'Account'
 	}
 })
 
@@ -25,18 +25,16 @@ export default class Page extends Component
 {
 	render()
 	{
-		const husky = require('../../../assets/images/husky.jpg')
+		const husky = require('../../../../assets/images/husky.jpg')
 
 		const markup = 
 		(
 			<section className="content">
-				{title("Home")}
+				{title("Account")}
 
 				<h1 style={style.header}>
 					{this.props.translate(messages.header)}
 				</h1>
-
-				<img src={husky} style={style.image}/>
 			</section>
 		)
 
