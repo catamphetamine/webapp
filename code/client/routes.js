@@ -13,6 +13,7 @@ import Layout           from './pages/layout'
 import Not_found        from './pages/errors/not found'
 import Unauthenticated  from './pages/errors/unauthenticated'
 import Unauthorized     from './pages/errors/unauthorized'
+import Generic_error    from './pages/errors/generic'
 import Editor           from './pages/editor'
 import About            from './pages/about'
 import Home             from './pages/home'
@@ -28,9 +29,9 @@ import Database_example from './pages/example/database example'
 import Log              from './pages/log'
 import Simple_graphQL_example  from './pages/example/simple graphql example'
 
-import _authenticate from './authenticate'
+import authorization from './authorize'
 
-const authenticate = _authenticate()
+const authorize = (component, is_authorized) => authorization(is_authorized)(component)
 
 // playing with GraphQL/Relay a bit
 
@@ -68,17 +69,18 @@ export default function(store)
 
 			{ /* Routes requiring login */ }
 			<Route path="user">
-				<Route path="profile" component={authenticate(Profile)}/>
-				<Route path="account" component={authenticate(Account)}/>
+				<Route path="profile" component={authorize(Profile)}/>
+				<Route path="account" component={authorize(Account)}/>
 			</Route>
 
-			<Route path="logs" component={Log}/>
+			<Route path="logs" component={authorize(Log, user => user.role === 'administrator')}/>
 
 			<Route path="sign-in" component={Sign_in}/>
 
 			<Route path="unauthenticated" status={401} component={Unauthenticated}/>
-			<Route path="unauthorized" status={403} component={Unauthorized}/>
-			<Route path="*" status={404} component={Not_found}/>
+			<Route path="unauthorized"    status={403} component={Unauthorized}/>
+			<Route path="error"           status={500} component={Generic_error}/>
+			<Route path="*"               status={404} component={Not_found}/>
 		</Route>
 	)
 

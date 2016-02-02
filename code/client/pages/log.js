@@ -49,21 +49,11 @@ export default class Page extends Component
 
 		const translate = this.props.intl.formatMessage
 
-		let content
-
-		if (error)
-		{
-			content = 
-			(
-				<section className="content">
-					Error: {error.stack || error.message}
-				</section>
-			)
-		}
-		else if (log)
-		{
-			content = 
-			(
+		const markup = 
+		(
+			<div>
+				{title("Log")}
+				
 				<section className="content">
 					<table>
 						<thead>
@@ -81,23 +71,6 @@ export default class Page extends Component
 						</tbody>
 					</table>
 				</section>
-			)
-		}
-		else
-		{
-			content = 
-			(
-				<section className="content">
-					Loading
-				</section>
-			)
-		}
-
-		const markup = 
-		(
-			<div>
-				{title("Log")}
-				{content}
 			</div>
 		)
 

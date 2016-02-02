@@ -43,7 +43,8 @@ api.post('/sign-in', async function({ email, password }, { ip, set_cookie, keys 
 
 	const jwt_id = store.generate_unique_jwt_id(user)
 
-	const token = jwt.sign({}, keys[0],
+	const token = jwt.sign(configuration.authentication_token_payload.write(user) || {},
+	keys[0],
 	{
 		subject : user.id,
 		jwtid   : jwt_id
@@ -57,7 +58,7 @@ api.post('/sign-in', async function({ email, password }, { ip, set_cookie, keys 
 
 	await store.update_user(user)
 
-	return { id: user.id, name: user.name }
+	return public_user(user)
 })
 
 api.post('/register', async function({ name, email, password })
@@ -84,7 +85,18 @@ api.post('/register', async function({ name, email, password })
 
 	password = await hash_password(password)
 
-	const id = store.create_user({ name, email, password })
+	const id = store.create_user
+	({
+		name,
+		email,
+		password,
+
+		role          : 'administrator', // 'moderator', 'senior moderator' (starting from moderator)
+		moderation    : [], // [1, 2, 3, ...] (starting from moderator)
+		switches      : [], // ['read_only', 'disable_user_registration', ...] (starting from senior moderator)
+		// grant   : ['moderation', 'switches'] // !== true (starting from senior moderator)
+		// revoke  : ['moderation', 'switches'] // !== true (starting from senior moderator)
+	})
 
 	return { id }
 })
@@ -109,7 +121,7 @@ api.post('/authenticate', async function({}, { user, authentication_token_id, ip
 	// update this authentication token's last access IP and time
 	store.record_access(user, authentication_token_id, ip)
 
-	return { id: user.id, name: user.name }
+	return public_user(user)
 })
 
 api.post('/sign-out', async function({}, { destroy_cookie, user, authentication_token_id })
@@ -189,6 +201,21 @@ api.get('/latest-activity', async function({ user })
 	// 	}
 	// })
 })
+
+function public_user(user)
+{
+	const result =
+	{
+		id   : user.id,
+		name : user.name,
+
+		role       : user.role,
+		moderation : user.moderation,
+		switches   : user.switches
+	}
+
+	return result
+}
 
 function check_password(password, hashed_password)
 {

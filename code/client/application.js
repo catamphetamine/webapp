@@ -41,7 +41,7 @@ international.load().then(() =>
 	const create_routes = require('./routes')
 
 	// renders the webpage on the client side
-	render
+	return render
 	({
 		// enable/disable development mode (true/false)
 		development: _development_,

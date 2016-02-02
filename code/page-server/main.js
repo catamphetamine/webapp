@@ -9,6 +9,7 @@ import create_store   from '../client/redux/store'
 import create_routes  from '../client/routes'
 import markup_wrapper from '../client/markup wrapper'
 import html_assets    from '../client/html assets'
+import on_error       from '../client/error handler'
 
 import load_locale_data from './locale'
 
@@ -65,6 +66,9 @@ webpage_server
 
 	// creates React-router routes
 	create_routes,
+
+	// handles errors occuring while rendering pages
+	on_error,
 
 	// internationalization
 	localize: (store, preferred_locale) =>

@@ -76,5 +76,21 @@ module.exports =
 			}
 		}
 	},
-	upload_folder: 'storage'
+	upload_folder: 'storage',
+	authentication_token_payload:
+	{
+		write: user =>
+		({
+			role       : user.role,
+			moderation : user.moderation,
+			switches   : user.switches
+		}),
+
+		read: payload =>
+		({
+			role       : payload.role,
+			moderation : payload.moderation,
+			switches   : payload.switches
+		})
+	}
 }

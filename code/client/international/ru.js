@@ -41,5 +41,6 @@ export default
 
 	'unauthenticated.header' : 'Войдите, чтобы посмотреть эту страницу',
 	'unauthorized.header'    : 'У вас нет доступа к этой странице',
-	'not_found.header'       : 'Страница не найдена'
+	'not_found.header'       : 'Страница не найдена',
+	'error_page.header'      : 'Не удалось загрузить эту страницу'
 }

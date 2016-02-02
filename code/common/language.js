@@ -524,6 +524,10 @@ global.custom_error = function(name, { code, message })
 			{
 				this.message = message
 			}
+			else
+			{
+				this.message = name
+			}
 
 			if (exists(argument))
 			{

@@ -11,12 +11,12 @@ Features
 * Koa
 * Internationalization with React-intl (v2)
 * Translated messages hot reload (aka Hot Module Replacement)
+* User authentication & authorization (roles)
 * Microservice architecture
 * Bunyan logging (log file rotation is built-in)
 * Correctly handles Http Cookies on server-side
-* To be done: Authentication
-* To be done: GraphQL + Relay
 * To be done: Persistence (PostgreSQL, Bookshelf)
+* To be done: GraphQL + Relay
 * To be done: native Node.js clustering
 * // maybe: Protection against Cross Site Request Forgery attacks
 
@@ -148,17 +148,37 @@ To be described
 Сделать
 ====================
 
-сделать функцию authorize для маршрутов, которая будет принимать privileges, и проверять её по базе.
-делать всем privileges: [logs].
-закрыть страницу /logs на привилегию logs
+если нажал "выйти" - не скрывает страницу (делать там <div/> вместо null, или undefined, или лучше форму входа)
 
 
 
+когда заходит в /logs из клиента, то видно мигание, пока в content ничего нету (и футер не снизу почему-то)
+
+
+
+для 403, 500 - показывать ссылку на ту страницу, на которую пытались зайти (text-overflow: ellipsis)
+
+
+
+при обновлении страницы 401 (Ctrl + R) - если пользователь появился залогиненный, то автоматически перенаправлять на requested url
+
+
+
+// <Unauthenticated/> - мб убрать из render() authorize
 
 
 
 сделать статические страницы (nginx) для status 500 (как web server, так и page server) и 503, 401, 403, 404
 
+
+
+
+
+
+
+
+
+сделать какую-нибудь глобальную крутилку в оверлее на время роутинга (показывать и скрывать - по соответствующим событиям Redux-router'а)
 
 
 

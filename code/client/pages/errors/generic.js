@@ -11,9 +11,9 @@ const messages = defineMessages
 ({
 	header:
 	{
-		id             : 'unauthorized.header',
-		description    : 'Unauthorized page header',
-		defaultMessage : 'You\'re not permitted to view this page'
+		id             : 'error_page.header',
+		description    : 'Generic error page header',
+		defaultMessage : 'An error occured'
 	}
 })
 
@@ -25,7 +25,7 @@ export default class Page extends Component
 		const markup =
 		(
 			<section className="content">
-				{title("Unauthorized")}
+				{title("Error")}
 
 				<h1 style={style.header}>
 					{this.props.translate(messages.header)}

@@ -143,6 +143,36 @@ export default function web_server(options = {})
 		web.use(compress())
 	}
 
+	// handle errors
+	web.use(function*(next)
+	{
+		// generic errors for throwing
+		// (for convenient access from the subsequent middlewares and Http request handlers)
+		this.errors = result.errors
+
+		try
+		{
+			// try to respond to this Http request
+			yield next
+		}
+		catch (error)
+		{
+			// log the error, if it's not a normal Api error
+			// (prevents log pollution with things like 
+			//  `404 User not found` or `401 Not authenticated`)
+			if (!exists(error.code))
+			{
+				log.error(error)
+			}
+
+			// set Http Response status code according to the error's `code`
+			this.status = typeof error.code === 'number' ? error.code : 500
+
+			// set Http Response text according to the error message
+			this.message = error.message || 'Internal error'
+		}
+	})
+
 	if (options.log)
 	{
 		web.use(koa_logger(log,
@@ -230,6 +260,9 @@ export default function web_server(options = {})
 		{
 			const { token, error } = get_jwt_token(this)
 
+			this.authenticate = () => { throw new result.errors.Unauthenticated() }
+			this.role         = () => { throw new result.errors.Unauthenticated() }
+
 			if (!token)
 			{
 				this.authentication_error = new result.errors.Unauthenticated(error)
@@ -300,7 +333,42 @@ export default function web_server(options = {})
 
 			this.jwt_id = jwt_id
 
-			this.user = { id: user_id }
+			this.user = options.authentication(payload)
+			this.user.id = user_id
+			
+			// for (let key of Object.keys(payload))
+			// {
+			// 	if
+			// 	(
+			// 		key !== 'iss' // Issuer
+			// 		&& key !== 'sub' // Subject
+			// 		&& key !== 'aud' // Audience
+			// 		&& key !== 'exp' // Expiration time
+			// 		&& key !== 'nbf' // Not before
+			// 		&& key !== 'iat' // Issued at 
+			// 		&& key !== 'jti' // JWT ID
+			// 	)
+			// 	{
+			// 		this.user[key] = payload[key]
+			// 	}
+			// }
+
+			this.token_data = payload
+
+			this.authenticate = () => this.user
+
+			this.role = (...roles) =>
+			{
+				for (let role of roles)
+				{
+					if (this.user.role === role)
+					{
+						return true
+					}
+				}
+
+				throw new result.errors.Unauthorized(`One of the following roles is required: ${roles}`)
+			}
 		}
 
 		web.use(function*(next)
@@ -405,26 +473,6 @@ export default function web_server(options = {})
 		// })
 	}
 
-	// handle errors
-	web.use(function*(next)
-	{
-		try
-		{
-			yield next
-		}
-		catch (error)
-		{
-			// log the error
-			if (!exists(error.code))
-			{
-				log.error(error)
-			}
-
-			this.status = typeof error.code === 'number' ? error.code : 500
-			this.message = error.message || 'Internal error'
-		}
-	})
-
 	if (options.routing)
 	{
 		const router = koa_router()
@@ -441,6 +489,8 @@ export default function web_server(options = {})
 
 			result[method] = function(path, action)
 			{
+				// all errors thrown from this middleware will get caught 
+				// by the error-catching middleware above
 				router[method](path, function*(next)
 				{
 					const session = this.session
@@ -455,7 +505,7 @@ export default function web_server(options = {})
 						this.cookies.set(name + '.sig', null)
 					}
 
-					const result = action({ ...this.request.body, ...this.query, ...this.params },
+					const result = action.bind(this)({ ...this.request.body, ...this.query, ...this.params },
 					{
 						ip: this.ip,
 						
