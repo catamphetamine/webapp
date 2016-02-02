@@ -10,8 +10,8 @@ Features
 * Webpack
 * Koa
 * Internationalization with React-intl (v2)
-* Translated messages hot reload (aka Hot Module Replacement)
 * User authentication & authorization (roles)
+* Translated messages hot reload (aka Hot Module Replacement)
 * Microservice architecture
 * Bunyan logging (log file rotation is built-in)
 * Correctly handles Http Cookies on server-side
@@ -25,7 +25,7 @@ Quick Start
 
 * `npm install`
 * `npm run dev`
-* wait for it to finish (it will say "Now go to http://127.0.0.1:3000" in the end)
+* wait for it to finish the build (green stats will appear in the terminal, and it will say "Now go to http://127.0.0.1:3000")
 * go to `http://localhost:3000`
 * interact with the development version of the web application
 * `Ctrl + C`
