@@ -20,11 +20,23 @@ const messages = defineMessages
 
 @connect
 (
-	store => ({ })
+	model => ({ user: model.authentication.user })
 )
 @international()
 export default class Sign_in extends Component
 {
+	componentWillMount()
+	{
+		// при обновлении этой страницы (Ctrl + R), 
+		// если пользователь уже вошёл, 
+		// то автоматически перенаправлять на requested url.
+		//
+		if (this.props.user)
+		{
+			this.props.history.replace(this.props.location.query.request || '/')
+		}
+	}
+
 	render()
 	{
 		const markup = 

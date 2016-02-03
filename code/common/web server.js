@@ -249,7 +249,7 @@ export default function web_server(options = {})
 			return { error: 'JWT token not found' }
 		}
 
-		function validate_token(jwt)
+		function validate_token(jwt, bot)
 		{
 			return http_client.get
 			({
@@ -257,7 +257,9 @@ export default function web_server(options = {})
 				port : configuration.authentication_service.http.port,
 				path : validate_token_url
 			},
-			{},
+			{
+				bot
+			},
 			{
 				headers:
 				{
@@ -330,7 +332,7 @@ export default function web_server(options = {})
 			{
 				if (!this.validating_jwt_id)
 				{
-					this.validating_jwt_id = validate_token(token)
+					this.validating_jwt_id = validate_token(token, this.query.bot)
 				}
 
 				// takes some milliseconds to finish

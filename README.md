@@ -201,23 +201,17 @@ Architecture
 
 To be described
 
+Online status
+=============
+
+Each Http request to the server will update the user's latest activity time.
+
+If a certain Http request is automated and shouldn't be interpreted as a user being online then this Http request URL should contain `bot=✓` parameter.
+
+This works for GET requests, and I suppose it would work for POST requests too.
+
 To do
 ====================
-
-message_decoder.on('error') - слать в message_encoder() сообщение какое-нибудь с ошибкой
-это происходит на стороне log server'а, поэтому должно писаться в логи
-
-
-
-
-если в запросе параметр bot=✓, то не делать record_activity в /verify-token
-
-
-
-
-при обновлении страницы 401 (Ctrl + R) - если пользователь появился залогиненный, то автоматически перенаправлять на requested url
-
-
 
 сделать статические страницы (nginx) для status 500 (как web server, так и page server) и 503, 401, 403, 404
 

@@ -113,7 +113,7 @@ api.post('/register', async function({ name, email, password })
 	return { id }
 })
 
-api.post('/authenticate', async function({}, { user, authentication_token_id, ip })
+api.post('/authenticate', async function({}, { user })
 {
 	// console.log('*** authenticate')
 
@@ -129,9 +129,6 @@ api.post('/authenticate', async function({}, { user, authentication_token_id, ip
 	{
 		return
 	}
-
-	// update this authentication token's last access IP and time
-	store.record_access(user, authentication_token_id, ip)
 
 	return public_user(user)
 })
@@ -152,7 +149,7 @@ api.post('/sign-out', async function({}, { destroy_cookie, user, authentication_
 	destroy_cookie('authentication')
 })
 
-api.get('/validate-token', async function({}, { authentication_token_id, user })
+api.get('/validate-token', async function({ bot }, { ip, authentication_token_id, user })
 {
 	if (!user)
 	{
@@ -164,6 +161,13 @@ api.get('/validate-token', async function({}, { authentication_token_id, user })
 	if (!token)
 	{
 		return { valid: false }
+	}
+
+	// if it's not an automated Http request,
+	// then update this authentication token's last access IP and time
+	if (!bot)
+	{
+		store.record_access(user, authentication_token_id, ip)
 	}
 
 	return { valid: true }
