@@ -210,6 +210,11 @@ message_decoder.on('error') - слать в message_encoder() сообщение
 
 
 
+если в запросе параметр bot=✓, то не делать record_activity в /verify-token
+
+
+
+
 при обновлении страницы 401 (Ctrl + R) - если пользователь появился залогиненный, то автоматически перенаправлять на requested url
 
 

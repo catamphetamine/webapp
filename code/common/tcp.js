@@ -52,7 +52,7 @@ Message_decoder.prototype._transform = function(text, encoding, callback)
 		return callback()
 	}
 
-	const encoded_messages = text.substring(0, last_delimiter_index)
+	const encoded_messages = this.incomplete_message + text.substring(0, last_delimiter_index)
 	this.incomplete_message = text.substring(last_delimiter_index + 1)
 
 	for (let message of encoded_messages.split(message_delimiter))
