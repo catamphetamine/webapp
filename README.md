@@ -26,61 +26,49 @@ Quick Start
 * `npm install`
 * `npm run dev`
 * wait for it to finish the build (green stats will appear in the terminal, and it will say "Now go to http://127.0.0.1:3000")
-* go to `http://localhost:3000`
+* go to `http://127.0.0.1:3000`
 * interact with the development version of the web application
 * `Ctrl + C`
 * `npm run production`
 * wait a bit for Webpack to finish the build (green stats will appear in the terminal, plus some `node.js` server running commands)
-* go to `http://localhost:3000`
+* go to `http://127.0.0.1:3000`
 * interact with the production version of the web application
 
 Installation
-==========
+============
 
+```sh
 npm install
+```
 
-Optionally you may want to install ImageMagic for image upload to work
+Configuration
+=============
 
-https://github.com/elad/node-imagemagick-native#installation-windows
+One can configure this application through creation of `configuration.js` file in the root folder (use `configuration.defaults.js` file as a reference).
 
-http://www.imagemagick.org/script/binary-releases.php
+All the options set in that file will overwrite the corresponding options set in `configuration.defaults.js` file.
 
-Optionally you may want to install Redis (can be used for user session storage instead of memory storage)
+Running (in development)
+========================
 
-https://github.com/MSOpenTech/redis/releases
-
-Optionally you may want to install MongoDB (can be used to store logs)
-
-// sudo npm instal --global pm2
-
-Running (development)
-=====================
-
-(If you have Redis and ImageMagic installed, you may want to set `demo: false` flag in your `configuration.js`)
-
+```sh
 npm run dev
+```
 
-(nodemon has a bug when starting several nodemon processes in parallel fails; if this command fails - try to run it several times; eventually it will work)
-
-After it finishes loading go to:
-
-http://localhost:3000
+After it finishes loading go to `http://localhost:3000`
 
 (the web page will refresh automatically when you save your changes)
 
-Running (production)
-=====================
+localhost vs 127.0.0.1
+======================
 
-(If you have Redis and ImageMagic installed, you may want to set `demo: false` flag in your `configuration.js`)
+On my Windows machine in Google Chrome I get very slow Ajax requests.
 
-Build the project with Webpack and run the web server:
+That's a strange bug related to Windows and Google Chrome [discussed on StackOverflow](http://stackoverflow.com/questions/28762402/ajax-query-weird-delay-between-dns-lookup-and-initial-connection-on-chrome-but-n/35187876)
 
-npm run production
+To workaround this bug I'm using `127.0.0.1` instead of `localhost` in the web browser.
 
-Next go to:
-
-http://localhost:3000
-
+<!-- 
 Running in production (to be done)
 ====================
 
@@ -111,6 +99,7 @@ pm2 monit
 pm2 logs webapp
 
 Возможна кластеризация, безостановочное самообновление и т.п.
+ -->
 
 <!-- Redis
 =====
@@ -138,18 +127,86 @@ Security
 
 The application should be run as an unprivileged user.
 
-When switching to TLS all cookies should be reset ({ secure: true } option will be set on them automatically upon Https detection).
+When switching to TLS all cookies should be reset (`{ secure: true }` option will be set on them automatically upon Https detection).
+
+Image Server
+============
+
+In order to be able to upload pictures ImageMagic is required to be installed
+
+https://github.com/elad/node-imagemagick-native#installation-windows
+
+http://www.imagemagick.org/script/binary-releases.php
+
+<!-- Then it should be configured in your `configuration.js` file
+
+```javascript
+imagemagic: true
+``` -->
+
+Redis
+=====
+
+This application can run in demo mode without Redis being installed.
+
+If you want this application make use of Redis then you should install it
+
+https://github.com/MSOpenTech/redis/releases
+
+and configure it in your `configuration.js` file
+
+```javascript
+redis:
+{
+  host: ...,
+  port: ...,
+  password: ... // is optional
+}
+``` 
+
+MongoDB
+=======
+
+This application can run in demo mode without MongoDB being installed.
+
+If you want this application make use of MongoDB then you should install it and configure it in your `configuration.js` file
+
+```javascript
+mongodb:
+{
+  host: ...,
+  port: ...,
+  password: ... // is optional
+}
+``` 
+
+PostgreSQL
+==========
+
+This application can run in demo mode without PostgreSQL being installed.
+
+If you want this application make use of PostgreSQL then you should install it and configure it in your `configuration.js` file
+
+```javascript
+postgresql:
+{
+  host: ...,
+  port: ...,
+  password: ... // is optional
+}
+``` 
 
 Architecture
 ============
 
 To be described
 
-Сделать
+To do
 ====================
 
-медленно работает
-мб шлётся много /authenticate
+message_decoder.on('error') - слать в message_encoder() сообщение какое-нибудь с ошибкой
+это происходит на стороне log server'а, поэтому должно писаться в логи
+
 
 
 
@@ -163,11 +220,7 @@ To be described
 
 
 
-
-
-
-
-сделать какую-нибудь глобальную крутилку в оверлее на время роутинга (показывать и скрывать - по соответствующим событиям Redux-router'а)
+сделать какую-нибудь глобальную крутилку в оверлее на время роутинга (показывать и скрывать - по соответствующим событиям Redux-router'а, анимировать opacity с делеем)
 
 
 
@@ -217,6 +270,13 @@ To be described
 
 
 
+
+
+
+
+
+// bcrypt работает медленно, мб заменить её на что-нибудь.
+// может быть уже есть какая-то новая альтернатива bcrypt'у.
 
 
 

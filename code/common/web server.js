@@ -23,8 +23,6 @@ import jwt from 'jsonwebtoken'
 
 import http_proxy from 'http-proxy'
 
-let proxy
-
 import body_parser   from 'koa-bodyparser'
 import mount         from 'koa-mount'
 import graphql_http  from 'koa-graphql'
@@ -50,7 +48,7 @@ import http_client from './http'
 //
 // options:
 //
-// compress            - tar/gz response data
+// compress            - enables tar/gz compression of Http response data
 //
 // extract_locale      - extracts locale from Http Request headers 
 //                       and places it into this.locale
@@ -58,6 +56,7 @@ import http_client from './http'
 // session             - tracks user session (this.session)
 //
 // authentication      - uses a JWT token as a means of user authentication
+//                       (should be a function transforming token payload into user info)
 //
 // parse_post_requests - parse Http Post requests body
 //
@@ -68,6 +67,8 @@ import http_client from './http'
 //
 // csrf                - enables protection against Cross Site Request Forgery attacks
 //                       (pending)
+//
+// secret              - gives access to app.keys[0] when using routing feature
 //
 // returns an object with properties:
 //
@@ -152,8 +153,17 @@ export default function web_server(options = {})
 
 		try
 		{
+			// // measure Http request processing time
+			// const key = `${this.host}${this.url}`
+
+			// // started processing Http request
+			// console.time(key)
+
 			// try to respond to this Http request
 			yield next
+
+			// // finished processing Http request
+			// console.timeEnd(key)
 		}
 		catch (error)
 		{
@@ -256,6 +266,9 @@ export default function web_server(options = {})
 			})
 		}
 
+		// takes some milliseconds to finish
+		// because it validates the token via an Http request
+		// to the authentication service
 		async function authenticate()
 		{
 			const { token, error } = get_jwt_token(this)
@@ -320,6 +333,10 @@ export default function web_server(options = {})
 					this.validating_jwt_id = validate_token(token)
 				}
 
+				// takes some milliseconds to finish
+				//
+				// validates the token via an Http request
+				// to the authentication service
 				const is_valid = (await this.validating_jwt_id).valid
 
 				delete this.validating_jwt_id
@@ -336,22 +353,15 @@ export default function web_server(options = {})
 			this.user = options.authentication(payload)
 			this.user.id = user_id
 			
-			// for (let key of Object.keys(payload))
-			// {
-			// 	if
-			// 	(
-			// 		key !== 'iss' // Issuer
-			// 		&& key !== 'sub' // Subject
-			// 		&& key !== 'aud' // Audience
-			// 		&& key !== 'exp' // Expiration time
-			// 		&& key !== 'nbf' // Not before
-			// 		&& key !== 'iat' // Issued at 
-			// 		&& key !== 'jti' // JWT ID
-			// 	)
-			// 	{
-			// 		this.user[key] = payload[key]
-			// 	}
-			// }
+			// payload fields:
+			//
+			// 'iss' // Issuer
+			// 'sub' // Subject
+			// 'aud' // Audience
+			// 'exp' // Expiration time
+			// 'nbf' // Not before
+			// 'iat' // Issued at 
+			// 'jti' // JWT ID
 
 			this.token_data = payload
 
@@ -519,10 +529,9 @@ export default function web_server(options = {})
 
 						user                    : this.user,
 						authentication_error    : this.authentication_error,
-						authentication_token    : this.jwt,
 						authentication_token_id : this.jwt_id,
 
-						keys : web.keys
+						secret : options.secret ? web.keys[0] : undefined
 					})
 
 					// http://habrahabr.ru/company/yandex/blog/265569/
@@ -569,6 +578,9 @@ export default function web_server(options = {})
 		web.use(router.routes()).use(router.allowedMethods())
 	}
 
+	// active Http proxy servers
+	const proxies = []
+
 	// server shutting down flag
 	let shut_down = false
 
@@ -594,10 +606,7 @@ export default function web_server(options = {})
 		const pending = []
 
 		// shut down http proxy
-		if (proxy)
-		{
-			pending.push(proxy.closeAsync())
-		}
+		proxies.forEach(proxy => pending.push(proxy.closeAsync()))
 
 		// Stops the server from accepting new connections and keeps existing connections. 
 		//
@@ -724,25 +733,51 @@ export default function web_server(options = {})
 	// can proxy http requests
 	result.proxy = (from, to) =>
 	{
-		proxy = http_proxy.createProxyServer({})
+		if (!exists(to))
+		{
+			to = from
+			from = undefined
+		}
 
+		const proxy = http_proxy.createProxyServer({})
+		proxies.push(proxy)
+
+		// proxy.closeAsync() is used when shutting down the web server
 		Promise.promisifyAll(proxy)
 
 		function proxy_middleware(to)
 		{
 			return function*(next)
 			{
-				yield proxy.webAsync(this.req, this.res, { target: to })
+				const promise = new Promise((resolve, reject) =>
+				{
+					this.res.on('close', () =>
+					{
+						reject()
+					})
+
+					this.res.on('finish', () =>
+					{
+						resolve()
+					})
+				})
+
+				// proxy.webAsync() won't work here
+				// https://github.com/nodejitsu/node-http-proxy/issues/951
+				proxy.web(this.req, this.res, { target: to })
+
+				// console.time(`proxy to ${to}`)
+				yield promise
+				// console.timeEnd(`proxy to ${to}`)
 			}
 		}
 
-		if (exists(to))
+		if (from)
 		{
 			web.use(mount(from, proxy_middleware(to)))
 		}
 		else
 		{
-			to = from
 			web.use(proxy_middleware(to))
 		}
 	}

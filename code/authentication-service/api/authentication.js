@@ -25,7 +25,7 @@ function generate_jwt_id()
 	return uid.sync(24)
 }
 
-api.post('/sign-in', async function({ email, password }, { ip, set_cookie, keys })
+api.post('/sign-in', async function({ email, password }, { ip, set_cookie, secret })
 {
 	const user = await store.find_user_by_email(email)
 
@@ -41,10 +41,16 @@ api.post('/sign-in', async function({ email, password }, { ip, set_cookie, keys 
 		throw new Errors.Generic(`Wrong password`) 
 	}
 
+	// hashing a password is a CPU-intensive lengthy operation.
+	// takes about 60 milliseconds on my machine.
+	//
+	// maybe could be offloaded from node.js 
+	// to some another multithreaded backend.
+	//
 	const jwt_id = store.generate_unique_jwt_id(user)
 
 	const token = jwt.sign(configuration.authentication_token_payload.write(user) || {},
-	keys[0],
+	secret,
 	{
 		subject : user.id,
 		jwtid   : jwt_id
@@ -83,6 +89,12 @@ api.post('/register', async function({ name, email, password })
 		throw new Errors.Generic(`User is already registered for this email`)
 	}
 
+	// hashing a password is a CPU-intensive lengthy operation.
+	// takes about 60 milliseconds on my machine.
+	//
+	// maybe could be offloaded from node.js 
+	// to some another multithreaded backend.
+	//
 	password = await hash_password(password)
 
 	const id = store.create_user
