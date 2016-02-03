@@ -34,7 +34,7 @@ const messages = defineMessages
 	dispatch => bind_action_creators({ get_log }, dispatch)
 )
 @international()
-export default class Page extends Component
+export default class Log extends Component
 {
 	static propTypes =
 	{
@@ -53,7 +53,7 @@ export default class Page extends Component
 		(
 			<div>
 				{title("Log")}
-				
+
 				<section className="content">
 					<table>
 						<thead>

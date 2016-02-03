@@ -21,7 +21,7 @@ const messages = defineMessages
 	store => ({ })
 )
 @international()
-export default class Page extends Component
+export default class Home extends Component
 {
 	render()
 	{

@@ -1,4 +1,4 @@
-export default function(error, { url, redirect })
+export default function(error, { url, redirect, proceed })
 {
 	// `url` will be passed as a Url parameter
 	const request = encodeURIComponent(url)
@@ -16,7 +16,7 @@ export default function(error, { url, redirect })
 	}
 
 	// log the error if running on the server side
-	if (log)
+	if (_server_)
 	{
 		log.error(`Rendering error while fetching url "${url}"`)
 		log.error(error)

@@ -40,7 +40,7 @@ export default
 	'log.entry.message' : 'текст',
 
 	'unauthenticated.header' : 'Войдите, чтобы посмотреть эту страницу',
-	'unauthorized.header'    : 'У вас нет доступа к этой странице',
+	'unauthorized.header'    : 'У вас нет доступа к странице',
 	'not_found.header'       : 'Страница не найдена',
-	'error_page.header'      : 'Не удалось загрузить эту страницу'
+	'error_page.header'      : 'Не удалось загрузить страницу'
 }

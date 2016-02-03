@@ -3,7 +3,7 @@ import on_error         from '../error handler'
 
 export default function(options)
 {
-	const { store, reload } = create_store(() => require('../model'), { ...options, on_error })
+	const { store, reload } = create_store(() => require('../model'), { ...options, on_preload_error: on_error })
 
 	// (for Webpack users only)
 	//

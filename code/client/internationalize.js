@@ -8,7 +8,7 @@ export default function()
 	{
 		Wrapped = injectIntl(Wrapped)
 
-		class Wrapper extends Component
+		class International extends Component
 		{
 			render()
 			{
@@ -16,6 +16,13 @@ export default function()
 			}
 		}
 
-		return hoist_statics(Wrapper, Wrapped)
+		International.displayName = `International(${get_display_name(Wrapped)})`
+
+		return hoist_statics(International, Wrapped)
 	}
+}
+
+function get_display_name(Wrapped)
+{
+	return Wrapped.displayName || Wrapped.name || 'Component'
 }

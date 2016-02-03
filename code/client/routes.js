@@ -73,7 +73,7 @@ export default function(store)
 				<Route path="account" component={authorize(Account)}/>
 			</Route>
 
-			<Route path="logs" component={authorize(Log, user => user.role === 'administrator')}/>
+			<Route path="logs" component={authorize(Log, 'administrator')}/>
 
 			<Route path="sign-in" component={Sign_in}/>
 

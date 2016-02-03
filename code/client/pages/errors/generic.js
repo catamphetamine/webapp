@@ -7,6 +7,8 @@ import styler from 'react-styling'
 import { defineMessages } from 'react-intl'
 import international      from '../../internationalize'
 
+import Uri                from '../../tools/uri'
+
 const messages = defineMessages
 ({
 	header:
@@ -18,18 +20,20 @@ const messages = defineMessages
 })
 
 @international()
-export default class Page extends Component
+export default class Generic_error extends Component
 {
 	render()
 	{
 		const markup =
 		(
-			<section className="content">
+			<section className="content" style={style.content}>
 				{title("Error")}
 
 				<h1 style={style.header}>
 					{this.props.translate(messages.header)}
 				</h1>
+
+				<a style={style.link} href={this.props.location.query.request}>{new Uri(this.props.location.query.request).to_relative_url()}</a>
 			</section>
 		)
 
@@ -39,6 +43,14 @@ export default class Page extends Component
 
 const style = styler
 `
-	header
-		text-align: center
+	content
+		text-align : center
+
+	link
+		display    : inline-block
+		margin-top : 2em
+
+		max-width     : 100%
+		text-overflow : ellipsis
+		overflow      : hidden
 `

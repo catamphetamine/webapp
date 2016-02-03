@@ -23,7 +23,7 @@ const messages = defineMessages
 	store => ({ })
 )
 @international()
-export default class Page extends Component
+export default class Sign_in extends Component
 {
 	render()
 	{

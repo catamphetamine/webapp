@@ -79,7 +79,7 @@ export default class Uri
 		
 		for (let key of Object.keys(this.parameters))
 		{
-			const decoded_key = decodeURIComponent(key)
+			const decoded_key   = decodeURIComponent(key)
 			const decoded_value = decodeURIComponent(this.parameters[key])
 
 			this.parameters[decoded_key] = decoded_value

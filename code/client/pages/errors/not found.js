@@ -18,7 +18,7 @@ const messages = defineMessages
 })
 
 @international()
-export default class Page extends Component
+export default class Page_not_found extends Component
 {
 	render()
 	{

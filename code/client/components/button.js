@@ -60,6 +60,8 @@ const style = styler
 		width  : 1em
 		height : 1em
 
+		pointer-events : none
+
 		transition : opacity 300ms ease-out
 
 		&show
