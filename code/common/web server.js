@@ -753,7 +753,7 @@ export default function web_server(options = {})
 				{
 					this.res.on('close', () =>
 					{
-						reject()
+						reject(new Error(`Http response closed while proxying ${this.url} to ${to}`))
 					})
 
 					this.res.on('finish', () =>
@@ -766,9 +766,7 @@ export default function web_server(options = {})
 				// https://github.com/nodejitsu/node-http-proxy/issues/951
 				proxy.web(this.req, this.res, { target: to })
 
-				// console.time(`proxy to ${to}`)
 				yield promise
-				// console.timeEnd(`proxy to ${to}`)
 			}
 		}
 
