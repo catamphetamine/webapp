@@ -1,16 +1,9 @@
-// This is an example of a simple REST Api implementation.
-//
-// For debugging you can use "Advanced REST Client" for Google Chrome:
-// https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo
-
-import bcrypt from 'bcrypt'
 import jwt    from 'jsonwebtoken'
 import uid    from 'uid-safe'
 import moment from 'moment'
 
-Promise.promisifyAll(bcrypt)
-
 import redis  from 'redis'
+import http   from '../../common/http'
 
 Promise.promisifyAll(redis)
 
@@ -233,15 +226,14 @@ function public_user(user)
 	return result
 }
 
-function check_password(password, hashed_password)
+async function check_password(password, hashed_password)
 {
-	return bcrypt.compareAsync(password, hashed_password)
+	return (await http.get(`${address_book.password_service}/check`, { password, hashed_password })).result
 }
 
 async function hash_password(password)
 {
-	const salt = await bcrypt.genSaltAsync(10)
-	return await bcrypt.hashAsync(password, salt)
+	return (await http.get(`${address_book.password_service}/hash`, { password })).hash
 }
 
 class Memory_store

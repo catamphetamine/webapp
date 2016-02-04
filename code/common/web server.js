@@ -252,20 +252,11 @@ export default function web_server(options = {})
 		function validate_token(jwt, bot)
 		{
 			return http_client.get
-			({
-				host : configuration.authentication_service.http.host,
-				port : configuration.authentication_service.http.port,
-				path : validate_token_url
-			},
-			{
-				bot
-			},
-			{
-				headers:
-				{
-					Authorization: `Bearer ${jwt}`
-				}
-			})
+			(
+				`${address_book.authentication_service}${validate_token_url}`,
+				{ bot },
+				{ headers: { Authorization: `Bearer ${jwt}` } }
+			)
 		}
 
 		// takes some milliseconds to finish
@@ -533,7 +524,9 @@ export default function web_server(options = {})
 						authentication_error    : this.authentication_error,
 						authentication_token_id : this.jwt_id,
 
-						secret : options.secret ? web.keys[0] : undefined
+						secret : options.secret ? web.keys[0] : undefined,
+
+						http : http_client
 					})
 
 					// http://habrahabr.ru/company/yandex/blog/265569/
@@ -769,7 +762,7 @@ export default function web_server(options = {})
 					// https://github.com/nodejitsu/node-http-proxy/issues/951
 					proxy.web(this.req, this.res, { target: to }, reject)
 				})
-				
+
 				yield promise
 			}
 		}

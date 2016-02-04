@@ -24,6 +24,14 @@ module.exports =
 			port: 3006
 		}
 	},
+	password_service:
+	{
+		http: 
+		{
+			host: '127.0.0.1',
+			port: 3007
+		}
+	},
 	image_service:
 	{
 		http: 

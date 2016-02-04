@@ -55,7 +55,7 @@ Running (in development)
 npm run dev
 ```
 
-After it finishes loading go to `http://localhost:3000`
+After it finishes loading go to `http://127.0.0.1:3000`
 
 (the web page will refresh automatically when you save your changes)
 
@@ -218,22 +218,6 @@ To do
 
 
 
-hashing-service
-
-/hash/bcrypt
-/check/bcrypt
-
-или sha-256 vs bcrypt
-
-
-
-
-в мониторинге - логгировать время каждого запроса (оборачивать yield next())
-показывать статус бекапа базы данных
-
-
-
-
 сделать какую-нибудь глобальную крутилку в оверлее на время роутинга (показывать и скрывать - по соответствующим событиям Redux-router'а, анимировать opacity с делеем)
 
 
@@ -246,6 +230,14 @@ hashing-service
 
 
 хранить пользователей в mongodb (и токены)
+
+
+
+
+
+мониторинг - показывать в меню только для роли 'administrator'
+в мониторинге - логгировать время каждого запроса (оборачивать yield next())
+показывать статус бекапа базы данных
 
 
 

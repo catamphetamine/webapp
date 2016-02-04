@@ -196,7 +196,15 @@ export default class Authentication extends Component
 
 	componentDidMount()
 	{
-		setTimeout(() => this.focus(), 0)
+		setTimeout(() =>
+		{
+			// if the page hasn't been switched yet
+			if (this.refs.email)
+			{
+				this.focus()
+			}
+		}, 
+		0)
 	}
 
 	render()

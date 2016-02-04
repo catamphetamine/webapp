@@ -24,3 +24,22 @@ require('bluebird').promisifyAll(require('fs-extra'))
 
 global.configuration = require('./configuration')
 // console.log('Configuration:', configuration)
+
+global.address_book = {}
+
+for (var key of Object.keys(global.configuration))
+{
+	if (!key.ends_with('_server') && !key.ends_with('_service'))
+	{
+		continue
+	}
+
+	var value = global.configuration[key]
+
+	if (is_object(value) && is_object(value.http) && value.http.host && value.http.port)
+	{
+		global.address_book[key] = `http://${value.http.host}:${value.http.port}`
+	}
+}
+
+// console.log('Address book', global.address_book)
