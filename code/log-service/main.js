@@ -25,7 +25,7 @@ server.on('session', messenger =>
 {
 	messenger.on('error', error => log.error(error))
 
-	messenger.input.on('data', function(message)
+	messenger.on('message', function(message)
 	{
 		messages.add(message)
 	})

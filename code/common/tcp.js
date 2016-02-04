@@ -148,8 +148,6 @@ class Messenger extends EventEmitter
 
 		util.inherits(Stream, stream.Transform)
 
-		const messenger = this
-
 		Stream.prototype._transform = function(object, encoding, callback)
 		{
 			if (this._writableState.getBuffer().length > 1000)
@@ -157,11 +155,17 @@ class Messenger extends EventEmitter
 				return log.info(`Dropping message due to buffer overflow`, object)
 			}
 
-			this.push(object)
+			this.push(writable_stream.messenger.wrap(object))
 			callback()
 		}
 
-		this.stream = new Stream()
+		const writable_stream = new Stream()
+
+		// circular reference,
+		// make sure it is disposed in some kind of dispose() method
+		// to prevent memory leaks
+		this.stream = writable_stream
+		this.stream.messenger = this
 	}
 
 	reset()
@@ -179,7 +183,14 @@ class Messenger extends EventEmitter
 		this.output = null
 	}
 
-	send(data, _messenger_id = this.next_message_id())
+	wrap(data, _messenger_id = this.next_message_id())
+	{
+		const message = { _messenger_id, data }
+
+		return message
+	}
+
+	send(data, { id, respond })
 	{
 		if (!this.output)
 		{
@@ -191,14 +202,20 @@ class Messenger extends EventEmitter
 			throw new Error('The stream has been closed')
 		}
 
-		const message = 
-		{
-			_messenger_id,
-			data
-		}
+		// the message wrapper
+		const message = this.wrap(data, id)
 
+		// send the message
 		this.output.write(message)
 
+		// if no response to the message is required,
+		// then exit
+		if (!respond)
+		{
+			return
+		}
+
+		// wait for response
 		const promise = new Promise((resolve, reject) =>
 		{
 			this.promises[message._messenger_id] = 
@@ -208,9 +225,15 @@ class Messenger extends EventEmitter
 			}
 		})
 
+		// start response timeout timer
 		this.timeouts[message._messenger_id] = setTimeout(() => this.message_timeout(message._messenger_id), Messenger.message_timeout * 1000)
 
 		return promise
+	}
+
+	request(data, options = {})
+	{
+		return this.send(data, { ...options, respond: true })
 	}
 
 	next_message_id()
@@ -225,7 +248,7 @@ class Messenger extends EventEmitter
 
 	closed()
 	{
-		log.debug(`Messenger connection closed`)
+		log.debug(`Messenger connection closed (will try to reconnect)`)
 
 		this.reject_promises()
 
@@ -250,6 +273,15 @@ class Messenger extends EventEmitter
 
 	ended(error)
 	{
+		log.debug(`Messenger exits`)
+
+		// close the Writable stream
+		this.stream.end()
+
+		// dispose the Writable stream reference
+		// to prevent memory leak
+		this.stream.messenger = null
+
 		this.reject_promises()
 
 		this.reset()
@@ -265,6 +297,8 @@ class Messenger extends EventEmitter
 
 	incoming(message)
 	{
+		// if this not a Messenger message, then exit
+		// (for example, if the output stream was used as a raw stream)
 		if (!message._messenger_id)
 		{
 			return
@@ -277,7 +311,7 @@ class Messenger extends EventEmitter
 			// log.info(`Got reply for an unknown message`, message.data)
 			return this.emit('message', message.data, function reply(data)
 			{
-				this.send(data, message._messenger_id)
+				this.send(data, { id: message._messenger_id })
 			}
 			.bind(this))
 		}

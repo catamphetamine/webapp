@@ -762,12 +762,14 @@ export default function web_server(options = {})
 					{
 						resolve()
 					})
+
+					// proxy.webAsync() won't work here,
+					// because the last parameter is not a "callback",
+					// it's just an error handler.
+					// https://github.com/nodejitsu/node-http-proxy/issues/951
+					proxy.web(this.req, this.res, { target: to }, reject)
 				})
-
-				// proxy.webAsync() won't work here
-				// https://github.com/nodejitsu/node-http-proxy/issues/951
-				proxy.web(this.req, this.res, { target: to })
-
+				
 				yield promise
 			}
 		}
