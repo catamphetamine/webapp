@@ -68,6 +68,19 @@ That's a strange bug related to Windows and Google Chrome [discussed on StackOve
 
 To workaround this bug I'm using `127.0.0.1` instead of `localhost` in the web browser.
 
+Architecture
+============
+
+The application consists of microservices
+
+  * `web-server` is the gateway (serves static files and proxies to all the other microservices)
+  * `page-server` renders web pages on the server side (using [react-isomorphic-render](https://github.com/halt-hammerzeit/react-isomorphic-render))
+  * `authentication-service` handles user authentication (sign in, sign out, register) and auditing (keeps a list of user sessions and traces latest activity time)
+  * `password-service` performs password hashing and checking (these operations are lengthy and CPU-intensive)
+  * `api-service` provides some generic Http REST Api
+  * `image-server` (will be split into `storage-server` and `image-service`) resized uploaded images
+  * `log-service` aggregates logs from all the other services
+
 <!-- 
 Running in production (to be done)
 ====================
@@ -127,7 +140,7 @@ Security
 
 The application should be run as an unprivileged user.
 
-When switching to TLS all cookies should be reset (`{ secure: true }` option will be set on them automatically upon Https detection).
+When switching to TLS will be made all cookies should be recreated (`{ secure: true }` option will be set on them automatically upon Https detection when they are recreated).
 
 Image Server
 ============
@@ -195,19 +208,6 @@ postgresql:
   password: ... // is optional
 }
 ``` 
-
-Architecture
-============
-
-The application consists of microservices
-
-  * `web-server` is the gateway (serves static files and proxies to all the other microservices)
-  * `page-server` renders web pages on the server side
-  * `authentication-service` handles user authentication (sign in, sign out, register)
-  * `password-service` performs password hashing and checking (these operations are lengthy and CPU-intensive)
-  * `api-service` provides some generic Http REST Api
-  * `image-server` (will be split into `storage-server` and `image-service`) resized uploaded images
-  * `log-service` aggregates logs from all the other services
 
 Online status
 =============
