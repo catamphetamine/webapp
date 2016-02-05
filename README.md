@@ -199,7 +199,15 @@ postgresql:
 Architecture
 ============
 
-To be described
+The application consists of microservices
+
+  * `web-server` is the gateway (serves static files and proxies to all the other microservices)
+  * `page-server` renders web pages on the server side
+  * `authentication-service` handles user authentication (sign in, sign out, register)
+  * `password-service` performs password hashing and checking (these operations are lengthy and CPU-intensive)
+  * `api-service` provides some generic Http REST Api
+  * `image-server` (will be split into `storage-server` and `image-service`) resized uploaded images
+  * `log-service` aggregates logs from all the other services
 
 Online status
 =============
