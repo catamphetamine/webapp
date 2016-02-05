@@ -10,12 +10,7 @@ import { Link, IndexLink } from 'react-router'
 import { defineMessages }  from 'react-intl'
 import { head }            from 'react-isomorphic-render'
 
-// использование: @Radium перед классом компонента
-// Radium = require 'radium'
-
 // import autoprefixer from 'autoprefixer'
-
-import { logout } from '../actions/authentication'
 
 import international   from '../internationalize'
 
@@ -80,11 +75,6 @@ const messages = defineMessages
 ({
 	blocking: (dispatch, get_model) => dispatch(authenticate())
 })
-@connect
-(
-	store => ({ }),
-	dispatch => bind_action_creators({ logout }, dispatch)
-)
 @international()
 export default class Layout extends Component
 {
@@ -98,43 +88,7 @@ export default class Layout extends Component
 
 	static propTypes =
 	{
-		children : PropTypes.object.isRequired,
-		user     : PropTypes.object,
-		logout   : PropTypes.func.isRequired
-	}
-
-	static contextTypes =
-	{
-		store   : PropTypes.object.isRequired
-	}
-
-	componentDidMount()
-	{
-		// window.client_side_routing = true
-	}
-
-	componentWillUnmount()
-	{
-	}
-
-	componentWillReceiveProps(nextProps)
-	{
-		if (!this.props.user && nextProps.user)
-		{
-			// login
-			this.context.router.transitionTo('/login_success')
-		} 
-		else if (this.props.user && !nextProps.user)
-		{
-			// logout
-			this.context.router.transitionTo('/')
-		}
-	}
-
-	handle_logout(event)
-	{
-		event.preventDefault()
-		this.props.logout()
+		children : PropTypes.node.isRequired
 	}
 
 	render()
@@ -178,15 +132,6 @@ export default class Layout extends Component
 		}
 
 		// render the page
-
-		const { user } = this.props
-
-		// <ul className="nav navbar-nav">
-		// 	{!user && <li><Link to="/login">Login</Link></li>}
-		// 	{user && <li><a href="/logout" onClick={::this.handle_logout}>Logout</a></li>}
-		// </ul>
-
-		// {user && <p>Logged in as <strong>{user.name}</strong>.</p>}
 
 		const menu_items =
 		[{
@@ -295,9 +240,4 @@ const style = styler
 		active
 			cursor : default
 			color  : inherit
-
-	// locale_switcher
-	// 	position : absolute
-	// 	right    : 0
-	// 	top      : 0
 `
