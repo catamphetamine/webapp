@@ -151,7 +151,7 @@
     "development-image-service-delayed": "npm-run-all delay delay delay development-image-service",
     "development-web-server": "nodemon ./code/web-server/entry.js  --watch ./code/web-server --watch ./code/common",
     "development-web-server-delayed": "npm-run-all delay delay delay delay delay delay development-web-server",
-    "delay": "node ./code/sleep 400",
+    "delay": "node ./code/sleep 500",
     "development-server": "npm-run-all --parallel development-log-service development-authentication-service-delayed development-password-service-delayed development-api-service-delayed development-page-server-delayed development-image-service-delayed development-web-server-delayed",
     "production": "npm-run-all production-build-client production-server",
     "production-build-client": "npm-run-all update-schema production-build-client-webpack",

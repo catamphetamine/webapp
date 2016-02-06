@@ -48,7 +48,7 @@ const Home_queries =
 	// `
 }
 
-export default function(store)
+export default function() // (store)
 {
 	const routes =
 	(
