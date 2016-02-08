@@ -1,5 +1,6 @@
 // import {createFormReducer} from 'redux-form'
 
+export preload         from './preload'
 export settings        from './settings'
 export authentication  from './authentication'
 export locale          from './locale'

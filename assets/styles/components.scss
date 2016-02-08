@@ -531,3 +531,58 @@
 
 	color: $input-error-message-color;
 }
+
+.preloading
+{
+	position: fixed;
+
+	top    : 0;
+	left   : 0;
+	right  : 0;
+	bottom : 0;
+
+	// display: none; // breaks opacity transition
+	z-index: -1;
+
+	background-color: rgba(0, 0, 0, 0.1);
+
+	opacity          : 0;
+	transition       : opacity 100ms ease-out;
+	transition-delay : 0;
+
+	text-align: center;
+}
+
+.preloading-show
+{
+	// display : block;
+	z-index : 1;
+
+	opacity : 1;
+	cursor  : wait;
+
+	transition-duration : 140ms;
+	transition-delay    : 500ms;
+}
+
+.preloading-spinner-container
+{
+	display: inline-block;
+
+	position   : absolute;
+	top        : 50%;
+	margin-top : -1em;
+
+	padding       : 0.5em;
+	border-radius : 0.5em;
+
+	background: rgba(255, 255, 255, 0.8);
+
+	box-shadow: 0 0 0.1em rgba(0, 0, 0, 0.2);
+
+    line-height: 0;
+}
+
+.preloading .spinner
+{
+}

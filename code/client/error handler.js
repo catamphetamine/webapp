@@ -23,5 +23,12 @@ export default function(error, { url, redirect, proceed })
 	}
 
 	// some kind of server error happened
+
+	// prevent infinite recursion
+	if (url.starts_with('/error?'))
+	{
+		throw error
+	}
+
 	redirect(`/error?request=${request}`)
 }

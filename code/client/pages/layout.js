@@ -18,6 +18,7 @@ import Menu            from '../components/menu'
 import Menu_button     from '../components/menu button'
 import Locale_switcher from '../components/locale switcher'
 import Authentication  from '../components/authentication'
+import Preloading      from '../components/preloading'
 
 import { authenticate } from '../actions/authentication'
 
@@ -163,6 +164,9 @@ export default class Layout extends Component
 				{/*</nav>*/}
     
 				<div className="page" style={ this.state.show_menu ? merge(style.page, { transform: `translate3d(${this.state.menu_width}px, 0px, 0px)` }) : style.page }>
+					{/* "page is preloading" spinner */}
+					<Preloading/>
+
 					{/* header */}
 					<header>
 						{/* menu button for small screens */}
