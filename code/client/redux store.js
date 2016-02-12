@@ -1,9 +1,18 @@
 import { create_store } from 'react-isomorphic-render/redux'
 import on_error         from './helpers/error handler'
 
+import create_logger    from 'redux-logger'
+
 export default function(options)
 {
-	const { store, reload } = create_store(() => require('./model'), { ...options, on_preload_error: on_error })
+	const middleware = middleware =>
+	{
+		// enable Redux event logging here
+		// middleware.push(create_logger())
+		return middleware
+	}
+
+	const { store, reload } = create_store(() => require('./model'), { ...options, on_preload_error: on_error, middleware })
 
 	// (for Webpack users only)
 	//
