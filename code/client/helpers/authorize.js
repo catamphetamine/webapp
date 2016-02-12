@@ -4,8 +4,8 @@ import hoist_statics  from 'hoist-non-react-statics'
 import { connect }      from 'react-redux'
 import { replaceState } from 'redux-router'
 
-import Unauthenticated from './pages/errors/unauthenticated'
-import Unauthorized    from './pages/errors/unauthorized'
+import Unauthenticated from '../pages/errors/unauthenticated'
+import Unauthorized    from '../pages/errors/unauthorized'
 
 export default function(authorization)
 {

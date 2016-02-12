@@ -4,7 +4,7 @@ import { connect }                     from 'react-redux'
 import styler                          from 'react-styling'
 import { defineMessages }              from 'react-intl'
 
-import international from '../internationalize'
+import international from '../international/internationalize'
 
 const messages = defineMessages
 ({

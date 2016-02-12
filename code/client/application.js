@@ -6,7 +6,7 @@ import React          from 'react'
 import ReactDOM       from 'react-dom'
 
 import { render }     from 'react-isomorphic-render/redux'
-import create_store   from './redux/store'
+import create_store   from './redux store'
 import markup_wrapper from './markup wrapper'
 
 // include these assets in webpack build (styles, images)
@@ -29,7 +29,7 @@ inject_tap_event_plugin()
 // import ajax from './tools/ajax'
 // global.ajax = ajax
 
-import international from './international'
+import international from './international/loader'
 
 // load the Intl polyfill and its locale data before rendering the application
 international.load().then(() =>
@@ -64,5 +64,5 @@ international.load().then(() =>
 	.then(({ rerender }) => international.hot_reload(rerender))
 })
 
-// used in './international' for debug output
+// used in './international/loader' for debug output
 window.debug = (...parameters) => { console.log.bind(console)(parameters) }

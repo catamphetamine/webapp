@@ -62,7 +62,8 @@ var configuration =
 				loader: 'babel-loader',
 				query:
 				{
-					plugins: [path.resolve(root_folder, 'code/babel_relay_plugin')]
+					// currently Relay is not used in this project
+					plugins: [path.resolve(root_folder, 'code/relay/babel_relay_plugin')]
 				}
 			},
 			{

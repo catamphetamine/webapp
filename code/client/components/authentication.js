@@ -8,7 +8,7 @@ import styler      from 'react-styling'
 import { pushState } from 'redux-router'
 
 import { defineMessages } from 'react-intl'
-import international from '../internationalize'
+import international from '../international/internationalize'
 
 import Uri from '../tools/uri'
 

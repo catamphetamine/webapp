@@ -161,18 +161,18 @@ const international =
 			case 'ru':
 				return new Promise(resolve =>
 				{
-					require.ensure(['./international/ru'], require =>
+					require.ensure(['./translations/ru'], require =>
 					{
-						resolve(require('./international/ru'))
+						resolve(require('./translations/ru'))
 					})
 				})
 
 			default:
 				return new Promise(resolve =>
 				{
-					require.ensure(['./international/en'], require =>
+					require.ensure(['./translations/en'], require =>
 					{
-						resolve(require('./international/en'))
+						resolve(require('./translations/en'))
 					})
 				})
 		}
@@ -187,7 +187,7 @@ const international =
 		//
 		if (_development_ && module.hot)
 		{
-			module.hot.accept(require.resolve('./international/' + _locale + '.js'), function()
+			module.hot.accept(require.resolve('./translations/' + _locale + '.js'), function()
 			{
 				on_reload()
 			})

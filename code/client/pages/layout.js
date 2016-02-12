@@ -12,7 +12,7 @@ import { head }            from 'react-isomorphic-render'
 
 // import autoprefixer from 'autoprefixer'
 
-import international   from '../internationalize'
+import international   from '../international/internationalize'
 
 import Menu            from '../components/menu'
 import Menu_button     from '../components/menu button'

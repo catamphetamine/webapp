@@ -123,27 +123,32 @@ const javascript_loader = configuration.module.loaders.filter(loader =>
 
 // javascript_loader.query = babel_loader_query
 
-javascript_loader.query =
+if (!javascript_loader.query)
 {
-	plugins:
-	[
-		[
-			'react-transform',
-			{
-				transforms: 
-				[{
-					"transform" : "react-transform-catch-errors",
-					"imports"   : ["react", "redbox-react"]
-				},
-				{
-					transform : 'react-transform-hmr',
-					imports   : ['react'],
-					locals    : ['module']
-				}]
-			}
-		]
-	]
+	javascript_loader.query = {}
 }
+
+if (!javascript_loader.query.plugins)
+{
+	javascript_loader.query.plugins = []
+}
+
+javascript_loader.query.plugins = javascript_loader.query.plugins.concat
+([[
+	'react-transform',
+	{
+		transforms: 
+		[{
+			transform : 'react-transform-catch-errors',
+			imports   : ['react', 'redbox-react']
+		},
+		{
+			transform : 'react-transform-hmr',
+			imports   : ['react'],
+			locals    : ['module']
+		}]
+	}
+]])
 
 // javascript_loader.query = javascript_loader.query || {}
 

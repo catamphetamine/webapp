@@ -13,7 +13,7 @@ import Dropdown from './dropdown'
 import Spinner  from './spinner'
 
 import { defineMessages } from 'react-intl'
-import international from '../internationalize'
+import international from '../international/internationalize'
 
 import Uri from '../tools/uri'
 

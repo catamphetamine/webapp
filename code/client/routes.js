@@ -15,7 +15,6 @@ import Unauthenticated  from './pages/errors/unauthenticated'
 import Unauthorized     from './pages/errors/unauthorized'
 import Generic_error    from './pages/errors/generic'
 import Editor           from './pages/editor'
-import About            from './pages/about'
 import Home             from './pages/home'
 import Sign_in          from './pages/sign in'
 import Profile          from './pages/user/profile'
@@ -29,7 +28,7 @@ import Database_example from './pages/example/database example'
 import Log              from './pages/log'
 import Simple_graphQL_example  from './pages/example/simple graphql example'
 
-import authorization from './authorize'
+import authorization from './helpers/authorize'
 
 const authorize = (component, is_authorized) => authorization(is_authorized)(component)
 
@@ -55,7 +54,6 @@ export default function() // (store)
 		<Route path="/" component={Layout} queries={Layout_queries}>
 			<IndexRoute component={Home} queries={Home_queries}/>
 
-			{/*<Route path="about" component={About}/>*/}
 			<Route path="example" component={Example}>
 				<Route path="simple" component={Simple_example}/>
 				<Route path="database" component={Database_example}/>

@@ -5,11 +5,11 @@ import React from 'react'
 
 import webpage_server from 'react-isomorphic-render/page-server'
 
-import create_store   from '../client/redux/store'
+import create_store   from '../client/redux store'
 import create_routes  from '../client/routes'
 import markup_wrapper from '../client/markup wrapper'
 import html_assets    from '../client/html assets'
-import on_error       from '../client/error handler'
+import on_error       from '../client/helpers/error handler'
 
 import load_locale_data from './locale'
 

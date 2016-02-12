@@ -2,7 +2,7 @@
 
 import path from 'path'
 import fs from 'fs-extra'
-import { Schema } from '../../code/schema'
+import { Schema } from '../../code/relay/schema'
 import { graphql }  from 'graphql'
 import { introspectionQuery as introspection_query, printSchema as print_schema } from 'graphql/utilities'
 

@@ -1,7 +1,7 @@
 import fs   from 'fs'
 import path from 'path'
 
-const messages_path = 'code/client/international'
+const messages_path = 'code/client/international/translations'
 
 export default function(locale)
 {

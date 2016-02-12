@@ -11,7 +11,7 @@ import { preload }        from 'react-isomorphic-render/redux'
 import { get as get_log } from '../actions/log'
 import log_levels         from '../../common/log levels'
 
-import international      from '../internationalize'
+import international      from '../international/internationalize'
 
 const messages = defineMessages
 ({
