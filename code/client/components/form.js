@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 
 export default class Form extends Component
 {
-	state = {}
+	state = {};
 
 	static propTypes =
 	{
@@ -11,7 +11,7 @@ export default class Form extends Component
 		error     : PropTypes.any,
 		className : PropTypes.string,
 		style     : PropTypes.object
-	}
+	};
 
 	render()
 	{

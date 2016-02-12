@@ -6,7 +6,7 @@ import { inject } from './common'
 
 export default class Text_input extends Component
 {
-	state = {}
+	state = {};
 
 	static propTypes =
 	{
@@ -19,7 +19,7 @@ export default class Text_input extends Component
 		email       : PropTypes.bool,
 		password    : PropTypes.bool,
 		style       : PropTypes.object
-	}
+	};
 
 	constructor(props)
 	{

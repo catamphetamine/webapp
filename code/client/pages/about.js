@@ -25,7 +25,7 @@ export default class About extends Component
 		get_settings : PropTypes.func.isRequired,
 		settings     : PropTypes.object,
 		error        : PropTypes.object
-	}
+	};
 
 	// static contextTypes =
 	// {

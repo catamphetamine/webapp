@@ -8,19 +8,19 @@ import styler from 'react-styling'
 
 export default class Menu extends Component
 {
-	state = {}
+	state = {};
 
 	static propTypes = 
 	{
 		show         : PropTypes.bool,
 		toggle       : PropTypes.func,
 		update_width : PropTypes.func
-	}
+	};
 
 	static contextTypes =
 	{
 		history : React_router_prop_types.history
-	}
+	};
 
 	constructor(props)
 	{

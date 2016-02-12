@@ -11,7 +11,7 @@ export default class Switch extends Component
 		// label     : PropTypes.string.isRequired,
 		on_change : PropTypes.func.isRequired,
 		style     : PropTypes.object
-	}
+	};
 
 	render()
 	{

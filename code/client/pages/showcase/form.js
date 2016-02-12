@@ -27,7 +27,7 @@ export default class Form extends Component
 		checked        : true,
 		// selected: 'A',
 		// switched: true,
-	}
+	};
 
 	render()
 	{
@@ -46,7 +46,7 @@ export default class Form extends Component
 					You entered: {this.state.textarea_value}
 
 					<h2 style={style.form.label}>{'Select'}</h2>
-					<select style={style.form.select} value={this.state.select_value} onChange={this.on_selection_changed}>
+					<select style={style.form.select} value={this.state.select_value} onChange={::this.on_selection_changed}>
 						<option value="A">Apple</option>
 						<option value="B">Banana</option>
 						<option value="C">Cranberry</option>
@@ -102,6 +102,7 @@ export default class Form extends Component
 					<Spinner style={style.form.spinner}/>
 
 					<h2 style={style.form.label}>Date picker (part of Material UI)</h2>
+					<p><i>You may see a "React attempted to reuse markup in a container" warning in the console because of this 3rd party component</i></p>
 					<div className="date-picker">
 						<Date_picker style={style.form.date_picker} hintText="Portrait Dialog" autoOk={true} container="inline" textFieldStyle={style.form.date_picker.input} hintStyle={style.form.date_picker.hint} underlineShow={false}/>
 					</div>
@@ -112,7 +113,7 @@ export default class Form extends Component
 		return markup
 	}
 
-	on_selection_changed = event =>
+	on_selection_changed(event)
 	{
 		const value = event.target.value
     	this.setState({ select_value: value })

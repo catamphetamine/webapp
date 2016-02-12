@@ -36,7 +36,7 @@ import Button from '../../components/button'
 )
 export default class Page extends Component
 {
-	state = {}
+	state = {};
 
 	static propTypes =
 	{
@@ -51,12 +51,12 @@ export default class Page extends Component
 
 		uploading_picture       : PropTypes.bool,
 		uploading_picture_error : PropTypes.object
-	}
+	};
 
 	static contextTypes =
 	{
 		store : PropTypes.object.isRequired
-	}
+	};
 
 	constructor(props)
 	{

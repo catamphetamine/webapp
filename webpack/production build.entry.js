@@ -1,3 +1,3 @@
-require('babel-core/register')
+require('babel-register')
 
 module.exports = require(require('path').resolve(__dirname, 'production build'))

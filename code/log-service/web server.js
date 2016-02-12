@@ -3,7 +3,7 @@ import web_server from '../common/web server'
 const web = web_server
 ({
 	compress            : true,
-	authentication      : configuration.authentication_token_payload.read || () => ({}),
+	authentication      : configuration.authentication_token_payload.read || (() => ({})),
 	parse_post_requests : true,
 	routing             : true
 })

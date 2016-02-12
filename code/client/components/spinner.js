@@ -39,7 +39,7 @@ export default class Spinner extends Component
 		* The value of progress, only works in determinate mode.
 		*/
 		value: PropTypes.number
-	}
+	};
 
 	static defaultProps = 
 	{
@@ -47,7 +47,7 @@ export default class Spinner extends Component
 		value : 0,
 		min   : 0,
 		max   : 100
-	}
+	};
 
 	componentDidMount()
 	{

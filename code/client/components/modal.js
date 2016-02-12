@@ -17,7 +17,7 @@ export default class Modal extends Component
 		onRequestClose : PropTypes.func.isRequired,
 		closeTimeoutMS : PropTypes.number,
 		style          : PropTypes.object
-	}
+	};
 
 	render()
 	{

@@ -129,7 +129,7 @@ const annihilator = new Annihilator()
 // (not used yet)
 class Messenger extends EventEmitter
 {
-	static message_timeout = 10 // in seconds
+	static message_timeout = 10; // in seconds
 
 	constructor(output)
 	{

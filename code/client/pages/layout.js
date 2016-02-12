@@ -85,12 +85,12 @@ export default class Layout extends Component
 		menu_width : 0,
 
 		page_moved_aside : false
-	}
+	};
 
 	static propTypes =
 	{
 		children : PropTypes.node.isRequired
-	}
+	};
 
 	render()
 	{

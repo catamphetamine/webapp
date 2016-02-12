@@ -160,7 +160,7 @@ export default class Authentication extends Component
 {
 	state = 
 	{
-	}
+	};
 
 	pristine_form_state = 
 	{
@@ -168,7 +168,7 @@ export default class Authentication extends Component
 		email    : undefined,
 		password : undefined,
 		register : false
-	}
+	};
 
 	static propTypes =
 	{
@@ -185,7 +185,7 @@ export default class Authentication extends Component
 
 		sign_in            : PropTypes.func.isRequired,
 		register           : PropTypes.func.isRequired
-	}
+	};
 
 	constructor(properties)
 	{

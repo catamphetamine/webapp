@@ -13,7 +13,7 @@ export default function(authorization)
 	{
 		class Authorize extends Component
 		{
-			state = { error: undefined }
+			state = { error: undefined };
 
 			componentWillMount()
 			{

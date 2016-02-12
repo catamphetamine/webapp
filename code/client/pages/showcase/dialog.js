@@ -14,7 +14,7 @@ export default class Dialog extends Component
 	state =
 	{
 		show_dialog: false
-	}
+	};
 
 	render()
 	{

@@ -1,17 +1,26 @@
-import React       from 'react'
-import { connect } from 'react-redux'
+import React, { PropTypes } from 'react'
+import { connect }          from 'react-redux'
 
 import Spinner from './spinner'
 
-export default connect(model => ({ pending: model.preload.pending, error: model.preload.error }))
-(function Preloading(props)
+@connect(model => ({ pending: model.preload.pending, error: model.preload.error }))
+export default class Preloading extends React.Component
 {
-	const markup =
-	(
-		<div className={"preloading " + (props.pending ? "preloading-show" : "")}>
-			{ props.pending ? <div className="preloading-spinner-container"><Spinner/></div> : null }
-		</div>
-	)
+	static propTypes = 
+	{
+		pending : PropTypes.bool,
+		error   : PropTypes.any
+	};
 
-	return markup
-})
+	render()
+	{
+		const markup =
+		(
+			<div className={"preloading " + (this.props.pending ? "preloading-show" : "")}>
+				{ this.props.pending ? <div className="preloading-spinner-container"><Spinner/></div> : null }
+			</div>
+		)
+
+		return markup
+	}
+}

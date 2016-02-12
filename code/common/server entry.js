@@ -16,7 +16,7 @@ if (global._development_)
 	require('bluebird').longStackTraces()
 }
 
-require('babel-core/register')
+require('babel-register')
 
 require('./language')
 

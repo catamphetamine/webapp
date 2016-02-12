@@ -1,17 +1,18 @@
-WebApp is an example of a generic web application with React and Flux.
+WebApp is an example of a generic web application with React and Redux.
 
 Features
 
+* Babel 6
 * React
 * React-router
-* Redux as Flux
+* Redux
 * Isomorphic (universal) rendering
 * Responsive design
 * Webpack
 * Koa
+* Hot reload (aka Hot Module Replacement) for React components, Redux reducers, Redux action creators, translated messages
 * Internationalization with React-intl (v2)
 * User authentication & authorization (roles)
-* Translated messages hot reload (aka Hot Module Replacement)
 * Microservice architecture
 * Bunyan logging (log file rotation is built-in)
 * Correctly handles Http Cookies on server-side
