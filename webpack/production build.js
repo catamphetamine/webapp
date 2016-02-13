@@ -23,6 +23,7 @@ configuration.plugins = configuration.plugins.concat
 (
 	// clears the output folder
 	new clean_plugin([path.relative(__dirname, configuration.output.path)]),
+	// new clean_plugin([assets relative path], { root: project root full path }),
 
 	// environment variables
 	new webpack.DefinePlugin

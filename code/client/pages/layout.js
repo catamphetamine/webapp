@@ -39,19 +39,6 @@ const messages = defineMessages
 		description    : 'Web application description',
 		defaultMessage : 'A generic web application boilerplate'
 	},
-
-	menu_editor:
-	{
-		id             : 'menu.editor',
-		description    : 'HTML5 editor',
-		defaultMessage : 'Editor'
-	},
-	// menu_about:
-	// {
-	// 	id             : 'menu.about',
-	// 	description    : 'Whatever',
-	// 	defaultMessage : 'About'
-	// },
 	menu_example:
 	{
 		id             : 'menu.example',
@@ -96,16 +83,19 @@ export default class Layout extends Component
 	{
 		const translate = this.props.intl.formatMessage
 
-		// Html document metadata
-
 		const title = 'WebApp'
 		const description = 'A generic web application boilerplate'
 
+		// <head/> <meta/> tags
 		const meta =
 		{
+			// <meta charset="utf-8" />
 			charSet: 'utf-8',
+
 			name:
 			{
+				// all <meta name="..." content="..."/> tags go here
+
 				// i don't fully understand what it does
 				// https://css-tricks.com/probably-use-initial-scale1/
 				//
@@ -113,22 +103,15 @@ export default class Layout extends Component
 				//
 				viewport: 'width=device-width, initial-scale=1.0, user-scalable=no'
 			},
+
 			property:
 			{
+				// all <meta property="..." content="..."/> tags go here
+
 				'og:site_name': title,
-				// 'og:image': image,
 				'og:locale': 'ru_RU',
 				'og:title': title,
 				'og:description': description,
-
-				// 'twitter:card': 'summary',
-				// 'twitter:site': '@erikras',
-				// 'twitter:creator': '@erikras',
-				// 'twitter:title': title,
-				// 'twitter:description': description,
-				// 'twitter:image': image,
-				// 'twitter:image:width': '200',
-				// 'twitter:image:height': '200'
 			}
 		}
 
@@ -136,19 +119,13 @@ export default class Layout extends Component
 
 		const menu_items =
 		[{
-		// 	name: translate(messages.menu_editor),
-		// 	link: '/editor'
-		// }, {
-		// 	name: translate(messages.menu_about),
-		// 	link: '/about'
-		// }, {
-			name: translate(messages.menu_example),
+			name: this.props.translate(messages.menu_example),
 			link: '/example'
 		}, {
-			name: translate(messages.menu_components_showcase),
+			name: this.props.translate(messages.menu_components_showcase),
 			link: '/showcase'
 		}, {
-			name: translate(messages.menu_log),
+			name: this.props.translate(messages.menu_log),
 			link: '/logs'
 		}]
 
@@ -177,7 +154,7 @@ export default class Layout extends Component
 						{/* home page link */}
 						<div className="logo" style={{ textAlign: 'center' }}>
 							<IndexLink to="/" style={style.home} activeStyle={style.home_active}>
-								{translate(messages.title)}
+								{this.props.translate(messages.title)}
 							</IndexLink>
 						</div>
 
@@ -235,7 +212,7 @@ const style = styler
 `
 	page
 		position : relative
-		z-index  : 0 // 1
+		z-index  : 0
 		transition-duration : ${menu_transition_duration}ms
 
 	home

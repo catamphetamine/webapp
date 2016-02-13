@@ -6,16 +6,17 @@ Features
 * React
 * React-router
 * Redux
-* Isomorphic (universal) rendering
-* Responsive design
 * Webpack
-* Koa
+* Isomorphic (universal) rendering
 * Hot reload (aka Hot Module Replacement) for React components, Redux reducers, Redux action creators, translated messages
-* Internationalization with React-intl (v2)
-* User authentication & authorization (roles)
+* Internationalization with React-intl v2
+* User authentication (JSON Web Token) & authorization (roles)
+* REST API
 * Microservice architecture
+* Responsive web design
+* Koa
 * Bunyan logging (log file rotation is built-in)
-* Correctly handles Http Cookies on server-side
+* Correctly handles Http Cookies on the server-side
 * To be done: Persistence (PostgreSQL, Bookshelf)
 * To be done: GraphQL + Relay
 * To be done: native Node.js clustering
@@ -676,7 +677,7 @@ https://github.com/acdlite/redux-react-router
 
 
 Рендеринг React'а вместе с React-router'ом и Redux'ом взят отсюда
-(будет обновляться после 14.01.2016 - мержить к себе новые изменения):
+(будет обновляться после 13.02.2016 - мержить к себе новые изменения):
 
 https://github.com/erikras/react-redux-universal-hot-example/commits/master
 
