@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import hoist_statics  from 'hoist-non-react-statics'
 
 import { connect }      from 'react-redux'
-import { replaceState } from 'redux-router'
+import { redirect }     from 'react-isomorphic-render'
 
 import Unauthenticated from '../pages/errors/unauthenticated'
 import Unauthorized    from '../pages/errors/unauthorized'
@@ -52,7 +52,7 @@ export default function(authorization)
 				// on the client side: redirect to the "unauthorized" page
 				// (using React-router)
 				this.setState({ error: result.error })
-				this.props.dispatch(replaceState(null, result.redirect_to))
+				this.props.dispatch(redirect(result.redirect_to))
 			}
 
 			render()

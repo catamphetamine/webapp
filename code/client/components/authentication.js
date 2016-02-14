@@ -5,8 +5,6 @@ import { PropTypes as React_router_prop_types } from 'react-router'
 import { connect } from 'react-redux'
 import styler      from 'react-styling'
 
-import { pushState } from 'redux-router'
-
 import { defineMessages } from 'react-intl'
 import international from '../international/internationalize'
 
@@ -180,7 +178,7 @@ export default class Authentication extends Component
 			await this.props.sign_out()
 
 			// redirect to the main page (unnecessary)
-			// this.props.dispatch(pushState(null, '/'))
+			// this.props.dispatch(redirect('/'))
 		}
 		catch (error)
 		{

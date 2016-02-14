@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react'
 import { PropTypes as React_router_prop_types } from 'react-router'
-import { pushState } from 'redux-router'
 
 import { write as cookie } from '../tools/cookie'
 
@@ -46,10 +45,7 @@ const messages = defineMessages
 	({
 		locale : store.locale.locale,
 		// url    : store.router.location.pathname + store.router.location.search
-	}),
-
-	// Use an action creator for navigation
-	{ pushState }
+	})
 )
 @international()
 export default class Locale_switcher extends Component

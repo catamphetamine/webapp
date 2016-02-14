@@ -5,12 +5,20 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import styler from 'react-styling'
 
-@connect
-(
-	store => ({ })
-)
+import { redirect } from 'react-isomorphic-render'
+
+@connect()
 export default class Page extends Component
 {
+	componentWillMount()
+	{
+		// redirect to "/showcase/form" from "/showcase"
+		if (this.props.location.pathname === '/showcase')
+		{
+			this.props.dispatch(redirect(this.props.location.pathname + '/form'))
+		}
+	}
+
 	render()
 	{
 		const markup = 

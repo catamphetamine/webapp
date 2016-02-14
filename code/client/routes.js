@@ -1,3 +1,37 @@
+// Since this file is `require()`d both on client and server,
+// i'm putting this workaround here.
+//
+// It disables noisy React-intl default messages warnings in the console
+// ("using default message as fallback")
+// https://github.com/yahoo/react-intl/issues/251
+//
+// an alternative solution is to add this to .babelrc
+//
+// ["react-intl", 
+// {
+// 	"messagesDir": "./build/messages/",
+// 	"enforceDescriptions": true
+// }]
+//
+// and then use something like this 
+// to convert those `.json`s into a proper translations file
+// https://github.com/yahoo/react-intl/blob/master/examples/translations/scripts/translate.js
+//
+if (_development_)
+{
+	const console_error = console.error
+	if (console.error === console_error)
+	{
+		console.error = (...parameters) =>
+		{
+			if (parameters[0].indexOf('[React Intl] Missing message:') !== 0)
+			{
+				console_error.call(console, ...parameters)
+			}
+		}
+	}
+}
+
 import React from 'react'
 
 // import Relay from 'react-relay'

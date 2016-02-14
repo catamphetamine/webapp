@@ -16,10 +16,6 @@ const messages = defineMessages
 	}
 })
 
-@connect
-(
-	store => ({ })
-)
 @international()
 export default class Home extends Component
 {
