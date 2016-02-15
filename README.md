@@ -223,31 +223,6 @@ This works for GET requests, and I suppose it would work for POST requests too.
 To do
 ====================
 
-ссылку на страницу логина и регистрации вместо button'а в header'е и двух button'ов в форме
-
-для этого, у Button сделать свойства link и post.
-
-link вместо <button/> будет делать <a href="..."/> (несовместимо с submit=true)
-
-post вместо <button/> будет делать <form action="..."><button/></form> (несовместимо с submit=true)
-
-у form параметр submit будет вести на gateway
-
-сделать страницу /register
-
-придумать какой-то gateway, на который можно послать api_url, параметры, и страницу итоговую.
-этот gateway будет исполнять api_url с заданными параметрами, перенаправляя на итоговую страницу (либо на страницу ошибки).
-
-
-
-
-
-В react-isomorphic-render мб перейти потом на async-props и react-router-redux, когда они стабилизируются со второй версией react-router'а
-
-
-
-
-
 сохранять данные пользователей в PostgreSQL (bookshelf)
 
 
@@ -310,10 +285,9 @@ post вместо <button/> будет делать <form action="..."><button/>
 
 
 
+В react-isomorphic-render мб перейти потом на async-props и react-router-redux, когда они стабилизируются со второй версией react-router'а
 
 
-// bcrypt работает медленно, мб заменить её на что-нибудь.
-// может быть уже есть какая-то новая альтернатива bcrypt'у.
 
 
 
@@ -501,7 +475,24 @@ add user: validation
 
 
 
-async await
+
+
+
+
+// ссылку на страницу логина и регистрации вместо button'а в header'е и двух button'ов в форме
+
+// для этого, у Button сделать свойства link и post.
+
+// link вместо <button/> будет делать <a href="..."/> (несовместимо с submit=true)
+
+// post вместо <button/> будет делать <form action="..."><button/></form> (несовместимо с submit=true)
+
+// у form параметр submit будет вести на gateway
+
+// сделать страницу /register
+
+// придумать какой-то gateway, на который можно послать api_url, параметры, и страницу итоговую.
+этот gateway будет исполнять api_url с заданными параметрами, перенаправляя на итоговую страницу (либо на страницу ошибки).
 
 
 

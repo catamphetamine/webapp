@@ -10,7 +10,7 @@ import { redirect } from 'react-isomorphic-render'
 @connect()
 export default class Page extends Component
 {
-	componentWillMount()
+	componentDidMount()
 	{
 		// redirect to "/showcase/form" from "/showcase"
 		if (this.props.location.pathname === '/showcase')
