@@ -1,22 +1,16 @@
 import React, { Component, PropTypes } from 'react'
 
-import { title, redirect }   from 'react-isomorphic-render'
-import { connect }           from 'react-redux'
-import { Link }              from 'react-router'
-import styler                from 'react-styling'
+import { title }   from 'react-isomorphic-render'
+import { connect } from 'react-redux'
+import { Link }    from 'react-router'
+import styler      from 'react-styling'
 
-@connect()
+@connect
+(
+	store => ({ })
+)
 export default class Page extends Component
 {
-	componentDidMount()
-	{
-		// redirect to "/example/simple" from "/example"
-		if (this.props.location.pathname === '/example')
-		{
-			this.props.dispatch(redirect(this.props.location.pathname + '/simple'))
-		}
-	}
-
 	render()
 	{
 		const markup = 

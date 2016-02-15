@@ -120,10 +120,10 @@ export default class Layout extends Component
 		const menu_items =
 		[{
 			name: this.props.translate(messages.menu_example),
-			link: '/example'
+			link: '/example/simple'
 		}, {
 			name: this.props.translate(messages.menu_components_showcase),
-			link: '/showcase'
+			link: '/showcase/form'
 		}, {
 			name: this.props.translate(messages.menu_log),
 			link: '/logs'
