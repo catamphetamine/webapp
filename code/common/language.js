@@ -541,7 +541,7 @@ global.custom_error = function(name, { code, message })
 					this.message = argument.message
 				}
 
-				this.message = this.message || argument
+				this.message = argument || this.message
 			}
 
 			this.name = name

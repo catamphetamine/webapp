@@ -69,16 +69,26 @@ body, button, input, textarea, select
 	font-family : Scada, Arial, Helvetica;
 }
 
-// input[type="checkbox"]
-// {
-// 	width: 0.9em;
-// 	height: 0.9em;
-//
-// 	margin-right: 0.3em;
-// 	margin-bottom: 0.15em;
-//
-// 	vertical-align: bottom;
-// }
+input[type="checkbox"], input[type="radio"]
+{
+	width: 0.9em;
+	height: 0.9em;
+
+	margin-right: 0.3em;
+	margin-bottom: 0.2em;
+
+	vertical-align: bottom;
+}
+
+input[type="checkbox"]
+{
+	margin-bottom: 0.2em;
+}
+
+input[type="radio"]
+{
+	margin-bottom: 0.16em;
+}
 
 input[type="text"], input[type="email"], input[type="password"], textarea, select, .date-picker
 {

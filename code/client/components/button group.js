@@ -14,6 +14,8 @@ export default class Button_group extends Component
 			})
 		)
 		.isRequired,
+		name         : PropTypes.string,
+		value        : PropTypes.any,
 		on_change    : PropTypes.func.isRequired,
 		style        : PropTypes.object
 	};
@@ -24,8 +26,10 @@ export default class Button_group extends Component
 
 		const markup = 
 		(
-			<div className="button-group" style={ this.props.style ? merge(style.container, this.props.style) : style.container }>
+			<div className="rich button-group" style={ this.props.style ? merge(style.container, this.props.style) : style.container }>
 				{options.map((option, index) => this.render_button(option, index))}
+
+				{this.render_static()}
 			</div>
 		)
 
@@ -34,37 +38,7 @@ export default class Button_group extends Component
 
 	render_button(option, index)
 	{
-		const { options } = this.props
-
-		const label = option.label
-
-		let button_style = clone(style.button)
-
-
-		if (index === 0)
-		{
-			button_style = button_style.first
-
-			button_style.borderRightWidth = 0
-		}
-		else if (index === options.length - 1)
-		{
-			button_style = button_style.last
-		}
-		else
-		{
-			button_style.borderRightWidth = 0
-
-			// button_style = style.button
-		}
-
 		const selected = this.props.value === option.value
-
-		if (selected)
-		{
-			// button_style = merge(button_style, style.button.selected)
-			extend(button_style, style.button.selected)
-		}
 
 		const markup = 
 		(
@@ -72,14 +46,76 @@ export default class Button_group extends Component
 				key={option.value}
 				type="button"
 				onClick={event => this.props.on_change(option.value)}
-				className={'button-group-button ' + (selected ? 'button-group-selected' : '')}
-				style={button_style}>
+				className={'button-group-button' + ' ' + (selected ? 'button-group-selected' : '')}
+				style={this.option_style(option, index)}>
 
-				{label}
+				{option.label}
 			</button>
 		)
 
 		return markup
+	}
+
+	// supports disabled javascript
+	render_static()
+	{
+		const markup =
+		(
+			<div className="rich-fallback">
+				{this.props.options.map((option, index) => this.render_static_option(option, index))}
+			</div>
+		)
+
+		return markup
+	}
+
+	render_static_option(option, index)
+	{
+		const selected = this.props.value === option.value
+
+		const markup =
+		(
+			<span key={option.value} className='button-group-button' style={this.option_style(option, index)}>
+				<input
+					type="radio"
+					name={this.props.name}
+					checked={selected}
+					style={{}}/>
+
+				{option.label}
+			</span>
+		)
+
+		return markup
+	}
+
+	option_style(option, index)
+	{
+		let option_style = clone(style.option)
+
+		if (index === 0)
+		{
+			option_style = option_style.first
+
+			option_style.borderRightWidth = 0
+		}
+		else if (index === this.props.options.length - 1)
+		{
+			option_style = option_style.last
+		}
+		else
+		{
+			option_style.borderRightWidth = 0
+		}
+
+		const selected = this.props.value === option.value
+
+		if (selected)
+		{
+			extend(option_style, style.option.selected)
+		}
+
+		return option_style
 	}
 }
 
@@ -92,7 +128,7 @@ const style = styler
 		display     : inline-block
 		white-space : nowrap
 
-	button
+	option
 		padding-left  : 0.8em
 		padding-right : 0.8em
 

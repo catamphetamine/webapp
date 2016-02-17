@@ -75,6 +75,49 @@
 	height : 2em;
 
 	stroke : #000000;
+
+	svg
+	{
+		animation: spinner-rotate 2s linear infinite;
+		transform-origin: center center;
+	}
+
+	circle
+	{
+		stroke-dasharray  : 1,200;
+		stroke-dashoffset : 0;
+		animation: spinner-extent 1.5s ease-in-out infinite;
+		stroke-linecap: round;
+	}
+}
+
+@keyframes spinner-rotate
+{
+	100%
+	{
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes spinner-extent
+{
+	0%
+	{
+		stroke-dasharray  : 1,200;
+		stroke-dashoffset : 0;
+	}
+
+	50%
+	{
+		stroke-dasharray  : 89,200;
+		stroke-dashoffset : -35;
+	}
+
+	100%
+	{
+		stroke-dasharray  : 89,200;
+		stroke-dashoffset : -124;
+	}
 }
 
 .dropdown
@@ -360,7 +403,7 @@
 	margin-right: 0.8em;
 }
 
-.sign-out
+.sign-out-form
 {
 	// centers children vertically
 	display         : flex !important;
@@ -441,6 +484,21 @@
 		// background-color : $secondary-button-active-color !important;
 
 		transition : none !important;
+	}
+}
+
+.rich-fallback
+{
+	// revert the above :active style
+	.button-group-button:active
+	{
+		color            : black !important;
+		background-color : transparent !important;
+	}
+
+	.button-group-button input
+	{
+		margin-left: 0;
 	}
 }
 

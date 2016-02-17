@@ -104,7 +104,7 @@ export default class Authentication extends Component
 			<div className="authentication" style={ this.props.style ? extend({ display: 'inline-block' }, this.props.style) : { display: 'inline-block' } }>
 				
 				{/* Sign in action */}
-				{ !user ? <Button className="sign-in" action={::this.show}>{this.translate(messages.sign_in)}</Button> : null }
+				{ !user ? <Button className="sign-in" link="/sign-in" action={::this.show}>{this.translate(messages.sign_in)}</Button> : null }
 
 				{/* User info if authenticated */}
 				{ user ? this.render_user_info(user) : null }
@@ -133,7 +133,9 @@ export default class Authentication extends Component
 				<div className="user-name">{user.name}</div>
 
 				{/* Sign out action */}
-				<Button className="sign-out" action={::this.sign_out}>{this.translate(messages.sign_out)}</Button>
+				<Form className="sign-out-form" post="/authentication/sign-out">
+					<Button className="sign-out" action={::this.sign_out}>{this.translate(messages.sign_out)}</Button>
+				</Form>
 
 				{/* Avatar */}
 				{/*<div className="user-picture" style={{ backgroundImage: `url("${user_picture}")` }}></div>*/}

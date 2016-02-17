@@ -10,6 +10,7 @@ export default class Button extends Component
 		action       : PropTypes.func,
 		busy         : PropTypes.bool,
 		submit       : PropTypes.bool,
+		link         : PropTypes.string,
 		className    : PropTypes.string,
 		style        : PropTypes.object,
 		button_style : PropTypes.object
@@ -17,7 +18,23 @@ export default class Button extends Component
 
 	render()
 	{
-		const { busy, action, submit, className } = this.props
+		const { busy, submit, className } = this.props
+
+		const markup = 
+		(
+			<div className={'button' + ' ' + (submit ? 'button-primary' : '') + ' ' + (busy ? 'button-busy' : '') + ' ' + (className ? className : '')} style={merge(style.container, this.props.style)}>
+				<Spinner style={ busy ? style.spinner.show : style.spinner.hide }></Spinner>
+
+				{this.render_button()}
+			</div>
+		)
+
+		return markup
+	}
+
+	render_button()
+	{
+		const { link, busy, action, submit } = this.props
 
 		let button_style = busy ? style.button.hide : style.button.show 
 
@@ -26,20 +43,53 @@ export default class Button extends Component
 			button_style = merge(button_style, this.props.button_style)
 		}
 
-		const markup = 
-		(
-			<div className={'button ' + (submit ? 'button-primary' : '') + (className ? className : '')} style={merge(style.container, this.props.style)}>
-				<Spinner style={ busy ? style.spinner.show : style.spinner.hide }></Spinner>
+		if (link)
+		{
+			const markup = 
+			(
+				<a
+					href={link}
+					onClick={event =>
+					{
+						// ignore mouse wheel clicks
+						// and clicks with a modifier key pressed
+						if (event.nativeEvent.which === 2
+							|| event.shiftKey 
+							|| event.altKey 
+							|| event.ctrlKey 
+							|| event.metaKey)
+						{
+							return
+						}
 
-				<button
-					type={submit ? 'submit' : 'button'}
-					disabled={busy}
-					onClick={action}
+						event.preventDefault()
+
+						if (busy)
+						{
+							return
+						}
+
+						action()
+					}}
 					style={button_style}>
 
 					{this.props.children}
-				</button>
-			</div>
+				</a>
+			)
+
+			return markup
+		}
+
+		const markup = 
+		(
+			<button
+				type={submit ? 'submit' : 'button'}
+				disabled={busy}
+				onClick={action}
+				style={button_style}>
+
+				{this.props.children}
+			</button>
 		)
 
 		return markup

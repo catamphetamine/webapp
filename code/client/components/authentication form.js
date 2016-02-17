@@ -139,7 +139,9 @@ const messages = defineMessages
 		registration_error : model.authentication.registration_error,
 
 		registering   : model.authentication.registering,
-		siging_in     : model.authentication.siging_in
+		siging_in     : model.authentication.siging_in,
+
+		location : model.router.location
 	}),
 	dispatch =>
 	{
@@ -184,7 +186,11 @@ export default class Authentication extends Component
 		on_sign_in         : PropTypes.func,
 
 		sign_in            : PropTypes.func.isRequired,
-		register           : PropTypes.func.isRequired
+		register           : PropTypes.func.isRequired,
+
+		registration       : PropTypes.bool,
+
+		location           : PropTypes.object
 	};
 
 	constructor(properties)
@@ -192,6 +198,11 @@ export default class Authentication extends Component
 		super(properties)
 
 		extend(this.state, this.pristine_form_state)
+
+		if (this.props.registration)
+		{
+			this.state.register = true
+		}
 	}
 
 	componentDidMount()
@@ -220,20 +231,23 @@ export default class Authentication extends Component
 				ref="form" 
 				className="authentication-form" 
 				style={this.props.style ? merge(style.form, this.props.style) : style.form} 
-				action={::this.sign_in} inputs={() => [this.refs.email, this.refs.password]} 
-				error={this.props.sign_in_error && this.sign_in_error(this.props.sign_in_error)}>
+				action={::this.sign_in}
+				inputs={() => [this.refs.email, this.refs.password]} 
+				error={this.props.sign_in_error && this.sign_in_error(this.props.sign_in_error)}
+				post="/authentication/sign-in">
 
 				<h2 style={style.form_title}>{this.translate(messages.sign_in)}</h2>
 
 				<div style={style.or_register} className="or-register">
 					<span>{this.translate(messages.or)}&nbsp;</span>
-					<Button button_style={style.or_register.register} action={::this.start_registration}>{this.translate(messages.register)}</Button>
+					<Button link={"/register?request=" + encodeURIComponent(this.props.location.query.request || '/')} button_style={style.or_register.register} action={::this.start_registration}>{this.translate(messages.register)}</Button>
 				</div>
 
 				<div style={style.clearfix}></div>
 
 				<Text_input
 					ref="email"
+					name="email"
 					email={false}
 					value={this.state.email}
 					validate={::this.validate_email_on_sign_in}
@@ -243,12 +257,16 @@ export default class Authentication extends Component
 
 				<Text_input
 					ref="password"
+					name="password"
 					password={true}
 					value={this.state.password}
 					validate={::this.validate_password_on_sign_in}
 					on_change={value => this.setState({ password: value })}
 					placeholder={this.translate(messages.password)}
 					style={style.input}/>
+
+				{/* Support redirecting to the initial page when javascript is disabled */}
+				<input type="hidden" name="request" value={this.props.location.query.request}/>
 
 				<div style={style.sign_in_buttons}>
 					<Button className="secondary" style={style.forgot_password} action={::this.forgot_password}>{this.translate(messages.forgot_password)}</Button>
@@ -271,19 +289,21 @@ export default class Authentication extends Component
 				style={this.props.style ? merge(style.form, this.props.style) : style.form} 
 				action={::this.register} 
 				inputs={() => [this.refs.name, this.refs.email, this.refs.password, this.refs.accept_terms_of_service]} 
-				error={this.props.registration_error && this.registration_error(this.props.registration_error)}>
+				error={this.props.registration_error && this.registration_error(this.props.registration_error)}
+				post="/authentication/register">
 
 				<h2 style={style.form_title}>{this.translate(messages.register)}</h2>
 
 				<div style={style.or_register} className="or-register">
 					<span>{this.translate(messages.or)}&nbsp;</span>
-					<Button button_style={style.or_register.register} action={::this.cancel_registration}>{this.translate(messages.sign_in)}</Button>
+					<Button link={"/sign-in?request=" + encodeURIComponent(this.props.location.query.request || '/')} button_style={style.or_register.register} action={::this.cancel_registration}>{this.translate(messages.sign_in)}</Button>
 				</div>
 
 				<div style={style.clearfix}></div>
 
 				<Text_input
 					ref="name"
+					name="name"
 					value={this.state.name}
 					validate={::this.validate_name_on_registration}
 					on_change={value => this.setState({ name: value })}
@@ -292,6 +312,7 @@ export default class Authentication extends Component
 
 				<Text_input
 					ref="email"
+					name="email"
 					email={false}
 					value={this.state.email}
 					validate={::this.validate_email_on_registration}
@@ -301,6 +322,7 @@ export default class Authentication extends Component
 
 				<Text_input
 					ref="password"
+					name="password"
 					password={true}
 					value={this.state.password}
 					validate={::this.validate_password_on_registration}
@@ -311,6 +333,7 @@ export default class Authentication extends Component
 				<div>
 					<Checkbox
 						ref="accept_terms_of_service"
+						name="accept_terms_of_service"
 						style={style.terms_of_service}
 						value={this.state.terms_of_service_accepted}
 						on_change={::this.accept_terms_of_service}
@@ -321,6 +344,9 @@ export default class Authentication extends Component
 						&nbsp;<a target="_blank" href="https://www.dropbox.com/terms">{this.translate(messages.the_terms_of_service)}</a>
 					</Checkbox>
 				</div>
+
+				{/* Support redirecting to the initial page when javascript is disabled */}
+				<input type="hidden" name="request" value={this.props.location.query.request}/>
 
 				<Button submit={true} style={style.form_action.register} busy={this.props.signing_in || this.props.registering}>{this.translate(messages.register)}</Button>
 			</Form>
@@ -336,7 +362,14 @@ export default class Authentication extends Component
 
 	focus()
 	{
-		this.refs.email.focus()
+		if (this.state.register)
+		{
+			this.refs.name.focus()
+		}
+		else
+		{
+			this.refs.email.focus()
+		}
 	}
 
 	validate_email_on_sign_in(value)
@@ -426,9 +459,10 @@ export default class Authentication extends Component
 		{
 			const result = await this.props.register
 			({
-				name     : this.state.name,
-				email    : this.state.email,
-				password : this.state.password
+				name                    : this.state.name,
+				email                   : this.state.email,
+				password                : this.state.password,
+				accept_terms_of_service : true // is used when posting the <form/>
 			})
 
 			await this.sign_in()

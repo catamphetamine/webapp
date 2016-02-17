@@ -8,7 +8,7 @@ const scrollbar_width = '17px'
 const add_padding_for_scrollbar = true
 const show_selected_item_in_list = true
 
-export default class Flag extends Component
+export default class Dropdown extends Component
 {
 	static propTypes =
 	{
@@ -21,6 +21,7 @@ export default class Flag extends Component
 			})
 		)
 		.isRequired,
+		name       : PropTypes.string,
 		label      : PropTypes.string,
 		value      : PropTypes.any,
 		on_change  : PropTypes.func.isRequired,
@@ -97,7 +98,7 @@ export default class Flag extends Component
 
 		const markup = 
 		(
-			<div style={ this.props.style ? merge(style.wrapper, this.props.style) : style.wrapper } className={"dropdown " + (upward ? "dropdown-upward" : "") + " " + (this.state.expanded ? "dropdown-expanded" : "dropdown-collapsed")}>
+			<div style={ this.props.style ? merge(style.wrapper, this.props.style) : style.wrapper } className={"rich dropdown" + " " + (upward ? "dropdown-upward" : "") + " " + (this.state.expanded ? "dropdown-expanded" : "dropdown-collapsed")}>
 
 				{/* list container */}
 				<div style={ this.state.expanded ? style.container.expanded : style.container }>
@@ -116,6 +117,8 @@ export default class Flag extends Component
 						{ item_list.map(({ value, label, icon }, index) => this.render_list_item(value, label, icon, overflow))}
 					</ul>
 				</div>
+
+				{this.render_static()}
 			</div>
 		)
 
@@ -202,6 +205,21 @@ export default class Flag extends Component
 				{/* an arrow */}
 				<div className="dropdown-arrow" style={ this.state.expanded ? style.arrow.expanded : style.arrow }/>
 			</button>
+		)
+
+		return markup
+	}
+
+	// supports disabled javascript
+	render_static()
+	{
+		const markup =
+		(
+			<div className="rich-fallback">
+				<select name={this.props.name} defaultValue={this.props.value} style={{ width: 'auto' }}>
+					{this.list_items().map(item => <option className="dropdown-item" key={item.value} value={item.value}>{item.label}</option>)}
+				</select>
+			</div>
 		)
 
 		return markup

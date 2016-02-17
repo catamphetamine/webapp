@@ -7,6 +7,7 @@ export default class Switch extends Component
 {
 	static propTypes =
 	{
+		name      : PropTypes.string,
 		value     : PropTypes.bool,
 		// label     : PropTypes.string.isRequired,
 		on_change : PropTypes.func.isRequired,
@@ -19,17 +20,38 @@ export default class Switch extends Component
 
 		const markup =
 		(
-			<label className="switch" style={ this.props.style ? merge(style.switch, this.props.style) : style.switch}>
-				<input type="checkbox" style={style.input} value={value} onChange={event => on_change(!value)}/>
-				<span className="switch-groove" style={value ? style.groove.when_checked : style.groove}></span>
-				<div className="switch-knob" style={value ? style.knob.when_checked : style.knob}></div>
+			<label className="rich switch" style={ this.props.style ? merge(style.switch, this.props.style) : style.switch}>
+				<input
+					type="checkbox" 
+					name={this.props.name} 
+					style={style.input} 
+					value={value} 
+					onChange={event => on_change(!value)}/>
+
+				<span className="switch-groove" style={value ? style.groove.when_checked : style.groove}/>
+				<div className="switch-knob" style={value ? style.knob.when_checked : style.knob}/>
+
+				{this.render_static()}
 			</label>
 		)
 
-		// <span className="switch_label" style={style.label}>{label}</span>
+		return markup
+	}
+
+	// supports disabled javascript
+	render_static()
+	{
+		const markup =
+		(
+			<div className="rich-fallback">
+				<input
+					type="checkbox" 
+					name={this.props.name} 
+					value={this.props.value}/>
+			</div>
+		)
 
 		return markup
-
 	}
 }
 

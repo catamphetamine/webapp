@@ -6,20 +6,21 @@ export default class Form extends Component
 
 	static propTypes =
 	{
-		action    : PropTypes.func.isRequired,
+		action    : PropTypes.func,
 		inputs    : PropTypes.func,
 		error     : PropTypes.any,
+		post      : PropTypes.string,
 		className : PropTypes.string,
 		style     : PropTypes.object
 	};
 
 	render()
 	{
-		const { error, className } = this.props
+		const { post, error, className } = this.props
 
 		const markup = 
 		(
-			<form className={className} style={this.props.style} onSubmit={::this.submit}>
+			<form className={className} style={this.props.style} onSubmit={::this.submit} action={post}>
 				{this.props.children}
 
 				{ error ? <div className="form-error-message">{error.message ? error.message : error}</div> : null }
@@ -56,6 +57,11 @@ export default class Form extends Component
 			{
 				return focus_on.focus({ preserve_validation: true })
 			}
+		}
+
+		if (!this.props.action)
+		{
+			return
 		}
 
 		this.props.action()

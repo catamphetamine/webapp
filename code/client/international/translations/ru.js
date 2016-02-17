@@ -30,6 +30,9 @@ export default
 	'authentication.user_not_found' : 'Нет пользователя с такой почтой',
 	'authentication.wrong_password' : 'Неверный пароль',
 
+	'sign_in.header'  : 'Войти',
+	'register.header' : 'Зарегистрироваться',
+
 	'menu.editor'              : 'Редактор',
 	'menu.about'               : 'Прочее',
 	'menu.example'             : 'Пример',

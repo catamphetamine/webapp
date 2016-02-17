@@ -12,6 +12,7 @@ export default class Checkbox extends Component
 	
 	static propTypes =
 	{
+		name      : PropTypes.string,
 		value     : PropTypes.bool,
 		// label     : PropTypes.string.isRequired,
 		on_change : PropTypes.func.isRequired,
@@ -45,6 +46,85 @@ export default class Checkbox extends Component
 				this.draw_checkmark()
 			}
 		}
+	}
+
+	render()
+	{
+		const { value } = this.props
+
+		// onFocus={this.on_focus} 
+		// onBlur={this.on_blur} 
+
+		const markup = 
+		(
+			<div className={"rich checkbox" + " " + (this.state.valid === false ? 'checkbox-invalid' : '')} style={ this.props.style ? merge(style.container, this.props.style) : style.container}>
+				<input 
+					ref="input" 
+					name={this.props.name}
+					type="checkbox" 
+					onChange={::this.toggle} 
+					style={style.checkbox.input} 
+					value={value}/>
+
+				<div className="checkbox-border" style={ !value ? style.checkbox.label_before : style.checkbox.label_before.when_checked }/>
+
+				<svg viewBox="0 0 100 100" style={style.checkbox.svg}>
+					{ value ? this.render_checkmark() : null }
+				</svg>
+
+				<label className="checkbox-label" style={style.label} onClick={::this.toggle}>
+					{this.props.children}
+				</label>
+
+				{ this.state.valid === false ? <div className="checkbox-error-message">{this.state.error_message}</div> : null }
+
+				{this.render_static()}
+			</div>
+		)
+
+		return markup
+	}
+
+	render_checkmark()
+	{
+		const path = ['M16.667,62.167c3.109,5.55,7.217,10.591,10.926,15.75 c2.614,3.636,5.149,7.519,8.161,10.853c-0.046-0.051,1.959,2.414,2.692,2.343c0.895-0.088,6.958-8.511,6.014-7.3 c5.997-7.695,11.68-15.463,16.931-23.696c6.393-10.025,12.235-20.373,18.104-30.707C82.004,24.988,84.802,20.601,87,16']
+
+		const path_style =
+		{
+			fill           : 'transparent',
+			strokeLinecap  : 'round',
+			strokeLinejoin : 'round'
+		}
+
+		if (_client_)
+		{
+			return <path ref="path" d={path} style={this.state.path_style || path_style}></path>
+		}
+
+		if (_server_)
+		{
+			return <path d={path} style={path_style}></path>
+		}
+	}
+
+	// supports disabled javascript
+	render_static()
+	{
+		const markup =
+		(
+			<div className="rich-fallback">
+				<input 
+					type="checkbox" 
+					name={this.props.name}
+					defaultChecked={this.props.value}/>
+
+				<label className="checkbox-label" style={style.label.static}>
+					{this.props.children}
+				</label>
+			</div>
+		)
+
+		return markup
 	}
 
 	draw_checkmark()
@@ -91,62 +171,6 @@ export default class Checkbox extends Component
 		this.setState({ path_style: extend(path_style, style.svg_path) })
 	}
 
-	render()
-	{
-		const { value } = this.props
-
-		// onFocus={this.on_focus} 
-		// onBlur={this.on_blur} 
-
-		const markup = 
-		(
-			<div className={"checkbox " + (this.state.valid === false ? 'checkbox-invalid' : '')} style={ this.props.style ? merge(style.container, this.props.style) : style.container}>
-				<input 
-					ref="input" 
-					type="checkbox" 
-					onChange={::this.toggle} 
-					style={style.checkbox.input} 
-					value={value}/>
-
-				<div className="checkbox-border" style={ !value ? style.checkbox.label_before : style.checkbox.label_before.when_checked }/>
-
-				<svg viewBox="0 0 100 100" style={style.checkbox.svg}>
-					{ value ? this.render_checkmark() : null }
-				</svg>
-
-				<label className="checkbox-label" style={style.label} onClick={::this.toggle}>
-					{this.props.children}
-				</label>
-
-				{ this.state.valid === false ? <div className="checkbox-error-message">{this.state.error_message}</div> : null }
-			</div>
-		)
-
-		return markup
-	}
-
-	render_checkmark()
-	{
-		const path = ['M16.667,62.167c3.109,5.55,7.217,10.591,10.926,15.75 c2.614,3.636,5.149,7.519,8.161,10.853c-0.046-0.051,1.959,2.414,2.692,2.343c0.895-0.088,6.958-8.511,6.014-7.3 c5.997-7.695,11.68-15.463,16.931-23.696c6.393-10.025,12.235-20.373,18.104-30.707C82.004,24.988,84.802,20.601,87,16']
-
-		const path_style =
-		{
-			fill           : 'transparent',
-			strokeLinecap  : 'round',
-			strokeLinejoin : 'round'
-		}
-
-		if (_client_)
-		{
-			return <path ref="path" d={path} style={this.state.path_style || path_style}></path>
-		}
-
-		if (_server_)
-		{
-			return <path d={path} style={path_style}></path>
-		}
-	}
-
 	toggle(event)
 	{
 		// if a link was clicked - don't treat it as a checkbox label click
@@ -175,17 +199,20 @@ const style = styler
 		position: relative
 
 	label
-		display: inline-block
-		position: relative
-		padding-left: 1.5em
-		vertical-align: bottom
-		color: inherit
-		cursor: default
+		display        : inline-block
+		position       : relative
+		padding-left   : 1.5em
+		vertical-align : bottom
+		color          : inherit
+		cursor         : default
 
 		-webkit-user-select : none
 		-moz-user-select    : none
 		-ms-user-select     : none
 		user-select         : none
+
+		&static
+			padding-left: 0
 
 	checkbox
 		position: absolute

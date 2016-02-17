@@ -80,14 +80,30 @@ webpage_server
 		return { locale, messages }
 	},
 
-	// will be inserted into server rendered webpage <head/>
-	// (use `key`s to prevent React warning)
-	// (optional)
-	// head: () => [...]
+	  // (optional)
+	  // returns an array of React elements.
+	  // which will be inserted into server rendered webpage's <head/>
+	  // (use `key`s to prevent React warning)
+	  // head: () => React element or an array of React elements
 
-	// extra <body/> content
-	// (optional)
-	// body: () => ...
+	  // (optional)
+	  // returns a React element.
+	  // allows for wrapping React page component with arbitrary markup
+	  // (or doing whatever else can be done with a React element).
+	  // returns either a React element or an array of React elements
+	  // which will be inserted into server rendered webpage's <body/>
+	  // body: react_page_element => react_page_element
+
+	  // returns an array of React elements.
+	  // allows adding arbitrary React components to the start of the <body/>
+	  // (use `key`s to prevent React warning when returning an array of React elements)
+	  body_start: () => <script dangerouslySetInnerHTML={{__html: `document.body.classList.add('javascript-is-enabled')`}}/>,
+
+	  // (optional)
+	  // returns an array of React elements.
+	  // allows adding arbitrary React components to the end of the <body/>
+	  // (use `key`s to prevent React warning when returning an array of React elements)
+	  // body_end: () => React element or an array of React elements
 
 	// this CSS will be inserted into server rendered webpage <head/> <style/> tag 
 	// (when in development mode only - removes rendering flicker)

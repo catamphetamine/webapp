@@ -10,3 +10,22 @@ button.secondary
 		color: $secondary-button-active-color;
 	}
 }
+
+body.javascript-is-enabled
+{
+	.rich-fallback
+	{
+		display: none !important;
+	}
+}
+
+body:not(.javascript-is-enabled)
+{
+	.rich
+	{
+		> *:not(.rich-fallback)
+		{
+			display: none !important;
+		}
+	}
+}

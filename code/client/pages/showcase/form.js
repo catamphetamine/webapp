@@ -3,6 +3,7 @@ import { title }            from 'react-isomorphic-render'
 import styler               from 'react-styling'
 import { connect }          from 'react-redux'
 
+import Form         from '../../components/form'
 import Text_input   from '../../components/text input'
 import Checkbox     from '../../components/checkbox'
 import Dropdown     from '../../components/dropdown'
@@ -13,11 +14,7 @@ import Spinner      from '../../components/spinner'
 import { DatePicker as Date_picker } from 'material-ui/lib/date-picker'
 import { CircularProgress as Circular_progress } from 'material-ui/lib'
 
-@connect
-(
-	store => ({ })
-)
-export default class Form extends Component
+export default class Form_showcase extends Component
 {
 	state = 
 	{
@@ -36,9 +33,9 @@ export default class Form extends Component
 			<div>
 				{title("Form UI Showcase")}
 
-				<form style={style.form}>
+				<Form style={style.form}>
 					<h2 style={style.form.label}>{'Text input field'}</h2>
-					<Text_input style={style.form.input} value={this.state.text_value} on_change={value => this.setState({ text_value: value })} placeholder="Enter text"/>
+					<Text_input style={style.form.input} name="text_input" value={this.state.text_value} on_change={value => this.setState({ text_value: value })} placeholder="Enter text"/>
 					You entered: {this.state.text_value}
 
 					<h2 style={style.form.label}>{'Textarea'}</h2>
@@ -46,7 +43,7 @@ export default class Form extends Component
 					You entered: {this.state.textarea_value}
 
 					<h2 style={style.form.label}>{'Select'}</h2>
-					<select style={style.form.select} value={this.state.select_value} onChange={::this.on_selection_changed}>
+					<select style={style.form.select} name="select" value={this.state.select_value} onChange={::this.on_selection_changed}>
 						<option value="A">Apple</option>
 						<option value="B">Banana</option>
 						<option value="C">Cranberry</option>
@@ -54,29 +51,29 @@ export default class Form extends Component
 					You selected: {this.state.select_value}
 
 					<h2 style={style.form.label}>Dropdown</h2>
-					<Dropdown style={style.form.checkbox} value={this.state.selected} options={[{ value: 'A', label: 'Apple' }, { value: 'B', label: 'Banana' }, { value: 'C', label: 'Cranberry' }, { value: 'D', label: 'Date' }, { value: 'E', label: 'Elderberry' }, { value: 'F', label: 'Fig' }, { value: 'G', label: 'Garlic' }]} label="Choose" on_change={ selected => this.setState({ selected }) }/>
+					<Dropdown style={style.form.checkbox} name="dropdown" value={this.state.selected} options={[{ value: 'A', label: 'Apple' }, { value: 'B', label: 'Banana' }, { value: 'C', label: 'Cranberry' }, { value: 'D', label: 'Date' }, { value: 'E', label: 'Elderberry' }, { value: 'F', label: 'Fig' }, { value: 'G', label: 'Garlic' }]} label="Choose" on_change={ selected => this.setState({ selected }) }/>
 					You selected: {this.state.selected ? this.state.selected : 'nothing'}
 
 					<h2 style={style.form.label}>Checkbox</h2>
-					<Checkbox style={style.form.checkbox} value={this.state.checked} on_change={ checked => this.setState({ checked: checked }) }>Checkbox</Checkbox>
+					<Checkbox style={style.form.checkbox} name="checkbox" value={this.state.checked} on_change={ checked => this.setState({ checked: checked }) }>Checkbox</Checkbox>
 					You checked: {this.state.checked ? 'checked' : 'unchecked'}
 
 					<h2 style={style.form.label}>Switch</h2>
 					<div style={style.form.switch_container}>
 						<label style={style.form.switch_label}>iOS style switch</label>
-						<Switch style={style.form.switch} value={this.state.switched} on_change={ switched => this.setState({ switched: switched }) }/>
+						<Switch style={style.form.switch} name="switch" value={this.state.switched} on_change={ switched => this.setState({ switched: switched }) }/>
 					</div>
 					You switched: {this.state.switched ? 'on' : 'off'}
 
 					<h2 style={style.form.label}>Button group</h2>
-					<Button_group style={style.form.checkbox} options={[{ value: 'A', label: 'Apple' }, { value: 'B', label: 'Banana' }, { value: 'C', label: 'Cranberry' }]} value={this.state.button_group} on_change={ value => this.setState({ button_group: value }) }/>
+					<Button_group style={style.form.checkbox} name="button_group" options={[{ value: 'A', label: 'Apple' }, { value: 'B', label: 'Banana' }, { value: 'C', label: 'Cranberry' }]} value={this.state.button_group} on_change={ value => this.setState({ button_group: value }) }/>
 					You selected: {this.state.button_group ? this.state.button_group : 'nothing'}
 
 					<h2 style={style.form.label}>File upload</h2>
 					<div className="file-upload">
 						<div className="file-upload-button">
 							<button>File</button>
-							<input multiple="true" type="file" style={style.form.file} onChange={event =>
+							<input multiple="true" type="file" name="file" style={style.form.file} onChange={event =>
 							{
 								const files = event.target.files
 								const file_names = []
@@ -106,7 +103,7 @@ export default class Form extends Component
 					<div className="date-picker">
 						<Date_picker style={style.form.date_picker} hintText="Portrait Dialog" autoOk={true} container="inline" textFieldStyle={style.form.date_picker.input} hintStyle={style.form.date_picker.hint} underlineShow={false}/>
 					</div>
-				</form>
+				</Form>
 			</div>
 		)
 
