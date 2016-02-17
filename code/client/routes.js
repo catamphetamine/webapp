@@ -17,12 +17,15 @@
 // to convert those `.json`s into a proper translations file
 // https://github.com/yahoo/react-intl/blob/master/examples/translations/scripts/translate.js
 //
-const console_error = console.error
-console.error = (...parameters) =>
+if (_development_)
 {
-	if (!parameters[0].starts_with('[React Intl] Missing message:'))
+	const console_error = console.error
+	console.error = (...parameters) =>
 	{
-		console_error.call(console, ...parameters)
+		if (!parameters[0].starts_with('[React Intl] Missing message:'))
+		{
+			console_error.call(console, ...parameters)
+		}
 	}
 }
 

@@ -19,6 +19,18 @@
 		"development":
 		{
 			"plugins": []
+		},
+
+		"react-intl-extract-default-messages":
+		{
+			"plugins":
+			[
+				["react-intl", 
+				{
+					"messagesDir": "./build/messages/",
+					"enforceDescriptions": true
+				}]
+			]
 		}
 	}
 }

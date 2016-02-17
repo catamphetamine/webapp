@@ -10,6 +10,7 @@
   "homepage": "https://github.com/halt-hammerzeit/webapp",
   "dependencies": {
     "babel": "^5.8.34",
+    "babel-cli": "^6.5.1",
     "babel-core": "^6.5.1",
     "babel-plugin-add-module-exports": "^0.1.2",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
@@ -44,6 +45,7 @@
     "express-session": "^1.11.3",
     "flux": "^2.0.3",
     "fs-extra": "^0.24.0",
+    "glob": "^7.0.0",
     "graphql": "^0.4.7",
     "graphql-relay": "^0.3.2",
     "hiredis": "^0.4.1",
@@ -141,7 +143,7 @@
   },
   "scripts": {
     "dev": "npm-run-all --parallel development-client development-server",
-    "development-client": "npm-run-all update-schema development-client-webpack",
+    "development-client": "npm-run-all update-relay-schema development-client-webpack",
     "development-client-webpack": "node --harmony -- \"webpack/development server.entry.js\"",
     "development-log-service": "nodemon ./code/log-service/entry.js --watch ./code/log-service --watch ./code/common",
     "development-authentication-service": "nodemon ./code/authentication-service/entry.js --watch ./code/authentication-service --watch ./code/common",
@@ -159,7 +161,7 @@
     "delay": "node ./code/sleep 600",
     "development-server": "npm-run-all --parallel development-log-service development-authentication-service-delayed development-password-service-delayed development-api-service-delayed development-page-server-delayed development-image-service-delayed development-web-server-delayed",
     "production": "npm-run-all production-build-client production-server",
-    "production-build-client": "npm-run-all update-schema production-build-client-webpack",
+    "production-build-client": "npm-run-all update-relay-schema react-intl-babel-run react-intl-default-translation production-build-client-webpack",
     "production-build-client-webpack": "webpack --verbose --colors --display-error-details --config \"webpack/production build.entry.js\"",
     "production-log-service": "node --harmony ./code/log-service/entry.js --production",
     "production-authentication-service": "node --harmony ./code/authentication-service/entry.js --production",
@@ -169,15 +171,18 @@
     "production-image-service": "node --harmony ./code/image-service/entry.js --production",
     "production-web-server": "node --harmony ./code/web-server/entry.js --production",
     "production-server": "npm-run-all --parallel production-log-service production-authentication-service production-password-service production-api-service production-page-server production-image-service production-web-server",
-    "update-schema": "node \"./automation/relay/update schema.entry.js\"",
-    "_postinstall": "bower install",
-    "_lint": "eslint -c .eslintrc src",
-    "_deploy": "NODE_ENV=production webpack -p --config webpack.config.js",
-    "_test": "mocha --compilers js:babel/register --colors --bail --reporter spec test/",
-    "_test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --compilers js:babel/register --colors --reporter dot test/",
-    "_test-travis": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --compilers js:babel/register --colors --reporter spec test/",
-    "_gh-pages": "webpack --action=gh-pages --colors --config ./config",
-    "_deploy-gh-pages": "TARGET=gh-pages node ./config/deploy-gh-pages.js"
+    "update-relay-schema": "node \"./automation/relay/update schema.entry.js\"",
+    "react-intl-default-translation": "node ./automation/international/react-intl-default-translation.entry.js",
+    "react-intl-babel-run": "better-npm-run react-intl-babel-run"
+  },
+  "betterScripts": {
+    "react-intl-babel-run": {
+      "command": "babel --out-file ./build/react-intl-babel-run.js ./code/client",
+      "env": {
+        "NODE_ENV": "production",
+        "BABEL_ENV": "react-intl-extract-default-messages"
+      }
+    }
   },
   "author": "Halt Hammerzeit",
   "license": "MIT",

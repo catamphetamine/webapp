@@ -71,19 +71,6 @@ configuration.plugins = configuration.plugins.concat
 	new webpack_isomorphic_tools_plugin(require('./webpack-isomorphic-tools.js'))
 )
 
-// // don't know why they write it like this
-// configuration.output.filename = '[name]-[hash].js'
-
-// // add strip-loader to javascript loaders
-// configuration.module.loaders.filter(loader =>
-// {
-// 	return loader.test.toString() === configuration.regular_expressions.javascript.toString()
-// })
-// .first()
-// .loaders.unshift(strip.loader('debug'))
-
-// begin: set extract text plugin as a Css loader
-
 // find the styles loader
 const scss_loader = configuration.module.loaders.filter(loader =>
 {

@@ -7,6 +7,7 @@ export default
 	'authentication.sign_in'             : 'Войти',
 	'authentication.sign_out'            : 'Выйти',
 
+	'authentication.form.sign_in'        : 'Войти',
 	'authentication.sign_in_or_register' : 'или',
 	'authentication.register'            : 'Зарегистрироваться',
 	'authentication.name'                : 'Имя пользователя',

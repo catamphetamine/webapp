@@ -23,7 +23,7 @@ const messages = defineMessages
 ({
 	sign_in:
 	{
-		id             : 'authentication.sign_in',
+		id             : 'authentication.form.sign_in',
 		description    : 'Log in action',
 		defaultMessage : 'Sign in'
 	},
