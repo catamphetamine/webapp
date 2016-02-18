@@ -3,15 +3,51 @@ import web_server from '../common/web server'
 import path from 'path'
 import fs   from 'fs'
 
+import Url  from '../client/tools/url'
+
 export default function(options = {})
 {
 	const web = web_server({ ...options, compress: true, parse_post_requests: true, routing: true })
 
 	global.api = {}
+	global.api.legacy = {}
 
 	for (let method of ['get', 'put', 'patch', 'post', 'delete'])
 	{
 		global.api[method] = web[method]
+
+		global.api.legacy[method] = function(route, handler, error_handler)
+		{
+			web[method](route, async function(parameters)
+			{
+				try
+				{
+					return { redirect: await handler.apply(this, arguments) }
+				}
+				catch (error)
+				{
+					// log the error, if it's not a normal Api error
+					// (prevents log pollution with things like 
+					//  `404 User not found` or `401 Not authenticated`)
+					if (!exists(error.code))
+					{
+						log.error(error)
+					}
+
+					const url = error_handler(error)
+
+					const redirect = new Url(url).set_parameters
+					({
+						...parameters, 
+						error_code : error.code, 
+						error      : error.message 
+					})
+					.print()
+
+					return { redirect }
+				}
+			})
+		}
 	}
 
 	const api_folder = path.join(path.dirname(module.parent.filename), 'api')

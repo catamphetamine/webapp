@@ -6,8 +6,8 @@ export default
 
 	'authentication.sign_in'             : 'Войти',
 	'authentication.sign_out'            : 'Выйти',
+	'authentication.register'            : 'Зарегистрироваться',
 
-	'authentication.form.sign_in'        : 'Войти',
 	'authentication.sign_in_or_register' : 'или',
 	'authentication.register'            : 'Зарегистрироваться',
 	'authentication.name'                : 'Имя пользователя',
@@ -30,8 +30,7 @@ export default
 	'authentication.user_not_found' : 'Нет пользователя с такой почтой',
 	'authentication.wrong_password' : 'Неверный пароль',
 
-	'sign_in.header'  : 'Войти',
-	'register.header' : 'Зарегистрироваться',
+	'sign_in.error.user_with_email_not_found' : 'Пользователь с почтой «{email}» не найден',
 
 	'menu.editor'              : 'Редактор',
 	'menu.about'               : 'Прочее',

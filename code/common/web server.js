@@ -508,7 +508,19 @@ export default function web_server(options = {})
 						this.cookies.set(name + '.sig', null)
 					}
 
-					const result = action.bind(this)({ ...this.request.body, ...this.query, ...this.params },
+					// api call parameters
+					const parameters = { ...this.request.body, ...this.query, ...this.params }
+
+					// treat empty strings as `undefined`s
+					for (let key of Object.keys(parameters))
+					{
+						if (parameters[key] === '')
+						{
+							delete parameters[key]
+						}
+					}
+
+					const result = action.bind(this)(parameters,
 					{
 						ip: this.ip,
 						
@@ -551,20 +563,32 @@ export default function web_server(options = {})
 						return result
 					}
 
+					function is_redirect(result)
+					{
+						return is_object(result) && result.redirect && Object.keys(result).length === 1
+					}
+
+					const respond = result =>
+					{
+						if (is_redirect(result))
+						{
+							return this.redirect(result.redirect)
+						}
+
+						this.body = postprocess(result)
+					}
+
 					if (result instanceof Promise)
 					{
-						yield result.then(result =>
-						{
-							this.body = postprocess(result)
-						},
-						error =>
-						{
-							throw error
-						})
+						yield result.then
+						(
+							respond,
+							error => { throw error }
+						)
 					}
 					else
 					{
-						this.body = postprocess(result)
+						respond(result)
 					}
 				})
 			}

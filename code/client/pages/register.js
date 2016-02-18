@@ -4,25 +4,27 @@ import { connect }                     from 'react-redux'
 import styler                          from 'react-styling'
 import { defineMessages }              from 'react-intl'
 
-import { should_redirect_to } from '../tools/redirection'
+import { should_redirect_to } from '../helpers/redirection'
 
 import international from '../international/internationalize'
 
-import Authentication_form from '../components/authentication form'
+import { messages as authentication_messages }                           from '../components/authentication'
+import Authentication_form, { messages as authentication_form_messages } from '../components/authentication form'
 
 const messages = defineMessages
 ({
-	header:
-	{
-		id             : 'register.header',
-		description    : 'Registration page header',
-		defaultMessage : 'Create an account'
-	}
 })
 
 @connect
 (
-	model => ({ user: model.authentication.user })
+	model =>
+	({
+		user : model.authentication.user,
+
+		error      : model.router.location.query.error,
+		error_code : model.router.location.query.error_code,
+		email      : model.router.location.query.email
+	})
 )
 @international()
 export default class Sign_in extends Component
@@ -44,13 +46,59 @@ export default class Sign_in extends Component
 		const markup = 
 		(
 			<section className="content">
-				{title("Register")}
+				{title(this.props.translate(authentication_messages.register))}
 
 				<Authentication_form registration={true} style={style.form} on_sign_in={::this.redirect}/>
+
+				{ this.props.error ? this.render_error() : null }
 			</section>
 		)
 
 		return markup
+	}
+
+	render_error()
+	{
+		const markup =
+		(
+			<ul className="errors">
+				<li>{this.error_message()}</li>
+			</ul>
+		)
+
+		return markup
+	}
+
+	error_message()
+	{
+		const { error, error_code, translate } = this.props
+
+		if (error === '"name" required')
+		{
+			return translate(authentication_form_messages.registration_name_is_required)
+		}
+
+		if (error === '"email" required')
+		{
+			return translate(authentication_form_messages.registration_email_is_required)
+		}
+
+		if (error === '"password" required')
+		{
+			return translate(authentication_form_messages.registration_password_is_required)
+		}
+		
+		if (error === 'You must accept the terms of service')
+		{
+			return translate(authentication_form_messages.registration_terms_of_service_acceptance_is_required)
+		}
+
+		if (error === 'User is already registered for this email')
+		{
+			return translate(authentication_form_messages.email_already_registered)
+		}
+
+		return error
 	}
 
 	redirect()

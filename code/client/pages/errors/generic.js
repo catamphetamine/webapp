@@ -8,7 +8,7 @@ import { defineMessages } from 'react-intl'
 import international      from '../../international/internationalize'
 
 import Url                    from '../../tools/url'
-import { should_redirect_to } from '../../tools/redirection'
+import { should_redirect_to } from '../../helpers/redirection'
 
 const messages = defineMessages
 ({

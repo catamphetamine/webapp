@@ -20,7 +20,7 @@ export default class Form extends Component
 
 		const markup = 
 		(
-			<form className={className} style={this.props.style} onSubmit={::this.submit} action={post}>
+			<form className={className} style={this.props.style} onSubmit={::this.submit} action={post} method="POST">
 				{this.props.children}
 
 				{ error ? <div className="form-error-message">{error.message ? error.message : error}</div> : null }

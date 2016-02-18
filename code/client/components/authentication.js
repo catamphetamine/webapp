@@ -19,7 +19,7 @@ import { bindActionCreators as bind_action_creators } from 'redux'
 
 import { sign_out } from '../actions/authentication'
 
-const messages = defineMessages
+export const messages = defineMessages
 ({
 	sign_in:
 	{
@@ -32,6 +32,12 @@ const messages = defineMessages
 		id             : 'authentication.sign_out',
 		description    : 'Log out action',
 		defaultMessage : 'Sign out'
+	},
+	register:
+	{
+		id             : 'authentication.register',
+		description    : 'Registration action',
+		defaultMessage : 'Register'
 	}
 })
 
@@ -131,7 +137,7 @@ export default class Authentication extends Component
 				<div className="user-name">{user.name}</div>
 
 				{/* Sign out action */}
-				<Form className="sign-out-form" post="/authentication/sign-out">
+				<Form className="sign-out-form" post="/authentication/legacy/sign-out">
 					<Button className="sign-out" submit={true} action={::this.sign_out}>{this.translate(messages.sign_out)}</Button>
 				</Form>
 

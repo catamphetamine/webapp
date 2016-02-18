@@ -112,8 +112,23 @@ export default class Uri
 		return this
 	}
 	
+	set_parameters(map)
+	{
+		for (let key of Object.keys(map))
+		{
+			this.parameter(key, map[key])
+		}
+
+		return this
+	}
+	
 	parameter(parameter, value)
 	{
+		if (value === undefined)
+		{
+			return
+		}
+		
 		this.parameters[parameter] = value
 
 		return this
@@ -175,6 +190,11 @@ export default class Uri
 		}
 
 		return uri
+	}
+
+	toString()
+	{
+		return this.print()
 	}
 }
 

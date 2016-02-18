@@ -1,4 +1,4 @@
-import { add_redirect } from '../tools/redirection'
+import { add_redirect } from '../helpers/redirection'
 
 export default function(error, { url, redirect, proceed })
 {

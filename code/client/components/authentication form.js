@@ -13,31 +13,21 @@ import Button     from './button'
 import Form       from './form'
 import Modal      from './modal'
 
-import { add_redirect, should_redirect_to } from '../tools/redirection'
+import { messages as authentication_messages } from './authentication'
+
+import { add_redirect, should_redirect_to } from '../helpers/redirection'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
 
 import { sign_in, register } from '../actions/authentication'
 
-const messages = defineMessages
+export const messages = defineMessages
 ({
-	sign_in:
-	{
-		id             : 'authentication.form.sign_in',
-		description    : 'Log in action',
-		defaultMessage : 'Sign in'
-	},
 	or:
 	{
 		id             : 'authentication.sign_in_or_register',
 		description    : 'Sign in or register',
 		defaultMessage : 'or'
-	},
-	register:
-	{
-		id             : 'authentication.register',
-		description    : 'Register action',
-		defaultMessage : 'Create an account'
 	},
 	name:
 	{
@@ -234,9 +224,9 @@ export default class Authentication extends Component
 				action={::this.sign_in}
 				inputs={() => [this.refs.email, this.refs.password]} 
 				error={this.props.sign_in_error && this.sign_in_error(this.props.sign_in_error)}
-				post="/authentication/sign-in">
+				post="/authentication/legacy/sign-in">
 
-				<h2 style={style.form_title}>{this.translate(messages.sign_in)}</h2>
+				<h2 style={style.form_title}>{this.translate(authentication_messages.sign_in)}</h2>
 
 				<div style={style.or_register} className="or-register">
 					<span>{this.translate(messages.or)}&nbsp;</span>
@@ -245,7 +235,7 @@ export default class Authentication extends Component
 						button_style={style.or_register.register} 
 						action={::this.start_registration}>
 
-						{this.translate(messages.register)}
+						{this.translate(authentication_messages.register)}
 					</Button>
 				</div>
 
@@ -277,7 +267,7 @@ export default class Authentication extends Component
 				<div style={style.sign_in_buttons}>
 					<Button className="secondary" style={style.forgot_password} action={::this.forgot_password}>{this.translate(messages.forgot_password)}</Button>
 
-					<Button style={style.form_action} submit={true} busy={this.props.signing_in}>{this.translate(messages.sign_in)}</Button>
+					<Button style={style.form_action} submit={true} busy={this.props.signing_in}>{this.translate(authentication_messages.sign_in)}</Button>
 				</div>
 			</Form>
 		)
@@ -296,9 +286,9 @@ export default class Authentication extends Component
 				action={::this.register} 
 				inputs={() => [this.refs.name, this.refs.email, this.refs.password, this.refs.accept_terms_of_service]} 
 				error={this.props.registration_error && this.registration_error(this.props.registration_error)}
-				post="/authentication/register">
+				post="/authentication/legacy/register">
 
-				<h2 style={style.form_title}>{this.translate(messages.register)}</h2>
+				<h2 style={style.form_title}>{this.translate(authentication_messages.register)}</h2>
 
 				<div style={style.or_register} className="or-register">
 					<span>{this.translate(messages.or)}&nbsp;</span>
@@ -307,7 +297,7 @@ export default class Authentication extends Component
 						button_style={style.or_register.register} 
 						action={::this.cancel_registration}>
 
-						{this.translate(messages.sign_in)}
+						{this.translate(authentication_messages.sign_in)}
 					</Button>
 				</div>
 
@@ -360,7 +350,7 @@ export default class Authentication extends Component
 				{/* Support redirecting to the initial page when javascript is disabled */}
 				<input type="hidden" name="request" value={should_redirect_to(this.props.location)}/>
 
-				<Button submit={true} style={style.form_action.register} busy={this.props.signing_in || this.props.registering}>{this.translate(messages.register)}</Button>
+				<Button submit={true} style={style.form_action.register} busy={this.props.signing_in || this.props.registering}>{this.translate(authentication_messages.register)}</Button>
 			</Form>
 		)
 
@@ -592,7 +582,8 @@ const style = styler
 	forgot_password
 		font-weight: normal
 
-		float: left
+		float   : left
+		z-index : 1
 
 	form_action
 

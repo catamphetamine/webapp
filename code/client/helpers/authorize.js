@@ -7,7 +7,7 @@ import { redirect }     from 'react-isomorphic-render'
 import Unauthenticated from '../pages/errors/unauthenticated'
 import Unauthorized    from '../pages/errors/unauthorized'
 
-import { add_redirect } from '../tools/redirection'
+import { add_redirect } from '../helpers/redirection'
 
 export default function(authorization)
 {

@@ -644,3 +644,15 @@
 .preloading .spinner
 {
 }
+
+.errors
+{
+	margin-top    : 2em;
+	margin-bottom : 0;
+
+	padding-left    : 0;
+	list-style-type : none;
+
+	color      : $input-error-message-color;
+	text-align : center;
+}

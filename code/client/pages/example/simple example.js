@@ -89,7 +89,7 @@ export default class Page extends Component
 				{title("Simple REST API example")}
 
 				<div style={style.container}>
-					<p>This is an example of REST API usage with no database persistence</p>
+					<p>This is an example of REST API usage with no database persistence (Javascript is required for this particular example)</p>
 
 					{this.render_users(error, loaded, users)}
 				</div>

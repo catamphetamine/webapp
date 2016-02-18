@@ -1,4 +1,4 @@
-import Url from './url'
+import Url from '../tools/url'
 
 // user is supposed to be redirected to this url 
 // after calling this function

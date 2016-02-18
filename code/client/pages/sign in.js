@@ -4,25 +4,33 @@ import { connect }                     from 'react-redux'
 import styler                          from 'react-styling'
 import { defineMessages }              from 'react-intl'
 
-import { should_redirect_to } from '../tools/redirection'
+import { should_redirect_to } from '../helpers/redirection'
 
 import international from '../international/internationalize'
 
-import Authentication_form from '../components/authentication form'
+import { messages as authentication_messages }                           from '../components/authentication'
+import Authentication_form, { messages as authentication_form_messages } from '../components/authentication form'
 
 const messages = defineMessages
 ({
-	header:
+	user_with_email_not_found:
 	{
-		id             : 'sign_in.header',
-		description    : 'Sign in page header',
-		defaultMessage : 'Sign in'
+		id             : 'sign_in.error.user_with_email_not_found',
+		description    : 'When user with such email is not found in the database',
+		defaultMessage : 'User with email "{email}" not found'
 	}
 })
 
 @connect
 (
-	model => ({ user: model.authentication.user })
+	model =>
+	({
+		user : model.authentication.user,
+
+		error      : model.router.location.query.error,
+		error_code : model.router.location.query.error_code,
+		email      : model.router.location.query.email
+	})
 )
 @international()
 export default class Sign_in extends Component
@@ -44,13 +52,54 @@ export default class Sign_in extends Component
 		const markup = 
 		(
 			<section className="content">
-				{title("Sign in")}
+				{title(this.props.translate(authentication_messages.sign_in))}
 
 				<Authentication_form style={style.form} on_sign_in={::this.redirect}/>
+
+				{ this.props.error ? this.render_error() : null }
 			</section>
 		)
 
 		return markup
+	}
+
+	render_error()
+	{
+		const markup =
+		(
+			<ul className="errors">
+				<li>{this.error_message()}</li>
+			</ul>
+		)
+
+		return markup
+	}
+
+	error_message()
+	{
+		const { error, error_code, translate } = this.props
+
+		if (error === '"email" required')
+		{
+			return translate(authentication_form_messages.authentication_email_is_required)
+		}
+
+		if (error === '"password" required')
+		{
+			return translate(authentication_form_messages.authentication_password_is_required)
+		}
+		
+		if (error_code == 404)
+		{
+			return translate(messages.user_with_email_not_found, { email: this.props.email })
+		}
+
+		if (error === 'Wrong password')
+		{
+			return translate(authentication_form_messages.wrong_password)
+		}
+
+		return error
 	}
 
 	redirect()
