@@ -1,3 +1,5 @@
+import { add_redirect } from '../tools/redirection'
+
 export default function(error, { url, redirect, proceed })
 {
 	// `url` will be passed as a Url parameter
@@ -6,13 +8,13 @@ export default function(error, { url, redirect, proceed })
 	// not authenticated
 	if (error.status === 401)
 	{
-		return redirect(`/unauthenticated?request=${request}`)
+		return redirect(add_redirect('/unauthenticated', request))
 	}
 
 	// not authorized
 	if (error.status === 403)
 	{
-		return redirect(`/unauthorized?request=${request}`)
+		return redirect(add_redirect('/unauthorized', request))
 	}
 
 	// log the error if running on the server side
@@ -24,11 +26,12 @@ export default function(error, { url, redirect, proceed })
 
 	// some kind of server error happened
 
-	// prevent infinite recursion
+	// prevents infinite redirect to the error page
 	if (url.starts_with('/error?'))
 	{
 		throw error
 	}
 
-	redirect(`/error?request=${request}`)
+	// redirect to the generic error page
+	redirect(add_redirect('/error', request))
 }

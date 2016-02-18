@@ -7,6 +7,8 @@ import { redirect }     from 'react-isomorphic-render'
 import Unauthenticated from '../pages/errors/unauthenticated'
 import Unauthorized    from '../pages/errors/unauthorized'
 
+import { add_redirect } from '../tools/redirection'
+
 export default function(authorization)
 {
 	return function(Wrapped)
@@ -129,7 +131,7 @@ function check_privileges({ user, url, authorization })
 	{
 		// not authenticated.
 		// redirect the user to the "unauthenticated" page
-		return { error: 'unauthenticated', redirect_to: `/unauthenticated?request=${url}` }
+		return { error: 'unauthenticated', redirect_to: add_redirect('/unauthenticated', url) }
 	}
 
 	// if no further authorization is required,
@@ -172,7 +174,7 @@ function check_privileges({ user, url, authorization })
 
 	// authorization not passed.
 	// redirect the user to the "unauthorized" page
-	return { error: 'unauthorized', redirect_to: `/unauthorized?request=${url}` }
+	return { error: 'unauthorized', redirect_to: add_redirect('/unauthorized', url) }
 }
 
 function get_display_name(Wrapped)

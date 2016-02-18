@@ -14,8 +14,6 @@ import Spinner  from './spinner'
 import { defineMessages } from 'react-intl'
 import international from '../international/internationalize'
 
-import Uri from '../tools/uri'
-
 // брать с сервера, из i18n файлов (key - имя, label - из файла этого считывать)
 const locales = 
 [
@@ -89,7 +87,6 @@ export default class Locale_switcher extends Component
 
 		cookie('locale', locale)
 		window.location.reload()
-		// window.location = new Uri(this.props.url).parameter('locale', locale).print()
 	}
 }
 

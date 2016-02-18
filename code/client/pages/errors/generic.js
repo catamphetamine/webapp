@@ -7,7 +7,8 @@ import styler from 'react-styling'
 import { defineMessages } from 'react-intl'
 import international      from '../../international/internationalize'
 
-import Uri                from '../../tools/uri'
+import Url                    from '../../tools/url'
+import { should_redirect_to } from '../../tools/redirection'
 
 const messages = defineMessages
 ({
@@ -33,7 +34,7 @@ export default class Generic_error extends Component
 					{this.props.translate(messages.header)}
 				</h1>
 
-				<a style={style.link} href={this.props.location.query.request}>{new Uri(this.props.location.query.request).to_relative_url()}</a>
+				<a style={style.link} href={should_redirect_to(this.props.location)}>{new Url(should_redirect_to(this.props.location)).to_relative_url()}</a>
 			</section>
 		)
 

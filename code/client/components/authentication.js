@@ -8,8 +8,6 @@ import styler      from 'react-styling'
 import { defineMessages } from 'react-intl'
 import international from '../international/internationalize'
 
-import Uri from '../tools/uri'
-
 import Text_input          from './text input'
 import Checkbox            from './checkbox'
 import Button              from './button'
@@ -134,7 +132,7 @@ export default class Authentication extends Component
 
 				{/* Sign out action */}
 				<Form className="sign-out-form" post="/authentication/sign-out">
-					<Button className="sign-out" action={::this.sign_out}>{this.translate(messages.sign_out)}</Button>
+					<Button className="sign-out" submit={true} action={::this.sign_out}>{this.translate(messages.sign_out)}</Button>
 				</Form>
 
 				{/* Avatar */}

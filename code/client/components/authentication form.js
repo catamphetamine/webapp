@@ -7,13 +7,13 @@ import styler      from 'react-styling'
 import { defineMessages } from 'react-intl'
 import international from '../international/internationalize'
 
-import Uri from '../tools/uri'
-
 import Text_input from './text input'
 import Checkbox   from './checkbox'
 import Button     from './button'
 import Form       from './form'
 import Modal      from './modal'
+
+import { add_redirect, should_redirect_to } from '../tools/redirection'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
 
@@ -240,7 +240,13 @@ export default class Authentication extends Component
 
 				<div style={style.or_register} className="or-register">
 					<span>{this.translate(messages.or)}&nbsp;</span>
-					<Button link={"/register?request=" + encodeURIComponent(this.props.location.query.request || '/')} button_style={style.or_register.register} action={::this.start_registration}>{this.translate(messages.register)}</Button>
+					<Button
+						link={add_redirect('/register', this.props.location)} 
+						button_style={style.or_register.register} 
+						action={::this.start_registration}>
+
+						{this.translate(messages.register)}
+					</Button>
 				</div>
 
 				<div style={style.clearfix}></div>
@@ -251,7 +257,7 @@ export default class Authentication extends Component
 					email={false}
 					value={this.state.email}
 					validate={::this.validate_email_on_sign_in}
-					on_change={value => this.setState({ email: value })}
+					on_change={email => this.setState({ email })}
 					placeholder={this.translate(messages.email)}
 					style={style.input}/>
 
@@ -261,12 +267,12 @@ export default class Authentication extends Component
 					password={true}
 					value={this.state.password}
 					validate={::this.validate_password_on_sign_in}
-					on_change={value => this.setState({ password: value })}
+					on_change={password => this.setState({ password })}
 					placeholder={this.translate(messages.password)}
 					style={style.input}/>
 
 				{/* Support redirecting to the initial page when javascript is disabled */}
-				<input type="hidden" name="request" value={this.props.location.query.request}/>
+				<input type="hidden" name="request" value={should_redirect_to(this.props.location)}/>
 
 				<div style={style.sign_in_buttons}>
 					<Button className="secondary" style={style.forgot_password} action={::this.forgot_password}>{this.translate(messages.forgot_password)}</Button>
@@ -296,7 +302,13 @@ export default class Authentication extends Component
 
 				<div style={style.or_register} className="or-register">
 					<span>{this.translate(messages.or)}&nbsp;</span>
-					<Button link={"/sign-in?request=" + encodeURIComponent(this.props.location.query.request || '/')} button_style={style.or_register.register} action={::this.cancel_registration}>{this.translate(messages.sign_in)}</Button>
+					<Button
+						link={add_redirect('/sign-in', this.props.location)} 
+						button_style={style.or_register.register} 
+						action={::this.cancel_registration}>
+
+						{this.translate(messages.sign_in)}
+					</Button>
 				</div>
 
 				<div style={style.clearfix}></div>
@@ -306,7 +318,7 @@ export default class Authentication extends Component
 					name="name"
 					value={this.state.name}
 					validate={::this.validate_name_on_registration}
-					on_change={value => this.setState({ name: value })}
+					on_change={name => this.setState({ name })}
 					placeholder={this.translate(messages.name)}
 					style={style.input}/>
 
@@ -316,7 +328,7 @@ export default class Authentication extends Component
 					email={false}
 					value={this.state.email}
 					validate={::this.validate_email_on_registration}
-					on_change={value => this.setState({ email: value })}
+					on_change={email => this.setState({ email })}
 					placeholder={this.translate(messages.email)}
 					style={style.input}/>
 
@@ -326,7 +338,7 @@ export default class Authentication extends Component
 					password={true}
 					value={this.state.password}
 					validate={::this.validate_password_on_registration}
-					on_change={value => this.setState({ password: value })}
+					on_change={password => this.setState({ password })}
 					placeholder={this.translate(messages.password)}
 					style={style.input}/>
 
@@ -346,7 +358,7 @@ export default class Authentication extends Component
 				</div>
 
 				{/* Support redirecting to the initial page when javascript is disabled */}
-				<input type="hidden" name="request" value={this.props.location.query.request}/>
+				<input type="hidden" name="request" value={should_redirect_to(this.props.location)}/>
 
 				<Button submit={true} style={style.form_action.register} busy={this.props.signing_in || this.props.registering}>{this.translate(messages.register)}</Button>
 			</Form>

@@ -1,8 +1,10 @@
 import React, { Component, PropTypes } from 'react'
-import { title }                       from 'react-isomorphic-render'
+import { title, redirect }             from 'react-isomorphic-render'
 import { connect }                     from 'react-redux'
 import styler                          from 'react-styling'
 import { defineMessages }              from 'react-intl'
+
+import { should_redirect_to } from '../tools/redirection'
 
 import international from '../international/internationalize'
 
@@ -33,7 +35,7 @@ export default class Sign_in extends Component
 		//
 		if (this.props.user)
 		{
-			this.props.history.replace(this.props.location.query.request || '/')
+			this.redirect()
 		}
 	}
 
@@ -44,21 +46,16 @@ export default class Sign_in extends Component
 			<section className="content">
 				{title("Sign in")}
 
-				<Authentication_form style={style.form} on_sign_in={() =>
-				{
-					if (this.props.location.pathname === '/sign-in')
-					{
-						this.props.history.replace('/')
-					}
-					else // if (this.props.location.pathname === '/unauthenticated')
-					{
-						this.props.history.replace(this.props.location.query.request || '/')
-					}
-				}}/>
+				<Authentication_form style={style.form} on_sign_in={::this.redirect}/>
 			</section>
 		)
 
 		return markup
+	}
+
+	redirect()
+	{
+		this.props.dispatch(redirect(should_redirect_to(this.props.location)))
 	}
 }
 
