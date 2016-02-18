@@ -180,7 +180,9 @@ export default class Authentication extends Component
 
 		registration       : PropTypes.bool,
 
-		location           : PropTypes.object
+		location           : PropTypes.object,
+
+		fields             : PropTypes.object
 	};
 
 	constructor(properties)
@@ -193,6 +195,8 @@ export default class Authentication extends Component
 		{
 			this.state.register = true
 		}
+
+		extend(this.state, this.props.fields)
 	}
 
 	componentDidMount()
@@ -335,7 +339,7 @@ export default class Authentication extends Component
 				<div>
 					<Checkbox
 						ref="accept_terms_of_service"
-						name="accept_terms_of_service"
+						name="terms_of_service_accepted"
 						style={style.terms_of_service}
 						value={this.state.terms_of_service_accepted}
 						on_change={::this.accept_terms_of_service}
@@ -461,10 +465,10 @@ export default class Authentication extends Component
 		{
 			const result = await this.props.register
 			({
-				name                    : this.state.name,
-				email                   : this.state.email,
-				password                : this.state.password,
-				accept_terms_of_service : true // is used when posting the <form/>
+				name                      : this.state.name,
+				email                     : this.state.email,
+				password                  : this.state.password,
+				terms_of_service_accepted : true // is used when posting the <form/>
 			})
 
 			await this.sign_in()

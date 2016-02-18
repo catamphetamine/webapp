@@ -72,7 +72,7 @@ export async function sign_out({}, { destroy_cookie, user, authentication_token_
 	destroy_cookie('authentication')
 }
 
-export async function register({ name, email, password, accept_terms_of_service })
+export async function register({ name, email, password, terms_of_service_accepted })
 {
 	if (!exists(name))
 	{
@@ -89,7 +89,7 @@ export async function register({ name, email, password, accept_terms_of_service 
 		throw new Errors.Input_missing(`"password" required`)
 	}
 
-	if (!accept_terms_of_service)
+	if (!terms_of_service_accepted)
 	{
 		throw new Errors.Input_missing(`You must accept the terms of service`)
 	}

@@ -29,6 +29,7 @@ const messages = defineMessages
 
 		error      : model.router.location.query.error,
 		error_code : model.router.location.query.error_code,
+		
 		email      : model.router.location.query.email
 	})
 )
@@ -49,12 +50,17 @@ export default class Sign_in extends Component
 
 	render()
 	{
+		const { email } = this.props
+
 		const markup = 
 		(
 			<section className="content">
 				{title(this.props.translate(authentication_messages.sign_in))}
 
-				<Authentication_form style={style.form} on_sign_in={::this.redirect}/>
+				<Authentication_form 
+					fields={{ email }}
+					style={style.form} 
+					on_sign_in={::this.redirect}/>
 
 				{ this.props.error ? this.render_error() : null }
 			</section>
@@ -88,7 +94,7 @@ export default class Sign_in extends Component
 		{
 			return translate(authentication_form_messages.authentication_password_is_required)
 		}
-		
+
 		if (error_code == 404)
 		{
 			return translate(messages.user_with_email_not_found, { email: this.props.email })

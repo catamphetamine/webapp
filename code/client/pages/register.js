@@ -23,7 +23,11 @@ const messages = defineMessages
 
 		error      : model.router.location.query.error,
 		error_code : model.router.location.query.error_code,
-		email      : model.router.location.query.email
+
+		name                      : model.router.location.query.name,
+		email                     : model.router.location.query.email,
+		password                  : model.router.location.query.password,
+		terms_of_service_accepted : model.router.location.query.terms_of_service_accepted
 	})
 )
 @international()
@@ -43,12 +47,18 @@ export default class Sign_in extends Component
 
 	render()
 	{
+		const { name, email, password, accept, terms_of_service_accepted } = this.props
+
 		const markup = 
 		(
 			<section className="content">
 				{title(this.props.translate(authentication_messages.register))}
 
-				<Authentication_form registration={true} style={style.form} on_sign_in={::this.redirect}/>
+				<Authentication_form 
+					registration={true}
+					fields={{ name, email, password, accept, terms_of_service_accepted }}
+					style={style.form} 
+					on_sign_in={::this.redirect}/>
 
 				{ this.props.error ? this.render_error() : null }
 			</section>

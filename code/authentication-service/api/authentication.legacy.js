@@ -7,7 +7,7 @@ import { store, online_status_store } from '../store'
 
 import { sign_in, sign_out, register, public_user } from './authentication.base'
 
-api.legacy.post('/legacy/sign-in', async function({ email, password, request }, { ip, set_cookie, secret })
+api.legacy.post('/legacy/sign-in', async function({ request })
 {
 	const user = await sign_in.apply(this, arguments)
 
@@ -15,7 +15,7 @@ api.legacy.post('/legacy/sign-in', async function({ email, password, request }, 
 },
 error => `${address_book.web_server}/sign-in`)
 
-api.legacy.post('/legacy/sign-out', async function({}, { destroy_cookie, user, authentication_token_id })
+api.legacy.post('/legacy/sign-out', async function()
 {
 	await sign_out.apply(this, arguments)
 
@@ -23,7 +23,7 @@ api.legacy.post('/legacy/sign-out', async function({}, { destroy_cookie, user, a
 },
 error => `${address_book.web_server}/error`)
 
-api.legacy.post('/legacy/register', async function({ name, email, password, request })
+api.legacy.post('/legacy/register', async function({ request })
 {
 	await register.apply(this, arguments)
 
