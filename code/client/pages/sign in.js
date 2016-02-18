@@ -29,7 +29,7 @@ const messages = defineMessages
 
 		error      : model.router.location.query.error,
 		error_code : model.router.location.query.error_code,
-		
+
 		email      : model.router.location.query.email
 	})
 )
@@ -59,6 +59,7 @@ export default class Sign_in extends Component
 
 				<Authentication_form 
 					fields={{ email }}
+					focus_on={this.get_focused_element()}
 					style={style.form} 
 					on_sign_in={::this.redirect}/>
 
@@ -106,6 +107,33 @@ export default class Sign_in extends Component
 		}
 
 		return error
+	}
+
+	get_focused_element()
+	{
+		const { error, error_code, translate } = this.props
+
+		if (error === '"email" required')
+		{
+			return 'email'
+		}
+
+		if (error === '"password" required')
+		{
+			return 'password'
+		}
+
+		if (error_code == 404)
+		{
+			return 'email'
+		}
+
+		if (error === 'Wrong password')
+		{
+			return 'password'
+		}
+
+		return 'email'
 	}
 
 	redirect()

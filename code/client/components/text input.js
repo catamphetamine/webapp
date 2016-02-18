@@ -18,6 +18,7 @@ export default class Text_input extends Component
 		multiline   : PropTypes.bool,
 		email       : PropTypes.bool,
 		password    : PropTypes.bool,
+		focus       : PropTypes.bool,
 		style       : PropTypes.object
 	};
 
@@ -43,7 +44,7 @@ export default class Text_input extends Component
 
 	render_input()
 	{
-		const { name, value, placeholder, multiline, email, password } = this.props
+		const { name, value, placeholder, multiline, email, password, focus } = this.props
 
 		let type
 
@@ -64,12 +65,12 @@ export default class Text_input extends Component
 		{
 			// onBlur={::this.on_blur}
 			// maybe add autoresize for textarea (smoothly animated)
-			return <textarea ref="input" name={name} className="text-input-field" style={this.props.style ? this.props.style.input : ''} value={value} onFocus={::this.on_focus} onChange={::this.on_change} placeholder={placeholder}/>
+			return <textarea ref="input" name={name} className="text-input-field" style={this.props.style ? this.props.style.input : ''} value={value} onFocus={::this.on_focus} onChange={::this.on_change} placeholder={placeholder} autoFocus={focus}/>
 		}
 		else
 		{
 			// onBlur={::this.on_blur}
-			return <input ref="input" type={type} name={name} className="text-input-field" style={this.props.style ? this.props.style.input : ''} value={value} onFocus={::this.on_focus} onChange={::this.on_change} placeholder={placeholder}/>
+			return <input ref="input" type={type} name={name} className="text-input-field" style={this.props.style ? this.props.style.input : ''} value={value} onFocus={::this.on_focus} onChange={::this.on_change} placeholder={placeholder} autoFocus={focus}/>
 		}
 	}
 

@@ -156,9 +156,11 @@ export default class Authentication extends Component
 
 	pristine_form_state = 
 	{
-		name     : undefined,
-		email    : undefined,
-		password : undefined,
+		name                      : undefined,
+		email                     : undefined,
+		password                  : undefined,
+		terms_of_service_accepted : undefined,
+
 		register : false
 	};
 
@@ -179,6 +181,8 @@ export default class Authentication extends Component
 		register           : PropTypes.func.isRequired,
 
 		registration       : PropTypes.bool,
+
+		focus_on           : PropTypes.string,
 
 		location           : PropTypes.object,
 
@@ -249,6 +253,7 @@ export default class Authentication extends Component
 					ref="email"
 					name="email"
 					email={false}
+					focus={this.props.focus_on === 'email'}
 					value={this.state.email}
 					validate={::this.validate_email_on_sign_in}
 					on_change={email => this.setState({ email })}
@@ -259,6 +264,7 @@ export default class Authentication extends Component
 					ref="password"
 					name="password"
 					password={true}
+					focus={this.props.focus_on === 'password'}
 					value={this.state.password}
 					validate={::this.validate_password_on_sign_in}
 					on_change={password => this.setState({ password })}
@@ -310,6 +316,7 @@ export default class Authentication extends Component
 				<Text_input
 					ref="name"
 					name="name"
+					focus={this.props.focus_on === 'name'}
 					value={this.state.name}
 					validate={::this.validate_name_on_registration}
 					on_change={name => this.setState({ name })}
@@ -320,6 +327,7 @@ export default class Authentication extends Component
 					ref="email"
 					name="email"
 					email={false}
+					focus={this.props.focus_on === 'email'}
 					value={this.state.email}
 					validate={::this.validate_email_on_registration}
 					on_change={email => this.setState({ email })}
@@ -330,6 +338,7 @@ export default class Authentication extends Component
 					ref="password"
 					name="password"
 					password={true}
+					focus={this.props.focus_on === 'password'}
 					value={this.state.password}
 					validate={::this.validate_password_on_registration}
 					on_change={password => this.setState({ password })}
@@ -340,6 +349,7 @@ export default class Authentication extends Component
 					<Checkbox
 						ref="accept_terms_of_service"
 						name="terms_of_service_accepted"
+						focus={this.props.focus_on === 'terms_of_service_accepted'}
 						style={style.terms_of_service}
 						value={this.state.terms_of_service_accepted}
 						on_change={::this.accept_terms_of_service}

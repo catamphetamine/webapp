@@ -17,6 +17,7 @@ export default class Checkbox extends Component
 		// label     : PropTypes.string.isRequired,
 		on_change : PropTypes.func.isRequired,
 		validate  : PropTypes.func,
+		focus     : PropTypes.bool,
 		style     : PropTypes.object
 	};
 
@@ -60,7 +61,6 @@ export default class Checkbox extends Component
 			<div className={"rich checkbox" + " " + (this.state.valid === false ? 'checkbox-invalid' : '')} style={ this.props.style ? merge(style.container, this.props.style) : style.container}>
 				<input 
 					ref="input" 
-					name={this.props.name}
 					type="checkbox" 
 					onChange={::this.toggle} 
 					style={style.checkbox.input} 
@@ -116,7 +116,8 @@ export default class Checkbox extends Component
 				<input 
 					type="checkbox" 
 					name={this.props.name}
-					defaultChecked={this.props.value}/>
+					defaultChecked={this.props.value}
+					autoFocus={this.props.focus}/>
 
 				<label className="checkbox-label" style={style.label.static}>
 					{this.props.children}

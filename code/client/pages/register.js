@@ -57,6 +57,7 @@ export default class Sign_in extends Component
 				<Authentication_form 
 					registration={true}
 					fields={{ name, email, password, accept, terms_of_service_accepted }}
+					focus_on={this.get_focused_element()}
 					style={style.form} 
 					on_sign_in={::this.redirect}/>
 
@@ -109,6 +110,38 @@ export default class Sign_in extends Component
 		}
 
 		return error
+	}
+
+	get_focused_element()
+	{
+		const { error, error_code, translate } = this.props
+
+		if (error === '"name" required')
+		{
+			return 'name'
+		}
+
+		if (error === '"email" required')
+		{
+			return 'email'
+		}
+
+		if (error === '"password" required')
+		{
+			return 'password'
+		}
+		
+		if (error === 'You must accept the terms of service')
+		{
+			return 'terms_of_service_accepted'
+		}
+
+		if (error === 'User is already registered for this email')
+		{
+			return 'email'
+		}
+
+		return 'email'
 	}
 
 	redirect()
