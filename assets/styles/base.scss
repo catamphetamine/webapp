@@ -39,7 +39,7 @@ html
 	touch-action     : manipulation;
 }
 
-html, body, #react_markup, .layout
+html, body, #react_markup, .layout, .page
 {
 	height: 100%;
 }
@@ -56,6 +56,12 @@ html, body, #react_markup, .layout
 // 	// http://stackoverflow.com/questions/8468066/child-inside-parent-with-min-height-100-not-inheriting-height
 // 	height: 1px;
 // }
+
+.page
+{
+	// stretches .content vertically in IE
+	height: 1px;
+}
 
 body
 {

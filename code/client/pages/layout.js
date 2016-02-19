@@ -25,40 +25,6 @@ import { authenticate } from '../actions/authentication'
 // when adjusting this transition time also adjust it in styles/xs-m.scss
 const menu_transition_duration = 210 // milliseconds
 
-const messages = defineMessages
-({
-	title:
-	{
-		id             : 'application.title',
-		description    : 'Web application title',
-		defaultMessage : 'WebApp'
-	},
-	description:
-	{
-		id             : 'application.description',
-		description    : 'Web application description',
-		defaultMessage : 'A generic web application boilerplate'
-	},
-	menu_example:
-	{
-		id             : 'menu.example',
-		description    : 'API usage examples',
-		defaultMessage : 'Example'
-	},
-	menu_components_showcase:
-	{
-		id             : 'menu.components_showcase',
-		description    : 'The section shows various React components in action',
-		defaultMessage : 'Showcase'
-	},
-	menu_log:
-	{
-		id             : 'menu.log',
-		description    : 'The section shows log messages from all the parts of the application',
-		defaultMessage : 'Log'
-	}
-})
-
 @preload
 ({
 	blocking: (dispatch, get_model) => dispatch(authenticate())
@@ -81,10 +47,10 @@ export default class Layout extends Component
 
 	render()
 	{
-		const translate = this.props.intl.formatMessage
+		const { translate } = this.props
 
-		const title = 'WebApp'
-		const description = 'A generic web application boilerplate'
+		const title       = translate(messages.title)
+		const description = translate(messages.description)
 
 		// <head/> <meta/> tags
 		const meta =
@@ -115,31 +81,19 @@ export default class Layout extends Component
 			}
 		}
 
-		// render the page
-
-		const menu_items =
-		[{
-			name: this.props.translate(messages.menu_example),
-			link: '/example/simple'
-		}, {
-			name: this.props.translate(messages.menu_components_showcase),
-			link: '/showcase/form'
-		}, {
-			name: this.props.translate(messages.menu_log),
-			link: '/logs'
-		}]
-
 		const markup = 
 		(
-			<div className={ this.state.page_moved_aside ? 'layout layout-with-page-aside' : 'layout' }>
+			<div className={ 'layout' + ' ' + (this.state.page_moved_aside ? 'layout-with-page-aside' : '') }>
+				{/* <head/> */}
 				{head(title, description, meta)}
 
-				{/* Navigation */}
+				{/* navigation for small screens (will slide out) */}
 				{/*<nav>*/}
 					{/* main menu */}
-					<Menu show={this.state.page_moved_aside} toggle={::this.toggle_menu} update_width={::this.update_menu_width} items={menu_items}/>
+					<Menu show={this.state.show_menu} show_while={this.state.page_moved_aside} toggle={::this.toggle_menu} update_width={::this.update_menu_width} items={menu_entries(translate)}/>
 				{/*</nav>*/}
-    
+
+				{/* webpage */}
 				<div className="page" style={ this.state.show_menu ? merge(style.page, { transform: `translate3d(${this.state.menu_width}px, 0px, 0px)` }) : style.page }>
 					{/* "page is preloading" spinner */}
 					<Preloading/>
@@ -154,20 +108,21 @@ export default class Layout extends Component
 						{/* home page link */}
 						<div className="logo" style={{ textAlign: 'center' }}>
 							<IndexLink to="/" style={style.home} activeStyle={style.home_active}>
-								{this.props.translate(messages.title)}
+								{translate(messages.title)}
 							</IndexLink>
 						</div>
 
-						{/* Navigation */}
+						{/* navigation for wide screens */}
 						{/*<nav>*/}
 							{/* main menu */}
-							<Menu items={menu_items}/>
+							<Menu items={menu_entries(translate)}/>
 						{/*</nav>*/}
 
-						{/* login */}
+						{/* User accout section */}
 						<Authentication/>
 					</header>
 
+					{/* page content */}
 					{this.props.children}
 
 					<footer>
@@ -208,6 +163,40 @@ export default class Layout extends Component
 	}
 }
 
+export const messages = defineMessages
+({
+	title:
+	{
+		id             : 'application.title',
+		description    : 'Web application title',
+		defaultMessage : 'WebApp'
+	},
+	description:
+	{
+		id             : 'application.description',
+		description    : 'Web application description',
+		defaultMessage : 'A generic web application boilerplate'
+	},
+	menu_example:
+	{
+		id             : 'menu.example',
+		description    : 'API usage examples',
+		defaultMessage : 'Example'
+	},
+	menu_components_showcase:
+	{
+		id             : 'menu.components_showcase',
+		description    : 'The section shows various React components in action',
+		defaultMessage : 'Showcase'
+	},
+	menu_log:
+	{
+		id             : 'menu.log',
+		description    : 'The section shows log messages from all the parts of the application',
+		defaultMessage : 'Log'
+	}
+})
+
 const style = styler
 `
 	page
@@ -222,3 +211,17 @@ const style = styler
 			cursor : default
 			color  : inherit
 `
+
+export function menu_entries(translate)
+{
+	return [{
+		name: translate(messages.menu_example),
+		link: '/example/simple'
+	}, {
+		name: translate(messages.menu_components_showcase),
+		link: '/showcase/form'
+	}, {
+		name: translate(messages.menu_log),
+		link: '/logs'
+	}]
+}

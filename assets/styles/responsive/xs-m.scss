@@ -184,7 +184,10 @@ header
 .page
 {
 	background : white;
-	box-shadow : 0 0 0.35em rgba(0, 0, 0, 1);
+
+	// box-shadow will show a bug if declared here
+	// https://github.com/philipwalton/solved-by-flexbox/issues/79
+	// box-shadow : 0 0 0.35em rgba(0, 0, 0, 1);
 
 	// when adjusting this transition time also adjust it in pages/layout.js
 	transition-property        : transform;
@@ -195,12 +198,6 @@ header
 
 .menu
 {
-	background: #505050;
-}
-
-.menu
-{
-	color: #dfdfdf;
 	min-height: 100%;
 
 	position : fixed;
@@ -209,6 +206,21 @@ header
 	bottom   : 0;
 
 	overflow-y: auto;
+
+	background: #505050;
+
+	// looks kinda old fashioned
+	// box-shadow: inset -0.3em 0px 0.35em -0.35em rgba(0, 0, 0, 1);
+
+	a
+	{
+		color: #dfdfdf;
+	}
+
+	> li
+	{
+		margin-right: 0 !important;
+	}
 }
 
 .menu-item:active
@@ -218,7 +230,7 @@ header
 
 .layout-with-page-aside
 {
-	overflow-x: hidden;
+	overflow-x: visible;
 }
 
 .page

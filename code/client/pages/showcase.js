@@ -5,7 +5,12 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import styler from 'react-styling'
 
+import { messages as layout_messages } from './layout'
+
+import international from '../international/internationalize'
+
 @connect()
+@international()
 export default class Page extends Component
 {
 	render()
@@ -13,7 +18,7 @@ export default class Page extends Component
 		const markup = 
 		(
 			<section className="content">
-				{title("UI Showcase")}
+				{title(this.props.translate(layout_messages.menu_components_showcase))}
 
 				<ul style={style.menu}>
 					<li style={style.menu.item}><Link to="/showcase/dialog" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Dialog'}</Link></li>

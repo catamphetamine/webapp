@@ -30,7 +30,7 @@ export default class Page extends Component
 		const markup = 
 		(
 			<section className="content">
-				{title("Profile")}
+				{title("User name here")}
 
 				<h1 style={style.header}>
 					{this.props.translate(messages.header)}

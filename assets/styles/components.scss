@@ -629,10 +629,10 @@
 
 	position   : absolute;
 	top        : 50%;
-	margin-top : -1em;
+	margin-top : -1.17em;
 
-	padding       : 0.5em;
-	border-radius : 0.5em;
+	padding       : 0.35em;
+	border-radius : 50%; // 0.5em;
 
 	background: rgba(255, 255, 255, 0.8);
 
@@ -643,6 +643,7 @@
 
 .preloading .spinner
 {
+	// 2em x 2em
 }
 
 .errors

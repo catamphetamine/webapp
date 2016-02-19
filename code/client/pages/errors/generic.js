@@ -28,7 +28,7 @@ export default class Generic_error extends Component
 		const markup =
 		(
 			<section className="content" style={style.content}>
-				{title("Error")}
+				{title(this.props.translate(messages.header))}
 
 				<h1 style={style.header}>
 					{this.props.translate(messages.header)}

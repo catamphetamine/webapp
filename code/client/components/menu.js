@@ -13,8 +13,10 @@ export default class Menu extends Component
 	static propTypes = 
 	{
 		show         : PropTypes.bool,
+		show_while   : PropTypes.bool,
 		toggle       : PropTypes.func,
-		update_width : PropTypes.func
+		update_width : PropTypes.func,
+		style        : PropTypes.object
 	};
 
 	static contextTypes =
@@ -87,11 +89,13 @@ export default class Menu extends Component
 
 		let markup
 
+		const menu_style = this.props.style ? merge(style.menu, this.props.style) : style.menu
+
 		if (exists(this.props.show))
 		{
 			markup =
 			(
-				<ul ref="menu" style={style.menu} className={'menu' + ' ' + 'menu-collapsible' + ' ' + (this.props.show ? 'menu-shown' : '')}>
+				<ul ref="menu" style={menu_style} className={'menu' + ' ' + 'menu-collapsible' + ' ' + (this.props.show_while ? 'menu-shown' : '')}>
 					{ this.props.items.map((item, i) => <li key={i} style={style.menu.item}><Link to={item.link} style={style.menu.item.link} activeClassName="menu-item-selected" className="menu-item">{item.name}</Link></li>) }
 				</ul>
 			)
@@ -100,7 +104,7 @@ export default class Menu extends Component
 		{
 			markup =
 			(
-				<ul style={style.menu} className="menu">
+				<ul style={menu_style} className="menu">
 					{ this.props.items.map((item, i) => <li key={i} style={style.menu.item}><Link to={item.link} style={style.menu.item.link} activeClassName="menu-item-selected" className="menu-item">{item.name}</Link></li>) }
 				</ul>
 			)

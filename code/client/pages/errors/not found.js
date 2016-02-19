@@ -25,7 +25,7 @@ export default class Page_not_found extends Component
 		const markup =
 		(
 			<section className="content">
-				{title("Page not found")}
+				{title(this.props.translate(messages.header))}
 
 				<h1 style={style.header}>
 					{this.props.translate(messages.header)}

@@ -28,7 +28,7 @@ export default class Unauthorized extends Component
 		const markup =
 		(
 			<section className="content" style={style.content}>
-				{title("Unauthorized")}
+				{title(this.props.translate(messages.header))}
 
 				<h1 style={style.header}>
 					{this.props.translate(messages.header)}

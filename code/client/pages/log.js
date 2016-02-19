@@ -11,9 +11,11 @@ import { preload }        from 'react-isomorphic-render/redux'
 import { get as get_log } from '../actions/log'
 import log_levels         from '../../common/log levels'
 
+import { messages as layout_messages } from './layout'
+
 import international      from '../international/internationalize'
 
-const messages = defineMessages
+export const messages = defineMessages
 ({
 	entry_message:
 	{
@@ -52,7 +54,7 @@ export default class Log extends Component
 		const markup = 
 		(
 			<div>
-				{title("Log")}
+				{title(this.props.translate(layout_messages.menu_log))}
 
 				<section className="content">
 					<table>

@@ -4,6 +4,8 @@ export default
 	'application.description' : `Пример web приложения на React'е и Flux'е`,
 	'application.language'    : 'Язык',
 
+	'menu' : 'Меню',
+
 	'authentication.sign_in'             : 'Войти',
 	'authentication.sign_out'            : 'Выйти',
 	'authentication.register'            : 'Зарегистрироваться',
@@ -40,6 +42,7 @@ export default
 
 	'home.header': 'Собака',
 
+	'log.title'         : 'Журнал',
 	'log.entry.message' : 'текст',
 
 	'unauthenticated.header' : 'Войдите, чтобы посмотреть эту страницу',

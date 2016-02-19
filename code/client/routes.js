@@ -45,10 +45,10 @@ import Not_found        from './pages/errors/not found'
 import Unauthenticated  from './pages/errors/unauthenticated'
 import Unauthorized     from './pages/errors/unauthorized'
 import Generic_error    from './pages/errors/generic'
-import Editor           from './pages/editor'
 import Home             from './pages/home'
 import Sign_in          from './pages/sign in'
 import Register         from './pages/register'
+import Menu             from './pages/menu'
 import Profile          from './pages/user/profile'
 import Account          from './pages/user/account'
 import Showcase         from './pages/showcase'
@@ -107,6 +107,8 @@ export default function() // (store)
 
 			<Route path="sign-in" component={Sign_in}/>
 			<Route path="register" component={Register}/>
+
+			<Route path="menu" component={Menu}/>
 
 			<Route path="unauthenticated" status={401} component={Unauthenticated}/>
 			<Route path="unauthorized"    status={403} component={Unauthorized}/>

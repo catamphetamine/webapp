@@ -2,19 +2,16 @@ import { add_redirect } from '../helpers/redirection'
 
 export default function(error, { url, redirect, proceed })
 {
-	// `url` will be passed as a Url parameter
-	const request = encodeURIComponent(url)
-
 	// not authenticated
 	if (error.status === 401)
 	{
-		return redirect(add_redirect('/unauthenticated', request))
+		return redirect(add_redirect('/unauthenticated', url))
 	}
 
 	// not authorized
 	if (error.status === 403)
 	{
-		return redirect(add_redirect('/unauthorized', request))
+		return redirect(add_redirect('/unauthorized', url))
 	}
 
 	// log the error if running on the server side
@@ -33,5 +30,5 @@ export default function(error, { url, redirect, proceed })
 	}
 
 	// redirect to the generic error page
-	redirect(add_redirect('/error', request))
+	redirect(add_redirect('/error', url))
 }

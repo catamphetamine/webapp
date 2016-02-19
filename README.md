@@ -9,7 +9,7 @@ Features
 * Webpack
 * Isomorphic (universal) rendering
 * Hot reload (aka Hot Module Replacement) for React components, Redux reducers, Redux action creators, translated messages
-* Internationalization with React-intl v2
+* Internationalization with React-intl
 * User authentication (JSON Web Token) & authorization (roles)
 * REST API
 * Microservice architecture
@@ -221,18 +221,29 @@ If a certain Http request is automated and shouldn't be interpreted as a user be
 
 This works for GET requests, and I suppose it would work for POST requests too.
 
+Troubleshooting
+===============
+
+#### Error: Invariant Violation: `mapStateToProps` must return an object. Instead received [object Promise]
+
+This error is obscuring the source error. One may try `Ctrl + C` and `npm run dev` again.
+
 To do
 ====================
 
-перевести title страниц
-
-
-
-
-
-
-
 сохранять данные пользователей в PostgreSQL (bookshelf)
+
+хранить пользователей в mongodb (и токены)
+
+
+
+
+
+monitoring-service:
+
+сделать страницу мониторинга, которая будет показывать (для начала) время исполнения http запроса (common/web server) в таблице вида "сервис, url, время".
+
+потом ещё сделать метрики отзывчивости event loop'а (процентили), и количество запросов в секунду.
 
 
 
@@ -241,10 +252,6 @@ To do
 при переключении языка - записывать язык в данные пользователя в бд, чтобы потом знать, на каком языке ему слать письма.
 
 
-
-
-
-хранить пользователей в mongodb (и токены)
 
 
 
