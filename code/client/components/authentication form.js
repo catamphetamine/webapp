@@ -456,10 +456,20 @@ export default class Authentication extends Component
 		}
 		catch (error)
 		{
-			// swallows http errors
+			// swallows Http errors and Rest Api errors
+			// so that they're not output to the console
 			if (!error.status)
 			{
 				throw error
+			}
+
+			if (error.status === 404)
+			{
+				this.refs.email.focus()
+			}
+			else if (error.message === 'Wrong password')
+			{
+				this.refs.password.focus()
 			}
 		}
 	}
@@ -493,10 +503,16 @@ export default class Authentication extends Component
 		}
 		catch (error)
 		{
-			// swallows http errors
+			// swallows Http errors and Rest Api errors
+			// so that they're not output to the console
 			if (!error.status)
 			{
 				throw error
+			}
+
+			if (error.message === 'User is already registered for this email')
+			{
+				this.refs.email.focus()
 			}
 		}
 	}
