@@ -221,13 +221,13 @@ mongo --port 27017 -u administrator -p [administrator-password] --authentication
 
 # mongo --eval "..."
 
-use database
+use DATABASE_NAME
 db.createUser({
   user: "user",
   pwd: "password",
   roles:
   [
-    { role: "readWrite", db: "database" }
+    { role: "readWrite", db: "DATABASE_NAME" }
   ]
 })
 
