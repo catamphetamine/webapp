@@ -18,7 +18,7 @@ const messages = defineMessages
 
 @connect
 (
-	store => ({ })
+	model => ({ })
 )
 @international()
 export default class Page extends Component

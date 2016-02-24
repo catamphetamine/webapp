@@ -507,7 +507,7 @@ Object.defineProperty(Function.prototype, 'periodical',
 // временная заглушка для переводов на языки
 // global._ = (key) -> key
 
-global.custom_error = function(name, { code, message })
+global.custom_error = function(name, { code, message, lock_message, additional_properties })
 {
 	class Custom_error extends Error
 	{
@@ -541,10 +541,24 @@ global.custom_error = function(name, { code, message })
 					this.message = argument.message
 				}
 
-				this.message = argument || this.message
+				if (lock_message !== true)
+				{
+					this.message = argument || this.message
+				}
 			}
 
 			this.name = name
+
+			if (additional_properties)
+			{
+				for (let key of Object.keys(additional_properties))
+				{
+					if (this[key] === undefined)
+					{
+						this[key] = additional_properties[key]
+					}
+				}
+			}
 
 			if (Error.captureStackTrace)
 			{

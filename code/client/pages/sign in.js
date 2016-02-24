@@ -86,12 +86,12 @@ export default class Sign_in extends Component
 	{
 		const { error, error_code, translate } = this.props
 
-		if (error === '"email" required')
+		if (error === '"email" is required')
 		{
 			return translate(authentication_form_messages.authentication_email_is_required)
 		}
 
-		if (error === '"password" required')
+		if (error === '"password" is required')
 		{
 			return translate(authentication_form_messages.authentication_password_is_required)
 		}
@@ -113,12 +113,12 @@ export default class Sign_in extends Component
 	{
 		const { error, error_code, translate } = this.props
 
-		if (error === '"email" required')
+		if (error === '"email" is required')
 		{
 			return 'email'
 		}
 
-		if (error === '"password" required')
+		if (error === '"password" is required')
 		{
 			return 'password'
 		}

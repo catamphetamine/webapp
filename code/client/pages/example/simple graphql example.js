@@ -3,10 +3,6 @@ import { title }            from 'react-isomorphic-render'
 import styler               from 'react-styling'
 import { connect }          from 'react-redux'
 
-@connect
-(
-	store => ({ })
-)
 export default class Page extends Component
 {
 	render()

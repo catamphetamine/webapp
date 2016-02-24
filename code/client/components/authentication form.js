@@ -118,6 +118,18 @@ export const messages = defineMessages
 		id             : 'registration.email_already_registered',
 		description    : 'User with this email address is already registered',
 		defaultMessage : 'There already is a user account associated with this email address'
+	},
+	sign_in_error:
+	{
+		id             : 'authentication.error',
+		description    : 'User sign in error',
+		defaultMessage : 'Couldn\'t sign in'  
+	},
+	registration_error:
+	{
+		id             : 'registration.error',
+		description    : 'User registration error',
+		defaultMessage : 'Couldn\'t register'  
 	}
 })
 
@@ -523,12 +535,13 @@ export default class Authentication extends Component
 		{
 			return this.translate(messages.user_not_found)
 		}
-		else if (error.message === 'Wrong password')
+		
+		if (error.message === 'Wrong password')
 		{
 			return this.translate(messages.wrong_password)
 		}
 
-		return error
+		return this.translate(messages.sign_in_error)
 	}
 
 	registration_error(error)
@@ -538,7 +551,7 @@ export default class Authentication extends Component
 			return this.translate(messages.email_already_registered)
 		}
 
-		return error
+		return this.translate(messages.registration_error)
 	}
 
 	reset_validation()

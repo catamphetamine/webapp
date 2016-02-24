@@ -25,9 +25,11 @@ export default
 	'registration.password_is_required'                    : 'Придумайте себе пароль',
 	'registration.terms_of_service_acceptance_is_required' : 'Для регистрации вам необоходимо принять наши условия обслуживания',
 	'registration.email_already_registered'                : 'Этот почтовый адрес уже был зарегистрирован ранее',
+	'registration.error'                                   : 'Не удалось зарегистрироваться',
 
 	'authentication.email_is_required'    : 'Введите вашу почту',
 	'authentication.password_is_required' : 'Введите ваш пароль',
+	'authentication.error'                : 'Не удалось войти',
 
 	'authentication.user_not_found' : 'Нет пользователя с такой почтой',
 	'authentication.wrong_password' : 'Неверный пароль',

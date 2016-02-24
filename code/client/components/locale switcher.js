@@ -39,9 +39,9 @@ const messages = defineMessages
 
 @connect
 (
-	store => 
+	model => 
 	({
-		locale : store.locale.locale,
+		locale : model.locale.locale,
 		// url    : store.router.location.pathname + store.router.location.search
 	})
 )

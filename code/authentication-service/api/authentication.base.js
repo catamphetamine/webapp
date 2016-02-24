@@ -1,19 +1,20 @@
+import uid    from 'uid-safe'
 import jwt    from 'jsonwebtoken'
 
 import http   from '../../common/http'
 
 import { store, online_status_store } from '../store'
 
-export async function sign_in({ email, password }, { ip, set_cookie, secret })
+export async function sign_in({ email, password }, { ip, set_cookie, secret, http })
 {
 	if (!exists(email))
 	{
-		throw new Errors.Input_missing(`"email" required`)
+		throw new Errors.Input_missing(`"email" is required`)
 	}
 
 	if (!exists(password))
 	{
-		throw new Errors.Input_missing(`"password" required`)
+		throw new Errors.Input_missing(`"password" is required`)
 	}
 
 	const user = await store.find_user_by_email(email)
@@ -27,7 +28,7 @@ export async function sign_in({ email, password }, { ip, set_cookie, secret })
 
 	if (!matches)
 	{
-		throw new Errors.Generic(`Wrong password`) 
+		throw new Errors.Error(`Wrong password`) 
 	}
 
 	// hashing a password is a CPU-intensive lengthy operation.
@@ -36,9 +37,9 @@ export async function sign_in({ email, password }, { ip, set_cookie, secret })
 	// maybe could be offloaded from node.js 
 	// to some another multithreaded backend.
 	//
-	const jwt_id = store.generate_unique_jwt_id(user)
+	const jwt_id = generate_unique_jwt_id(user)
 
-	const token = jwt.sign(configuration.authentication_token_payload.write(user) || {},
+	const token = jwt.sign(configuration.authentication_token_payload.write({ ...user_data, ...user }) || {},
 	secret,
 	{
 		subject : user.id,
@@ -51,9 +52,16 @@ export async function sign_in({ email, password }, { ip, set_cookie, secret })
 	const expires = new Date(2147483647000)  // January 2038
 	set_cookie('authentication', token, { expires, signed: false })
 
-	await store.update_user(user)
+	const user_data = await get_user(http, user.id, token)
 
-	return public_user(user)
+	if (!user_data.id)
+	{
+		throw new Errors.Not_found(`No user with this id`)
+	}
+
+	// await store.update_user(user)
+
+	return own_user(user_data, user.id)
 }
 
 export async function sign_out({}, { destroy_cookie, user, authentication_token_id })
@@ -76,17 +84,17 @@ export async function register({ name, email, password, terms_of_service_accepte
 {
 	if (!exists(name))
 	{
-		throw new Errors.Input_missing(`"name" required`)
+		throw new Errors.Input_missing(`"name" is required`)
 	}
 
 	if (!exists(email))
 	{
-		throw new Errors.Input_missing(`"email" required`)
+		throw new Errors.Input_missing(`"email" is required`)
 	}
 
 	if (!exists(password))
 	{
-		throw new Errors.Input_missing(`"password" required`)
+		throw new Errors.Input_missing(`"password" is required`)
 	}
 
 	if (!terms_of_service_accepted)
@@ -96,7 +104,7 @@ export async function register({ name, email, password, terms_of_service_accepte
 
 	if (await store.find_user_by_email(email))
 	{
-		throw new Errors.Generic(`User is already registered for this email`)
+		throw new Errors.Error(`User is already registered for this email`)
 	}
 
 	// hashing a password is a CPU-intensive lengthy operation.
@@ -107,32 +115,48 @@ export async function register({ name, email, password, terms_of_service_accepte
 	//
 	password = await hash_password(password)
 
-	const id = store.create_user
-	({
-		name,
-		email,
-		password,
-
+	const privileges =
+	{
 		role          : 'administrator', // 'moderator', 'senior moderator' (starting from moderator)
-		moderation    : [], // [1, 2, 3, ...] (starting from moderator)
-		switches      : [], // ['read_only', 'disable_user_registration', ...] (starting from senior moderator)
+		// moderation    : [], // [1, 2, 3, ...] (starting from moderator)
+		// switches      : [], // ['read_only', 'disable_user_registration', ...] (starting from senior moderator)
 		// grant   : ['moderation', 'switches'] // !== true (starting from senior moderator)
 		// revoke  : ['moderation', 'switches'] // !== true (starting from senior moderator)
-	})
+	}
+
+	const user =
+	{
+		email,
+		password,
+		...privileges
+	}
+
+	const id = await store.create_user(user)
+
+	const user_data = 
+	{
+		id, 
+		name,
+		email,
+		...privileges
+	}
+
+	await create_user(user_data)
 
 	return { id }
 }
 
-export function public_user(user)
+export function own_user(user, id)
 {
-	const result =
+	const result = 
 	{
-		id   : user.id,
-		name : user.name,
+		id         : user.id || id,
+
+		name       : user.name,
 
 		role       : user.role,
-		moderation : user.moderation,
-		switches   : user.switches
+		// moderation : user.moderation,
+		// switches   : user.switches
 	}
 
 	return result
@@ -146,4 +170,38 @@ async function check_password(password, hashed_password)
 async function hash_password(password)
 {
 	return (await http.get(`${address_book.password_service}/hash`, { password })).hash
+}
+
+export async function get_user(http, id, token)
+{
+	let extra
+
+	if (token)
+	{
+		extra = { headers: { Authorization: `Bearer ${token}` } }
+	}
+
+	return (await http.get(`${address_book.user_service}/users/${id}`, undefined, extra))
+}
+
+async function create_user(user)
+{
+	return (await http.post(`${address_book.user_service}/users`, user))
+}
+
+function generate_unique_jwt_id(user)
+{
+	const token_id = generate_jwt_id()
+
+	if (user.authentication_tokens && user.authentication_tokens[token_id])
+	{
+		return this.generate_unique_jwt_id(user)
+	}
+
+	return token_id
+}
+
+function generate_jwt_id()
+{
+	return uid.sync(24)
 }

@@ -5,10 +5,6 @@ import { connect } from 'react-redux'
 import { Link }    from 'react-router'
 import styler      from 'react-styling'
 
-@connect
-(
-	store => ({ })
-)
 export default class Page extends Component
 {
 	render()

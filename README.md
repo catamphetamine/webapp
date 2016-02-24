@@ -12,13 +12,14 @@ Features
 * Internationalization with React-intl
 * User authentication (JSON Web Token) & authorization (roles)
 * REST API
+* SQL ORM (PostgreSQL + Bookshelf)
+* MongoDB
 * Microservice architecture
 * Responsive web design
 * Works both with Javascript enabled and disabled (suitable for DarkNet purposes)
 * Koa
 * Bunyan logging (log file rotation is built-in)
 * Correctly handles Http Cookies on the server-side
-* To be done: Persistence (PostgreSQL, Bookshelf)
 * To be done: GraphQL + Relay
 * To be done: native Node.js clustering
 * // maybe: Protection against Cross Site Request Forgery attacks
@@ -174,9 +175,9 @@ and configure it in your `configuration.js` file
 ```javascript
 redis:
 {
-  host: ...,
-  port: ...,
-  password: ... // is optional
+  host     : 'localhost',
+  port     : 6379,
+  password : ... // is optional
 }
 ``` 
 
@@ -190,27 +191,119 @@ If you want this application make use of MongoDB then you should install it and 
 ```javascript
 mongodb:
 {
-  host: ...,
-  port: ...,
-  password: ... // is optional
+  host     : 'localhost',
+  port     : 27017,
+  database : ...,
+  user     : ...,
+  password : ...
 }
 ``` 
+
+Setting up a freshly installed MongoDB
+
+```sh
+mongo --port 27017
+
+use admin
+db.createUser({
+  user: "administrator",
+  pwd: "[administrator-password]",
+  roles: [ { role: "userAdminAnyDatabase", db: "admin" }, { role: "dbAdminAnyDatabase", db: "admin" }, { role: "readWriteAnyDatabase", db: "admin" } ]
+})
+
+exit
+
+# set "security.authorization" to "enabled" in your mongod.conf and restart MongoDB
+```
+
+```sh
+mongo --port 27017 -u administrator -p [administrator-password] --authenticationDatabase admin
+
+# mongo --eval "..."
+
+use database
+db.createUser({
+  user: "user",
+  pwd: "password",
+  roles:
+  [
+    { role: "readWrite", db: "database" }
+  ]
+})
+
+exit
+```
+
+One may also use [Robomongo](https://robomongo.org/download) (or [Mongo Management Studio Community Edition](http://www.litixsoft.de/english/mms/#pg-231-23), or [MongoChef](http://3t.io/mongochef/download/)) as an operational GUI for MongoDB.
 
 PostgreSQL
 ==========
 
 This application can run in demo mode without PostgreSQL being installed.
 
-If you want this application make use of PostgreSQL then you should install it and configure it in your `configuration.js` file
+If you want this application make use of PostgreSQL then you should first install it.
 
-```javascript
-postgresql:
-{
-  host: ...,
-  port: ...,
-  password: ... // is optional
+(hypothetically MySQL and SQLite3 will also do but I haven't checked that since PostgreSQL is the most advanced open source SQL database nowadays)
+
+To change the default PostgreSQL superuser password
+
+```sh
+sudo -u postgres psql
+postgres=# \password postgres
+```
+
+Then create a new user in PostgreSQL and a new database. For example, in Linux terminal, using these commands
+
+```sh
+createuser --username=postgres --interactive USERNAME
+createdb --username=USERNAME --encoding=utf8 --owner=USERNAME DATABASE_NAME --template=template0
+```
+
+Then create your `knexfile.js` file
+
+```sh
+npm run postgresql-knex-init
+```
+
+Then configure your `knexfile.js` file. An example of how it might look
+
+```
+module.exports = {
+  client: 'postgresql',
+  connection: {
+    database: 'webapp',
+    user:     'webapp',
+    password: 'webapp'
+  },
+  pool: {
+    min: 2,
+    max: 10
+  },
+  migrations: {
+    tableName: 'knex_migrations'
+  }
 }
-``` 
+```
+
+Then initialize PostgreSQL database
+
+```sh
+npm run postgresql-migrate
+```
+
+To rollback the latest PostgreSQL migration
+```sh
+npm run postgresql-rollback
+```
+
+Or one can alternatively drop the database and create it from scratch initializing it with the command given above.
+
+PostgreSQL database migration points can be created using the following command
+```sh
+npm run postgresql-checkpoint -- migration_point_name
+```
+
+They are stored in the `migrations` folder.
 
 Online status
 =============
@@ -226,15 +319,96 @@ Troubleshooting
 
 #### Error: Invariant Violation: `mapStateToProps` must return an object. Instead received [object Promise]
 
-This error is obscuring the source error. One may try `Ctrl + C` and `npm run dev` again.
+This error is strange and is obscuring the source error. One may try `Ctrl + C` and `npm run dev` again.
 
 To do
 ====================
 
-сохранять данные пользователей в PostgreSQL (bookshelf)
+сделать какую-нибудь миграцию для mongodb наподобие sql
+
+
+
+
+
+если регистрация прошла, но не прошёл последующий sign_in, то никакой ошибки внизу не показывается
+
+
+
+поменять String на Email в схеме пользователя MongoDB
+
+
+
+превентивно валидировать email и пароль. (с фокусом) + на сервере (с ошибками и фокусом)
+
+сделать ошибку "пользователь с таким именем уже зарегистрирован" (с фокусом на имени)
+
+
+убрать Async и promisifyAll, если mongoose возвращает thennable
+
+
+email сделать уникальным в mongodb (ensureIndex())
+
+
+
+
+вычленить общий код из memory_store и mongodb_store в api methods
 
 хранить пользователей в mongodb (и токены)
 
+
+
+в react-router /user/profile изменить на /user/:id
+
+сделать страницу профиля пользователя
+
+проверить работу профиля пользователя как с postgresql, так и без неё
+проверить работу профиля пользователя как с mongodb, так и без неё
+
+проверить работу профиля с отключенным javascript'ом
+
+
+
+
+при переключении языка - записывать язык в данные пользователя в бд, чтобы потом знать, на каком языке ему слать письма.
+
+
+
+
+
+authentication-service пересадить на mongodb
+
+
+
+
+клиентские ошибки отправлять на сервис типа log-service
+
+
+
+
+встроить защиту от DoS: ввести специальный переключатель, принимающий запросы только от пользователей, и всем остальным выдающий статическую страницу (или не статическую, а нормальную). регистрация при этом отключается (с пояснительным текстом).
+
+в конфигурации добавить параметр allowed_ips: [], с которых можно будет разрешать вход на сайт (wildcards) (по умолчанию, будет ['*.*.*.*']).
+
+в мониторинге показывать самые долго выполняющиеся запросы с группировкой по пользователям.
+(хранить данные в течение суток) — так можно будет засекать пользователей, которые досят, и замораживать их.
+
+у замороженного пользователя ставить флажок frozen с датой и причиной блокировки. проверять этот флажок при /authenticate и /sign-in : если при вызове /authenticate выяснилось, что пользователь заблокирован, то не выполнять дальнейшие @preload()ы, и выдавать страницу с сообщением о блокировке (дата, причина). если пользователя нет при вызове /authenticate, то перенаправлять на страницу входа с сообщением о доступности только для пользователей.
+
+при этом включателе, даже если web server не имеет флага authenticate:
+если запрос идёт (common/web server), и нет токена в нём, то выдавать статус 401 (unauthenticated).
+если есть токен, то должен быть вызван метод /verify-token, который при непрохождении вернёт статус 401 (unauthenticated).
+
+
+
+
+
+в common/web server сделать monitoting middleware, у которой будет метод checkpoint(text),
+и по завершении весь список чекпоинтов и их таймингов будет отправляться на monitoring service
+(можно сделать IPC по UDP)
+
+
+
+по каждому сервису, мониторить cpu load, ram.
 
 
 
@@ -244,14 +418,6 @@ monitoring-service:
 сделать страницу мониторинга, которая будет показывать (для начала) время исполнения http запроса (common/web server) в таблице вида "сервис, url, время".
 
 потом ещё сделать метрики отзывчивости event loop'а (процентили), и количество запросов в секунду.
-
-
-
-
-
-при переключении языка - записывать язык в данные пользователя в бд, чтобы потом знать, на каком языке ему слать письма.
-
-
 
 
 
@@ -819,4 +985,4 @@ maxmemory 1gb
 
 Для того, чтобы git не отслеживал файл с переводом en.js, нужно выполнить такую команду:
 
-git update-index --assume-unchanged  code/client/international/translations/en.js
+git update-index --assume-unchanged code/client/international/translations/en.js

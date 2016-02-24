@@ -7,6 +7,11 @@ import Url  from '../client/tools/url'
 
 export default function(options = {})
 {
+	if (options.authentication === true)
+	{
+		options.authentication = configuration.authentication_token_payload.read || (() => ({}))
+	}
+
 	const web = web_server({ ...options, compress: true, parse_post_requests: true, routing: true })
 
 	global.api = {}

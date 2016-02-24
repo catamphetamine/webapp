@@ -5,10 +5,6 @@ import { connect }          from 'react-redux'
 
 import Modal from '../../components/modal'
 
-@connect
-(
-	store => ({ })
-)
 export default class Dialog extends Component
 {
 	state =

@@ -2,7 +2,7 @@ import api_server from '../common/api server'
 
 api_server
 ({
-	name: 'API',
+	name: 'Users',
 	authentication: true
 })
-.start(configuration.api_service.http)
+.start(configuration.user_service.http)

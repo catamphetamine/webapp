@@ -5,7 +5,7 @@ import Url    from '../../client/tools/url'
 
 import { store, online_status_store } from '../store'
 
-import { sign_in, sign_out, register, public_user } from './authentication.base'
+import { sign_in, sign_out, register } from './authentication.base'
 
 api.legacy.post('/legacy/sign-in', async function({ request })
 {

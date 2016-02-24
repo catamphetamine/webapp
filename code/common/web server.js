@@ -167,19 +167,37 @@ export default function web_server(options = {})
 		}
 		catch (error)
 		{
-			// log the error, if it's not a normal Api error
-			// (prevents log pollution with things like 
-			//  `404 User not found` or `401 Not authenticated`)
-			if (!exists(error.code))
+			let http_status_code
+
+			if (exists(error.http_status_code))
 			{
-				log.error(error)
+				http_status_code = error.http_status_code
+			}
+			// superagent errors
+			// https://github.com/visionmedia/superagent/blob/29ca1fc938b974c6623d9040a044e39dfb272fed/lib/node/response.js#L106
+			else if (typeof error.status === 'number')
+			{
+				http_status_code = error.status
 			}
 
-			// set Http Response status code according to the error's `code`
-			this.status = typeof error.code === 'number' ? error.code : 500
+			if (exists(http_status_code))
+			{
+				// set Http Response status code according to the error's `code`
+				this.status = http_status_code
 
-			// set Http Response text according to the error message
-			this.message = error.message || 'Internal error'
+				// set Http Response text according to the error message
+				this.message = error.message || 'Internal error'
+			}
+			else
+			{
+				// log the error, if it's not a normal Api error
+				// (prevents log pollution with things like 
+				//  `404 User not found` or `401 Not authenticated`)
+				log.error(error)
+
+				this.status = 500
+				this.message = 'Internal error'
+			}
 		}
 	})
 
@@ -520,6 +538,30 @@ export default function web_server(options = {})
 						}
 					}
 
+					// add JWT header to http client requests
+					
+					let tokenized_http_client = http_client
+
+					if (this.jwt)
+					{
+						tokenized_http_client = {}
+
+						const jwt_header = `Bearer ${this.jwt}`
+
+						for (let key of Object.keys(http_client))
+						{
+							tokenized_http_client[key] = function(destination, data, options)
+							{
+								options = options || {}
+								options.headers = options.headers || {}
+								options.headers.Authorization = options.headers.Authorization || jwt_header
+
+								return http_client[key](destination, data, options)
+							}
+						}
+					}
+
+					// call the api method action
 					const result = action.bind(this)(parameters,
 					{
 						ip: this.ip,
@@ -538,7 +580,7 @@ export default function web_server(options = {})
 
 						secret : options.secret ? web.keys[0] : undefined,
 
-						http : http_client
+						http : tokenized_http_client
 					})
 
 					// http://habrahabr.ru/company/yandex/blog/265569/
@@ -669,12 +711,12 @@ export default function web_server(options = {})
 	// standard Http errors
 	result.errors = 
 	{
-		Unauthenticated : custom_error('Unauthenticated', { code: 401 }),
-		Unauthorized    : custom_error('Unauthorized',    { code: 403 }),
-		Access_denied   : custom_error('Access denied',   { code: 403 }),
-		Not_found       : custom_error('Not found',       { code: 404 }),
-		Input_missing   : custom_error('Missing input',   { code: 400 }),
-		Generic         : custom_error('Server error',    { code: 500 })
+		Unauthenticated : custom_error('Unauthenticated', { additional_properties: { http_status_code: 401 } }),
+		Unauthorized    : custom_error('Unauthorized',    { additional_properties: { http_status_code: 403 } }),
+		Access_denied   : custom_error('Access denied',   { additional_properties: { http_status_code: 403 } }),
+		Not_found       : custom_error('Not found',       { additional_properties: { http_status_code: 404 } }),
+		Input_missing   : custom_error('Missing input',   { additional_properties: { http_status_code: 400 } }),
+		Error           : custom_error('Server error',    { additional_properties: { http_status_code: 500 } })
 	}
 
 	// can serve static files

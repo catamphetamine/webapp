@@ -1,6 +1,6 @@
 import { store, online_status_store } from '../store'
 
-import { sign_in, sign_out, register, public_user } from './authentication.base'
+import { sign_in, sign_out, register, get_user, own_user } from './authentication.base'
 
 api.post('/sign-in', sign_in)
 
@@ -8,7 +8,7 @@ api.post('/sign-out', sign_out)
 
 api.post('/register', register)
 
-api.post('/authenticate', async function({}, { user })
+api.post('/authenticate', async function({}, { user, http })
 {
 	// console.log('*** authenticate')
 
@@ -18,14 +18,14 @@ api.post('/authenticate', async function({}, { user })
 		return
 	}
 
-	user = await store.find_user_by_id(user.id)
+	user = await get_user(http, user.id)
 
 	if (!user)
 	{
 		return
 	}
 
-	return public_user(user)
+	return own_user(user)
 })
 
 api.get('/validate-token', async function({ bot }, { ip, authentication_token_id, user })
@@ -77,7 +77,7 @@ api.get('/latest-activity', async function({ user })
 	// if there's no current session for the user, 
 	// then try to fetch user's latest activity time from the database
 
-	user = store.find_user_by_id(user)
+	user = await store.find_user_by_id(user.id)
 
 	if (!user)
 	{
@@ -194,7 +194,7 @@ api.get('/latest-activity', async function({ user })
 //
 // 	if (!matches)
 // 	{
-// 		throw new Errors.Generic(`Wrong password`) 
+// 		throw new Errors.Error(`Wrong password`) 
 // 	}
 //
 // 	user_signed_in(user, undefined, ip, session, session_id, set_cookie)

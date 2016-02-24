@@ -66,12 +66,12 @@ export default function(authorization)
 
 				if (this.state.error === 'unauthenticated')
 				{
-					return <Unauthenticated/>
+					return <Unauthenticated {...this.props}/>
 				}
 
 				if (this.state.error === 'unauthorized')
 				{
-					return <Unauthorized/>
+					return <Unauthorized {...this.props}/>
 				}
 
 				return <section className="content"/>
