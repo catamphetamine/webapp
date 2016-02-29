@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 // import ReactDOM from 'react-dom'
-import { PropTypes as React_router_prop_types } from 'react-router'
+import { PropTypes as React_router_prop_types, Link } from 'react-router'
 
 import { connect } from 'react-redux'
 import styler      from 'react-styling'
@@ -50,15 +50,15 @@ export const messages = defineMessages
 	}),
 	dispatch =>
 	{
-		const result = bind_action_creators
+		const props = bind_action_creators
 		({
 			sign_out
 		},
 		dispatch)
 
-		result.dispatch = dispatch
+		props.dispatch = dispatch
 
-		return result
+		return props
 	}
 )
 @international()
@@ -134,7 +134,7 @@ export default class Authentication extends Component
 			<div className="user-info">
 				{/* Username */}
 				{/* <a href="/"></a> */}
-				<div className="user-name">{user.name}</div>
+				<Link to={`/user/${user.id}`} className="user-name">{user.name}</Link>
 
 				{/* Sign out action */}
 				<Form className="sign-out-form" post="/authentication/legacy/sign-out">

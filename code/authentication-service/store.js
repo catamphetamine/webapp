@@ -359,7 +359,7 @@ class Redis_online_status_store
 	get(user_id)
 	{
 		return this.client
-			.get(this.prefix + user_id)
+			.getAsync(this.prefix + user_id)
 			.then(result => result ? new Date(result) : null)
 	}
 

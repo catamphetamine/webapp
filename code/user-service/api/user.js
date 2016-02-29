@@ -1,6 +1,6 @@
 import store from '../store'
 
-api.get('/users/:id', async function({ id }, { user })
+api.get('/:id', async function({ id }, { user })
 {
 	const user_data = await store.find_user_by_id(id)
 
@@ -12,7 +12,7 @@ api.get('/users/:id', async function({ id }, { user })
 	return (user && id === user.id) ? own_user(user_data) : public_user(user_data)
 })
 
-api.post('/users', async function(user)
+api.post('/', async function(user)
 {
 	if (!exists(user.name))
 	{
@@ -22,7 +22,7 @@ api.post('/users', async function(user)
 	await store.create_user(user)
 })
 
-// api.patch('/users/:id', async function({ id, name })
+// api.patch('/:id', async function({ id, name })
 // {
 // 	id = parseInt(id)
 
@@ -38,7 +38,7 @@ api.post('/users', async function(user)
 // 	await store.update_user(user)
 // })
 
-// api.post('/users/:id/picture', async function({ id, file_name })
+// api.post('/:id/picture', async function({ id, file_name })
 // {
 // 	const user = await store.find_user_by_id(id)
 

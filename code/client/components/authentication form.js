@@ -147,16 +147,16 @@ export const messages = defineMessages
 	}),
 	dispatch =>
 	{
-		const result = bind_action_creators
+		const props = bind_action_creators
 		({
 			sign_in,
 			register
 		},
 		dispatch)
 
-		result.dispatch = dispatch
+		props.dispatch = dispatch
 
-		return result
+		return props
 	}
 )
 @international()

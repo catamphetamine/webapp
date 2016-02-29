@@ -1,6 +1,6 @@
 const initial_state =
 {
-	loaded: false
+	// loaded: false
 }
 
 const handlers =
@@ -10,7 +10,7 @@ const handlers =
 		const new_state = 
 		{
 			...state,
-			loading : true
+			// loading : true
 		}
 
 		return new_state
@@ -21,8 +21,8 @@ const handlers =
 		const new_state = 
 		{
 			...state,
-			loading : false,
-			loaded  : true,
+			// loading : false,
+			// loaded  : true,
 			data    : result
 		}
 
@@ -34,7 +34,7 @@ const handlers =
 		const new_state = 
 		{
 			...state,
-			loading : false,
+			// loading : false,
 			error   : error
 		}
 

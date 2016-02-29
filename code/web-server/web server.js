@@ -17,19 +17,22 @@ web.serve_static_files('/storage', path.join(Root_folder, configuration.upload_f
 // if it's not a static file url:
 
 // Proxy /authentication requests to API server
-web.proxy('/authentication', `http://${configuration.authentication_service.http.host}:${configuration.authentication_service.http.port}`)
+web.proxy('/authentication', address_book.authentication_service)
+
+// Proxy /users requests to user-service
+web.proxy('/users', address_book.user_service)
 
 // Proxy /api requests to API server
-web.proxy('/api', `http://${configuration.api_service.http.host}:${configuration.api_service.http.port}`)
+web.proxy('/api', address_book.api_service)
 
 // Proxy /images requests to Image server
-web.proxy('/upload_image', `http://${configuration.image_service.http.host}:${configuration.image_service.http.port}`)
+web.proxy('/upload_image', address_book.image_service)
 
 // Proxy /log requests to Log server
-web.proxy('/log', `http://${configuration.log_service.http.host}:${configuration.log_service.http.port}`)
+web.proxy('/log', address_book.log_service)
 
 // Proxy all the rest requests to Webpage rendering server
-web.proxy(`http://${configuration.webpage_server.http.host}:${configuration.webpage_server.http.port}`)
+web.proxy(address_book.webpage_server)
 
 // // websocket server
 // const websocket = socket_io.listen(http_web_server)

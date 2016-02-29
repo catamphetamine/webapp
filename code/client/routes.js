@@ -87,25 +87,25 @@ export default function() // (store)
 			<IndexRoute component={Home} queries={Home_queries}/>
 
 			<Route path="example" component={Example}>
-				<Route path="simple" component={Simple_example}/>
+				<Route path="simple"   component={Simple_example}/>
 				<Route path="database" component={Database_example}/>
-				<Route path="graphql" component={Simple_graphQL_example}/>
+				<Route path="graphql"  component={Simple_graphQL_example}/>
 			</Route>
 
 			<Route path="showcase" component={Showcase}>
 				<Route path="dialog" component={Dialog_showcase}/>
-				<Route path="form" component={Form_showcase}/>
+				<Route path="form"   component={Form_showcase}/>
 			</Route>
 
 			{ /* Routes requiring login */ }
 			<Route path="user">
-				<Route path="profile" component={authorize(Profile)}/>
 				<Route path="account" component={authorize(Account)}/>
+				<Route path=":id"     component={Profile}/>
 			</Route>
 
 			<Route path="logs" component={authorize(Log, 'administrator')}/>
 
-			<Route path="sign-in" component={Sign_in}/>
+			<Route path="sign-in"  component={Sign_in}/>
 			<Route path="register" component={Register}/>
 
 			<Route path="menu" component={Menu}/>

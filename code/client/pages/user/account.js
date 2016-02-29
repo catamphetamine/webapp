@@ -18,15 +18,16 @@ const messages = defineMessages
 
 @connect
 (
-	model => ({ })
+	model =>
+	({
+		user : model.authentication.user
+	})
 )
 @international()
-export default class Page extends Component
+export default class Account_page extends Component
 {
 	render()
 	{
-		const husky = require('../../../../assets/images/husky.jpg')
-
 		const markup = 
 		(
 			<section className="content">
@@ -46,16 +47,4 @@ const style = styler
 `
 	header
 		text-align: center
-
-	image
-		display: block
-
-		margin-left  : auto
-		margin-right : auto
-
-		border-width : 1px
-		border-style : solid
-		border-color : #7f7f7f
-
-		border-radius : 0.5em
 `

@@ -62,12 +62,12 @@ api.post('/record-access', async function({}, { authentication_token_id, user, i
 	await store.record_access(user, authentication_token_id, ip)
 })
 
-api.get('/latest-activity', async function({ user })
+api.get('/latest-activity/:id', async function({ id })
 {
 	// try to fetch user's latest activity time from the current session
 	// (is faster and more precise)
 
-	const latest_activity_time = await online_status_store.get(user)
+	const latest_activity_time = await online_status_store.get(id)
 
 	if (latest_activity_time)
 	{
@@ -77,7 +77,7 @@ api.get('/latest-activity', async function({ user })
 	// if there's no current session for the user, 
 	// then try to fetch user's latest activity time from the database
 
-	user = await store.find_user_by_id(user.id)
+	const user = await store.find_user_by_id(id)
 
 	if (!user)
 	{

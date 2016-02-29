@@ -28,10 +28,10 @@ export const messages = defineMessages
 @preload((dispatch, get_state) => dispatch(get_log()))
 @connect
 (
-	store => 
+	model => 
 	({
-		log   : store.log.data,
-		error : store.log.error
+		log   : model.log.data,
+		error : model.log.error
 	}),
 	dispatch => bind_action_creators({ get_log }, dispatch)
 )

@@ -317,12 +317,23 @@ This works for GET requests, and I suppose it would work for POST requests too.
 Troubleshooting
 ===============
 
-#### Error: Invariant Violation: `mapStateToProps` must return an object. Instead received [object Promise]
-
-This error is strange and is obscuring the source error. One may try `Ctrl + C` and `npm run dev` again.
+...
 
 To do
 ====================
+
+разрешить сериализацию и десериализацию дат в Redux state
+http://stackoverflow.com/a/23691273/970769
+
+и в user profile убрать у latest_activity_time,
+и тип не string, а date (или object)
+
+
+
+
+
+унифицировать названия событий в redux reducer'ах
+
 
 сделать какую-нибудь миграцию для mongodb наподобие sql
 

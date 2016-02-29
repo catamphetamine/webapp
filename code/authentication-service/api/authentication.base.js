@@ -181,12 +181,12 @@ export async function get_user(http, id, token)
 		extra = { headers: { Authorization: `Bearer ${token}` } }
 	}
 
-	return (await http.get(`${address_book.user_service}/users/${id}`, undefined, extra))
+	return (await http.get(`${address_book.user_service}/${id}`, undefined, extra))
 }
 
 async function create_user(user)
 {
-	return (await http.post(`${address_book.user_service}/users`, user))
+	return (await http.post(address_book.user_service, user))
 }
 
 function generate_unique_jwt_id(user)
