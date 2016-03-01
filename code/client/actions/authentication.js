@@ -2,8 +2,8 @@ export function sign_in(info)
 {
 	const action =
 	{
-		promise: http => http.post(`/authentication/sign-in`, info),
-		events: ['signing user in', 'user signed in', 'user sign in failed']
+		promise : http => http.post(`/authentication/sign-in`, info),
+		event   : 'user sign in'
 	}
 
 	return action
@@ -13,8 +13,8 @@ export function sign_out()
 {
 	const action =
 	{
-		promise: http => http.post(`/authentication/sign-out`),
-		events: ['siging user out', 'user signed out', 'user sign out failed']
+		promise : http => http.post(`/authentication/sign-out`),
+		event   : 'user sign out'
 	}
 
 	return action
@@ -24,8 +24,8 @@ export function authenticate()
 {
 	const action =
 	{
-		promise: http => http.post(`/authentication/authenticate`),
-		events: ['authenticating user', 'user authenticated', 'user authentication failed']
+		promise : http => http.post(`/authentication/authenticate`),
+		event   : 'user authentication'
 	}
 
 	return action
@@ -35,8 +35,8 @@ export function register(info)
 {
 	const action =
 	{
-		promise: http => http.post(`/authentication/register`, info),
-		events: ['registering user', 'user registered', 'user registration failed']
+		promise : http => http.post(`/authentication/register`, info),
+		event   : 'user registration'
 	}
 
 	return action

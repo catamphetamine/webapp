@@ -5,7 +5,7 @@ const initial_state =
 
 const handlers =
 {
-	'retrieving log': (result, state) =>
+	'fetch log pending': (result, state) =>
 	{
 		const new_state = 
 		{
@@ -16,7 +16,7 @@ const handlers =
 		return new_state
 	},
 
-	'log retrieved': (result, state) =>
+	'fetch log done': (result, state) =>
 	{
 		const new_state = 
 		{
@@ -29,7 +29,7 @@ const handlers =
 		return new_state
 	},
 
-	'log retrieval failed': (error, state) =>
+	'fetch log failed': (error, state) =>
 	{
 		const new_state = 
 		{

@@ -2,8 +2,8 @@ export function get()
 {
 	const action =
 	{
-		promise: http => http.get('/log'),
-		events: ['retrieving log', 'log retrieved', 'log retrieval failed']
+		promise : http => http.get('/log'),
+		event   : 'fetch log'
 	}
 
 	return action

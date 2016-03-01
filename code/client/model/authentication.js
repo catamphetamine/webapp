@@ -1,11 +1,8 @@
-const initial_state =
-{
-	// loaded: false
-}
+const initial_state = {}
 
 const handlers =
 {
-	'authenticating user': (result, state) =>
+	'user authentication pending': (result, state) =>
 	{
 		const new_state = 
 		{
@@ -17,7 +14,7 @@ const handlers =
 		return new_state
 	},
 
-	'user authenticated': (result, state) =>
+	'user authentication done': (result, state) =>
 	{
 		const new_state = 
 		{
@@ -41,7 +38,7 @@ const handlers =
 		return new_state
 	},
 
-	'registering user': (result, state) =>
+	'user registration pending': (result, state) =>
 	{
 		const new_state = 
 		{
@@ -53,7 +50,7 @@ const handlers =
 		return new_state
 	},
 
-	'user registered': (result, state) =>
+	'user registration done': (result, state) =>
 	{
 		const new_state = 
 		{
@@ -87,7 +84,7 @@ const handlers =
 		return new_state
 	},
 
-	'signing user in': (result, state) =>
+	'user sign in pending': (result, state) =>
 	{
 		const new_state = 
 		{
@@ -99,7 +96,7 @@ const handlers =
 		return new_state
 	},
 
-	'user signed in': (result, state) =>
+	'user sign in done': (result, state) =>
 	{
 		const new_state = 
 		{
@@ -134,7 +131,7 @@ const handlers =
 		return new_state
 	},
 
-	'signing user out': (result, state) =>
+	'user sign out pending': (result, state) =>
 	{
 		const new_state = 
 		{
@@ -146,7 +143,7 @@ const handlers =
 		return new_state
 	},
 
-	'user signed out': (result, state) =>
+	'user sign out done': (result, state) =>
 	{
 		const new_state = 
 		{

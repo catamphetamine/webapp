@@ -4,17 +4,18 @@ const initial_state =
 
 const handlers =
 {
-	'fetching user': (result, state) =>
+	'fetch user pending': (result, state) =>
 	{
 		const new_state = 
 		{
-			...state
+			...state,
+			error : undefined
 		}
 
 		return new_state
 	},
 
-	'user fetched': (result, state) =>
+	'fetch user done': (result, state) =>
 	{
 		const new_state = 
 		{
@@ -25,7 +26,7 @@ const handlers =
 		return new_state
 	},
 
-	'failed to fetch user': (error, state) =>
+	'fetch user failed': (error, state) =>
 	{
 		const new_state = 
 		{
@@ -36,17 +37,18 @@ const handlers =
 		return new_state
 	},
 
-	'fetching users latest activity time': (result, state) =>
+	'fetch users latest activity time pending': (result, state) =>
 	{
 		const new_state = 
 		{
-			...state
+			...state,
+			latest_activity_time_error : undefined
 		}
 
 		return new_state
 	},
 
-	'users latest activity time fetched': (result, state) =>
+	'fetch users latest activity time done': (result, state) =>
 	{
 		const new_state = 
 		{
@@ -57,7 +59,7 @@ const handlers =
 		return new_state
 	},
 
-	'failed to fetch users latest activity time': (error, state) =>
+	'fetch users latest activity time failed': (error, state) =>
 	{
 		const new_state = 
 		{
