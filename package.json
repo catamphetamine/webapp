@@ -87,7 +87,7 @@
     "react-document-meta": "^2.0.0",
     "react-dom": "^0.14.6",
     "react-intl": "^2.0.0-beta-2",
-    "react-isomorphic-render": "^2.1.21",
+    "react-isomorphic-render": "^2.1.22",
     "react-modal": "^0.6.1",
     "react-redux": "^4.0.0",
     "react-relay": "^0.4.0",

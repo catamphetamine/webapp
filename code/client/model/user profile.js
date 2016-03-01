@@ -51,12 +51,7 @@ const handlers =
 		const new_state = 
 		{
 			...state,
-			
-			// (casting to Date won't work because 
-			//  it will be lost when restoring Redux state on client side 
-			//  after server side rendering)
-			// latest_activity_time : new Date(result.time)
-			latest_activity_time : result.time
+			latest_activity_time : new Date(result.time)
 		}
 
 		return new_state

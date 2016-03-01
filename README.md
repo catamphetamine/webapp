@@ -322,17 +322,14 @@ Troubleshooting
 To do
 ====================
 
-разрешить сериализацию и десериализацию дат в Redux state
-http://stackoverflow.com/a/23691273/970769
-
-и в user profile убрать у latest_activity_time,
-и тип не string, а date (или object)
-
-
-
-
-
 унифицировать названия событий в redux reducer'ах
+
+
+загрузку картинок пользователя в профиле (по клику на картинку, наверное)
+
+там разделится image-service на image-service и file-upload-service
+
+
 
 
 сделать какую-нибудь миграцию для mongodb наподобие sql
