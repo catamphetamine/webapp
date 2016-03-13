@@ -77,15 +77,16 @@
     "minimist": "^1.1.1",
     "moment": "^2.10.6",
     "mongodb": "^2.1.7",
+    "mongodb-migrate": "^2.0.0",
     "mongojs": "^1.4.1",
     "npm-run-all": "^1.2.13",
     "parseurl": "^1.3.1",
     "pg": "~4.4.0",
     "pretty-error": "^1.1.2",
     "query-string": "^3.0.0",
-    "react": "^0.14.6",
+    "react": "^0.14.7",
     "react-document-meta": "^2.0.0",
-    "react-dom": "^0.14.6",
+    "react-dom": "^0.14.7",
     "react-intl": "^2.0.0-beta-2",
     "react-isomorphic-render": "^2.1.23",
     "react-modal": "^0.6.1",
@@ -107,7 +108,7 @@
     "superagent": "^1.7.2",
     "uid-safe": "^2.1.0",
     "warning": "^2.1.0",
-    "webpack-isomorphic-tools": "^2.2.24"
+    "webpack-isomorphic-tools": "^2.2.31"
   },
   "devDependencies": {
     "autoprefixer-loader": "^3.1.0",
@@ -184,7 +185,10 @@
     "postgresql-rollback": "knex migrate:rollback",
     "postgresql-checkpoint": "knex migrate:make",
     "postgresql-make-seed": "knex seed:make",
-    "postgresql-seed": "knex seed:run"
+    "postgresql-seed": "knex seed:run",
+    "mongodb-migrate": "mongo-migrate --runMongoMigrate --chdir database/mongodb --config mongodb-migrate.config.js --dbPropName database up",
+    "mongodb-rollback": "mongo-migrate --runMongoMigrate --chdir database/mongodb --config mongodb-migrate.config.js --dbPropName database down",
+    "mongodb-checkpoint": "mongo-migrate --runMongoMigrate --chdir database/mongodb --config mongodb-migrate.config.js --dbPropName database create"
   },
   "betterScripts": {
     "react-intl-babel-run": {
