@@ -268,6 +268,8 @@ npm run postgresql-knex-init
 Then configure your `knexfile.js` file. An example of how it might look
 
 ```
+var path = require('path')
+
 module.exports = {
   client: 'postgresql',
   connection: {
@@ -280,6 +282,7 @@ module.exports = {
     max: 10
   },
   migrations: {
+    directory: path.join(__dirname, 'database/sql/migrations'),
     tableName: 'knex_migrations'
   }
 }
@@ -322,6 +325,9 @@ Troubleshooting
 To do
 ====================
 
+в authentication у token'ов хранить access: { ip1: time, ip2: time, ... } (с очисткой старых мб)
+
+
 загрузку картинок пользователя в профиле (по клику на картинку)
 
 image-service разделится на image-service и file-upload-service
@@ -339,11 +345,6 @@ image-service разделится на image-service и file-upload-service
 в user account'е - возможность менять почту и смотреть токены входа (+ удалять)
 
 можно сделать сопоставление области на карте и IP-адреса использования токена
-
-
-
-
-сделать какую-нибудь миграцию для mongodb наподобие sql
 
 
 
