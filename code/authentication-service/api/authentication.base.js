@@ -1,4 +1,3 @@
-import uid    from 'uid-safe'
 import jwt    from 'jsonwebtoken'
 
 import http   from '../../common/http'
@@ -31,13 +30,7 @@ export async function sign_in({ email, password }, { ip, set_cookie, secret, htt
 		throw new Errors.Error(`Wrong password`) 
 	}
 
-	// hashing a password is a CPU-intensive lengthy operation.
-	// takes about 60 milliseconds on my machine.
-	//
-	// maybe could be offloaded from node.js 
-	// to some another multithreaded backend.
-	//
-	const jwt_id = generate_unique_jwt_id(user)
+	const jwt_id = await store.add_authentication_token(user, ip)
 
 	const token = jwt.sign(configuration.authentication_token_payload.write({ ...user_data, ...user }) || {},
 	secret,
@@ -45,8 +38,6 @@ export async function sign_in({ email, password }, { ip, set_cookie, secret, htt
 		subject : user.id,
 		jwtid   : jwt_id
 	})
-
-	await store.add_authentication_token(user, jwt_id, ip)
 
 	// http://stackoverflow.com/questions/3290424/set-a-cookie-to-never-expire
 	const expires = new Date(2147483647000)  // January 2038
@@ -187,21 +178,4 @@ export async function get_user(http, id, token)
 async function create_user(user)
 {
 	return (await http.post(address_book.user_service, user))
-}
-
-function generate_unique_jwt_id(user)
-{
-	const token_id = generate_jwt_id()
-
-	if (user.authentication_tokens && user.authentication_tokens[token_id])
-	{
-		return this.generate_unique_jwt_id(user)
-	}
-
-	return token_id
-}
-
-function generate_jwt_id()
-{
-	return uid.sync(24)
 }

@@ -36,6 +36,7 @@ export default function(options = {})
 					//  `404 User not found` or `401 Not authenticated`)
 					if (!exists(error.code))
 					{
+						console.log('Api server error')
 						log.error(error)
 					}
 

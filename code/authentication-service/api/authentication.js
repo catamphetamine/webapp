@@ -35,7 +35,7 @@ api.get('/validate-token', async function({ bot }, { ip, authentication_token_id
 		return { valid: false }
 	}
 
-	const token = await store.find_token_by_id(authentication_token_id, user.id)
+	const token = await store.find_token_by_id(authentication_token_id)
 
 	if (!token)
 	{

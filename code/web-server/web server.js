@@ -3,7 +3,21 @@ import socket_io     from 'socket.io'
 
 import web_server from '../common/web server'
 
-const web = web_server({  })
+const web = web_server
+({
+	// // since the following services are local,
+	// // and write errors to the same log,
+	// // there's no need to duplicate those errors in the log
+	// show_proxy_errors:
+	// {
+	// 	[address_book.authentication_service] : false,
+	// 	[address_book.user_service]           : false,
+	// 	[address_book.api_service]            : false,
+	// 	[address_book.image_service]          : false,
+	// 	[address_book.log_service]            : false,
+	// 	[address_book.webpage_server]         : false
+	// }
+})
 
 // serve assets
 web.serve_static_files('/assets', path.join(Root_folder, 'build', 'assets'))
@@ -56,5 +70,6 @@ web.listen(configuration.web_server.http.port).then(() =>
 },
 error =>
 {
+	console.log('Web server shutdown')
 	log.error(error)
 })

@@ -21,5 +21,6 @@ web.listen(configuration.log_service.http.port).then(() =>
 },
 error =>
 {
+	console.log('Log service web server shutdown')
 	log.error(error)
 })

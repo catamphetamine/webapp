@@ -2,21 +2,24 @@
 
 var mongodb = require('mongodb')
 
-exports.up = function(resources, next)
+exports.up = function(db, next)
 {
-	var db = resources.db
-	var mongojs = resources.mongojs
+	var user_authentication   = db.collection('user_authentication')
+	var authentication_tokens = db.collection('authentication_tokens')
 
-	// db.user_authentication.createIndex({ email: 1 }, { name: "find_by_email" })
-	// db.user_authentication.createIndex({ 'authentication_tokens.id': 1 }, { name: "find_token_by_id" })
+	user_authentication.createIndex({ email: 1 }, { name: "user_by_email", unique: true })
+	authentication_tokens.createIndex({ user_id: 1 }, { name: "token_by_user_id" })
 
 	next()
 }
 
-exports.down = function(resources, next)
+exports.down = function(db, next)
 {
-	var db = resources.db
-	var mongojs = resources.mongojs
+	var user_authentication   = db.collection('user_authentication')
+	var authentication_tokens = db.collection('authentication_tokens')
+
+	user_authentication.dropIndex('user_by_email')
+	authentication_tokens.dropIndex('token_by_user_id')
 
 	next()
 }

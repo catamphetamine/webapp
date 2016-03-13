@@ -276,9 +276,29 @@ Object.defineProperty(Array.prototype, 'remove',
 		const index = this.indexOf(element)
 		if (index >= 0)
 		{
-			array.splice(index, 1)
+			this.splice(index, 1)
 		}
 		return this
+	}
+})
+
+Object.defineProperty(Array.prototype, 'find_by', 
+{
+	enumerable: false,
+	value: function(example)
+	{
+		for (let element of this)
+		{
+			for (let key of Object.keys(example))
+			{
+				if (element.key !== example.key)
+				{
+					break
+				}
+			}
+
+			return element
+		}
 	}
 })
 

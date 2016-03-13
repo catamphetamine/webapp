@@ -325,9 +325,6 @@ Troubleshooting
 To do
 ====================
 
-в authentication у token'ов хранить access: { ip1: time, ip2: time, ... } (с очисткой старых мб)
-
-
 загрузку картинок пользователя в профиле (по клику на картинку)
 
 image-service разделится на image-service и file-upload-service
@@ -346,6 +343,21 @@ image-service разделится на image-service и file-upload-service
 
 можно сделать сопоставление области на карте и IP-адреса использования токена
 
+ajax('freegeoip.net/json/{IP_or_hostname}')
+
+{
+  "ip": "192.30.252.129",
+  "country_code": "US",
+  "country_name": "США",
+  "region_code": "CA",
+  "region_name": "Калифорния",
+  "city": "Сан-Франциско",
+  "zip_code": "94107",
+  "time_zone": "America/Los_Angeles",
+  "latitude": 37.7697,
+  "longitude": -122.3933,
+  "metro_code": 807
+}
 
 
 

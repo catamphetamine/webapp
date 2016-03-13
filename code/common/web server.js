@@ -44,6 +44,8 @@ import https from 'https'
 
 import http_client from './http'
 
+import html_stack_trace from './html stack trace'
+
 // Sets up a Web Server instance (based on Koa)
 //
 // options:
@@ -178,6 +180,19 @@ export default function web_server(options = {})
 			else if (typeof error.status === 'number')
 			{
 				http_status_code = error.status
+
+				// if the `superagent` http request returned an error stack trace,
+				// then just output that stack trace
+				if (error.response 
+					&& error.response.headers['content-type']
+					&& error.response.headers['content-type'].starts_with('text/html'))
+				{
+					this.status = error.status
+					this.body   = error.message
+					this.type   = 'html'
+
+					return
+				}
 			}
 
 			if (exists(http_status_code))
@@ -193,10 +208,56 @@ export default function web_server(options = {})
 				// log the error, if it's not a normal Api error
 				// (prevents log pollution with things like 
 				//  `404 User not found` or `401 Not authenticated`)
+
+				// if (error.proxy_error 
+				// 	&& options.show_proxy_errors 
+				// 	&& options.show_proxy_errors[error.proxy_to] === false)
+				// {
+				// 	// don't output error to the log
+				// }
+				// else
+				// {
+				// 	// for easier debugging
+				// 	console.log('(http request failed)')
+				// 	log.error(error)
+				// }
+
+				// for easier debugging
+				console.log('(http request failed)')
+				
 				log.error(error)
 
 				this.status = 500
 				this.message = 'Internal error'
+			}
+
+			// show error stack trace in development mode for easier debugging
+			if (_development_)
+			{
+				let stack_trace
+
+				if (error.stack)
+				{
+					stack_trace = error.stack
+				}
+				else if (error.original && error.original.stack)
+				{
+					stack_trace = error.original.stack
+				}
+
+				if (stack_trace)
+				{
+					try
+					{
+						this.body = html_stack_trace.call(this, stack_trace)
+						this.type = 'html'
+					}
+					catch (error)
+					{
+						this.status = 500
+						this.body = error.stack
+					}
+				}
 			}
 		}
 	})
@@ -741,8 +802,9 @@ export default function web_server(options = {})
 				this.status = 404
 				this.message = `The requested resource not found: ${this.method} ${this.url}`
 				
-				if (this.path !== '/favicon.ico')
+				if (!this.path.ends_with('/favicon.ico'))
 				{
+					console.log('Web server error: Not found')
 					log.error(this.message)
 				}
 			})
@@ -826,7 +888,15 @@ export default function web_server(options = {})
 					// because the last parameter is not a "callback",
 					// it's just an error handler.
 					// https://github.com/nodejitsu/node-http-proxy/issues/951
-					proxy.web(this.req, this.res, { target: to }, reject)
+					proxy.web(this.req, this.res, { target: to }, error =>
+					{
+						// usually errors with "Parse error" which is useless
+
+						// error.proxy_error = true
+						// error.proxy_to = to
+
+						reject(error)
+					})
 				})
 
 				yield promise

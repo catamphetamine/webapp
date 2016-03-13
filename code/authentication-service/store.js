@@ -1,3 +1,5 @@
+import uid    from 'uid-safe'
+
 import moment         from 'moment'
 import redis          from 'redis'
 
@@ -54,24 +56,17 @@ class Memory_store
 		return Promise.resolve()
 	}
 
-	// update_user(user)
-	// {
-	// 	this.users.set(user.id, user)
-	// 	return Promise.resolve()
-	// }
-
-	find_token_by_id(token_id, user_id)
+	find_token_by_id(token_id)
 	{
 		for (let [user_id, user] of this.users)
 		{
 			if (exists(user.authentication_tokens))
 			{
-				for (let token of Object.keys(user.authentication_tokens))
+				const token = user.authentication_tokens.find_by({ id: token_id })
+
+				if (token)
 				{
-					if (token === token_id)
-					{
-						return Promise.resolve(user.authentication_tokens[token])
-					}
+					return Promise.resolve(token)
 				}
 			}
 		}
@@ -89,21 +84,46 @@ class Memory_store
 			return
 		}
 
-		delete user.authentication_tokens[token_id]
+		user.authentication_tokens.remove(user.authentication_tokens.find_by({ id: token_id }))
 	}
 
-	add_authentication_token(user, authentication_token_id, ip)
+	async add_authentication_token(user, ip)
 	{
-		user.authentication_tokens = user.authentication_tokens || {}
+		const generate_unique_jwt_id = async () =>
+		{
+			const token_id = generate_jwt_id()
+
+			const token = await this.find_token_by_id(token_id)
+
+			if (token)
+			{
+				return await generate_unique_jwt_id()
+			}
+
+			return token_id
+		}
+
+		function generate_jwt_id()
+		{
+			return uid.sync(24)
+		}
+
+		user.authentication_tokens = user.authentication_tokens || []
 
 		const now = new Date()
 
-		user.authentication_tokens[authentication_token_id] = { ip, time: now }
+		const authentication_token_id = await generate_unique_jwt_id()
+
+		user.authentication_tokens.push
+		({
+			id: authentication_token_id,
+			history: [{ ip, time: now }]
+		})
 
 		// redundant field for faster latest activity time querying
 		user.latest_activity_time = now
 
-		return Promise.resolve()
+		return Promise.resolve(authentication_token_id)
 	}
 
 	async record_access(user, authentication_token_id, ip)
@@ -125,14 +145,21 @@ class Memory_store
 		if (!previous_time || now.getTime() > previous_time.getTime())
 		{
 			// update access time for this authentication token
-			const token = user.authentication_tokens[authentication_token_id]
-			token.ip = ip
-			token.time = now
+			const token = user.authentication_tokens.find_by({ id: authentication_token_id })
+
+			const this_ip_access = token.history.find_by({ ip })
+
+			if (this_ip_access)
+			{
+				this_ip_access.time = now
+			}
+			else
+			{
+				token.history.push({ ip, time: now })
+			}
 
 			// redundant field for faster latest activity time querying
 			user.latest_activity_time = now
-
-			// await store.update_user(user)
 		}
 	}
 }
@@ -152,105 +179,81 @@ class Mongodb_store
 			db: { w: 'majority', wtimeout: 10000 } 
 		})
 
-		this.user_authentications = db.collection('user_authentications')
+		this.user_authentication = db.collection('user_authentication')
+		this.authentication_tokens = db.collection('authentication_tokens')
 
-		Promise.promisifyAll(this.user_authentications)
-
-		// const User_authentication_schema = mongoose.Schema
-		// ({
-		// 	// id       : mongoose.Schema.Types.ObjectId, // 12 bytes
-		// 	email    : String, // mongoose.Schema.Types.Email,
-		// 	password : String,
-
-		// 	// redundant field for faster latest activity time querying
-		// 	latest_activity_time : Date,
-
-		// 	authentication_tokens:
-		// 	{
-		// 		token_id: 
-		// 		{
-		// 			ip   : String,
-		// 			time : Date
-		// 		}
-		// 	}
-		// },
-		// {
-		// 	emitIndexErrors : true,
-		// 	versionKey      : false,
-		// 	// minimize : false
-		// })
-
-		// this.User_authentication = mongoose.model('User_authentication', User_authentication_schema)
-		// Promise.promisifyAll(this.User_authentication)
+		Promise.promisifyAll(this.user_authentication)
+		Promise.promisifyAll(this.authentication_tokens)
 	}
 
 	async create_user(user)
 	{
-		// const result = await new this.User_authentication(user).saveAsync()
-		// return result[0]._id.toString()
-
-		const result = await this.user_authentications.insertAsync(user)
+		const result = await this.user_authentication.insertAsync(user)
 		return result.ops[0]._id.toString()
 	}
 
 	async find_user_by_id(id)
 	{
-		// const user = await this.User_authentication.findByIdAsync(id)
-		// return mongodb_to_object(user)
-
-		const result = await this.user_authentications.findOneAsync({ _id: ObjectId(id) })
+		const result = await this.user_authentication.findOneAsync({ _id: ObjectId(id) })
 		return mongodb_to_object(result)
 	}
 
 	async find_user_by_email(email)
 	{
-		// const user = await this.User_authentication.findOneAsync({ email })
-		// return mongodb_to_object(user)
-
-		const result = await this.user_authentications.findOneAsync({ email })
+		const result = await this.user_authentication.findOneAsync({ email })
 		return mongodb_to_object(result)
 	}
 
-	// update_user(user)
-	// {
-	// 	return new this.User_authentication(user).saveAsync()
-	// }
-
-	async find_token_by_id(token_id, user_id)
+	async find_token_by_id(token_id)
 	{
-		const user = await this.user_authentications.findOneAsync
+		const token = await this.authentication_tokens.findOneAsync
 		({
-			_id: ObjectId(user_id),
-			[`authentication_tokens.${token_id}`]: { $exists: true }
+			_id: ObjectId(token_id)
 		})
 
-		if (!user)
-		{
-			return
-		}
-
-		return user.authentication_tokens[token_id]
+		return mongodb_to_object(token)
 	}
 
-	revoke_token(token_id, user_id)
+	async revoke_token(token_id, user_id)
 	{
-		return this.user_authentications.updateOneAsync
+		// remove the token from user data
+		await this.user_authentication.updateOneAsync
 		({
 			_id: ObjectId(user_id)
 		},
 		{
-			$unset:
+			$pull:
 			{
-				[`authentication_tokens.${token_id}`]: ''
+				authentication_tokens: ObjectId(token_id)
 			}
+		})
+
+		// remove the token from the database
+		await this.authentication_tokens.removeAsync
+		({
+			_id: ObjectId(token_id)
 		})
 	}
 
-	async add_authentication_token(user, authentication_token_id, ip)
+	async add_authentication_token(user, ip)
 	{
 		const now = new Date()
 
-		return this.user_authentications.updateOneAsync
+		// add the token to the database
+		const authentication_token_id = (await this.authentication_tokens.insertAsync
+		({
+			user_id : ObjectId(user.id),
+
+			history:
+			[{
+				ip,
+				time: now
+			}]
+		}))
+		.insertedIds[0]
+
+		// add the token to user data
+		await this.user_authentication.updateOneAsync
 		({
 			_id: ObjectId(user.id)
 		},
@@ -258,11 +261,16 @@ class Mongodb_store
 			$set:
 			{
 				// redundant field for faster latest activity time querying
-				latest_activity_time: now,
+				latest_activity_time: now
+			},
 
-				[`authentication_tokens.${authentication_token_id}`]: { ip, time: now }
+			$push:
+			{
+				authentication_tokens: ObjectId(authentication_token_id)
 			}
 		})
+
+		return authentication_token_id.toString()
 	}
 
 	async record_access(user, authentication_token_id, ip)
@@ -281,7 +289,8 @@ class Mongodb_store
 		// then update it
 		if (!previous_time || now.getTime() > previous_time.getTime())
 		{
-			await this.user_authentications.updateOneAsync
+			// update user's `latest_activity_time`
+			await this.user_authentication.updateOneAsync
 			({
 				_id: ObjectId(user.id)
 			},
@@ -289,9 +298,20 @@ class Mongodb_store
 				$set:
 				{
 					// redundant field for faster latest activity time querying
-					latest_activity_time: now,
+					latest_activity_time: now
+				}
+			})
 
-					[`authentication_tokens.${authentication_token_id}`]: { ip, time: now }
+			// update token access information
+			await this.authentication_tokens.updateOneAsync
+			({
+				_id: ObjectId(authentication_token_id),
+				'history.ip': ip
+			},
+			{
+				$set:
+				{
+					'history.$': { ip, time: now }
 				}
 			})
 		}

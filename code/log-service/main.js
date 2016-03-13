@@ -19,11 +19,19 @@ global.messages =
 	}
 }
 
-server.on('error', error => log.error(error))
+server.on('error', error =>
+{
+	console.log('Log server shutdown')
+	log.error(error)
+})
 
 server.on('session', messenger =>
 {
-	messenger.on('error', error => log.error(error))
+	messenger.on('error', error =>
+	{
+		console.log('Messenger error')
+		log.error(error)
+	})
 
 	messenger.on('message', function(message)
 	{

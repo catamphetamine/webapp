@@ -84,28 +84,28 @@ function colorize(text, style)
 // 	}
 // }
 
-function preamble(source, level, time, colour)
+function preamble(source, level, time)
 {
+	time = moment(time).format("dddd, MMMM Do YYYY, hh:mm:ss")
+
 	let preamble = `[${source}] ${time} `
 	if (level !== 'Generic')
 	{
 		preamble += `${level} `
 	}
-	return colorize(preamble, colour)
+
+	return preamble
 }
 
 function print(source, level, message, time)
 {
-	time = moment(time).format("dddd, MMMM Do YYYY, hh:mm:ss")
+	const _preamble = preamble(source, level, time)
 
-	return console.log(preamble
-	(
-		source,
-		level,
-		time,
-		colours[level.toString()] || colours['...']
-	)
-	+ message)
+	const colour = colours[level.toString()] || colours['...']
+
+	const text = colorize(_preamble + message, colour)
+
+	console.log(text)
 }
 
 export default function create(name, options = {})
@@ -120,12 +120,13 @@ export default function create(name, options = {})
 	{
 		if (data.err)
 		{
+			console.log(preamble(data.name, levels[data.level], data.time))
 			return print_error(data.err)
 		}
 
 		const print = (level, message, time) => _print(data.name, level, message, time)
 
-		print(levels[data.level] || '...', data.msg, data.time)
+		print(levels[data.level], data.msg, data.time)
 
 		// switch (data.level)
 		// {
