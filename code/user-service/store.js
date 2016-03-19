@@ -51,6 +51,11 @@ function create_store()
 		update_user(user)
 		{
 			return new User(user).save()
+		},
+
+		update_locale(user_id, locale)
+		{
+			return new User({ id: user_id, locale }).save()
 		}
 	}
 
@@ -94,6 +99,13 @@ class Memory_store
 	update_user(user)
 	{
 		this.users.set(String(user.id), user)
+
+		return Promise.resolve()
+	}
+
+	update_locale(user_id, locale)
+	{
+		this.find_user_by_id(user_id).locale = locale
 
 		return Promise.resolve()
 	}

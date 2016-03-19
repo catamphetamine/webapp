@@ -216,7 +216,12 @@ export default class Dropdown extends Component
 		const markup =
 		(
 			<div className="rich-fallback">
-				<select name={this.props.name} defaultValue={this.props.value} style={{ width: 'auto' }}>
+				<select 
+					name={this.props.name} 
+					value={this.props.value} 
+					onChange={event => {}} 
+					style={{ width: 'auto' }}>
+					
 					{this.list_items().map(item => <option className="dropdown-item" key={item.value} value={item.value}>{item.label}</option>)}
 				</select>
 			</div>

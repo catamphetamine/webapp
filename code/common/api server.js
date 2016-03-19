@@ -40,7 +40,7 @@ export default function(options = {})
 						log.error(error)
 					}
 
-					const url = error_handler(error)
+					const url = error_handler.call(this, error)
 
 					const redirect = new Url(url).set_parameters
 					({
@@ -78,6 +78,7 @@ export default function(options = {})
 			},
 			error =>
 			{
+				console.log('Api server shutdown')
 				log.error(error)
 			})
 		}

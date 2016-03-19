@@ -1,5 +1,7 @@
 import store from '../store'
 
+// import {} from './user.base'
+
 api.get('/:id', async function({ id }, { user })
 {
 	const user_data = await store.find_user_by_id(id)
@@ -21,6 +23,11 @@ api.post('/', async function(user)
 
 	await store.create_user(user)
 })
+
+// api.patch('/locale', async function()
+// {
+// 	await set_locale.apply(this, arguments)
+// })
 
 // api.patch('/:id', async function({ id, name })
 // {
@@ -71,7 +78,9 @@ function own_user(user)
 
 		role       : user.role,
 		// moderation : user.moderation,
-		// switches   : user.switches
+		// switches   : user.switches,
+
+		locale : user.locale
 	}
 
 	return result

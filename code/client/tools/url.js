@@ -67,6 +67,11 @@ export default class Uri
 {
 	constructor(uri)
 	{
+		if (is_object(uri))
+		{
+			uri = uri.pathname + (uri.search ? `?${uri.search}` : '')
+		}
+
 		var parsed = parse_uri(uri)
 
 		for (let key of Object.keys(parsed))

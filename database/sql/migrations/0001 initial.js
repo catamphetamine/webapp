@@ -13,6 +13,7 @@ exports.up = function(knex, Promise)
 		table.string('email', email_max_length).notNullable().unique()
 
 		table.string('role', 256)
+		table.string('locale', 128)
 
 		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
 	})

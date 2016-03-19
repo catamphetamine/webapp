@@ -1,6 +1,5 @@
 import jwt    from 'jsonwebtoken'
 
-import http   from '../../common/http'
 import Url    from '../../client/tools/url'
 
 import { store, online_status_store } from '../store'

@@ -39,9 +39,7 @@ export async function sign_in({ email, password }, { ip, set_cookie, secret, htt
 		jwtid   : jwt_id
 	})
 
-	// http://stackoverflow.com/questions/3290424/set-a-cookie-to-never-expire
-	const expires = new Date(2147483647000)  // January 2038
-	set_cookie('authentication', token, { expires, signed: false })
+	set_cookie('authentication', token, { signed: false })
 
 	const user_data = await get_user(http, user.id, token)
 

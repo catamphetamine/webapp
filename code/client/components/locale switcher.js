@@ -10,6 +10,10 @@ import styler from 'react-styling'
 import Flag     from './flag'
 import Dropdown from './dropdown'
 import Spinner  from './spinner'
+import Form     from './form'
+import Button   from './button'
+
+import Url from '../tools/url'
 
 import { defineMessages } from 'react-intl'
 import international from '../international/internationalize'
@@ -34,6 +38,12 @@ const messages = defineMessages
 		id             : 'application.language',
 		description    : 'Web application language',
 		defaultMessage : 'Language'
+	},
+	apply:
+	{
+		id             : 'application.set_language',
+		description    : 'Web application language selection box apply button text',
+		defaultMessage : '✓'
 	}
 })
 
@@ -41,8 +51,8 @@ const messages = defineMessages
 (
 	model => 
 	({
-		locale : model.locale.locale,
-		// url    : store.router.location.pathname + store.router.location.search
+		locale   : model.locale.locale,
+		location : model.router.location
 	})
 )
 @international()
@@ -57,8 +67,6 @@ export default class Locale_switcher extends Component
 
 	render()
 	{
-		const translate = this.props.intl.formatMessage
-
 		const { locale } = this.props
 
 		const markup =
@@ -67,14 +75,33 @@ export default class Locale_switcher extends Component
 				{/* loading */}
 				<Spinner style={ this.state.setting_locale ? style.spinner.show : style.spinner.hide }/>
 
-				{/* dropdown list */}
-				<Dropdown 
-					label={translate(messages.language)} 
-					value={locale} 
-					on_change={::this.set_locale} 
-					options={locales.map(({ value, label }) => ({ value, label, icon: <Flag locale={value} style={style.locale.flag}/> }))} 
-					title={translate(messages.language)}
-					upward={this.props.upward}/>
+				{/* Apply button for javascriptless users */}
+				<Form className="set-language-form" style={style.locale.form} post="/users/legacy/locale">
+					{/* language list */}
+					<Dropdown 
+						name="locale"
+						label={this.props.translate(messages.language)} 
+						value={locale} 
+						on_change={::this.set_locale} 
+						options={locales.map(({ value, label }) => ({ value, label, icon: <Flag locale={value} style={style.locale.flag}/> }))} 
+						title={this.props.translate(messages.language)}
+						upward={this.props.upward}/>
+
+					{/* submit */}
+					<Button 
+						className="rich-fallback" 
+						style={style.locale.form.button} 
+						submit={true}>
+
+						{this.props.translate(messages.apply)}
+					</Button>
+
+					{/* this page url for back redirection */}
+					<input 
+						type="hidden" 
+						name="from_url" 
+						value={new Url(this.props.location).to_relative_url()}/>
+				</Form>
 			</div>
 		)
 
@@ -85,8 +112,21 @@ export default class Locale_switcher extends Component
 	{
 		this.setState({ setting_locale: true })
 
-		cookie('locale', locale)
-		window.location.reload()
+		// a hacky way of doing it
+
+		const form = document.querySelector('.set-language-form')
+
+		const select = form.querySelector('select')
+		select.removeAttribute('name')
+
+		const locale_value = document.createElement('input')
+		locale_value.setAttribute('name', 'locale')
+		locale_value.setAttribute('type', 'hidden')
+		locale_value.setAttribute('value', locale)
+
+		form.appendChild(locale_value)
+
+		form.submit()
 	}
 }
 
@@ -111,4 +151,12 @@ const style = styler
 			margin-right   : 0.4em
 			margin-bottom  : -0.03em
 			vertical-align : baseline
+
+		form
+			display : inline-block
+			vertical-align : bottom
+
+			button	
+				margin-left   : 0.5em
+				margin-bottom : 0.5em
 `

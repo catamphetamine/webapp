@@ -44,7 +44,7 @@ import https from 'https'
 
 import http_client from './http'
 
-import html_stack_trace from './html stack trace'
+import render_stack_trace from './html stack trace'
 
 // Sets up a Web Server instance (based on Koa)
 //
@@ -180,19 +180,6 @@ export default function web_server(options = {})
 			else if (typeof error.status === 'number')
 			{
 				http_status_code = error.status
-
-				// if the `superagent` http request returned an error stack trace,
-				// then just output that stack trace
-				if (error.response 
-					&& error.response.headers['content-type']
-					&& error.response.headers['content-type'].starts_with('text/html'))
-				{
-					this.status = error.status
-					this.body   = error.message
-					this.type   = 'html'
-
-					return
-				}
 			}
 
 			if (exists(http_status_code))
@@ -201,7 +188,7 @@ export default function web_server(options = {})
 				this.status = http_status_code
 
 				// set Http Response text according to the error message
-				this.message = error.message || 'Internal error'
+				this.body = error.message || 'Internal error'
 			}
 			else
 			{
@@ -224,39 +211,25 @@ export default function web_server(options = {})
 
 				// for easier debugging
 				console.log('(http request failed)')
-				
+
 				log.error(error)
 
 				this.status = 500
-				this.message = 'Internal error'
+				this.body = 'Internal error'
 			}
 
 			// show error stack trace in development mode for easier debugging
 			if (_development_)
 			{
-				let stack_trace
+				const { response_status, response_body } = render_stack_trace(error)
 
-				if (error.stack)
+				if (response_body)
 				{
-					stack_trace = error.stack
-				}
-				else if (error.original && error.original.stack)
-				{
-					stack_trace = error.original.stack
-				}
+					this.status = response_status || http_status_code || 500
+					this.body = response_body
+					this.type = 'html'
 
-				if (stack_trace)
-				{
-					try
-					{
-						this.body = html_stack_trace.call(this, stack_trace)
-						this.type = 'html'
-					}
-					catch (error)
-					{
-						this.status = 500
-						this.body = error.stack
-					}
+					return
 				}
 			}
 		}
@@ -580,7 +553,15 @@ export default function web_server(options = {})
 					const destroy_session = () => this.session = null
 
 					const get_cookie = name => this.cookies.get(name)
-					const set_cookie = (name, value, options) => this.cookies.set(name, value, options)
+					
+					const set_cookie = (name, value, options = {}) =>
+					{
+						// http://stackoverflow.com/questions/3290424/set-a-cookie-to-never-expire
+						options.expires = options.expires || new Date(2147483647000)  // January 2038
+
+						this.cookies.set(name, value, options)
+					}
+
 					const destroy_cookie = name =>
 					{
 						this.cookies.set(name, null)

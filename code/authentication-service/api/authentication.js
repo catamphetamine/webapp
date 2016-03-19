@@ -8,7 +8,7 @@ api.post('/sign-out', sign_out)
 
 api.post('/register', register)
 
-api.post('/authenticate', async function({}, { user, http })
+api.post('/authenticate', async function({}, { user, http, set_cookie })
 {
 	// console.log('*** authenticate')
 
@@ -23,6 +23,12 @@ api.post('/authenticate', async function({}, { user, http })
 	if (!user)
 	{
 		return
+	}
+
+	console.log('@@@@@@@@@@@@@@', user)
+	if (user.locale)
+	{
+		set_cookie('locale', user.locale, { signed: false })
 	}
 
 	return own_user(user)
