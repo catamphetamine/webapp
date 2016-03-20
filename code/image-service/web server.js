@@ -79,10 +79,17 @@ function resize(from, to, settings)
 	return resize_image(parameters) // (error, output, errors_output) ->
 }
 
+web.use(function*(next)
+{
+	yield next
+
+	
+})
+
 web.file_upload
 ({
 	output_folder: path.resolve(Root_folder, configuration.image_service.temporary_files_directory),
-	root_folder: Root_folder
+	// root_folder: Root_folder
 })
 
 web.listen(configuration.image_service.http.port).then(() =>

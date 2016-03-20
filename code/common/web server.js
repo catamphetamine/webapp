@@ -93,9 +93,6 @@ import render_stack_trace from './html stack trace'
 //
 //       output_folder  - where to write the files
 //
-//       root_folder    - Http response will contain file_name (or file_names) 
-//                        relative to this folder
-//
 //       multiple_files - set this flag to true in case of multiple file upload
 //
 //   serve_static_files() - enables serving static files
@@ -740,9 +737,53 @@ export default function web_server(options = {})
 	// }
 	
 	// can handle file uploads
-	result.file_upload = function({ path = '/', output_folder, root_folder, multiple_files = false })
+	result.file_upload = function({ path = '/', output_folder, multiple_files = false, postprocess })
 	{
-		web.use(mount(path, file_upload_middleware(output_folder, root_folder, multiple_files, options.log)))
+		web.use(mount(path, function*()
+		{
+			if (!this.is('multipart/form-data'))
+			{
+				const error = new Error(`This is supposed to be a "multipart/form-data" http request`)
+				error.code = 404
+				throw error
+			}
+
+			const file_names = []
+
+			const files = busboy(this)
+
+			let file
+
+			while (file = yield files)
+			{
+				if (!multiple_files && file_names.not_empty())
+				{
+					throw new Error(`Multiple files are being uploaded to a single file upload endpoint`)
+				}
+
+				const file_name = yield upload_file(file, { output_folder, log: options.log })
+
+				file_names.push(file_name)
+			}
+
+			let result
+
+			if (multiple_files)
+			{
+				result = { file_names: file_names }
+			}
+			else
+			{
+				result = { file_name: file_names[0] }
+			}
+
+			if (postprocess)
+			{
+				result = yield postprocess(result)
+			}
+
+			this.body = result
+		}))
 	}
 
 	// if (web.errors)
@@ -898,81 +939,47 @@ export default function web_server(options = {})
 	return result
 }
 
-// handles file upload
-function file_upload_middleware(output_folder, root_folder, multiple_files, log)
+// checks if filesystem path exists
+function fs_exists(path)
 {
-	return function*(next)
+	return new Promise((resolve, reject) => 
 	{
-		if (!this.is('multipart/form-data'))
-		{
-			const error = new Error(`This is supposed to be a "multipart/form-data" http request`)
-			error.code = 404
-			throw error
-		}
+		fs.exists(path, exists => resolve(exists))
+	})
+}
 
-		function generate_unique_filename(folder)
-		{
-			return new Promise((resolve, reject) =>
-			{
-				const file_name = Math.random().toString().slice(2)
+// generates a unique temporary file name
+async function generate_unique_filename(folder)
+{
+	const file_name = Math.random().toString().slice(2)
 
-				fs.existsAsync(path.join(folder, file_name)).then(exists =>
-				{
-					resolve(file_name)
-				},
-				error =>
-				{
-					reject(error)
-				})
-			})
-		}
+	const exists = await fs_exists(path.join(folder, file_name))
 
-		const files = busboy(this)
-
-		const file_names = []
-
-		let file
-
-		while (file = yield files)
-		{
-			if (log)
-			{
-				log.debug(`Uploading: ${file.filename}`)
-			}
-
-			if (!multiple_files && file_names.not_empty())
-			{
-				throw new Error(`Multiple files are being uploaded to a single file upload endpoint`)
-			}
-				
-			const file_name = yield generate_unique_filename(output_folder)
-			const output_file = path.join(output_folder, file_name)
-
-			yield new Promise((resolve, reject) =>
-			{
-				const stream = fs.createOutputStream(output_file)
-				file.pipe(stream).on('finish', function()
-				{
-					resolve(path.relative(root_folder, output_file))
-				})
-				.on('error', function(error)
-				{
-					reject(error)
-				})
-			})
-			.then(path =>
-			{
-				file_names.push(file_name)
-			})
-		}
-
-		if (multiple_files)
-		{
-			return this.body = { file_names: file_names }
-		}
-		else
-		{
-			return this.body = { file_name: file_names[0] }
-		}
+	if (!exists)
+	{
+		return file_name
 	}
+
+	return await generate_unique_filename(folder)
+}
+
+// handles file upload
+async function upload_file(file, { output_folder, log })
+{
+	if (log)
+	{
+		log.debug(`Uploading: ${file.filename}`)
+	}
+		
+	const file_name = await generate_unique_filename(output_folder) + path.extname(file.filename)
+	const output_file = path.join(output_folder, file_name)
+
+	return await new Promise((resolve, reject) =>
+	{
+		const stream = fs.createOutputStream(output_file)
+
+		file.pipe(stream)
+			.on('finish', () => resolve(path.relative(output_folder, output_file)))
+			.on('error', error => reject(error))
+	})
 }
