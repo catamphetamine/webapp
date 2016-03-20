@@ -145,7 +145,9 @@ export function own_user(user, id)
 
 		role       : user.role,
 		// moderation : user.moderation,
-		// switches   : user.switches
+		// switches   : user.switches,
+
+		locale     : user.locale
 	}
 
 	return result

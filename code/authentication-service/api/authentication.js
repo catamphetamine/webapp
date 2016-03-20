@@ -8,29 +8,32 @@ api.post('/sign-out', sign_out)
 
 api.post('/register', register)
 
-api.post('/authenticate', async function({}, { user, http, set_cookie })
+api.post('/authenticate', async function({}, { user, http, get_cookie, set_cookie })
 {
-	// console.log('*** authenticate')
-
 	if (!user)
 	{
-		// throw authentication_error
 		return
 	}
 
+	// get user data
 	user = await get_user(http, user.id)
 
+	// shouldn't happen
 	if (!user)
 	{
 		return
 	}
 
-	console.log('@@@@@@@@@@@@@@', user)
-	if (user.locale)
-	{
-		set_cookie('locale', user.locale, { signed: false })
-	}
+	// // if a user has locale set then make sure that locale is applied
+	// if (user.locale)
+	// {
+	// 	if (get_cookie('locale') !== user.locale)
+	// 	{
+	// 		set_cookie('locale', user.locale, { signed: false })
+	// 	}
+	// }
 
+	// return user data
 	return own_user(user)
 })
 

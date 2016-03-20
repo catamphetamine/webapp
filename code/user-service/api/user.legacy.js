@@ -11,8 +11,10 @@ api.legacy.post('/legacy/locale', async function({ locale, from_url }, { set_coo
 	{
 		await store.update_locale(user.id, locale)
 	}
-
-	set_cookie('locale', locale, { signed: false })
+	else
+	{
+		set_cookie('locale', locale, { signed: false })
+	}
 
 	return `${address_book.web_server}${from_url}`
 },

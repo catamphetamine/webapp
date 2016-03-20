@@ -20,16 +20,16 @@ export function sign_out()
 	return action
 }
 
-export function authenticate()
-{
-	const action =
-	{
-		promise : http => http.post(`/authentication/authenticate`),
-		event   : 'user authentication'
-	}
-
-	return action
-}
+// export function authenticate()
+// {
+// 	const action =
+// 	{
+// 		promise : http => http.post(`/authentication/authenticate`),
+// 		event   : 'user authentication'
+// 	}
+//
+// 	return action
+// }
 
 export function register(info)
 {

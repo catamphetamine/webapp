@@ -68,24 +68,25 @@ for (let method of Object.keys(http_methods))
 					// superagent would have already output the error to console
 					// console.error(error.stack)
 					
+					console.log('[http client] (http request error)')
+
 					if (response)
 					{
-						let text = response.text
-						const code = parseInt(text)
+						error.code = response.status
 
-						if (text)
+						const content_type = response.get('content-type').split(';')[0].trim()
+
+						if (content_type === 'text/plain')
 						{
-							error.message = text
-
-							if (!isNaN(code))
-							{
-								error.code = code
-								// error.message = error.message.split(' ').shift() then .join()
-							}
+							error.message = response.text
+						}
+						else if (content_type === 'text/html')
+						{
+							error.html = response.text
 						}
 					}
 
-					return reject(error) // (response && response.body) || 
+					return reject(error)
 				}
 
 				resolve(response.body)

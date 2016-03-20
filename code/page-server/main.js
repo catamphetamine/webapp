@@ -70,12 +70,45 @@ webpage_server
 	// handles errors occuring while rendering pages
 	on_error,
 
-	// internationalization
-	localize: (store, preferred_locale) =>
+	// user info preloading
+	preload: async (http) =>
 	{
-		let { locale, messages } = load_locale_data(preferred_locale || 'en')
+		try
+		{
+			let user = await http.post(`/authentication/authenticate`)
 
-		store.dispatch({ type: 'locale', locale, preferred_locale })
+			// convert empty object `{}` to `undefined`
+			user = user.id ? user : undefined
+
+			return { authentication: { user } }
+		}
+		catch (error)
+		{
+			log.error("(authentication error)")
+			log.error(error)
+
+			return { authentication: { authentication_error: error } }
+		}
+	},
+
+	// internationalization
+	localize: async (store, preferred_locale) =>
+	{
+		const preferred_locales = []
+
+		if (store.getState().authentication 
+			&& store.getState().authentication.user 
+			&& store.getState().authentication.user.locale)
+		{
+			preferred_locales.push(store.getState().authentication.user.locale)
+		}
+
+		preferred_locales.push(preferred_locale)
+		preferred_locales.push('en-US')
+
+		let { locale, messages } = await load_locale_data(preferred_locales, { force_reload: _development_ })
+
+		store.dispatch({ type: 'locale', locale })
 
 		return { locale, messages }
 	},

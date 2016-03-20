@@ -20,15 +20,15 @@ import Locale_switcher from '../components/locale switcher'
 import Authentication  from '../components/authentication'
 import Preloading      from '../components/preloading'
 
-import { authenticate } from '../actions/authentication'
+// import { authenticate } from '../actions/authentication'
 
 // when adjusting this transition time also adjust it in styles/xs-m.scss
 const menu_transition_duration = 210 // milliseconds
 
-@preload
-({
-	blocking: (dispatch, get_model) => dispatch(authenticate())
-})
+// @preload
+// ({
+// 	blocking: (dispatch, get_model) => dispatch(authenticate())
+// })
 @international()
 export default class Layout extends Component
 {

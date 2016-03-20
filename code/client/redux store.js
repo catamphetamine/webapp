@@ -12,7 +12,7 @@ export default function(options)
 		return middleware
 	}
 
-	const { store, reload } = create_store(() => require('./model'), { ...options, on_preload_error: on_error, middleware })
+	const { store, reload } = create_store(() => require('./reducers'), { ...options, on_preload_error: on_error, middleware })
 
 	// (for Webpack users only)
 	//
@@ -21,7 +21,7 @@ export default function(options)
 	if (_development_ && module.hot)
 	{
 		// this path must be equal to the path in the `require()` call in `create_store` above
-		module.hot.accept('./model', reload)
+		module.hot.accept('./reducers', reload)
 	}
 
 	return store

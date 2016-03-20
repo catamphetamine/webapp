@@ -2,41 +2,41 @@ const initial_state = {}
 
 const handlers =
 {
-	'user authentication pending': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			authenticating       : true,
-			authentication_error : undefined
-		}
+	// 'user authentication pending': (result, state) =>
+	// {
+	// 	const new_state = 
+	// 	{
+	// 		...state,
+	// 		authenticating       : true,
+	// 		authentication_error : undefined
+	// 	}
 
-		return new_state
-	},
+	// 	return new_state
+	// },
 
-	'user authentication done': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			authenticating : false,
-			user           : result.id ? result : undefined
-		}
+	// 'user authentication done': (result, state) =>
+	// {
+	// 	const new_state = 
+	// 	{
+	// 		...state,
+	// 		authenticating : false,
+	// 		user           : result.id ? result : undefined
+	// 	}
 
-		return new_state
-	},
+	// 	return new_state
+	// },
 
-	'user authentication failed': (error, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			authenticating       : false,
-			authentication_error : error
-		}
+	// 'user authentication failed': (error, state) =>
+	// {
+	// 	const new_state = 
+	// 	{
+	// 		...state,
+	// 		authenticating       : false,
+	// 		authentication_error : error
+	// 	}
 
-		return new_state
-	},
+	// 	return new_state
+	// },
 
 	'user registration pending': (result, state) =>
 	{

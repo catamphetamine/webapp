@@ -22,7 +22,7 @@ if (_development_)
 	const console_error = console.error
 	console.error = (...parameters) =>
 	{
-		if (!parameters[0].starts_with('[React Intl] Missing message:'))
+		if (typeof parameters[0] !== 'string' || !parameters[0].starts_with('[React Intl] Missing message:'))
 		{
 			console_error.call(console, ...parameters)
 		}

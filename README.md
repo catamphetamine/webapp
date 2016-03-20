@@ -325,12 +325,6 @@ Troubleshooting
 To do
 ====================
 
-сделать валидацию имени, почты, пароля (как на клиенте, так и на сервере - вынести в какой-то общий код мб, что-нибудь типа common/validation)
-
-
-
-
-
 Напоминания взять отсюда
 
 http://materializecss.com/dialogs.html
@@ -347,6 +341,11 @@ http://materializecss.com/media.html
 
 (в showcase)
 
+
+
+
+
+автокомплит (в showcase)
 
 
 

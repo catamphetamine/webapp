@@ -10,8 +10,7 @@ const handlers =
 		const new_state = 
 		{
 			...state,
-			locale           : result.locale,
-			preferred_locale : result.preferred_locale
+			locale : result.locale
 		}
 
 		return new_state
