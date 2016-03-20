@@ -359,6 +359,8 @@ image-service разделится на image-service и file-upload-service
 
 drag-n-drop загрузку аватара
 
++ оффлайновая страница правки профиля (загрузки аватара)
+
 
 
 

@@ -73,22 +73,12 @@ webpage_server
 	// user info preloading
 	preload: async (http) =>
 	{
-		try
-		{
-			let user = await http.post(`/authentication/authenticate`)
+		let user = await http.post(`/authentication/authenticate`)
 
-			// convert empty object `{}` to `undefined`
-			user = user.id ? user : undefined
+		// convert empty object `{}` to `undefined`
+		user = user.id ? user : undefined
 
-			return { authentication: { user } }
-		}
-		catch (error)
-		{
-			log.error("(authentication error)")
-			log.error(error)
-
-			return { authentication: { authentication_error: error } }
-		}
+		return { authentication: { user } }
 	},
 
 	// internationalization
