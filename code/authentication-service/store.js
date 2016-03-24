@@ -105,6 +105,7 @@ class Memory_store
 
 		function generate_jwt_id()
 		{
+			// 24 bytes
 			return uid.sync(24)
 		}
 

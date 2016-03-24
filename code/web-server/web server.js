@@ -25,8 +25,8 @@ web.serve_static_files('/assets', path.join(Root_folder, 'build', 'assets'))
 // remove this after fixing the "simple example" page
 web.serve_static_files('/temporary_storage', path.join(Root_folder, configuration.image_service.temporary_files_directory))
 
-// serve uploaded files (pictures, etc)
-web.serve_static_files('/storage', path.join(Root_folder, configuration.upload_folder))
+// uploaded images (avatars, etc)
+web.serve_static_files('/storage/images', path.join(Root_folder, configuration.image_service.files_directory))
 
 // if it's not a static file url:
 

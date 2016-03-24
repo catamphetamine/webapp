@@ -15,6 +15,8 @@ import uid   from 'uid-safe'
 
 Promise.promisifyAll(redis)
 
+import file_size_parser from 'filesize-parser'
+
 // import jwt from 'koa-jwt'
 
 import jwt from 'jsonwebtoken'
@@ -91,7 +93,7 @@ import render_stack_trace from './html stack trace'
 //
 //       path           - the URL path to mount this middleware at (defaults to /)
 //
-//       output_folder  - where to write the files
+//       upload_folder  - where to write the files
 //
 //       multiple_files - set this flag to true in case of multiple file upload
 //
@@ -737,7 +739,7 @@ export default function web_server(options = {})
 	// }
 	
 	// can handle file uploads
-	result.file_upload = function({ path = '/', output_folder, multiple_files = false, postprocess })
+	result.file_upload = function({ path = '/', upload_folder, multiple_files = false, postprocess, file_size_limit })
 	{
 		web.use(mount(path, function*()
 		{
@@ -750,7 +752,13 @@ export default function web_server(options = {})
 
 			const file_names = []
 
-			const files = busboy(this)
+			const files = busboy(this,
+			{
+				limits:
+				{
+					fileSize: file_size_limit ? file_size_parser(file_size_limit) : undefined
+				}
+			})
 
 			let file
 
@@ -761,25 +769,29 @@ export default function web_server(options = {})
 					throw new Error(`Multiple files are being uploaded to a single file upload endpoint`)
 				}
 
-				const file_name = yield upload_file(file, { output_folder, log: options.log })
+				const file_name = yield upload_file(file, { upload_folder, log: options.log })
 
-				file_names.push(file_name)
+				file_names.push
+				({
+					original_file_name: file.filename,
+					uploaded_file_name: file_name
+				})
 			}
 
 			let result
 
 			if (multiple_files)
 			{
-				result = { file_names: file_names }
+				result = { files: file_names }
 			}
 			else
 			{
-				result = { file_name: file_names[0] }
+				result = { file: file_names[0] }
 			}
 
 			if (postprocess)
 			{
-				result = yield postprocess(result)
+				result = yield postprocess.call(this, result)
 			}
 
 			this.body = result
@@ -949,9 +961,15 @@ function fs_exists(path)
 }
 
 // generates a unique temporary file name
-async function generate_unique_filename(folder)
+async function generate_unique_filename(folder, options)
 {
-	const file_name = Math.random().toString().slice(2)
+	// 24 bytes
+	let file_name = uid.sync(24)
+
+	if (options.dot_extension)
+	{
+		file_name += options.dot_extension
+	}
 
 	const exists = await fs_exists(path.join(folder, file_name))
 
@@ -960,26 +978,31 @@ async function generate_unique_filename(folder)
 		return file_name
 	}
 
-	return await generate_unique_filename(folder)
+	if (options.log)
+	{
+		options.log.info(`Generate unique file name: collision for "${file_name}". Taking another try.`)
+	}
+
+	return await generate_unique_filename(folder, options)
 }
 
 // handles file upload
-async function upload_file(file, { output_folder, log })
+async function upload_file(file, { upload_folder, log })
 {
 	if (log)
 	{
 		log.debug(`Uploading: ${file.filename}`)
 	}
 		
-	const file_name = await generate_unique_filename(output_folder) + path.extname(file.filename)
-	const output_file = path.join(output_folder, file_name)
+	const file_name = await generate_unique_filename(upload_folder, { log }) // dot_extension: path.extname(file.filename), 
+	const output_file = path.join(upload_folder, file_name)
 
 	return await new Promise((resolve, reject) =>
 	{
 		const stream = fs.createOutputStream(output_file)
 
 		file.pipe(stream)
-			.on('finish', () => resolve(path.relative(output_folder, output_file)))
+			.on('finish', () => resolve(path.relative(upload_folder, output_file)))
 			.on('error', error => reject(error))
 	})
 }

@@ -47,9 +47,11 @@ module.exports =
 			host: '127.0.0.1',
 			port: 3003
 		},
+		files_directory: 'storage/images',
 		temporary_files_directory: 'temporary_storage',
 		temporary_image_expiration_interval: { days: 1 }, 
-		clean_up_interval: { hours: 1 }
+		clean_up_interval: { hours: 1 },
+		file_size_limit: '10mb'
 	},
 	webpage_server: 
 	{
@@ -92,7 +94,7 @@ module.exports =
 			}
 		}
 	},
-	upload_folder: 'storage',
+	// upload_folder: 'storage',
 	authentication_token_payload:
 	{
 		write: user =>

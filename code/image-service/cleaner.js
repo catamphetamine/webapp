@@ -76,8 +76,7 @@ function clean_up()
 		// log.debug(`Deleting expired file ${file.file_name}`)
 		log.info(`Deleting expired file ${file.file_name}`)
 
-		// return fs.unlinkAsync(path.join(folder, file.file_name))
-		return true
+		return fs.unlinkAsync(path.join(folder, file.file_name))
 	})
 	.then(() => fs_size_async(folder))
 	.then(function(size)

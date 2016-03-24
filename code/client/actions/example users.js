@@ -58,8 +58,8 @@ export function upload_picture(user_id, data)
 		{
 			return http.post(`/upload_image`, data).then(result =>
 			{
-				return http.post(`/api/example/users/${user_id}/picture`, { file_name: result.file_name })
-				.then(() => ({ user_id, picture: result.file_name }))
+				return http.post(`/api/example/users/${user_id}/picture`, result)
+				.then(() => ({ user_id, picture: result }))
 			})
 		},
 		events: ['uploading user picture', 'user picture uploaded', 'uploading user picture failed']

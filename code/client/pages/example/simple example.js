@@ -151,24 +151,24 @@ export default class Page extends Component
 
 				<div>
 					<ul style={style.users.list}>
-						{users.map(user =>
+						{users.map((user, i) =>
 						{
 							return <li key={user.id}>
 								<span style={style.user.id}>{user.id}</span>
 
-								<img style={style.user.picture} src={user.picture ? `/temporary_storage/${user.picture}` : no_user_picture}/>
+								<img style={style.user.picture} src={user.picture ? `/storage/images/${user.picture.sizes[0].name}` : no_user_picture}/>
 
 								<span style={style.user.name}>{user.name}</span>
 
 								<input
 									type="file"
-									ref="upload_picture"
+									ref={`upload_picture_${i}`}
 									style={style.users.upload_picture_input}
 									onChange={event => this.on_picture_file_selected(event, user.id)}/>
 
 								<Button 
 									busy={this.props.uploading_picture} 
-									action={event => this.refs.upload_picture.click()} 
+									action={event => this.refs[`upload_picture_${i}`].click()} 
 									style={style.users.upload_picture}>
 
 									upload picture
@@ -253,15 +253,20 @@ export default class Page extends Component
 		event.target.value = null
 	}
 
-	upload_picture(file, user_id)
+	async upload_picture(file, user_id)
 	{
 		const data = new FormData()
 
-		data.append('file', file) // $('input[name="fileInput"]')[0].files[0]
+		data.append('file', file)
 
-		this.props.upload_picture(user_id, data)
-
-		// upload_file(files[0])
+		try
+		{
+			await this.props.upload_picture(user_id, data)
+		}
+		catch (error)
+		{
+			alert('DEBUG: Image upload failed. Make sure you have ImageMagick installed.')
+		}
 	}
 }
 
