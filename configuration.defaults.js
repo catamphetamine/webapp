@@ -51,7 +51,18 @@ module.exports =
 		temporary_files_directory: 'temporary_storage',
 		temporary_image_expiration_interval: { days: 1 }, 
 		clean_up_interval: { hours: 1 },
-		file_size_limit: '10mb'
+		file_size_limit: '10mb',
+		sizes:
+		[
+			300,
+			600,
+			1000,
+			1500,
+			2100,
+			2800,
+			3600,
+			4500
+		]
 	},
 	webpage_server: 
 	{
