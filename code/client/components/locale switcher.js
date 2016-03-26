@@ -58,12 +58,12 @@ const messages = defineMessages
 @international()
 export default class Locale_switcher extends Component
 {
-	state = {};
+	state = {}
 
 	static propTypes =
 	{
 		locale: PropTypes.string.isRequired
-	};
+	}
 
 	render()
 	{

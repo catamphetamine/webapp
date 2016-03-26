@@ -6,7 +6,7 @@ export default class Flag extends Component
 	static propTypes =
 	{
 		locale : PropTypes.string.isRequired
-	};
+	}
 
 	render()
 	{

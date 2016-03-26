@@ -43,7 +43,7 @@ export default class Log extends Component
 		get_log : PropTypes.func.isRequired,
 		log     : PropTypes.array,
 		error   : PropTypes.object
-	};
+	}
 
 	render()
 	{

@@ -8,7 +8,7 @@ import styler from 'react-styling'
 
 export default class Menu extends Component
 {
-	state = {};
+	state = {}
 
 	static propTypes = 
 	{
@@ -17,12 +17,12 @@ export default class Menu extends Component
 		toggle       : PropTypes.func,
 		update_width : PropTypes.func,
 		style        : PropTypes.object
-	};
+	}
 
 	static contextTypes =
 	{
 		history : React_router_prop_types.history
-	};
+	}
 
 	constructor(props)
 	{

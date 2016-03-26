@@ -361,8 +361,8 @@ class Memory_online_status_store
 // if Redis is installed and configured, use it
 class Redis_online_status_store
 {
-	prefix = 'user:session:';
-	ttl = 10 * 60; // 10 minutes
+	prefix = 'user:session:'
+	ttl = 10 * 60 // 10 minutes
 
 	connect()
 	{

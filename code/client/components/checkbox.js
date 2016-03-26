@@ -8,7 +8,7 @@ import { inject } from './common'
 
 export default class Checkbox extends Component
 {
-	state = {};
+	state = {}
 	
 	static propTypes =
 	{
@@ -19,7 +19,7 @@ export default class Checkbox extends Component
 		validate  : PropTypes.func,
 		focus     : PropTypes.bool,
 		style     : PropTypes.object
-	};
+	}
 
 	constructor(props)
 	{

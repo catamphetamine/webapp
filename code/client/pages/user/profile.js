@@ -45,7 +45,7 @@ export default class User_profile extends Component
 	{
 		user                 : PropTypes.object.isRequired,
 		latest_activity_time : PropTypes.object
-	};
+	}
 
 	render()
 	{

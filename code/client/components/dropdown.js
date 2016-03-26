@@ -33,7 +33,7 @@ export default class Dropdown extends Component
 		transition_item_count_min : PropTypes.number,
 		transition_duration_min : PropTypes.number,
 		transition_duration_max : PropTypes.number
-	};
+	}
 
 	static defaultProps = 
 	{
@@ -43,9 +43,9 @@ export default class Dropdown extends Component
 		transition_item_count_min : 1,
 		transition_duration_min : 60, // milliseconds
 		transition_duration_max : 100 // milliseconds
-	};
+	}
 
-	state = {};
+	state = {}
 
 	constructor(props)
 	{

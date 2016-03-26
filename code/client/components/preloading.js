@@ -10,7 +10,7 @@ export default class Preloading extends React.Component
 	{
 		pending : PropTypes.bool,
 		error   : PropTypes.any
-	};
+	}
 
 	render()
 	{

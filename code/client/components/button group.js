@@ -18,7 +18,7 @@ export default class Button_group extends Component
 		value        : PropTypes.any,
 		on_change    : PropTypes.func.isRequired,
 		style        : PropTypes.object
-	};
+	}
 
 	render()
 	{

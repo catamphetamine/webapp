@@ -14,7 +14,7 @@ export default class Button extends Component
 		className    : PropTypes.string,
 		style        : PropTypes.object,
 		button_style : PropTypes.object
-	};
+	}
 
 	render()
 	{

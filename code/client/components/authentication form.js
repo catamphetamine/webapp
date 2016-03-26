@@ -164,7 +164,7 @@ export default class Authentication extends Component
 {
 	state = 
 	{
-	};
+	}
 
 	pristine_form_state = 
 	{
@@ -174,7 +174,7 @@ export default class Authentication extends Component
 		terms_of_service_accepted : undefined,
 
 		register : false
-	};
+	}
 
 	static propTypes =
 	{
@@ -199,7 +199,7 @@ export default class Authentication extends Component
 		location           : PropTypes.object,
 
 		fields             : PropTypes.object
-	};
+	}
 
 	constructor(properties)
 	{

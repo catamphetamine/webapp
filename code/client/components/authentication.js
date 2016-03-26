@@ -67,19 +67,19 @@ export default class Authentication extends Component
 	state = 
 	{
 		show : false
-	};
+	}
 
 	pristine_form_state = 
 	{
 		register : false
-	};
+	}
 
 	static propTypes =
 	{
 		user           : PropTypes.object,
 		sign_out_error : PropTypes.object,
 		sign_out       : PropTypes.func.isRequired
-	};
+	}
 
 	constructor(properties)
 	{

@@ -24,7 +24,7 @@ export default class Form_showcase extends Component
 		checked        : true,
 		// selected: 'A',
 		// switched: true,
-	};
+	}
 
 	render()
 	{
