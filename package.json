@@ -9,8 +9,7 @@
   },
   "homepage": "https://github.com/halt-hammerzeit/webapp",
   "dependencies": {
-    "babel": "^6.5.2",
-    "babel-cli": "^6.5.1",
+    "babel-cli": "^6.6.5",
     "babel-core": "^6.7.2",
     "babel-plugin-add-module-exports": "^0.1.2",
     "babel-plugin-transform-decorators": "^6.6.5",
