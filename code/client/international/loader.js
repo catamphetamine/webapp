@@ -80,12 +80,12 @@ const international =
 						require.ensure
 						([
 							'intl/locale-data/jsonp/ru',
-							'react-intl/lib/locale-data/ru'
+							'react-intl/locale-data/ru'
 						],
 						require =>
 						{
 							require('intl/locale-data/jsonp/ru')
-							add_locale_data(require('react-intl/lib/locale-data/ru'))
+							add_locale_data(require('react-intl/locale-data/ru'))
 							debug(`Intl and ReactIntl locale-data for "${locale}" has been downloaded`)
 							resolve()
 						},
@@ -94,9 +94,9 @@ const international =
 					else
 					{
 						// download just react-intl specific locale data for this language
-						require.ensure(['react-intl/lib/locale-data/ru'], require =>
+						require.ensure(['react-intl/locale-data/ru'], require =>
 						{
-							add_locale_data(require('react-intl/lib/locale-data/ru'))
+							add_locale_data(require('react-intl/locale-data/ru'))
 							debug(`ReactIntl locale-data for "${locale}" has been downloaded`)
 							resolve()
 						},

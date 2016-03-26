@@ -1,4 +1,4 @@
-// import fs from 'fs'
+import fs from 'fs'
 import path from 'path'
 import minimist from 'minimist'
 
@@ -7,9 +7,17 @@ import minimist from 'minimist'
 import _ from './language'
 
 import configuration from '../../configuration.defaults'
-import specific_configuration from '../../configuration'
 
-Object.extend(configuration, specific_configuration)
+// allows overriding the default configuration 
+// using `[project_folder]/configuration.js` file
+// (if the file exists)
+const specific_configuration_path = path.resolve(__dirname, '../../configuration')
+if (fs.existsSync(specific_configuration_path))
+{
+	specific_configuration = require(specific_configuration_path)
+	Object.extend(configuration, specific_configuration)
+}
+
 export default configuration
 
 // можно будет использовать этот файл в shell'овых скриптах
