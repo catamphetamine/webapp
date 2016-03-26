@@ -3,8 +3,8 @@ import web_server from '../common/web server'
 import path from 'path'
 import fs   from 'fs-extra'
 
-import get_image_info from './image info'
-import resize         from './resize'
+import get_image_info         from './image info'
+import { resize, autorotate } from './image manipulation'
 
 const upload_folder = path.resolve(Root_folder, configuration.image_service.temporary_files_directory)
 const output_folder = path.resolve(Root_folder, configuration.image_service.files_directory)
@@ -29,13 +29,16 @@ web.file_upload
 
 			await fs.copyAsync(from, to, { replace: false })
 
-			const sizes = 
-			[{
-				name   : file_name,
-				server : 1
-			}]
-			
-			return { sizes }
+			const result =
+			{
+				sizes:
+				[{
+					name: file_name
+				}],
+				// server: 1
+			}
+
+			return result
 		}
 
 		const image_info = await get_image_info(from)
@@ -58,14 +61,15 @@ web.file_upload
 				const file_name = file.uploaded_file_name + dot_extension
 				const to = path.resolve(output_folder, file_name)
 
-				await fs.copyAsync(from, to, { replace: false })
+				await autorotate(from, to)
+
+				const resized = await get_image_info(to, { simple: true })
 
 				sizes.push
 				({
-					width  : image_info.width,
-					height : image_info.height,
-					name   : file_name,
-					server : 1
+					width  : resized.width,
+					height : resized.height,
+					name   : file_name
 				})
 
 				break
@@ -86,12 +90,15 @@ web.file_upload
 			({
 				width  : resized.width,
 				height : resized.height,
-				name   : file_name,
-				server : 1
+				name   : file_name
 			})
 		}
 
-		const result = { sizes }
+		const result =
+		{
+			sizes,
+			// server: 1
+		}
 
 		if (image_info.date)
 		{
