@@ -47,8 +47,12 @@ export function resize(from, to, settings)
 	// (width = square, height = square, cropped)
 	if (settings.square)
 	{
-		settings.width  = settings.square
-		settings.height = settings.square
+		if (typeof settings.square === 'number')
+		{
+			settings.width  = settings.square
+			settings.height = settings.square
+		}
+		
 		settings.crop = true
 	}
 

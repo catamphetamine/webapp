@@ -10,7 +10,6 @@ import strip               from 'strip-loader'
 import webpack_isomorphic_tools_plugin from 'webpack-isomorphic-tools/plugin'
 
 import application_configuration from '../code/common/configuration'
-const websocket_url = `${application_configuration.web_server.http.host}:${application_configuration.web_server.http.port}`
 
 const configuration = Object.clone(base_configuration)
 
@@ -33,8 +32,6 @@ configuration.plugins = configuration.plugins.concat
 			// Useful to reduce the size of client-side libraries, e.g. react
 			NODE_ENV: JSON.stringify('production') // 'development' to see non-minified React errors
 		},
-
-		_websocket_url_: JSON.stringify(websocket_url),
 
 		_client_            : true,
 		_server_            : false,

@@ -752,7 +752,7 @@ export default function web_server(options = {})
 
 			const file_names = []
 
-			const files = busboy(this,
+			const form_data = busboy(this,
 			{
 				limits:
 				{
@@ -760,20 +760,27 @@ export default function web_server(options = {})
 				}
 			})
 
-			let file
+			const parameters = {}
 
-			while (file = yield files)
+			let form_data_item
+			while (form_data_item = yield form_data)
 			{
 				if (!multiple_files && file_names.not_empty())
 				{
 					throw new Error(`Multiple files are being uploaded to a single file upload endpoint`)
 				}
 
-				const file_name = yield upload_file(file, { upload_folder, log: options.log })
+				if (Array.isArray(form_data_item))
+				{
+					parameters[form_data_item[0]] = form_data_item[1]
+					continue
+				}
+
+				const file_name = yield upload_file(form_data_item, { upload_folder, log: options.log })
 
 				file_names.push
 				({
-					original_file_name: file.filename,
+					original_file_name: form_data_item.filename,
 					uploaded_file_name: file_name
 				})
 			}
@@ -782,11 +789,11 @@ export default function web_server(options = {})
 
 			if (multiple_files)
 			{
-				result = { files: file_names }
+				result = { files: file_names, parameters }
 			}
 			else
 			{
-				result = { file: file_names[0] }
+				result = { file: file_names[0], parameters }
 			}
 
 			if (postprocess)

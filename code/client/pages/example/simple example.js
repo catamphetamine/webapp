@@ -156,7 +156,7 @@ export default class Page extends Component
 							return <li key={user.id}>
 								<span style={style.user.id}>{user.id}</span>
 
-								<img style={style.user.picture} src={user.picture ? `/storage/images/${user.picture.sizes[0].name}` : no_user_picture}/>
+								<img style={style.user.picture} src={user.picture ? `${_image_service_url_}/${_user_pictures_path_}/${user.picture.sizes[0].name}` : no_user_picture}/>
 
 								<span style={style.user.name}>{user.name}</span>
 
@@ -257,7 +257,8 @@ export default class Page extends Component
 	{
 		const data = new FormData()
 
-		data.append('file', file)
+		data.append('target', 'user_picture')
+		data.append('image', file)
 
 		try
 		{

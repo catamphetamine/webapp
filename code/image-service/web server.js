@@ -17,7 +17,14 @@ web.file_upload
 	file_size_limit: configuration.image_service.file_size_limit,
 	postprocess: async uploaded =>
 	{
-		const { file } = uploaded
+		const { file, parameters } = uploaded
+
+		const target = configuration.image_service.target[parameters.target]
+
+		if (!target)
+		{
+			throw new Error(`Unknown image-service target: "${parameters.target}"`)
+		}
 
 		const from = path.resolve(upload_folder, file.uploaded_file_name)
 
@@ -25,7 +32,7 @@ web.file_upload
 		{
 			const file_name = file.uploaded_file_name + '.svg'
 
-			const to = path.resolve(output_folder, file_name)
+			const to = path.resolve(output_folder, target.path, file_name)
 
 			await fs.copyAsync(from, to, { replace: false })
 
@@ -59,7 +66,7 @@ web.file_upload
 			if (image_info.width < image_size || image_info.height < image_size)
 			{
 				const file_name = file.uploaded_file_name + dot_extension
-				const to = path.resolve(output_folder, file_name)
+				const to = path.resolve(output_folder, target.path, file_name)
 
 				await autorotate(from, to)
 
@@ -77,12 +84,12 @@ web.file_upload
 
 			const to_temporary = from + dot_extension
 
-			await resize(from, to_temporary, { max_extent: image_size })
+			await resize(from, to_temporary, { max_extent: image_size, square: target.square })
 			const resized = await get_image_info(to_temporary, { simple: true })
 
 			const file_name = `${file.uploaded_file_name}@${resized.width}x${resized.height}${dot_extension}`
 
-			const to = path.resolve(output_folder, file_name)
+			const to = path.resolve(output_folder, target.path, file_name)
 
 			await fs.copyAsync(to_temporary, to, { replace: false })
 

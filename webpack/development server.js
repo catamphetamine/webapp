@@ -10,7 +10,6 @@ import webpack_isomorphic_tools_plugin from 'webpack-isomorphic-tools/plugin'
 import base_configuration              from './webpack.config'
 
 import application_configuration from '../code/common/configuration'
-const websocket_url = `${application_configuration.web_server.http.host}:${application_configuration.web_server.http.port}`
 
 const configuration = Object.clone(base_configuration)
 
@@ -28,8 +27,6 @@ configuration.plugins = configuration.plugins.concat
 			NODE_ENV: JSON.stringify('development'),
 			BABEL_ENV: JSON.stringify('development/client')
 		},
-
-		_websocket_url_: JSON.stringify(websocket_url),
 
 		_client_            : true,
 		_server_            : false,

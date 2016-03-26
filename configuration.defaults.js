@@ -62,7 +62,15 @@ module.exports =
 			2800,
 			3600,
 			4500
-		]
+		],
+		target:
+		{
+			user_picture:
+			{
+				square: true,
+				path: 'user_pictures'
+			}
+		}
 	},
 	webpage_server: 
 	{
@@ -78,7 +86,8 @@ module.exports =
 		{
 			host: '127.0.0.1',
 			port: 3000
-		}
+		},
+		image_service_path: '/storage/images'
 	},
 	log_service: 
 	{

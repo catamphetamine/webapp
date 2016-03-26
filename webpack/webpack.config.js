@@ -9,6 +9,13 @@ var Webpack_isomorphic_tools_plugin        = require('webpack-isomorphic-tools/p
 var webpack_isomorphic_tools_configuration = require('./webpack-isomorphic-tools')
 var webpack_isomorphic_tools_plugin        = new Webpack_isomorphic_tools_plugin(webpack_isomorphic_tools_configuration)
 
+var environment_variables = require('../code/common/environment variables')
+var define_plugin_environment_variables = {}
+Object.keys(environment_variables).forEach(function(key)
+{
+	define_plugin_environment_variables[key] = JSON.stringify(environment_variables[key])
+})
+
 var regular_expressions =
 {
 	javascript : /\.js$/,
@@ -133,6 +140,9 @@ var configuration =
 		// // Ids that are used often get lower (shorter) ids. 
 		// // This make ids predictable, reduces to total file size and is recommended.
 		// new webpack.optimize.OccurenceOrderPlugin(true)
+
+		// environment variables
+		new webpack.DefinePlugin(define_plugin_environment_variables)
 	]
 }
 

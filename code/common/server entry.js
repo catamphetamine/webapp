@@ -25,6 +25,13 @@ require('bluebird').promisifyAll(require('fs-extra'))
 global.configuration = require('./configuration')
 // console.log('Configuration:', configuration)
 
+var environment_variables = require('./environment variables')
+
+for (var key of Object.keys(environment_variables))
+{
+	global[key] = environment_variables[key]
+}
+
 global.address_book = {}
 
 for (var key of Object.keys(global.configuration))
