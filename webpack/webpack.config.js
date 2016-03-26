@@ -100,6 +100,11 @@ var configuration =
 				[
 					'url-loader?limit=10240' // Any png-image or woff-font below or equal to 10K will be converted to inline base64 instead
 				]
+			},
+			{
+				test    : webpack_isomorphic_tools_plugin.regular_expression('html'),
+				include : assets_source_folder,
+				loader  :  'file-loader'
 			}
 		]
 	},

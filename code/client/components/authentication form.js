@@ -143,6 +143,7 @@ export const messages = defineMessages
 		registering   : model.authentication.registering,
 		siging_in     : model.authentication.siging_in,
 
+		locale   : model.locale.locale,
 		location : model.router.location
 	}),
 	dispatch =>
@@ -369,7 +370,7 @@ export default class Authentication extends Component
 
 						{this.translate(messages.i_accept)}
 
-						&nbsp;<a target="_blank" href="https://www.dropbox.com/terms">{this.translate(messages.the_terms_of_service)}</a>
+						&nbsp;<a target="_blank" href={require('../../../assets/license-agreement/' + get_language_from_locale(this.props.locale) + '.html')}>{this.translate(messages.the_terms_of_service)}</a>
 					</Checkbox>
 				</div>
 

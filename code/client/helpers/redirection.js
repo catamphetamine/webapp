@@ -39,9 +39,9 @@ export function add_redirect(base_url, location)
 			//
 			switch (location.pathname)
 			{
-				case '/sign-in':
-				case '/register':
-					break
+				// case '/sign-in':
+				// case '/register':
+				// 	break
 
 				default:
 					url.parameter('request', location.pathname + (location.search ? '?' + location.search : ''))
@@ -59,9 +59,9 @@ export function add_redirect(base_url, location)
 		const location_url = new Url(location)
 		switch (location_url.path)
 		{
-			case '/sign-in':
-			case '/register':
-				break
+			// case '/sign-in':
+			// case '/register':
+			// 	break
 
 			default:
 				url.parameter('request', location)

@@ -21,6 +21,10 @@ module.exports =
 				'svg'
 			]
 		},
+		html:
+		{
+			extension: 'html'
+		},
 		fonts:
 		{
 			extension: 'woff'

@@ -281,7 +281,7 @@
 
 .menu-button
 {
-	display: none;
+	display: none !important;
 
 	&:active
 	{

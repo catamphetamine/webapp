@@ -18,7 +18,7 @@ export default function(error, { url, redirect, proceed })
 	if (_server_)
 	{
 		log.error(`Rendering error while fetching url "${url}"`)
-		// log.error(error)
+		log.error(error)
 	}
 
 	// some kind of server error happened
