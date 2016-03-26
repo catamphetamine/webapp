@@ -11,10 +11,10 @@ import configuration from '../../configuration.defaults'
 // allows overriding the default configuration 
 // using `[project_folder]/configuration.js` file
 // (if the file exists)
-const specific_configuration_path = path.resolve(__dirname, '../../configuration')
+const specific_configuration_path = path.resolve(__dirname, '../../configuration.js')
 if (fs.existsSync(specific_configuration_path))
 {
-	specific_configuration = require(specific_configuration_path)
+	const specific_configuration = require(specific_configuration_path)
 	Object.extend(configuration, specific_configuration)
 }
 
