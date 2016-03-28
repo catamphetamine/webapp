@@ -234,7 +234,9 @@ db.createUser({
 exit
 ```
 
-One may also use [Robomongo](https://robomongo.org/download) (or [Mongo Management Studio Community Edition](http://www.litixsoft.de/english/mms/#pg-231-23), or [MongoChef](http://3t.io/mongochef/download/)) as an operational GUI for MongoDB.
+One may also use [Robomongo](https://robomongo.org/download) as a GUI for MongoDB.
+
+When switching to MongoDB make sure you delete the `authentication` cookie contaning the user id or else an exception will be thrown saying "Argument passed in must be a single String of 12 bytes or a string of 24 hex characters".
 
 PostgreSQL
 ==========
@@ -324,6 +326,10 @@ Troubleshooting
 
 To do
 ====================
+
+если image settings были square, то original тоже делать square
+
+если original не превосходит предыдущей картинки в 1.1 раз - не сохранять его
 
 сделать ограничение на размер картинки - мегабайтов 10 (проверять на клиенте).
 
