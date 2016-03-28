@@ -236,6 +236,19 @@ exit
 
 One may also use [Robomongo](https://robomongo.org/download) as a GUI for MongoDB.
 
+To initialize MongoDB database
+
+```sh
+npm run mongodb-migrate
+```
+
+To rollback the latest MongoDB migration
+```sh
+npm run mongodb-rollback
+```
+
+Migrations are stored in the `database/sql/migrations` folder.
+
 When switching to MongoDB make sure you delete the `authentication` cookie contaning the user id or else an exception will be thrown saying "Argument passed in must be a single String of 12 bytes or a string of 24 hex characters".
 
 PostgreSQL
@@ -303,12 +316,7 @@ npm run postgresql-rollback
 
 Or one can alternatively drop the database and create it from scratch initializing it with the command given above.
 
-PostgreSQL database migration points can be created using the following command
-```sh
-npm run postgresql-checkpoint -- migration_point_name
-```
-
-They are stored in the `migrations` folder.
+Migrations are stored in the `database/sql/migrations` folder.
 
 Online status
 =============
@@ -326,10 +334,6 @@ Troubleshooting
 
 To do
 ====================
-
-если image settings были square, то original тоже делать square
-
-если original не превосходит предыдущей картинки в 1.1 раз - не сохранять его
 
 сделать ограничение на размер картинки - мегабайтов 10 (проверять на клиенте).
 

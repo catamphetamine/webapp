@@ -206,10 +206,15 @@ Object.set_value_at_path = (where, paths, value) =>
 // 			i++
 // }
 
-// Object.defineProperty Array.prototype, "remove_at", {
-// 	enumerable: false
-// 	value: (index) -> @splice(index, 1)
-// }
+Object.defineProperty(Array.prototype, 'remove_at',
+{
+	enumerable: false,
+	value: function(index)
+	{
+		this.splice(index, 1)
+		return this
+	}
+})
 
 Object.defineProperty(Array.prototype, 'first',
 {

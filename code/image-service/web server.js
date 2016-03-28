@@ -59,39 +59,33 @@ web.file_upload
 
 		const sizes = []
 
-		for (let image_size of configuration.image_service.sizes)
+		for (let max_extent of configuration.image_service.sizes)
 		{
+			const image_min_extent = Math.min(image_info.width, image_info.height)
+
 			// if the image is smaller then the next resize step,
 			// then generate no more resizes of this image
-			if (image_info.width < image_size || image_info.height < image_size)
+			if (image_min_extent < max_extent)
 			{
-				const file_name = file.uploaded_file_name + dot_extension
-				const to = path.resolve(output_folder, target.path, file_name)
-
-				await autorotate(from, to)
-
-				const resized = await get_image_info(to, { simple: true })
-
-				sizes.push
-				({
-					width  : resized.width,
-					height : resized.height,
-					name   : file_name
-				})
-
-				break
+				if (target.square)
+				{
+					await resize(from, from, { max_extent: image_min_extent, square: true })
+				}
+				else
+				{
+					await autorotate(from)
+				}
+			}
+			else
+			{
+				await resize(from, from, { max_extent, square: target.square })
 			}
 
-			const to_temporary = from + dot_extension
-
-			await resize(from, to_temporary, { max_extent: image_size, square: target.square })
-			const resized = await get_image_info(to_temporary, { simple: true })
-
+			const resized = await get_image_info(from, { simple: true })
 			const file_name = `${file.uploaded_file_name}@${resized.width}x${resized.height}${dot_extension}`
 
 			const to = path.resolve(output_folder, target.path, file_name)
-
-			await fs.copyAsync(to_temporary, to, { replace: false })
+			await fs.copyAsync(from, to, { replace: false })
 
 			sizes.push
 			({
@@ -99,6 +93,27 @@ web.file_upload
 				height : resized.height,
 				name   : file_name
 			})
+
+			if (image_min_extent < max_extent)
+			{
+				break
+			}
+		}
+
+		// possibly eliminate the size previous to the biggest one,
+		// if it's less than 10% different from the biggest size
+		if (sizes.length > 1)
+		{
+			const biggest  = sizes[sizes.length - 1]
+			const previous = sizes[sizes.length - 2]
+
+			if ((biggest.width - previous.width) / previous.width < 0.1)
+			{
+				sizes.remove(previous)
+
+				const previous_path = path.resolve(output_folder, target.path, previous.name)
+				await fs.unlinkAsync(previous_path)
+			}
 		}
 
 		const result =

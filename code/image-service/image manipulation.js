@@ -123,7 +123,7 @@ export function resize(from, to, settings)
 // Rotates the image based on `exif:Orientation`
 export function autorotate(from, to)
 {
-	return imagemagick.convertAsync(['-auto-orient', from, to])
+	return imagemagick.convertAsync(['-auto-orient', from, to || from])
 }
 
 // returns:

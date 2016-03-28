@@ -111,7 +111,7 @@
     "superagent": "^1.7.2",
     "uid-safe": "^2.1.0",
     "warning": "^2.1.0",
-    "webpack-isomorphic-tools": "^2.2.41"
+    "webpack-isomorphic-tools": "^2.2.43"
   },
   "devDependencies": {
     "autoprefixer-loader": "^3.1.0",

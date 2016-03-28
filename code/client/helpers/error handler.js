@@ -23,6 +23,12 @@ export default function(error, { url, redirect, proceed })
 
 	// some kind of server error happened
 
+	// show error stack trace in development mode
+	if (_development_)
+	{
+		throw error
+	}
+
 	// prevents infinite redirect to the error page
 	if (url.starts_with('/error?'))
 	{
