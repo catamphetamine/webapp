@@ -4,7 +4,6 @@ const web = web_server
 ({
 	compress            : true,
 	authentication      : configuration.authentication_token_payload.read || (() => ({})),
-	parse_post_requests : true,
 	routing             : true
 })
 

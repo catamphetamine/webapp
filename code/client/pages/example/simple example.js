@@ -255,17 +255,15 @@ export default class Page extends Component
 
 	async upload_picture(file, user_id)
 	{
-		const data = new FormData()
-
-		data.append('target', 'user_picture')
-		data.append('image', file)
+		const old_picture = this.props.users.find_by({ id: user_id }).picture
 
 		try
 		{
-			await this.props.upload_picture(user_id, data)
+			await this.props.upload_picture(user_id, file, old_picture)
 		}
 		catch (error)
 		{
+			console.error(error)
 			alert('DEBUG: Image upload failed. Make sure you have ImageMagick installed.')
 		}
 	}

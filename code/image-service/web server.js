@@ -1,4 +1,4 @@
-import web_server from '../common/web server'
+import web_server, { fs_exists } from '../common/web server'
 
 import path from 'path'
 import fs   from 'fs-extra'
@@ -9,10 +9,31 @@ import { resize, autorotate } from './image manipulation'
 const upload_folder = path.resolve(Root_folder, configuration.image_service.temporary_files_directory)
 const output_folder = path.resolve(Root_folder, configuration.image_service.files_directory)
 
-const web = web_server()
+const web = web_server({ parse_body: false, routing: '/api' })
+
+web.post('/delete', async ({ target, image }) =>
+{
+	const image_target = configuration.image_service.target[target]
+
+	if (!image_target)
+	{
+		throw new Error(`Unknown image-service target: "${target}"`)
+	}
+
+	for (let size of image.sizes)
+	{
+		const image_path = path.resolve(output_folder, image_target.path, size.name)
+
+		if (await fs_exists(image_path))
+		{
+			await fs.unlinkAsync(image_path)
+		}
+	}
+})
 
 web.file_upload
 ({
+	path: '/upload',
 	upload_folder,
 	file_size_limit: configuration.image_service.file_size_limit,
 	postprocess: async uploaded =>
@@ -56,6 +77,7 @@ web.file_upload
 		}
 
 		const dot_extension = image_info.format === 'PNG' ? '.png' : '.jpg'
+		const to_temporary = from + dot_extension
 
 		const sizes = []
 
@@ -69,23 +91,23 @@ web.file_upload
 			{
 				if (target.square)
 				{
-					await resize(from, from, { max_extent: image_min_extent, square: true })
+					await resize(from, to_temporary, { max_extent: image_min_extent, square: true })
 				}
 				else
 				{
-					await autorotate(from)
+					await autorotate(from, to_temporary)
 				}
 			}
 			else
 			{
-				await resize(from, from, { max_extent, square: target.square })
+				await resize(from, to_temporary, { max_extent, square: target.square })
 			}
 
-			const resized = await get_image_info(from, { simple: true })
+			const resized = await get_image_info(to_temporary, { simple: true })
 			const file_name = `${file.uploaded_file_name}@${resized.width}x${resized.height}${dot_extension}`
 
 			const to = path.resolve(output_folder, target.path, file_name)
-			await fs.copyAsync(from, to, { replace: false })
+			await fs.moveAsync(to_temporary, to)
 
 			sizes.push
 			({
@@ -99,6 +121,8 @@ web.file_upload
 				break
 			}
 		}
+
+		await fs.unlinkAsync(from)
 
 		// possibly eliminate the size previous to the biggest one,
 		// if it's less than 10% different from the biggest size

@@ -50,17 +50,26 @@ export function rename()
 	return action
 }
 
-export function upload_picture(user_id, data)
+export function upload_picture(user_id, file, old_picture)
 {
+	const data = new FormData()
+
+	data.append('target', 'user_picture')
+	data.append('image', file)
+
 	const action =
 	{
-		promise: http => 
+		promise: async (http) => 
 		{
-			return http.post(`/upload_image`, data).then(result =>
+			const picture = await http.post(`/images/upload`, data)
+			await http.post(`/api/example/users/${user_id}/picture`, picture)
+			
+			if (old_picture)
 			{
-				return http.post(`/api/example/users/${user_id}/picture`, result)
-				.then(() => ({ user_id, picture: result }))
-			})
+				await http.post(`/images/api/delete`, { image: old_picture, target: 'user_picture' })
+			}
+			
+			return { user_id, picture }
 		},
 		events: ['uploading user picture', 'user picture uploaded', 'uploading user picture failed']
 	}

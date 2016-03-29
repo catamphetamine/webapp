@@ -62,7 +62,7 @@ import render_stack_trace from './html stack trace'
 // authentication      - uses a JWT token as a means of user authentication
 //                       (should be a function transforming token payload into user info)
 //
-// parse_post_requests - parse Http Post requests body
+// parse_body          - parse Http Post requests body (default: false; true when using routing)
 //
 // routing             - enables Rest Http routing
 //                       (usage: web.get('/path', parameters => return 'Echo'))
@@ -497,7 +497,12 @@ export default function web_server(options = {})
 		}
 	}
 
-	if (options.parse_post_requests)
+	if (options.parse_body !== false && options.routing === true)
+	{
+		options.parse_body = true
+	}
+
+	if (options.parse_body)
 	{
 		// Set up http post request handling.
 		// Usage: this.request.body
@@ -677,7 +682,22 @@ export default function web_server(options = {})
 			}
 		}
 
-		web.use(router.routes()).use(router.allowedMethods())
+		if (typeof options.routing !== 'string')
+		{
+			if (!options.parse_body)
+			{
+				throw new Error(`"parse_body" was set to false and "routing" was set to true. Set "routing" to a path then.`)
+			}
+
+			web.use(router.routes())
+				.use(router.allowedMethods())
+		}
+		else
+		{
+			web.use(mount(options.routing, body_parser({ formLimit: '100mb' })))
+				.use(mount(options.routing, router.routes()))
+				.use(mount(options.routing, router.allowedMethods()))
+		}
 	}
 
 	// active Http proxy servers
@@ -741,6 +761,11 @@ export default function web_server(options = {})
 	// can handle file uploads
 	result.file_upload = function({ path = '/', upload_folder, multiple_files = false, postprocess, file_size_limit })
 	{
+		if (options.parse_body)
+		{
+			throw new Error(`.file_upload() was enabled but also "parse_body" wasn't set to false, therefore Http POST request bodies are parsed which creates a conflict. Set "parse_body" parameter to false.`)
+		}
+
 		web.use(mount(path, function*()
 		{
 			if (!this.is('multipart/form-data'))
@@ -959,7 +984,7 @@ export default function web_server(options = {})
 }
 
 // checks if filesystem path exists
-function fs_exists(path)
+export function fs_exists(path)
 {
 	return new Promise((resolve, reject) => 
 	{

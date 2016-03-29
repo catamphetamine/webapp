@@ -40,7 +40,7 @@ web.proxy('/users', address_book.user_service)
 web.proxy('/api', address_book.api_service)
 
 // Proxy /images requests to Image server
-web.proxy('/upload_image', address_book.image_service)
+web.proxy('/images', address_book.image_service)
 
 // Proxy /log requests to Log server
 web.proxy('/log', address_book.log_service)

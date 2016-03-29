@@ -12,7 +12,7 @@ export default function(options = {})
 		options.authentication = configuration.authentication_token_payload.read || (() => ({}))
 	}
 
-	const web = web_server({ ...options, compress: true, parse_post_requests: true, routing: true })
+	const web = web_server({ ...options, compress: true, routing: true })
 
 	global.api = {}
 	global.api.legacy = {}
