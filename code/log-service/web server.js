@@ -1,4 +1,5 @@
-import web_server from '../common/web server'
+import web_server    from '../common/web server'
+import message_store from './message store'
 
 const web = web_server
 ({
@@ -11,7 +12,7 @@ web.get('/', function()
 {
 	this.role('administrator')
 
-	return messages.messages.clone().reverse()
+	return message_store.messages.clone().reverse()
 })
 
 web.listen(configuration.log_service.http.port).then(() =>
@@ -20,6 +21,5 @@ web.listen(configuration.log_service.http.port).then(() =>
 },
 error =>
 {
-	console.log('Log service web server shutdown')
-	log.error(error)
+	log.error(error, 'Log service web server shutdown')
 })

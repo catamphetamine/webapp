@@ -75,14 +75,15 @@ To workaround this bug I'm using `127.0.0.1` instead of `localhost` in the web b
 Architecture
 ============
 
-The application consists of microservices
+The application consists of the following microservices
 
   * `web-server` is the gateway (serves static files and proxies to all the other microservices)
   * `page-server` renders web pages on the server side (using [react-isomorphic-render](https://github.com/halt-hammerzeit/react-isomorphic-render))
   * `authentication-service` handles user authentication (sign in, sign out, register) and auditing (keeps a list of user sessions and traces latest activity time)
   * `password-service` performs password hashing and checking (these operations are lengthy and CPU-intensive)
-  * `api-service` provides some generic Http REST Api
-  * `image-server` (will be split into `storage-server` and `image-service`) resized uploaded images
+  * `user-service` provides REST Api for users (getting users, creating users, updating users)
+  * `api-service` provides some generic (uncategorized) Http REST Api
+  * `image-server` resizes uploaded images using ImageMagick and serves them
   * `log-service` aggregates logs from all the other services
 
 <!-- 
@@ -334,6 +335,10 @@ Troubleshooting
 
 To do
 ====================
+
+при выводе логов на странице /log выводить как msg, так и err, если они были указаны вместе
+
+
 
 ввести ограничение на залогиненность для загрузки и удаления файлов (вывести алёрт об этом для simple example)
 

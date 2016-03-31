@@ -118,13 +118,13 @@ export default function create(name, options = {})
 
 	console_output.write = data =>
 	{
+		const print = (level, message, time) => _print(data.name, level, message, time)
+
 		if (data.err)
 		{
-			console.log(preamble(data.name, levels[data.level], data.time))
+			print(levels[data.level], data.msg || '', data.time)
 			return print_error(data.err)
 		}
-
-		const print = (level, message, time) => _print(data.name, level, message, time)
 
 		print(levels[data.level], data.msg, data.time)
 
@@ -225,6 +225,18 @@ export default function create(name, options = {})
 			type   : 'raw',
 			stream : log_service.stream
 		})
+	}
+
+	if (options.extra_streams)
+	{
+		for (let extra_stream of options.extra_streams)
+		{
+			log_configuration.streams.unshift
+			({
+				type   : 'raw',
+				stream : extra_stream
+			})
+		}
 	}
 
 	return bunyan.createLogger(extend({ name }, log_configuration))

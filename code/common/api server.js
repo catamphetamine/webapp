@@ -36,8 +36,7 @@ export default function(options = {})
 					//  `404 User not found` or `401 Not authenticated`)
 					if (!exists(error.code))
 					{
-						console.log('Api server error')
-						log.error(error)
+						log.error(error, 'Api service error')
 					}
 
 					const url = error_handler.call(this, error)
@@ -78,8 +77,7 @@ export default function(options = {})
 			},
 			error =>
 			{
-				console.log('Api server shutdown')
-				log.error(error)
+				log.error(error, 'Api service shutdown')
 			})
 		}
 	}

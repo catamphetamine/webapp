@@ -23,7 +23,6 @@ require('./language')
 require('bluebird').promisifyAll(require('fs-extra'))
 
 global.configuration = require('./configuration')
-// console.log('Configuration:', configuration)
 
 var environment_variables = require('./environment variables')
 

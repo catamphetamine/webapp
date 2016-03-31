@@ -208,10 +208,7 @@ export default function web_server(options = {})
 				// 	log.error(error)
 				// }
 
-				// for easier debugging
-				console.log('(http request failed)')
-
-				log.error(error)
+				log.error(error, '(http request failed)')
 
 				this.status = 500
 				this.body = 'Internal error'
@@ -870,8 +867,7 @@ export default function web_server(options = {})
 				
 				if (!this.path.ends_with('/favicon.ico'))
 				{
-					console.log('Web server error: Not found')
-					log.error(this.message)
+					log.error(this.message, 'Web server error: Not found')
 				}
 			})
 

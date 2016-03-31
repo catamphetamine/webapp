@@ -1,4 +1,5 @@
 import { server as tcp_server } from '../common/tcp'
+import message_store            from './message store'
 
 const server = tcp_server
 ({
@@ -7,27 +8,9 @@ const server = tcp_server
 	port: configuration.log_service.tcp.port
 })
 
-global.messages =
-{
-	messages: [],
-
-	max: 1000,
-
-	add: function(message)
-	{
-		if (this.messages.length === this.max)
-		{
-			this.messages.shift()
-		}
-
-		this.messages.push(message)
-	}
-}
-
 server.on('error', error =>
 {
-	console.log('[log service] Log service shutdown')
-	log.error(error)
+	log.error(error, 'Shutting down due to an error')
 })
 
 server.on('session', messenger =>
@@ -46,14 +29,12 @@ server.on('session', messenger =>
 			return log.error(`Lost connection to ${name}`)
 		}
 
-		console.log('[log service] Messenger error')
-		log.error(error)
+		log.error(error, 'Messenger error')
 	})
 
 	messenger.on('message', function(message)
 	{
-		console.log('Message', message)
-		messages.add(message)
+		message_store.add(message)
 	})
 })
 

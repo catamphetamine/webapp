@@ -67,6 +67,5 @@ web.listen(configuration.web_server.http.port).then(() =>
 },
 error =>
 {
-	console.log('Web server shutdown')
-	log.error(error)
+	log.error(error, 'Web server shutdown')
 })

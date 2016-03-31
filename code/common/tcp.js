@@ -210,7 +210,7 @@ class Messenger extends EventEmitter
 
 		const message =
 		{
-			id:  id || this.next_message_id(), 
+			_message_id:  id || this.next_message_id(), 
 			data
 		}
 
@@ -292,7 +292,13 @@ class Messenger extends EventEmitter
 
 	// When the underlying connection (e.g. TCP) 
 	// has been established (or reestablished)
-	// start the initialization sequence
+	// start the initialization sequence.
+	//
+	// The client is supposed to manually call
+	// either `messenger.initialize()` or `messenger.reconnected()`
+	// to establish Messenger connection over this underlying connection.
+	// (just the client, not the server)
+	//
 	underlying_connection_established(input, output)
 	{
 		log.debug(`Messenger underlying connection established`)
@@ -352,8 +358,6 @@ class Messenger extends EventEmitter
 	// Incoming message handler
 	incoming(message)
 	{
-		// console.log('Incoming', message)
-
 		// if there is an ongoing initialization sequence
 		if (message._initialize_messenger)
 		{
@@ -385,11 +389,6 @@ class Messenger extends EventEmitter
 			{
 				return this.initialize(true)
 			}
-		}
-
-		// if there initialization sequence has finished
-		if (message._initialize_messenger_complete)
-		{
 		}
 
 		// if this is not a Messenger message, then exit

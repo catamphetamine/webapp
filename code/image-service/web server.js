@@ -169,6 +169,5 @@ web.listen(configuration.image_service.http.port).then(() =>
 },
 error =>
 {
-	console.log('Image service shutdown')
-	log.error(error)
+	log.error(error, 'Image service shutdown')
 })
