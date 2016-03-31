@@ -200,7 +200,13 @@ export default function create(name, options = {})
 
 	if (options.use_log_server !== false)
 	{
-		const log_service = tcp_client({ host: configuration.log_service.tcp.host, port: configuration.log_service.tcp.port })
+		const log_service = tcp_client
+		({
+			name,
+			server_name: 'Log service',
+			host: configuration.log_service.tcp.host,
+			port: configuration.log_service.tcp.port
+		})
 
 		log_service.on('error', function(error)
 		{

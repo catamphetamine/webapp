@@ -961,6 +961,7 @@ export default function web_server(options = {})
 						// error.proxy_error = true
 						// error.proxy_to = to
 
+						console.error('Proxying failed')
 						reject(error)
 					})
 				})

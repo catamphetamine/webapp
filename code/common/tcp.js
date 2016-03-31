@@ -129,37 +129,49 @@ const annihilator = new Annihilator()
 // (not used yet)
 class Messenger extends EventEmitter
 {
-	static message_timeout = 10; // in seconds
+	static message_timeout = 10 // in seconds
 
-	constructor(output)
+	constructor(options = {})
 	{
 		super()
+
+		const { name } = options
+
+		this.name = name
 
 		this.reset()
 
 		this.incoming = this.incoming.bind(this)
 
-		// the writable stream used for logging
+		// create a buffering writable stream 
+		// that's available right away
+		// (which, for example, can used for bunyan logging)
 
-		function Stream(parameters)
+		function Writable_stream(parameters)
 		{
 			stream.Transform.call(this, merge(parameters, { objectMode: true }))
 		}
 
-		util.inherits(Stream, stream.Transform)
+		util.inherits(Writable_stream, stream.Transform)
 
-		Stream.prototype._transform = function(object, encoding, callback)
+		// Buffer messages if the connection hasn't yet been establisted
+		// (i.e. while this writable stream hasn't been piped out yet)
+		Writable_stream.prototype._transform = function(object, encoding, callback)
 		{
+			// Drop messages on internal buffer overflow
 			if (this._writableState.getBuffer().length > 1000)
 			{
 				return log.info(`Dropping message due to buffer overflow`, object)
 			}
 
+			// Wrap the message with Messenger specific data
+			// and pipe it out to the socket
+			// (or buffer if the Messenger hasn't connected yet)
 			this.push(writable_stream.messenger.wrap(object))
 			callback()
 		}
 
-		const writable_stream = new Stream()
+		const writable_stream = new Writable_stream()
 
 		// circular reference,
 		// make sure it is disposed in some kind of dispose() method
@@ -168,11 +180,14 @@ class Messenger extends EventEmitter
 		this.stream.messenger = this
 	}
 
+	// Is called when the connection is gonna be established or reestablished
 	reset()
 	{
 		this.message_id = 1
 		this.promises = {}
 		this.timeouts = {}
+
+		this.other_party = null
 
 		if (this.input)
 		{
@@ -183,15 +198,30 @@ class Messenger extends EventEmitter
 		this.output = null
 	}
 
-	wrap(data, _messenger_id = this.next_message_id())
+	// Wraps messages with Messenger specific data
+	wrap(data, options = {})
 	{
-		const message = { _messenger_id, data }
+		const { id, initialize } = options
+
+		if (initialize)
+		{
+			return { _initialize_messenger: true, data }
+		}
+
+		const message =
+		{
+			id:  id || this.next_message_id(), 
+			data
+		}
 
 		return message
 	}
 
-	send(data, { id, respond })
+	// Sends a message
+	send(data, options = {})
 	{
+		const { id, respond, initialize } = options
+
 		if (!this.output)
 		{
 			throw new Error('Not yet connected')
@@ -203,7 +233,7 @@ class Messenger extends EventEmitter
 		}
 
 		// the message wrapper
-		const message = this.wrap(data, id)
+		const message = this.wrap(data, { id, initialize })
 
 		// send the message
 		this.output.write(message)
@@ -218,7 +248,7 @@ class Messenger extends EventEmitter
 		// wait for response
 		const promise = new Promise((resolve, reject) =>
 		{
-			this.promises[message._messenger_id] = 
+			this.promises[message._message_id] = 
 			{
 				resolve,
 				reject
@@ -226,16 +256,18 @@ class Messenger extends EventEmitter
 		})
 
 		// start response timeout timer
-		this.timeouts[message._messenger_id] = setTimeout(() => this.message_timeout(message._messenger_id), Messenger.message_timeout * 1000)
+		this.timeouts[message._message_id] = setTimeout(() => this.message_timeout(message._message_id), Messenger.message_timeout * 1000)
 
 		return promise
 	}
 
+	// Sends a message and waits for a reply
 	request(data, options = {})
 	{
 		return this.send(data, { ...options, respond: true })
 	}
 
+	// Message id autoincrement counter
 	next_message_id()
 	{
 		if (this.message_id === Number.MAX_VALUE)
@@ -246,9 +278,10 @@ class Messenger extends EventEmitter
 		return this.message_id++
 	}
 
-	closed()
+	// When the underlying connection (e.g. TCP) is closed
+	underlying_connection_closed()
 	{
-		log.debug(`Messenger connection closed (will try to reconnect)`)
+		log.debug(`Messenger underlying connection closed (will try to reconnect)`)
 
 		this.reject_promises()
 
@@ -257,20 +290,41 @@ class Messenger extends EventEmitter
 		this.stream.unpipe(this.output)
 	}
 
-	connected(input, output)
+	// When the underlying connection (e.g. TCP) 
+	// has been established (or reestablished)
+	// start the initialization sequence
+	underlying_connection_established(input, output)
 	{
-		log.debug(`Messenger connection established`)
+		log.debug(`Messenger underlying connection established`)
 
 		this.input  = input
 		this.output = output
 
 		this.input.on('data', this.incoming)
-
-		this.stream.pipe(this.output)
-
-		this.emit('connect')
 	}
 
+	// Is called when the underlying connection (e.g. TCP)
+	// has been reestablished
+	reconnected()
+	{
+		this.stream.pipe(this.output)
+		return this.emit('connect')
+	}
+
+	// Starts initialization sequence
+	initialize(acknowledged)
+	{
+		this.send
+		({
+			name: this.name,
+			acknowledged
+		},
+		{
+			initialize: true
+		})
+	}
+
+	// Connection closed, clean up
 	ended(error)
 	{
 		log.debug(`Messenger exits`)
@@ -295,34 +349,83 @@ class Messenger extends EventEmitter
 		this.emit('close')
 	}
 
+	// Incoming message handler
 	incoming(message)
 	{
-		// if this not a Messenger message, then exit
-		// (for example, if the output stream was used as a raw stream)
-		if (!message._messenger_id)
+		// console.log('Incoming', message)
+
+		// if there is an ongoing initialization sequence
+		if (message._initialize_messenger)
+		{
+			// if this party is initialized and
+			// the other party says it has initialized too,
+			// then it's the final "ACK"
+			if (this.other_party && message.data.acknowledged)
+			{
+				return this.reconnected()
+			}
+
+			// initialize this party
+			this.other_party = message.data
+
+			// if the other party is initialized
+			if (message.data.acknowledged)
+			{
+				// remove the `acknowledged` property from `this.other_party` object
+				delete this.other_party.acknowledged
+
+				// this party is initialized and
+				// the other party is initialized too,
+				// so send the final "ACK"
+				this.send({ acknowledged: true }, { initialize: true })
+
+				return this.reconnected()
+			}
+			else
+			{
+				return this.initialize(true)
+			}
+		}
+
+		// if there initialization sequence has finished
+		if (message._initialize_messenger_complete)
+		{
+		}
+
+		// if this is not a Messenger message, then exit
+		// (for example, if the output stream was used as a raw stream for some reason)
+		if (!message._message_id)
 		{
 			return
 		}
 
-		const promise = this.promises[message._messenger_id]
+		// is this a reply to a previous message
+		const promise = this.promises[message._message_id]
 
+		// if not, then just emit 'message' event 
+		// along with a `reply()` function
 		if (!promise)
 		{
-			// log.info(`Got reply for an unknown message`, message.data)
 			return this.emit('message', message.data, function reply(data)
 			{
-				this.send(data, { id: message._messenger_id })
+				this.send(data, { id: message._message_id })
 			}
 			.bind(this))
 		}
 
-		promise.resolve(message.data)
-		delete this.promises[message._messenger_id]
+		// this is a reply to a previous message,
+		// so resolve the promise and clear the timeout.
 
-		clearTimeout(this.timeouts[message._messenger_id])
-		delete this.timeouts[message._messenger_id]
+		promise.resolve(message.data)
+		delete this.promises[message._message_id]
+
+		clearTimeout(this.timeouts[message._message_id])
+		delete this.timeouts[message._message_id]
 	}
 
+	// no replies will be received
+	// so reject all the pending promises
+	// (e.g. when the connection is lost)
 	reject_promises()
 	{
 		for (let message_id of Object.keys(this.promises))
@@ -332,6 +435,8 @@ class Messenger extends EventEmitter
 		}
 	}
 
+	// is called when a reply to a previously sent message
+	// hasn't been received in the configured time interval
 	message_timeout(message_id)
 	{
 		this.promises[message_id].reject('timeout')
@@ -341,13 +446,15 @@ class Messenger extends EventEmitter
 }
 
 // connects to the TCP server for sending JSON messages
-export function client({ host, port })
+export function client({ name, server_name, host, port })
 {
+	server_name = server_name ? '"' + server_name + '"' : 'TCP server'
+
 	// TCP socket
 	const socket = new net.Socket()
 
 	// `log` global variable doesn't exist yet
-	console.log(`Connecting to TCP server at ${host}:${port}`)
+	console.log(`${name ? '[' + name + '] ' : ''}Connecting to ${server_name} at ${host}:${port}`)
 
 	// connect to the log server via TCP
 	socket.connect({ host, port })
@@ -390,6 +497,8 @@ export function client({ host, port })
 	// When the TCP socket connection is successfully established
 	socket.on('connect', function()
 	{
+		log.debug(`${reconnecting ? 'Reconnected': 'Connected'} to ${server_name} at ${host}:${port}`)
+
 		// in case of reconnect
 		// if (reconnecting)
 		// {
@@ -407,6 +516,10 @@ export function client({ host, port })
 		// on JSON message parse error
 		message_decoder.on('error', error =>
 		{
+			// // just drop the message on syntax error
+			// console.log(`${name ? '[' + name + '] ' : ''}JSON Message Decoder error`)
+			// log.error(error)
+
 			socket.emit('error', error)
 		})
 
@@ -416,16 +529,24 @@ export function client({ host, port })
 		// reset internal state
 		reset()
 
-		messenger.connected(message_decoder, message_encoder)
+		messenger.underlying_connection_established(message_decoder, message_encoder)
 
-		log.debug('Connected to TCP server')
+		if (reconnecting)
+		{
+			messenger.reconnected()
+		}
+		else
+		{
+			log.debug(`Connected to ${server_name}. Initializing messenger.`)
+			messenger.initialize()
+		}
 	})
 
 	// Emitted when an error occurs on the TCP socket. 
 	// The 'close' event will be called directly following this event.
 	socket.on('error', function(error)
 	{
-		log.debug('Lost connection to the TCP server') // , error)
+		log.debug(`Lost connection to ${server_name}`) // , error)
 	})
 
 	// when TCP socket is closed
@@ -444,7 +565,7 @@ export function client({ host, port })
 			message_encoder.unpipe(socket)
 		}
 
-		messenger.closed()
+		messenger.underlying_connection_closed()
 
 		// log this event
 		if (had_error)
@@ -544,13 +665,13 @@ export function client({ host, port })
 	// // return the stream
 	// return message_stream
 
-	const messenger = new Messenger()
+	const messenger = new Messenger({ name })
 
 	return messenger
 }
 
 // creates a TCP server listening for JSON messages
-export function server({ host, port })
+export function server({ name, host, port })
 {
 	// create a transform stream
 
@@ -582,6 +703,10 @@ export function server({ host, port })
 		// on JSON message parse error
 		message_decoder.on('error', error =>
 		{
+			// // just drop the message on syntax error
+			// console.log(`${name ? '[' + name + '] ' : ''}JSON Message Decoder error`)
+			// log.error(error)
+
 			socket.emit('error', error)
 		})
 
@@ -594,9 +719,9 @@ export function server({ host, port })
 		// write messages to the socket
 		message_encoder.pipe(socket)
 
-		const messenger = new Messenger()
+		const messenger = new Messenger({ name })
 
-		messenger.connected(message_decoder, message_encoder)
+		messenger.underlying_connection_established(message_decoder, message_encoder)
 
 		// temporary variable
 		let _error
