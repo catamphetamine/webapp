@@ -23,8 +23,6 @@ export default class Modal extends Component
 	{
 		const { isOpen, onRequestClose, closeTimeoutMS } = this.props
 
-		// style={this.props.style ? merge(style.modal, this.props.style) : style.modal}>
-
 		const markup = 
 		(
 			<React_modal
@@ -35,14 +33,16 @@ export default class Modal extends Component
 				className="modal"
 				style={style.modal}>
 
-				{/* top padding grows less than bottom padding */}
-				<div style={style.top_padding} onClick={::this.click_overlay}></div>
-				
-				{/* dialog window content */}
-				<div className="modal-content" style={this.props.style ? merge(style.content, this.props.style) : style.content}>{this.props.children}</div>
+				<div style={style.content_wrapper} onClick={onRequestClose}>
+					{/* top padding grows less than bottom padding */}
+					<div style={style.top_padding} onClick={::this.click_overlay}></div>
+					
+					{/* dialog window content */}
+					<div className="modal-content" style={this.props.style ? merge(style.content, this.props.style) : style.content}>{this.props.children}</div>
 
-				{/* bottom padding grows more than top padding */}
-				<div style={style.bottom_padding} onClick={::this.click_overlay}></div>
+					{/* bottom padding grows more than top padding */}
+					<div style={style.bottom_padding} onClick={::this.click_overlay}></div>
+				</div>
 			</React_modal>
 		)
 
@@ -89,6 +89,17 @@ const style = styler
 		
 		background-color: white
 
+	// вместо использования этого content_wrapper'а
+	// можно было бы использовать то же самое на modal.content,
+	// но тогда этот слой займёт весь экран, а в react-modal
+	// на него вешается onClick со stopPropagation,
+	// поэтому клики слева и справа не будут закрывать окошко.
+	content_wrapper
+		display        : flex
+		flex-direction : column
+		align-items    : center
+		height         : 100%
+
 	modal
 		overlay
 			height     : 1px
@@ -116,13 +127,13 @@ const style = styler
 			border : none
 			background-color: transparent
 
-			// вместо inline-flex можно было бы использовать просто flex,
+			// вместо обойтись этим и не использовать content_wrapper,
 			// но тогда этот слой займёт весь экран, а в react-modal
 			// на него вешается onClick со stopPropagation,
 			// поэтому клики на нём не будут закрывать окошко.
 			//
-			display        : inline-flex
-			flex-direction : column
+			// display        : flex
+			// flex-direction : column
 			// align-items    : center
 
 			// alternative centering (not using flexbox)

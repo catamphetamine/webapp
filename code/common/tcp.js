@@ -452,8 +452,8 @@ export function client({ name, server_name, host, port })
 	// TCP socket
 	const socket = new net.Socket()
 
-	// `log` global variable doesn't exist yet
-	console.log(`${name ? '[' + name + '] ' : ''}Connecting to ${server_name} at ${host}:${port}`)
+	// // `log` global variable doesn't exist yet
+	// console.log(`${name ? '[' + name + '] ' : ''}Connecting to ${server_name} at ${host}:${port}`)
 
 	// connect to the log server via TCP
 	socket.connect({ host, port })
@@ -496,7 +496,14 @@ export function client({ name, server_name, host, port })
 	// When the TCP socket connection is successfully established
 	socket.on('connect', function()
 	{
-		log.debug(`${reconnecting ? 'Reconnected': 'Connected'} to ${server_name} at ${host}:${port}`)
+		if (reconnecting)
+		{
+			log.info(`Reconnected to ${server_name}`)
+		}
+		else
+		{
+			log.debug(`Connected to ${server_name} at ${host}:${port}`)
+		}
 
 		// in case of reconnect
 		// if (reconnecting)
@@ -545,7 +552,10 @@ export function client({ name, server_name, host, port })
 	// The 'close' event will be called directly following this event.
 	socket.on('error', function(error)
 	{
-		log.debug(`Lost connection to ${server_name}`) // , error)
+		if (!reconnecting)
+		{
+			log.error(`Lost connection to ${server_name}`) // , error)
+		}
 	})
 
 	// when TCP socket is closed

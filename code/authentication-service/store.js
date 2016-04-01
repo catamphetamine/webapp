@@ -177,7 +177,7 @@ class Mongodb_store
 		const db = await MongoClient.connect(`mongodb://${configuration.mongodb.user}:${configuration.mongodb.password}@${configuration.mongodb.host}:${configuration.mongodb.port}/${configuration.mongodb.database}`,
 		{
 			// https://docs.mongodb.org/manual/reference/write-concern/
-			db: { w: 'majority', wtimeout: 10000 } 
+			db: { w: 'majority' } 
 		})
 
 		this.user_authentication = db.collection('user_authentication')

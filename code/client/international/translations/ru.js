@@ -43,8 +43,10 @@ export default
 
 	'home.header': 'Собака',
 
-	'log.title'         : 'Журнал',
-	'log.entry.message' : 'текст',
+	'log.title'                  : 'Журнал',
+	'log.entry.message'          : 'текст',
+	'log.entry.show_stack_trace' : 'Подробнее',
+	'log.entry.hide_stack_trace' : 'Скрыть',
 
 	'unauthenticated.header' : 'Войдите, чтобы посмотреть эту страницу',
 	'unauthorized.header'    : 'У вас нет доступа к странице',
