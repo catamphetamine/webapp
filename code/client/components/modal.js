@@ -38,7 +38,7 @@ export default class Modal extends Component
 					<div style={style.top_padding} onClick={::this.click_overlay}></div>
 					
 					{/* dialog window content */}
-					<div className="modal-content" style={this.props.style ? merge(style.content, this.props.style) : style.content}>{this.props.children}</div>
+					<div className="modal-content" onClick={event => event.stopPropagation()} style={this.props.style ? merge(style.content, this.props.style) : style.content}>{this.props.children}</div>
 
 					{/* bottom padding grows more than top padding */}
 					<div style={style.bottom_padding} onClick={::this.click_overlay}></div>
