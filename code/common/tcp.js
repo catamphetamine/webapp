@@ -63,7 +63,7 @@ Message_decoder.prototype._transform = function(text, encoding, callback)
 		}
 		catch (error)
 		{
-			log.error(`Malformed JSON message`, message, error)
+			log.error(`Malformed JSON message "${message}"`)
 			return this.emit('error', error)
 		}
 	}
@@ -75,13 +75,18 @@ Message_decoder.prototype._flush = function(callback)
 {
 	const message = this.incomplete_message
 
+	if (message.is_empty())
+	{
+		return callback()
+	}
+
 	try
 	{
 		this.push(JSON.parse(message))
 	}
 	catch (error)
 	{
-		log.error(`Malformed JSON message`, message, error)
+		log.error(`Malformed JSON message "${message}"`)
 		return this.emit('error', error)
 	}
 

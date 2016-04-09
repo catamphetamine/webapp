@@ -24,9 +24,9 @@ export default class Menu extends Component
 		history : React_router_prop_types.history
 	}
 
-	constructor(props)
+	constructor(props, context)
 	{
-		super(props)
+		super(props, context)
 
 		// this.document_clicked = this.document_clicked.bind(this)
 	}

@@ -47,9 +47,9 @@ export default class Dropdown extends Component
 
 	state = {}
 
-	constructor(props)
+	constructor(props, context)
 	{
-		super(props)
+		super(props, context)
 
 		inject(this)
 

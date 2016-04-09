@@ -58,9 +58,9 @@ export default class Page extends Component
 		store : PropTypes.object.isRequired
 	}
 
-	constructor(props)
+	constructor(props, context)
 	{
-		super(props)
+		super(props, context)
 
 		this.refresh     = this.refresh.bind(this)
 		this.add_user    = this.add_user.bind(this)

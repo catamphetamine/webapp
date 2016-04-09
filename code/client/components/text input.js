@@ -22,9 +22,9 @@ export default class Text_input extends Component
 		style       : PropTypes.object
 	}
 
-	constructor(props)
+	constructor(props, context)
 	{
-		super(props)
+		super(props, context)
 
 		inject(this)
 	}

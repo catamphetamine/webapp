@@ -131,9 +131,9 @@ After installing Redis edit the configuration.js file accordingly
 ```javascript
 redis:
 {
-	host     : 'localhost',
-	port     : 6379,
-	// password : '...' // is optional
+  host     : 'localhost',
+  port     : 6379,
+  // password : '...' // is optional
 }
 ```
 
@@ -167,9 +167,19 @@ Redis
 
 This application can run in demo mode without Redis being installed.
 
-If you want this application make use of Redis then you should install it
+If you want this application make use of Redis then you should install it first.
 
-https://github.com/MSOpenTech/redis/releases
+For Windows: https://github.com/MSOpenTech/redis/releases
+
+For OS X:
+
+```
+brew install redis
+# To have launchd start redis at login:
+ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents
+# Then to load redis now:
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.redis.plist
+```
 
 and configure it in your `configuration.js` file
 
@@ -187,7 +197,20 @@ MongoDB
 
 This application can run in demo mode without MongoDB being installed.
 
-If you want this application make use of MongoDB then you should install it and configure it in your `configuration.js` file
+If you want this application make use of MongoDB then you should install it first.
+
+For windows: https://www.mongodb.org/downloads
+
+For OS X:
+```
+brew install mongodb
+# To have launchd start mongodb at login:
+ln -sfv /usr/local/opt/mongodb/*.plist ~/Library/LaunchAgents
+# Then to load mongodb now:
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mongodb.plist
+```
+
+Then configure it in your `configuration.js` file
 
 ```javascript
 mongodb:
@@ -208,27 +231,26 @@ mongo --port 27017
 use admin
 db.createUser({
   user: "administrator",
-  pwd: "[administrator-password]",
+  pwd: "[type-your-administrator-password-here]",
   roles: [ { role: "userAdminAnyDatabase", db: "admin" }, { role: "dbAdminAnyDatabase", db: "admin" }, { role: "readWriteAnyDatabase", db: "admin" } ]
 })
 
 exit
 
-# set "security.authorization" to "enabled" in your mongod.conf and restart MongoDB
+# set "security.authorization" to "enabled" in your mongod.conf and restart MongoDB.
+# (on OS X mongod.conf path is /usr/local/etc/mongod.conf and the restart command is `launchctl unload …`)
 ```
 
 ```sh
-mongo --port 27017 -u administrator -p [administrator-password] --authenticationDatabase admin
+mongo --port 27017 -u administrator -p [type-your-administrator-password-here] --authenticationDatabase admin
 
-# mongo --eval "..."
-
-use DATABASE_NAME
+use type-your-new-database-name-here
 db.createUser({
-  user: "user",
-  pwd: "password",
+  user: "type-your-user-name-here",
+  pwd: "type-your-user-password-here",
   roles:
   [
-    { role: "readWrite", db: "DATABASE_NAME" }
+    { role: "readWrite", db: "type-your-new-database-name-here" }
   ]
 })
 
@@ -259,6 +281,22 @@ This application can run in demo mode without PostgreSQL being installed.
 
 If you want this application make use of PostgreSQL then you should first install it.
 
+For OS X:
+
+```
+brew install postgresql
+# To have launchd start postgresql at login:
+ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents
+# Then to load postgresql now:
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist
+
+# Fixes "psql: FATAL: role "postgres" does not exist"
+createuser --superuser postgres
+
+# Then you may also want to install PSequel as a GUI
+# http://psequel.com/
+```
+
 (hypothetically MySQL and SQLite3 will also do but I haven't checked that since PostgreSQL is the most advanced open source SQL database nowadays)
 
 To change the default PostgreSQL superuser password
@@ -268,11 +306,11 @@ sudo -u postgres psql
 postgres=# \password postgres
 ```
 
-Then create a new user in PostgreSQL and a new database. For example, in Linux terminal, using these commands
+Then create a new user in PostgreSQL and a new database. For example, in OS X or Linux terminal, using these commands
 
 ```sh
 createuser --username=postgres --interactive USERNAME
-createdb --username=USERNAME --encoding=utf8 --owner=USERNAME DATABASE_NAME --template=template0
+createdb --username=postgres --encoding=utf8 --owner=USERNAME DATABASE_NAME --template=template0
 ```
 
 Then create your `knexfile.js` file
@@ -336,6 +374,38 @@ Troubleshooting
 To do
 ====================
 
+при закрытии диалогового окошка фокус почему-то возвращает в начало страницы на кнопку Войти
+
+при прокрутке колесом чтобы крутился не фон диалогового окна, а само оно (при этом overflow: показывать скроллбар всегда, а у основного окна - скрывать)
+
+перейти на Webpack 2
+
+
+
+
+защитить удаление картинок
+может это делать только тот пользователь%2C который их загружал.
+для этого видимо хранить все имена картинок где-то в базе%2C в mongodb.uploaded_pictures - все размеры пути и user_id
+и брать оттуда имена файлов для удаления
+
+
+
+
+
+
+написать свой relative time (проверить server side rendering)
+
+сделать сокращённый вариант - "1 мин, 2 мин, полчаса, 1 час, 2 часа, 1 нед, 1 мес, 1 год, 10 лет"
+
+при наведении - развёрнутый вариант relative + полный формат даты
+
+тикало чтобы со временем
+
+
+
+
+
+
 ввести ограничение на залогиненность для загрузки и удаления файлов (вывести алёрт об этом для simple example)
 
 
@@ -348,6 +418,24 @@ To do
 
 
 
+
+ 
+имя пользователя - dropdown с пунктами "Профиль", "Настройки", "Уведомления", "Выйти"
+
+при нажатии на аватар - тоже выпадающий список этот
+
+загрузку картинок пользователя в профиле (по клику на картинку)
+
+image-service разделится на image-service и file-upload-service
+
+drag-n-drop загрузку аватара
+
++ оффлайновая страница правки профиля (загрузки аватара)
+
+
+
+
+в логах сделать паджинацию (пока простую, с ctrl + влево вправо)
 
 
 
@@ -380,27 +468,6 @@ http://materializecss.com/media.html
 
 
 
-
-загрузку картинок пользователя в профиле (по клику на картинку)
-
-image-service разделится на image-service и file-upload-service
-
-drag-n-drop загрузку аватара
-
-+ оффлайновая страница правки профиля (загрузки аватара)
-
-
-
-
-
-у каждой картинки (как объекта в бд) и видео будет также указан сервер, на который она загружена (возвращается в json'е после загрузки)
-
-в связи с этим вопрос: может ли докер контейнер читать и писать в файловую систему основной системы (то же самое для postgresql)
-
-
-
-
-
 также сделать правку имени пользователя
 
 
@@ -419,20 +486,8 @@ drag-n-drop загрузку аватара
 
 
 
-превентивно валидировать email и пароль. (с фокусом) + на сервере (с ошибками и фокусом)
+по каждому сервису, мониторить cpu load, ram, время запроса.
 
-сделать ошибку "пользователь с таким именем уже зарегистрирован" (с фокусом на имени)
-
-
-
-
-
-клиентские ошибки отправлять на сервис типа log-service
-
-
-
-
-по каждому сервису, мониторить cpu load, ram.
 
 
 
@@ -440,6 +495,12 @@ drag-n-drop загрузку аватара
 в common/web server сделать monitoting middleware, у которой будет метод checkpoint(text),
 и по завершении весь список чекпоинтов и их таймингов будет отправляться на monitoring service
 (можно сделать IPC по UDP)
+
+
+
+
+
+клиентские ошибки (javascript) отправлять на сервис типа log-service (только в production)
 
 
 
@@ -460,11 +521,11 @@ monitoring-service:
 
 
 
-имя пользователя - dropdown с пунктами "Профиль", "Настройки", "Уведомления", "Выйти"
-
 если клик на имени пользователя при наличии <Badge/> - переход сразу в "Уведомления".
 
 сделать компонент <Badge/> (взять из тех двух библиотек)
+
+
 
 
 

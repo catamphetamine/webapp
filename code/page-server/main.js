@@ -4,6 +4,7 @@
 import React from 'react'
 
 import webpage_server from 'react-isomorphic-render/page-server'
+import is_intl_locale_supported from 'intl-locales-supported'
 
 import create_store   from '../client/redux store'
 import create_routes  from '../client/routes'
@@ -84,6 +85,8 @@ webpage_server
 	// internationalization
 	localize: async (store, preferred_locale) =>
 	{
+		// Determine preferred locales
+
 		const preferred_locales = []
 
 		if (store.getState().authentication 
@@ -96,37 +99,62 @@ webpage_server
 		preferred_locales.push(preferred_locale)
 		preferred_locales.push('en-US')
 
+		// Choose an appropriate locale and load the corresponding messages 
+		// (prefer locales from the `preferred_locales` list)
 		let { locale, messages } = await load_locale_data(preferred_locales, { force_reload: _development_ })
 
+		// Store the locale in Redux store
 		store.dispatch({ type: 'locale', locale })
 
+		// Check if the Intl object supports the chosen locale.
+		// If not then load Intl polyfill instead.
+		if (global.Intl)
+		{
+			// Determine if the built-in `Intl` has the locale data we need.
+			if (!is_intl_locale_supported(locale))
+			{
+				// `Intl` exists, but it doesn't have the data we need, so load the
+				// polyfill and patch the constructors we need with the polyfill's.
+				const Intl_polyfill = require('intl')
+				Intl.NumberFormat   = Intl_polyfill.NumberFormat
+				Intl.DateTimeFormat = Intl_polyfill.DateTimeFormat
+			}
+		}
+		else
+		{
+			// No `Intl`, so use and load the polyfill.
+			global.Intl = require('intl')
+		}
+
+		// These variables will be passed down 
+		// as `props` for the `markup_wrapper` React component
 		return { locale, messages }
 	},
 
-	  // (optional)
-	  // returns an array of React elements.
-	  // which will be inserted into server rendered webpage's <head/>
-	  // (use `key`s to prevent React warning)
-	  // head: () => React element or an array of React elements
+	// (optional)
+	// returns an array of React elements.
+	// which will be inserted into server rendered webpage's <head/>
+	// (use `key`s to prevent React warning)
+	// head: () => React element or an array of React elements
 
-	  // (optional)
-	  // returns a React element.
-	  // allows for wrapping React page component with arbitrary markup
-	  // (or doing whatever else can be done with a React element).
-	  // returns either a React element or an array of React elements
-	  // which will be inserted into server rendered webpage's <body/>
-	  // body: react_page_element => react_page_element
+	// (optional)
+	// returns a React element.
+	// allows for wrapping React page component with arbitrary markup
+	// (or doing whatever else can be done with a React element).
+	// returns either a React element or an array of React elements
+	// which will be inserted into server rendered webpage's <body/>
+	// body: react_page_element => react_page_element
 
-	  // returns an array of React elements.
-	  // allows adding arbitrary React components to the start of the <body/>
-	  // (use `key`s to prevent React warning when returning an array of React elements)
-	  body_start: () => <script dangerouslySetInnerHTML={{__html: `document.body.classList.add('javascript-is-enabled')`}}/>,
+	// returns an array of React elements.
+	// allows adding arbitrary React components to the start of the <body/>
+	// (use `key`s to prevent React warning when returning an array of React elements)
+	body_start: () => <script dangerouslySetInnerHTML={{__html: `document.body.classList.add('javascript-is-enabled')`}}/>,
 
-	  // (optional)
-	  // returns an array of React elements.
-	  // allows adding arbitrary React components to the end of the <body/>
-	  // (use `key`s to prevent React warning when returning an array of React elements)
-	  // body_end: () => React element or an array of React elements
+	// (optional)
+	// returns an array of React elements.
+	// allows adding arbitrary React components to the end of the <body/>
+	// (use `key`s to prevent React warning when returning an array of React elements)
+	// body_end: () => React element or an array of React elements
 
 	// this CSS will be inserted into server rendered webpage <head/> <style/> tag 
 	// (when in development mode only - removes rendering flicker)

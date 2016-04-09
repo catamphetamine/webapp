@@ -414,6 +414,15 @@ Object.defineProperty(String.prototype, 'after',
 	}
 })
 
+Object.defineProperty(String.prototype, 'is_empty', 
+{
+	enumerable: false,
+	value: function()
+	{
+		return this.length === 0
+	}
+})
+
 Object.defineProperty(String.prototype, 'is_blank', 
 {
 	enumerable: false,

@@ -11,6 +11,9 @@ import is_intl_locale_supported from 'intl-locales-supported'
 // doesn't matter, just initialize it with something
 let _locale = 'en'
 
+// console output for debugging purposes
+const debug = (...parameters) => { console.log.bind(console)(parameters) }
+
 const international =
 {
 	// client-side bootstrap code
@@ -42,7 +45,8 @@ const international =
 			// When executing: run the callback once the chunk has been download.
 			require.ensure(['intl'], (require) =>
 			{
-				require('intl') // apply the polyfill
+				// apply the polyfill
+				require('intl')
 				debug(`Intl polyfill for "${locale}" has been loaded`)
 				resolve()
 			},

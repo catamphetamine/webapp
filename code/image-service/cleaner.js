@@ -35,8 +35,7 @@ function get_file_expiration_date(now)
 
 function clean_up()
 {
-	// log.debug
-	log.info(`Clean up started`)
+	log.debug(`Clean up started`)
 
 	most_recent_run_date = new Date()
 
@@ -73,9 +72,7 @@ function clean_up()
 	})
 	.map(file =>
 	{
-		// log.debug(`Deleting expired file ${file.file_name}`)
-		log.info(`Deleting expired file ${file.file_name}`)
-
+		log.debug(`Deleting expired file ${file.file_name}`)
 		return fs.unlinkAsync(path.join(folder, file.file_name))
 	})
 	.then(() => fs_size_async(folder))
@@ -85,8 +82,10 @@ function clean_up()
 	})
 	.then(function()
 	{
-		// log.debug
-		log.info(`Clean up finished. Size before ${bytes(this.folder_size_after_clean_up)}. Size after ${bytes(this.folder_size_after_clean_up)}. Space freed ${bytes(this.folder_size_before_clean_up - this.folder_size_after_clean_up)}`)
+		if (this.folder_size_after_clean_up < this.folder_size_before_clean_up)
+		{
+			log.info(`Clean up finished. Size before ${bytes(this.folder_size_after_clean_up)}. Size after ${bytes(this.folder_size_after_clean_up)}. Space freed ${bytes(this.folder_size_before_clean_up - this.folder_size_after_clean_up)}`)
+		}
 	})
 }
 

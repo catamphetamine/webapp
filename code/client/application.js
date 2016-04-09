@@ -63,6 +63,3 @@ international.load().then(() =>
 	})
 	.then(({ rerender }) => international.hot_reload(rerender))
 })
-
-// used in './international/loader' for debug output
-window.debug = (...parameters) => { console.log.bind(console)(parameters) }
