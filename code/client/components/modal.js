@@ -143,4 +143,8 @@ const style = styler
 			// bottom                : auto
 			// margin-right          : -50%
 			// transform             : translate(-50%, -50%)
+			
+			display      : table
+			margin-left  : auto
+			margin-right : auto
 `

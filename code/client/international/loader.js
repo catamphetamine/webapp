@@ -5,8 +5,17 @@
 // It is used in client.js *before* rendering the root component.
 
 import { addLocaleData as add_locale_data } from 'react-intl'
-
+import javascript_time_ago from 'javascript-time-ago'
 import is_intl_locale_supported from 'intl-locales-supported'
+
+// `react-intl` is already used in the project, 
+// so specifie `intl-messageformat` initialization
+// may not be actually needed.
+//
+// but just in case, `intl-messageformat` is initialized here too.
+// (maybe it's an excessive measure)
+//
+global.IntlMessageFormat = require('intl-messageformat')
 
 // doesn't matter, just initialize it with something
 let _locale = 'en'
@@ -84,13 +93,19 @@ const international =
 						require.ensure
 						([
 							'intl/locale-data/jsonp/ru',
-							'react-intl/locale-data/ru'
+							'react-intl/locale-data/ru',
+							'intl-messageformat/dist/locale-data/ru',
+							'javascript-time-ago/locales/ru'
 						],
 						require =>
 						{
 							require('intl/locale-data/jsonp/ru')
 							add_locale_data(require('react-intl/locale-data/ru'))
 							debug(`Intl and ReactIntl locale-data for "${locale}" has been downloaded`)
+							
+							require('intl-messageformat/dist/locale-data/ru')
+							javascript_time_ago.locale('ru', require('javascript-time-ago/locales/ru'))
+							
 							resolve()
 						},
 						'locale-ru-with-intl')
@@ -98,10 +113,20 @@ const international =
 					else
 					{
 						// download just react-intl specific locale data for this language
-						require.ensure(['react-intl/locale-data/ru'], require =>
+						require.ensure
+						([
+							'react-intl/locale-data/ru',
+							'intl-messageformat/dist/locale-data/ru',
+							'javascript-time-ago/locales/ru'
+						],
+						require =>
 						{
 							add_locale_data(require('react-intl/locale-data/ru'))
 							debug(`ReactIntl locale-data for "${locale}" has been downloaded`)
+							
+							require('intl-messageformat/dist/locale-data/ru')
+							javascript_time_ago.locale('ru', require('javascript-time-ago/locales/ru'))
+							
 							resolve()
 						},
 						'locale-ru')
@@ -129,12 +154,18 @@ const international =
 						// download intl locale data for this language
 						require.ensure
 						([
-							'intl/locale-data/jsonp/en'
+							'intl/locale-data/jsonp/en',
+							'intl-messageformat/dist/locale-data/en',
+							'javascript-time-ago/locales/en'
 						],
 						require =>
 						{
 							require('intl/locale-data/jsonp/en')
 							debug(`Intl and ReactIntl locale-data for "${locale}" has been downloaded`)
+							
+							require('intl-messageformat/dist/locale-data/en')
+							javascript_time_ago.locale('en', require('javascript-time-ago/locales/en'))
+							
 							resolve()
 						},
 						'locale-en-with-intl')
@@ -149,7 +180,20 @@ const international =
 						// },
 						// 'locale-en')
 
-						resolve()
+						// download intl locale data for this language
+						require.ensure
+						([
+							'intl-messageformat/dist/locale-data/en',
+							'javascript-time-ago/locales/en'
+						],
+						require =>
+						{
+							require('intl-messageformat/dist/locale-data/en')
+							javascript_time_ago.locale('en', require('javascript-time-ago/locales/en'))
+							
+							resolve()
+						},
+						'locale-en-with-intl')
 					}
 			}
 		})

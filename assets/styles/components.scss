@@ -433,11 +433,17 @@
 {
 	opacity: 0;
 	transition: opacity 150ms ease-out;
+	overflow: auto;
 }
 
 .ReactModal__Overlay--after-open
 {
 	opacity: 1;
+}
+
+.ReactModal__Overlay--before-close
+{
+	opacity: 0;
 }
 
 .ReactModal__Content
@@ -451,14 +457,17 @@
 	transform: scale(1);
 }
 
-.ReactModal__Overlay--before-close
-{
-	opacity: 0;
-}
-
-.ReactModal__Content--before-close
+.ReactModal__Content--before-close .modal-content
 {
 	transform: scale(0.7);
+}
+
+.ReactModal__Body--open
+{
+	// disables page scrolling when modal is presented,
+	// but introduces page width jumps.
+	// height: 100%;
+	// overflow: hidden;
 }
 
 // end react-modal stying

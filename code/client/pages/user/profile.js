@@ -3,6 +3,7 @@ import { title }                       from 'react-isomorphic-render'
 import { preload }                     from 'react-isomorphic-render/redux'
 import { connect }                     from 'react-redux'
 import styler                          from 'react-styling'
+import React_time_ago                  from 'react-time-ago'
 
 import { defineMessages, FormattedRelative }          from 'react-intl'
 
@@ -88,7 +89,7 @@ export default class User_profile extends Component
 			<div>
 				Latest activity:
 				<span style={style.latest_activity_time}>
-					<FormattedRelative value={new Date(latest_activity_time)}/>
+					<React_time_ago date={latest_activity_time}/>
 				</span>
 			</div>
 		)

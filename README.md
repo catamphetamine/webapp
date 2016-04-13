@@ -272,7 +272,7 @@ npm run mongodb-rollback
 
 Migrations are stored in the `database/sql/migrations` folder.
 
-When switching to MongoDB make sure you delete the `authentication` cookie contaning the user id or else an exception will be thrown saying "Argument passed in must be a single String of 12 bytes or a string of 24 hex characters".
+When switching to MongoDB make sure you delete the `authentication` cookie contaning the user id or else an exception will be thrown saying "Argument passed in must be a single String of 12 bytes or a string of 24 hex characters". Similarly, when switching away from MongoDB back to the dummy RAM storage make sure you clear the `authentication` cookie or else "User not found" error will be thrown on page refresh.
 
 PostgreSQL
 ==========
