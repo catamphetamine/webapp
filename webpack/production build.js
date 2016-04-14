@@ -51,11 +51,6 @@ configuration.plugins = configuration.plugins.concat
 	// omit duplicate modules
 	new webpack.optimize.DedupePlugin(),
 
-	// Assign the module and chunk ids by occurrence count. 
-	// Ids that are used often get lower (shorter) ids. 
-	// This make ids predictable, reduces to total file size and is recommended.
-	new webpack.optimize.OccurenceOrderPlugin(),
-
 	// Compresses javascript files
 	new webpack.optimize.UglifyJsPlugin
 	({

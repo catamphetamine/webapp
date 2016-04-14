@@ -135,11 +135,6 @@ var configuration =
 		// // (use [contenthash] in production)
 		// new webpack.optimize.CommonsChunkPlugin('common', 'common.[hash].js'),
 
-		// // Assign the module and chunk ids by occurrence count. 
-		// // Ids that are used often get lower (shorter) ids. 
-		// // This make ids predictable, reduces to total file size and is recommended.
-		// new webpack.optimize.OccurenceOrderPlugin(true)
-
 		// environment variables
 		new webpack.DefinePlugin(define_plugin_environment_variables)
 	]
