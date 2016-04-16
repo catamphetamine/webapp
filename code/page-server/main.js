@@ -14,6 +14,13 @@ import on_error       from '../client/helpers/error handler'
 
 import load_locale_data from './locale'
 
+import javascript_time_ago from 'javascript-time-ago'
+
+// A faster way to load all the localization data for Node.js
+// (`intl-messageformat` will load everything automatically when run in Node.js)
+global.javascript_time_ago = javascript_time_ago
+require('javascript-time-ago/load-all-locales')
+
 // starts webpage rendering server
 webpage_server
 ({

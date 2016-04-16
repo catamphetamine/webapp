@@ -104,7 +104,7 @@ const international =
 							debug(`Intl and ReactIntl locale-data for "${locale}" has been downloaded`)
 							
 							require('intl-messageformat/dist/locale-data/ru')
-							javascript_time_ago.locale('ru', require('javascript-time-ago/locales/ru'))
+							javascript_time_ago.locale(require('javascript-time-ago/locales/ru'))
 							
 							resolve()
 						},
@@ -125,7 +125,7 @@ const international =
 							debug(`ReactIntl locale-data for "${locale}" has been downloaded`)
 							
 							require('intl-messageformat/dist/locale-data/ru')
-							javascript_time_ago.locale('ru', require('javascript-time-ago/locales/ru'))
+							javascript_time_ago.locale(require('javascript-time-ago/locales/ru'))
 							
 							resolve()
 						},
@@ -164,7 +164,7 @@ const international =
 							debug(`Intl and ReactIntl locale-data for "${locale}" has been downloaded`)
 							
 							require('intl-messageformat/dist/locale-data/en')
-							javascript_time_ago.locale('en', require('javascript-time-ago/locales/en'))
+							javascript_time_ago.locale(require('javascript-time-ago/locales/en'))
 							
 							resolve()
 						},
@@ -189,7 +189,7 @@ const international =
 						require =>
 						{
 							require('intl-messageformat/dist/locale-data/en')
-							javascript_time_ago.locale('en', require('javascript-time-ago/locales/en'))
+							javascript_time_ago.locale(require('javascript-time-ago/locales/en'))
 							
 							resolve()
 						},
