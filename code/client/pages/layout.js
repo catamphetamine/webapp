@@ -100,7 +100,7 @@ export default class Layout extends Component
 
 		const markup = 
 		(
-			<div onClick={this.hide_menu_on_click} className={ 'layout' + ' ' + (this.state.page_moved_aside ? 'layout-with-page-aside' : '') }>
+			<div onTouchStart={this.hide_menu_on_click} onMouseDown={this.hide_menu_on_click} className={ 'layout' + ' ' + (this.state.page_moved_aside ? 'layout-with-page-aside' : '') }>
 				{/* <head/> */}
 				{head(title, description, meta)}
 
@@ -109,49 +109,46 @@ export default class Layout extends Component
 				<Menu show={this.state.show_menu} show_while={this.state.page_moved_aside} toggle={this.toggle_menu} update_width={this.update_menu_width} items={menu_entries(translate)}/>
 
 				{/* webpage */}
-				<div className="page" style={style.page}>
+				<StickyContainer className="page" style={style.page}>
 					{/* "page is preloading" spinner */}
 					<Preloading/>
 
 					{/* header */}
-
-					<StickyContainer className="sticky-header-space">
-						<Sticky>
-							<header>
-								{/* menu button for small screens */}
-								<div className="menu-button-container">
-									<Menu_button toggle={this.toggle_menu}/>
-								</div>
-
-								{/* home page link */}
-								<div className="logo" style={{ textAlign: 'center' }}>
-									<IndexLink to="/" style={style.home} activeStyle={style.home_active}>
-										{translate(messages.title)}
-									</IndexLink>
-								</div>
-
-								{/* navigation for wide screens */}
-								{/* main menu */}
-								<Menu items={menu_entries(translate)}/>
-
-								{/* User accout section */}
-								<Authentication/>
-							</header>
-						</Sticky>
-
-						{/* page content */}
-						{this.props.children}
-
-						<footer>
-							<div><a href="https://github.com/halt-hammerzeit">halt-hammerzeit@github.com</a></div>
-
-							{/* language chooser */}
-							<div className="language-wrapper">
-								<Locale_switcher upward={true} style={style.locale_switcher}/>
+					<Sticky>
+						<header>
+							{/* menu button for small screens */}
+							<div className="menu-button-container">
+								<Menu_button toggle={this.toggle_menu}/>
 							</div>
-						</footer>
-					</StickyContainer>
-				</div>
+
+							{/* home page link */}
+							<div className="logo" style={{ textAlign: 'center' }}>
+								<IndexLink to="/" style={style.home} activeStyle={style.home_active}>
+									{translate(messages.title)}
+								</IndexLink>
+							</div>
+
+							{/* navigation for wide screens */}
+							{/* main menu */}
+							<Menu items={menu_entries(translate)}/>
+
+							{/* User accout section */}
+							<Authentication/>
+						</header>
+					</Sticky>
+
+					{/* page content */}
+					{this.props.children}
+
+					<footer>
+						<div><a href="https://github.com/halt-hammerzeit">halt-hammerzeit@github.com</a></div>
+
+						{/* language chooser */}
+						<div className="language-wrapper">
+							<Locale_switcher upward={true} style={style.locale_switcher}/>
+						</div>
+					</footer>
+				</StickyContainer>
 			</div>
 		)
 

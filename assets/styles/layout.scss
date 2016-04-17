@@ -1,21 +1,5 @@
 @import "constants.scss";
 
-.page
-{
-	flex-grow: 1;
-	
-	display        : flex;
-	flex-direction : column;
-}
-
-.layout
-{
-	display        : flex;
-	flex-direction : column;
-
-	height: 100%;
-}
-
 footer
 {
 	// can be removed later
@@ -43,7 +27,9 @@ footer
 
 .content
 {
-	// flex-grow : 1;
+	flex-grow   : 1;
+	flex-shrink : 0;
+	flex-basis  : auto;
 
 	margin-top    : 1em;
 	margin-bottom : 1.5em;
@@ -130,4 +116,19 @@ section
 {
 	background: white;
     box-shadow: 0 1px 0 0 #e1e2e6, 0 0 0 1px #e6e7eb;
+}
+
+// This technique drops IE10-11 support.
+// https://github.com/philipwalton/flexbugs#3-min-height-on-a-flex-container-wont-apply-to-its-flex-items
+// They say it works in Edge though.
+//
+// Also "100vh" seems to introduce a window resizing bug in Chrome
+// when window height is max of all previous window heights.
+//
+.page
+{
+	display        : flex;
+	flex-direction : column;
+
+    min-height: 100vh;
 }
