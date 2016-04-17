@@ -24,8 +24,10 @@ footer
 	position: relative;
 
 	// height: 1px;
-	background: #efefef;
+	background: $footer-background;
 	color: rgb(102, 102, 102);
+
+	border-top: 1px solid $footer-border-color;
 
 	padding-top    : 1.3em;
 	padding-bottom : 1.2em;
@@ -43,47 +45,26 @@ footer
 
 nav
 {
-	padding-top:    0.4em;
-	padding-bottom: 0.5em;
+    // margin-left : 0.5em;
+    // margin-top  : 0.8em;
+
+	// padding-top:    0.4em;
+	// padding-bottom: 0.5em;
 }
 
 .content
 {
 	flex-grow : 1;
 
-	margin-top    : 2em;
-	margin-bottom : 2.5em;
+	margin-top    : 1em;
+	margin-bottom : 1.5em;
+	margin-left   : 1em;
+	margin-right  : 1em;
 
-	padding-left  : 1.8em;
-	padding-right : 1.8em;
-}
-
-.menu
-{
-	// flex-grow: 1;
-	// flex-shrink: 1;
-	
-	// margin-bottom : -0.01em !important;
-	// vertical-align: bottom;
-
-	li:not(:last-child)
-	{
-		margin-right: 1em;
-	}
-}
-
-.menu-item
-{
-	margin-left    : 0.4em;
-	margin-right   : 0.4em;
-
-	margin-top : $header-vertically-centered-text-margin-top;
-
-	padding-bottom : 0em;
-
-	// border-bottom-width : 0.12em;
-	// border-bottom-color : transparent;
-	// border-bottom-style : solid;
+	padding-top    : 2em;
+	padding-bottom : 2em;
+	padding-left   : 1.8em;
+	padding-right  : 1.8em;
 }
 
 .menu-item-selected
@@ -114,6 +95,16 @@ nav
 	vertical-align : bottom;
 }
 
+// header
+// {
+// 	position   : fixed;
+// 	width      : 100%;
+// 	left       : 0;
+// 	top        : 0;
+// 	box-sizing : border-box;
+// 	z-index    : 1;
+// }
+
 header
 {
 	display        : flex;
@@ -132,22 +123,30 @@ header
 	padding-right : $header-horizontal-padding;
 
 	background   : $header-background;
-	color        : $header-background-text-color;
-	border-color : $header-background-text-color;
+	color        : $header-text-color;
+
+	border-bottom : 1px solid $header-border-color;
+	box-sizing    : border-box;
 
 	button, a, .dropdown-item-selected
 	{
-		color: $header-background-text-color;
+		color: $header-text-color;
 
 		&:active
 		{
-			color: $header-background-text-color-active;
+			color: $header-text-color-active;
 		}
 	}
 
 	.dropdown-arrow
 	{
-		color: $header-background-text-color;
+		color: $header-text-color;
 		opacity: 0.8;
 	}
+}
+
+section
+{
+	background: white;
+    box-shadow: 0 1px 0 0 #e1e2e6, 0 0 0 1px #e6e7eb;
 }

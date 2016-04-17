@@ -5,6 +5,7 @@ import { PropTypes as React_router_prop_types } from 'react-router'
 import { Link } from 'react-router'
 
 import styler from 'react-styling'
+import classNames from 'classnames'
 
 export default class Menu extends Component
 {
@@ -80,13 +81,6 @@ export default class Menu extends Component
 
 	render()
 	{
-		// const markup =
-		// (
-		// 	<ul ref="menu" style={ this.props.show ? merge(style.menu, { maxHeight: this.state.height + 'px' }) : style.menu } className={'menu' + ' ' + (this.props.show ? 'menu-shown' : '')}>
-		// 		{ this.props.items.map((item, i) => <li key={i} style={style.menu.item}><Link to={item.link} style={style.menu.item.link} activeClassName="menu-item-selected" className="menu-item">{item.name}</Link></li>) }
-		// 	</ul>
-		// )
-
 		let markup
 
 		const menu_style = this.props.style ? merge(style.menu, this.props.style) : style.menu
@@ -95,28 +89,37 @@ export default class Menu extends Component
 		{
 			markup =
 			(
-				<ul ref="menu" style={menu_style} className={'menu' + ' ' + 'menu-collapsible' + ' ' + (this.props.show_while ? 'menu-shown' : '')}>
-					{ this.props.items.map((item, i) => <li key={i} style={style.menu.item}><Link to={item.link} style={style.menu.item.link} activeClassName="menu-item-selected" className="menu-item">{item.name}</Link></li>) }
-				</ul>
+				<nav>
+					<ul ref="menu" style={menu_style} className={classNames('menu', 'menu-collapsible', { 'menu-shown': this.props.show_while })}>
+						{this.render_menu_items()}
+					</ul>
+				</nav>
 			)
 		}
 		else
 		{
 			markup =
 			(
-				<ul style={menu_style} className="menu">
-					{ this.props.items.map((item, i) => <li key={i} style={style.menu.item}><Link to={item.link} style={style.menu.item.link} activeClassName="menu-item-selected" className="menu-item">{item.name}</Link></li>) }
-				</ul>
+				<nav>
+					<ul style={menu_style} className="menu">
+						{this.render_menu_items()}
+					</ul>
+				</nav>
 			)
 		}
 
 		return markup
 	}
 
+	render_menu_items()
+	{
+		return this.props.items.map((item, i) => <li key={i} style={style.menu.item}><Link to={item.link} style={style.menu.item.link} activeClassName="menu-item-selected" className="menu-item">{item.name}</Link></li>)
+	}
+
 	// calculate_height()
 	// {
 	// 	const dom_node = ReactDOM.findDOMNode(this.refs.menu)
-
+	//
 	// 	this.setState({ height: this.props.show ? dom_node.scrollHeight : 0 })
 	// }
 
@@ -146,6 +149,8 @@ export default class Menu extends Component
 const style = styler
 `
 	menu
+		// display: inline-block
+
 		margin-top    : 0
 		margin-bottom : 0
 
@@ -153,9 +158,10 @@ const style = styler
 		padding         : 0
 
 		item
-			display: inline-block
+			// display: inline-block
 
 			link
-				display         : inline-block
+				// display         : inline-block
+				display : block
 				text-decoration : none
 `

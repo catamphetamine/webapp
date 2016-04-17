@@ -30,11 +30,39 @@ header, .user-picture
 .menu
 {
 	display: inline-block;
+
+	li
+	{
+		display: inline-block;
+	}
+
+	li:not(:last-child)
+	{
+		margin-right: 1em;
+	}
+}
+
+.menu-item
+{
+	// padding-left    : 0.4em;
+	// padding-right   : 0.4em;
+
+	padding-left    : 0.6em;
+	padding-right   : 0.6em;
+
+	padding-top    : 0.3em;
+	padding-bottom : 0.3em;
+
+	// padding-top : $header-vertically-centered-text-margin-top;
+
+	// border-bottom-width : 0.12em;
+	// border-bottom-color : transparent;
+	// border-bottom-style : solid;
 }
 
 .menu-collapsible
 {
-	display: none;
+	display: none !important;
 }
 
 .language

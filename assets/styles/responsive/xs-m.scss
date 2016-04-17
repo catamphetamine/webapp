@@ -147,18 +147,20 @@ header
 
 .menu-icon
 {
-	// width  : 1em;
-	// height : 1em;
-
 	width  : 1.6em;
 	height : 1.6em;
 
 	path
 	{
-		// stroke: white !important;
+		fill: $header-text-color !important;
+	}
+}
 
-		// fill: $header-background-text-color !important;
-		fill: white !important;
+.menu-button a:active .menu-icon
+{
+	path
+	{
+		fill: $header-text-color-active !important;
 	}
 }
 
@@ -183,8 +185,6 @@ header
 
 .page
 {
-	background : white;
-
 	// box-shadow will show a bug if declared here
 	// https://github.com/philipwalton/solved-by-flexbox/issues/79
 	// box-shadow : 0 0 0.35em rgba(0, 0, 0, 1);

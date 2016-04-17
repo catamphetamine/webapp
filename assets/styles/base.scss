@@ -69,6 +69,14 @@ body
 	overflow-y: scroll;
 }
 
+// just background on .page is not enough 
+// because it won't stretch to fill all the height
+// https://github.com/philipwalton/solved-by-flexbox/issues/79
+.page, body
+{
+	background-color: $background-color;
+}
+
 body, button, input, textarea, select
 {
 	// font-family : 'PT Sans';
@@ -221,6 +229,11 @@ button
 		// color: $active-lighter-color;
 		color: $active-color;
 	}
+}
+
+a, button
+{
+	outline : 0;
 }
 
 table

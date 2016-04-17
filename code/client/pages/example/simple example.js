@@ -85,7 +85,7 @@ export default class Page extends Component
 
 		const markup = 
 		(
-			<section>
+			<div>
 				{title("Simple REST API example")}
 
 				<div style={style.container}>
@@ -93,7 +93,7 @@ export default class Page extends Component
 
 					{this.render_users(error, loaded, users)}
 				</div>
-			</section>
+			</div>
 		)
 
 		return markup

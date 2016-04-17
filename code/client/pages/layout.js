@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-
+import { StickyContainer, Sticky } from 'react-sticky'
 import { bindActionCreators as bind_action_creators } from 'redux'
 
 // testing `flat` styler
@@ -88,10 +88,8 @@ export default class Layout extends Component
 				{head(title, description, meta)}
 
 				{/* navigation for small screens (will slide out) */}
-				{/*<nav>*/}
-					{/* main menu */}
-					<Menu show={this.state.show_menu} show_while={this.state.page_moved_aside} toggle={::this.toggle_menu} update_width={::this.update_menu_width} items={menu_entries(translate)}/>
-				{/*</nav>*/}
+				{/* main menu */}
+				<Menu show={this.state.show_menu} show_while={this.state.page_moved_aside} toggle={::this.toggle_menu} update_width={::this.update_menu_width} items={menu_entries(translate)}/>
 
 				{/* webpage */}
 				<div className="page" style={ this.state.show_menu ? merge(style.page, { transform: `translate3d(${this.state.menu_width}px, 0px, 0px)` }) : style.page }>
@@ -99,28 +97,32 @@ export default class Layout extends Component
 					<Preloading/>
 
 					{/* header */}
-					<header>
-						{/* menu button for small screens */}
-						<div className="menu-button-container">
-							<Menu_button toggle={::this.toggle_menu}/>
-						</div>
 
-						{/* home page link */}
-						<div className="logo" style={{ textAlign: 'center' }}>
-							<IndexLink to="/" style={style.home} activeStyle={style.home_active}>
-								{translate(messages.title)}
-							</IndexLink>
-						</div>
+					{/* broken until react-sticky 5.0.0 is released */}
+					{/*<StickyContainer>*/}
+						{/*<Sticky>*/}
+							<header>
+								{/* menu button for small screens */}
+								<div className="menu-button-container">
+									<Menu_button toggle={::this.toggle_menu}/>
+								</div>
 
-						{/* navigation for wide screens */}
-						{/*<nav>*/}
-							{/* main menu */}
-							<Menu items={menu_entries(translate)}/>
-						{/*</nav>*/}
+								{/* home page link */}
+								<div className="logo" style={{ textAlign: 'center' }}>
+									<IndexLink to="/" style={style.home} activeStyle={style.home_active}>
+										{translate(messages.title)}
+									</IndexLink>
+								</div>
 
-						{/* User accout section */}
-						<Authentication/>
-					</header>
+								{/* navigation for wide screens */}
+								{/* main menu */}
+								<Menu items={menu_entries(translate)}/>
+
+								{/* User accout section */}
+								<Authentication/>
+							</header>
+						{/*</Sticky>*/}
+					{/*</StickyContainer>*/}
 
 					{/* page content */}
 					{this.props.children}

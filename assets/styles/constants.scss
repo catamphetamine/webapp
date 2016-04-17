@@ -1,17 +1,31 @@
 // theming
-$active-color                  : #29ADFF;
-$active-darker-color           : #0076BF;
-$button-color                  : #0089DE;
+
+// (black and blue color scheme)
+// $active-color                  : #29ADFF;
+// $active-darker-color           : #0076BF;
+// $button-color                  : #0089DE;
+// $secondary-button-color        : #608094;
+// $secondary-button-active-color : #5DA0C9;
+// $active-lighter-color          : #73C9FF;
+//
+// $input-error-message-color  : #C9827D;
+// $input-invalid-border-color : #f44336;
+
+$background-color              : #f5f2ec;
+
+$active-color                  : #d86502;
+$active-darker-color           : #984600;
+$button-color                  : #be5801;
 $secondary-button-color        : #608094;
 $secondary-button-active-color : #5DA0C9;
-$active-lighter-color          : #73C9FF;
+$active-lighter-color          : #ffcda3;
 
 $background-gray-color         : #e4eaec;
 $gray-to-active-color          : #699BC9; // #62a8ea;
 
 $input-border-color         : #c9c9c9;
-$input-invalid-border-color : #f44336;
-$input-error-message-color  : #C9827D;
+$input-invalid-border-color : #eb1c00;
+$input-error-message-color  : #e30000;
 $input-border-width         : 0.1em;
 $input-padding              : 0.3em;
 $input-width-l              : 18em;
@@ -26,13 +40,17 @@ $dropdown-item-active-color       : #f7f7f7;
 // if placed inside xs-m.scss
 $menu-item-compact-vertical-padding: 0.3em;
 
-$header-background: #323232;
-$header-background-text-color: #f0f0f0;
-$header-background-text-color-active: #e0e0e0;
+$header-background: #d77827;
+$header-border-color: #c4681a;
+$header-text-color: #fff8eb;
+$header-text-color-active: #ffd3b2;
 
 $header-horizontal-padding: 1em;
 $header-vertical-padding: 0.5em;
 $header-vertically-centered-text-margin-top: 0.1em;
+
+$footer-background   : #eeded0;
+$footer-border-color : #e8c9af;
 
 $large-screen-width       : 1600pt;
 $medium-screen-width      : 1000pt;

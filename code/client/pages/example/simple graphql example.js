@@ -9,13 +9,13 @@ export default class Page extends Component
 	{
 		const markup = 
 		(
-			<section>
+			<div>
 				{title("Simple GraphQL example")}
 
 				<div style={style.container}>
 					{'This is an example of Relay/GraphQL usage with no database persistence (to be done)'}
 				</div>
-			</section>
+			</div>
 		)
 
 		return markup
