@@ -67,6 +67,11 @@ nav
 	padding-right  : 1.8em;
 }
 
+.menu-icon
+{
+	display : none;
+}
+
 .menu-item-selected
 {
 	color : $active-lighter-color;

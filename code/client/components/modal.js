@@ -15,33 +15,43 @@ export default class Modal extends Component
 	{
 		isOpen         : PropTypes.bool.isRequired,
 		onRequestClose : PropTypes.func.isRequired,
+		onAfterOpen    : PropTypes.func,
 		closeTimeoutMS : PropTypes.number,
 		style          : PropTypes.object
 	}
 
+	constructor(props, context)
+	{
+		super(props, context)
+
+		this.onRequestClose = this.onRequestClose.bind(this)
+		this.onAfterOpen    = this.onAfterOpen.bind(this)
+	}
+
 	render()
 	{
-		const { isOpen, onRequestClose, closeTimeoutMS } = this.props
+		const { isOpen, closeTimeoutMS } = this.props
 
 		const markup = 
 		(
 			<React_modal
 				ref="modal"
 				isOpen={isOpen}
-				onRequestClose={onRequestClose}
+				onAfterOpen={this.onAfterOpen}
+				onRequestClose={this.onRequestClose}
 				closeTimeoutMS={closeTimeoutMS || default_close_timeout}
 				className="modal"
 				style={style.modal}>
 
-				<div style={style.content_wrapper} onClick={onRequestClose}>
+				<div style={style.content_wrapper} onClick={this.onRequestClose}>
 					{/* top padding grows less than bottom padding */}
-					<div style={style.top_padding} onClick={::this.click_overlay}></div>
+					<div style={style.top_padding} onClick={this.onRequestClose}></div>
 					
 					{/* dialog window content */}
 					<div className="modal-content" onClick={event => event.stopPropagation()} style={this.props.style ? merge(style.content, this.props.style) : style.content}>{this.props.children}</div>
 
 					{/* bottom padding grows more than top padding */}
-					<div style={style.bottom_padding} onClick={::this.click_overlay}></div>
+					<div style={style.bottom_padding} onClick={this.onRequestClose}></div>
 				</div>
 			</React_modal>
 		)
@@ -49,10 +59,28 @@ export default class Modal extends Component
 		return markup
 	}
 
-	click_overlay()
+	onRequestClose()
 	{
-		// close overlay on click
-		ReactDOM.findDOMNode(this.refs.modal.portal).click()
+		document.body.style.maxWidth = 'none'
+		document.body.style.height   = '100%' // it's a good idea to always have it set to 100%
+		document.body.style.overflow = 'auto'
+
+		if (this.props.onRequestClose)
+		{
+			this.props.onRequestClose()
+		}
+	}
+
+	onAfterOpen()
+	{
+		document.body.style.maxWidth = document.body.clientWidth + 'px'
+		document.body.style.height   = '100%'
+		document.body.style.overflow = 'hidden'
+
+		if (this.props.onAfterOpen)
+		{
+			this.props.onAfterOpen()
+		}
 	}
 }
 
