@@ -1,13 +1,11 @@
 @import "constants.scss";
 
-.page
+.sticky-header-space, .page
 {
 	flex-grow: 1;
 	
 	display        : flex;
 	flex-direction : column;
-
-	transition: none;
 }
 
 .layout
@@ -43,15 +41,6 @@ footer
 	}
 }
 
-nav
-{
-    // margin-left : 0.5em;
-    // margin-top  : 0.8em;
-
-	// padding-top:    0.4em;
-	// padding-bottom: 0.5em;
-}
-
 .content
 {
 	flex-grow : 1;
@@ -67,6 +56,12 @@ nav
 	padding-right  : 1.8em;
 }
 
+.nav-collapsible
+{
+	transform  : translate3d(-100%, 0, 0);
+	transition : transform 210ms ease-out;
+}
+
 .menu-icon
 {
 	display : none;
@@ -75,7 +70,6 @@ nav
 .menu-item-selected
 {
 	color : $active-lighter-color;
-	// border-bottom-color : $active-color;
 }
 
 .menu-collapsible
@@ -93,22 +87,9 @@ nav
 
 .logo
 {
-	// flex-grow: 1;
-	// flex-shrink: 1;
-
 	display : inline-block;
 	vertical-align : bottom;
 }
-
-// header
-// {
-// 	position   : fixed;
-// 	width      : 100%;
-// 	left       : 0;
-// 	top        : 0;
-// 	box-sizing : border-box;
-// 	z-index    : 1;
-// }
 
 header
 {
@@ -118,11 +99,6 @@ header
 
 	// .authentication - position: absolute
 	position: relative;
-
-	// box-sizing: border-box;
-
-	// padding-top    : $header-vertical-padding;
-	// padding-bottom : $header-vertical-padding;
 
 	padding-left  : $header-horizontal-padding;
 	padding-right : $header-horizontal-padding;

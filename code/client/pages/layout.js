@@ -23,7 +23,7 @@ import Preloading      from '../components/preloading'
 // import { authenticate } from '../actions/authentication'
 
 // when adjusting this transition time also adjust it in styles/xs-m.scss
-const menu_transition_duration = 210 // milliseconds
+const menu_transition_duration = 0 // 210 // milliseconds
 
 // @preload
 // ({
@@ -43,6 +43,15 @@ export default class Layout extends Component
 	static propTypes =
 	{
 		children : PropTypes.node.isRequired
+	}
+
+	constructor(props, context)
+	{
+		super(props, context)
+
+		this.hide_menu_on_click = this.hide_menu_on_click.bind(this)
+		this.toggle_menu        = this.toggle_menu.bind(this)
+		this.update_menu_width  = this.update_menu_width.bind(this)
 	}
 
 	render()
@@ -81,30 +90,37 @@ export default class Layout extends Component
 			}
 		}
 
+		// Slideout menu pushes the page to the right
+		// const page_style_with_menu_expanded = { transform: `translate3d(${this.state.menu_width}px, 0px, 0px)` }
+		//
+		// style={ this.state.show_menu ? merge(style.page, page_style_with_menu_expanded) : style.page }
+		//
+		// `translate3d` animation won't work:
+		// http://stackoverflow.com/questions/14732403/position-fixed-not-working-for-header/14732712#14732712
+
 		const markup = 
 		(
-			<div className={ 'layout' + ' ' + (this.state.page_moved_aside ? 'layout-with-page-aside' : '') }>
+			<div onClick={this.hide_menu_on_click} className={ 'layout' + ' ' + (this.state.page_moved_aside ? 'layout-with-page-aside' : '') }>
 				{/* <head/> */}
 				{head(title, description, meta)}
 
 				{/* navigation for small screens (will slide out) */}
 				{/* main menu */}
-				<Menu show={this.state.show_menu} show_while={this.state.page_moved_aside} toggle={::this.toggle_menu} update_width={::this.update_menu_width} items={menu_entries(translate)}/>
+				<Menu show={this.state.show_menu} show_while={this.state.page_moved_aside} toggle={this.toggle_menu} update_width={this.update_menu_width} items={menu_entries(translate)}/>
 
 				{/* webpage */}
-				<div className="page" style={ this.state.show_menu ? merge(style.page, { transform: `translate3d(${this.state.menu_width}px, 0px, 0px)` }) : style.page }>
+				<div className="page" style={style.page}>
 					{/* "page is preloading" spinner */}
 					<Preloading/>
 
 					{/* header */}
 
-					{/* broken until react-sticky 5.0.0 is released */}
-					{/*<StickyContainer>*/}
-						{/*<Sticky>*/}
+					<StickyContainer className="sticky-header-space">
+						<Sticky>
 							<header>
 								{/* menu button for small screens */}
 								<div className="menu-button-container">
-									<Menu_button toggle={::this.toggle_menu}/>
+									<Menu_button toggle={this.toggle_menu}/>
 								</div>
 
 								{/* home page link */}
@@ -121,20 +137,20 @@ export default class Layout extends Component
 								{/* User accout section */}
 								<Authentication/>
 							</header>
-						{/*</Sticky>*/}
-					{/*</StickyContainer>*/}
+						</Sticky>
 
-					{/* page content */}
-					{this.props.children}
+						{/* page content */}
+						{this.props.children}
 
-					<footer>
-						<div><a href="https://github.com/halt-hammerzeit">halt-hammerzeit@github.com</a></div>
+						<footer>
+							<div><a href="https://github.com/halt-hammerzeit">halt-hammerzeit@github.com</a></div>
 
-						{/* language chooser */}
-						<div className="language-wrapper">
-							<Locale_switcher upward={true} style={style.locale_switcher}/>
-						</div>
-					</footer>
+							{/* language chooser */}
+							<div className="language-wrapper">
+								<Locale_switcher upward={true} style={style.locale_switcher}/>
+							</div>
+						</footer>
+					</StickyContainer>
 				</div>
 			</div>
 		)
@@ -162,6 +178,19 @@ export default class Layout extends Component
 	update_menu_width(width)
 	{
 		this.setState({ menu_width: width })
+	}
+
+	hide_menu_on_click(event)
+	{
+		if (event.target.classList.contains('menu-item'))
+		{
+			return
+		}
+
+		if (this.state.show_menu)
+		{
+			this.toggle_menu()
+		}
 	}
 }
 

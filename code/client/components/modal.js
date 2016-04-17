@@ -43,15 +43,17 @@ export default class Modal extends Component
 				className="modal"
 				style={style.modal}>
 
-				<div style={style.content_wrapper} onClick={this.onRequestClose}>
-					{/* top padding grows less than bottom padding */}
-					<div style={style.top_padding} onClick={this.onRequestClose}></div>
-					
-					{/* dialog window content */}
-					<div className="modal-content" onClick={event => event.stopPropagation()} style={this.props.style ? merge(style.content, this.props.style) : style.content}>{this.props.children}</div>
+				<div style={style.modal.content_cell} onClick={this.onRequestClose}>
+					<div style={style.content_wrapper} onClick={this.onRequestClose}>
+						{/* top padding grows less than bottom padding */}
+						<div style={style.top_padding} onClick={this.onRequestClose}></div>
+						
+						{/* dialog window content */}
+						<div className="modal-content" onClick={event => event.stopPropagation()} style={this.props.style ? merge(style.content, this.props.style) : style.content}>{this.props.children}</div>
 
-					{/* bottom padding grows more than top padding */}
-					<div style={style.bottom_padding} onClick={this.onRequestClose}></div>
+						{/* bottom padding grows more than top padding */}
+						<div style={style.bottom_padding} onClick={this.onRequestClose}></div>
+					</div>
 				</div>
 			</React_modal>
 		)
@@ -61,9 +63,15 @@ export default class Modal extends Component
 
 	onRequestClose()
 	{
-		document.body.style.maxWidth = 'none'
-		document.body.style.height   = '100%' // it's a good idea to always have it set to 100%
-		document.body.style.overflow = 'auto'
+		const { closeTimeoutMS } = this.props
+
+		setTimeout(() =>
+		{
+			document.body.style.maxWidth = 'none'
+			document.body.style.height   = '100%' // it's a good idea to always have it set to 100%
+			document.body.style.overflow = 'auto'
+		},
+		closeTimeoutMS || default_close_timeout)
 
 		if (this.props.onRequestClose)
 		{
@@ -71,6 +79,7 @@ export default class Modal extends Component
 		}
 	}
 
+	// This solution may break a bit when a user resizes the browser window
 	onAfterOpen()
 	{
 		document.body.style.maxWidth = document.body.clientWidth + 'px'
@@ -175,4 +184,8 @@ const style = styler
 			display      : table
 			margin-left  : auto
 			margin-right : auto
+
+		content_cell
+			display : table-cell
+			height  : 100%
 `

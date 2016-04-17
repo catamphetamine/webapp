@@ -13,42 +13,12 @@ header
 
 .menu
 {
-	position : absolute;
-	left     : 0;
-	top      : 0;
-
 	margin: 0;
-
-	// uncomment for dropdown menu
-	// background-color: white;
-
-	// box-shadow : 0 3px 20px rgba(0, 0, 0, 0.05);
-
-	// display: none !important;
-
-	// uncomment for dropdown menu
-	// border-width : 1px;
-	// border-style : solid;
-	// border-color : transparent;
-
-
-	// uncomment for dropdown menu
-	// // prevent white background showing through the transparent border
-	// // http://stackoverflow.com/questions/7473200/transparent-border-expands-background-color-image
-	// background-clip: padding-box;
-	// // for Safari
-	// -webkit-background-clip: padding-box;
-
-	// // uncomment for dropdown menu
-	// max-height : 0;
-	// overflow   : hidden;
-
-	// // uncomment for dropdown menu
-	// transition: all 100ms ease-out;
 
 	> li
 	{
 		display: block !important;
+		margin-right: 0 !important;
 
 		&:first-child
 		{
@@ -60,6 +30,24 @@ header
 			padding-bottom : 2 * $menu-item-compact-vertical-padding;
 		}
 	}
+}
+
+.nav-collapsible
+{
+	a
+	{
+		color: #dfdfdf;
+	}
+}
+
+.nav-widescreen
+{
+	display: none;
+}
+
+.menu-page .nav-widescreen
+{
+	display: block;
 }
 
 .menu-item
@@ -76,19 +64,10 @@ header
 	padding-right : 1.0em;
 }
 
-.menu-shown
+.nav-collapsible-shown
 {
-	// display: block !important;
-
-	// uncomment for dropdown menu
-	// box-shadow : 0 3px 20px rgba(0, 0, 0, 0.05);
-
-	// uncomment for dropdown menu
-	// border-width : 1px;
-	// border-style : solid;
-	// border-color : #e7e7e7;
-
-	// transition: all 130ms ease-out;
+	transform: translate3d(0, 0, 0);
+    box-shadow: 0 0 0.2em rgba(0, 0, 0, 0.4);
 }
 
 .language
@@ -145,12 +124,24 @@ header
 	line-height: 0;
 }
 
+.menu-icon, .menu-close
+{
+	width  : 1.6em;
+	height : 1.6em;
+}
+
+.menu-close
+{
+	svg
+	{
+		width  : 100%;
+		height : 100%;
+	}
+}
+
 .menu-icon
 {
 	display : block;
-	
-	width  : 1.6em;
-	height : 1.6em;
 
 	path
 	{
@@ -163,6 +154,26 @@ header
 	path
 	{
 		fill: $header-text-color-active !important;
+	}
+}
+
+.menu-close
+{
+	position : absolute;
+	right    : 0;
+	top      : 0;
+
+	svg path
+	{
+		stroke: #eeeeee !important;
+	}
+
+	&:active
+	{
+		svg path
+		{
+			stroke: #ffffff !important;
+		}
 	}
 }
 
@@ -195,39 +206,33 @@ header
 	transition-property        : transform;
 	transition-timing-function : ease-out;
 
-	transform  : translate3d(0px, 0px, 0px);
+	// breaks <header/> position fixed
+	// transform  : translate3d(0px, 0px, 0px);
 }
 
-.menu
+.layout > nav
 {
+	display: inline-block;
+
 	min-height: 100%;
 
-	position : fixed;
+	position : fixed !important;
 	left     : 0;
 	top      : 0;
 	bottom   : 0;
+	z-index  : 1;
 
 	overflow-y: auto;
 
 	background: #505050;
-
-	// looks kinda old fashioned
-	// box-shadow: inset -0.3em 0px 0.35em -0.35em rgba(0, 0, 0, 1);
-
-	a
-	{
-		color: #dfdfdf;
-	}
-
-	> li
-	{
-		margin-right: 0 !important;
-	}
 }
 
-.menu-item:active
+.nav-collapsible
 {
-	color: #efefef;
+	.menu-item:active
+	{
+		color: #efefef;
+	}
 }
 
 .layout-with-page-aside
@@ -238,24 +243,4 @@ header
 .page
 {
 	min-width: 100%;
-}
-
-.menu
-{
-	display: none;
-}
-
-// .menu-collapsible
-// {
-// 	display: block;
-// }
-
-// .menu-collapsible
-// {
-// 	display: none;
-// }
-
-.menu-shown
-{
-	display: block
 }

@@ -89,7 +89,15 @@ export default class Menu extends Component
 		{
 			markup =
 			(
-				<nav>
+				<nav className={classNames('nav-collapsible', { 'nav-collapsible-shown': this.props.show_while })}>
+					{/* style={{ position: 'relative' }}
+
+					<button className="menu-close">
+						<svg viewbox="0 0 40 40">
+							<path d="M 10,10 L 30,30 M 30,10 L 10,30" stroke-width="3"/>
+						</svg>
+					</button>*/}
+
 					<ul ref="menu" style={menu_style} className={classNames('menu', 'menu-collapsible', { 'menu-shown': this.props.show_while })}>
 						{this.render_menu_items()}
 					</ul>
@@ -100,7 +108,7 @@ export default class Menu extends Component
 		{
 			markup =
 			(
-				<nav>
+				<nav className="nav-widescreen">
 					<ul style={menu_style} className="menu">
 						{this.render_menu_items()}
 					</ul>
