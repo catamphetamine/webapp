@@ -90,15 +90,15 @@ const style = styler
 		width : 100%
 
 		flex-grow   : 1
-		flex-shrink : 1
-		flex-basis  : 20%
+		flex-shrink : 0
+		flex-basis  : 80px
 
 	bottom_padding
 		width : 100%
 
-		flex-grow   : 7
-		flex-shrink : 1
-		flex-basis  : 20%
+		flex-grow   : 4
+		flex-shrink : 0
+		flex-basis  : 80px
 
 	content
 		display : inline-block

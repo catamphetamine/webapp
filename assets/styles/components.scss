@@ -477,6 +477,12 @@
 	transition: transform 150ms ease-out;
 }
 
+// hides `react-modal` scrollbar when closing the modal
+.ReactModal__Overlay--before-close
+{
+	overflow: hidden;
+}
+
 // .ReactModal__Body--open
 // {
 // 	// disables page scrolling when modal is presented,
