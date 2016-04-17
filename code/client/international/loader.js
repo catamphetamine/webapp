@@ -15,7 +15,7 @@ import is_intl_locale_supported from 'intl-locales-supported'
 // but just in case, `intl-messageformat` is initialized here too.
 // (maybe it's an excessive measure)
 //
-global.IntlMessageFormat = require('intl-messageformat')
+require('javascript-time-ago/intl-messageformat-global')
 
 // doesn't matter, just initialize it with something
 let _locale = 'en'
