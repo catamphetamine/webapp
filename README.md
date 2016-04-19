@@ -374,24 +374,6 @@ Troubleshooting
 To do
 ====================
 
-проверить en.js в продакшене
-
-
-после коммита сделать:
-git update-index --assume-unchanged code/client/international/translations/messages/en.js
-
-
-
-автодополнение для города
-
-
-
-
-возможность выбрать пол в настройках
-
-
-
-
 защитить удаление картинок
 может это делать только тот пользователь%2C который их загружал.
 для этого видимо хранить все имена картинок где-то в базе%2C в mongodb.uploaded_pictures - все размеры пути и user_id
@@ -422,7 +404,7 @@ git update-index --assume-unchanged code/client/international/translations/messa
 
 загрузку картинок пользователя в профиле (по клику на картинку)
 
-image-service разделится на image-service и file-upload-service
+возможность выбрать пол в настройках
 
 drag-n-drop загрузку аватара
 
@@ -914,6 +896,8 @@ maxmemory 1gb
 (править файлы в Program Files не получится, их можно править, скопировав в другое место и потом перезаписав обратно поверх)
 
 
-Для того, чтобы git не отслеживал файл с переводом en.js, нужно выполнить такую команду:
+Для того, чтобы git не отслеживал файл с переводом `en.json`, нужно выполнить такую команду:
 
-git update-index --assume-unchanged code/client/international/translations/messages/en.js
+```
+git update-index --assume-unchanged code/client/international/translations/messages/en.json
+```
