@@ -15,12 +15,15 @@ import international from '../../international/internationalize'
 
 const messages = defineMessages
 ({
-	// header:
-	// {
-	// 	id             : 'user.profile.header',
-	// 	description    : 'User profile page header',
-	// 	defaultMessage : 'Profile'
-	// }
+	latest_activity_time:
+	{
+		id             : `user.profile.latest_activity_time`,
+		description    : `This user's most recent activity time`,
+		defaultMessage : `{gender, select, 
+							male   {Last seen}
+							female {Last seen}
+							other  {Last seen}}`
+	}
 })
 
 @preload((dispatch, get_state, location, parameters) =>
@@ -50,23 +53,25 @@ export default class User_profile extends Component
 
 	render()
 	{
-		const { user } = this.props
+		const { user, translate } = this.props
 
 		const user_picture = user.picture ? `/upload/user_pictures/${user.id}.jpg` : require('../../../../assets/images/no user picture.png')
 
 		const markup = 
 		(
-			<section className="content">
+			<section className="content  user-profile">
 				{title(user.name)}
 
-				<h1 style={style.header}>
-					{user.name}
-				</h1>
-
 				{/* Avatar */}
-				<img className="user-picture" src={user_picture}/>
+				<img className="user-picture  user-picture--profile  card" src={user_picture}/>
 
-				<label style={style.user_name}>{user.name}</label>
+				<h1 style={style.user_name}>{user.name}</h1>
+
+				{ user.city && user.country && (
+					<div style={style.user_origin} className="user-profile__origin">
+						{user.city + ', ' + translate({ id: `country.${user.country}` })}
+					</div>
+				)}
 
 				{this.render_latest_activity_time()}
 			</section>
@@ -75,9 +80,10 @@ export default class User_profile extends Component
 		return markup
 	}
 
+	// "Last seen 2 days ago"
 	render_latest_activity_time()
 	{
-		const { latest_activity_time } = this.props
+		const { latest_activity_time, translate } = this.props
 
 		if (!latest_activity_time)
 		{
@@ -86,9 +92,13 @@ export default class User_profile extends Component
 
 		const markup =
 		(
-			<div>
-				Latest activity:
-				<span style={style.latest_activity_time}>
+			<div style={style.latest_activity} className="user-profile__last-seen">
+				{/* "Last seen" */}
+				{translate(messages.latest_activity_time, { gender: null })}
+				<span>&nbsp;</span>
+
+				{/* how long ago the user was online */}
+				<span style={style.latest_activity_time} className="user-profile__last-seen__time">
 					<React_time_ago date={latest_activity_time}/>
 				</span>
 			</div>
@@ -100,13 +110,22 @@ export default class User_profile extends Component
 
 const style = styler
 `
+	picture
+		border: 1px solid #E1E3DF
+
 	header
 		text-align : center
 
 	user_name
-		font-size : 32pt
-		margin-left : 0.3em
+		font-size : 1.5rem
+		margin-bottom : 0em
+
+	user_origin
+		margin-top : 0.1em
+
+	latest_activity
+		margin-top : 1.2rem
+		opacity    : 0.5
 
 	latest_activity_time
-		margin-left : 0.3em
 `

@@ -77,22 +77,33 @@ if (!javascript_loader.query.plugins)
 	javascript_loader.query.plugins = []
 }
 
-javascript_loader.query.plugins = javascript_loader.query.plugins.concat
-([[
-	'react-transform',
-	{
-		transforms: 
-		[{
-			transform : 'react-transform-catch-errors',
-			imports   : ['react', 'redbox-react']
-		},
+// https://twitter.com/dan_abramov/status/722040301465006080
+const using_react_hot_loader_v3 = false
+
+if (using_react_hot_loader_v3)
+{
+	configuration.entry.main.push('react-hot-loader/patch')
+	javascript_loader.query.plugins.push('react-hot-loader/babel')
+}
+else
+{
+	javascript_loader.query.plugins = javascript_loader.query.plugins.concat
+	([[
+		'react-transform',
 		{
-			transform : 'react-transform-hmr',
-			imports   : ['react'],
-			locals    : ['module']
-		}]
-	}
-]])
+			transforms: 
+			[{
+				transform : 'react-transform-catch-errors',
+				imports   : ['react', 'redbox-react']
+			},
+			{
+				transform : 'react-transform-hmr',
+				imports   : ['react'],
+				locals    : ['module']
+			}]
+		}
+	]])
+}
 
 // run `webpack-dev-server`
 

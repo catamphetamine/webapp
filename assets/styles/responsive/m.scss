@@ -1,11 +1,11 @@
-body, button, input, textarea, select
+html, body, button, input, textarea, select
 {
 	font-size : 18pt;
 }
 
 $header-height: 1.3em;
 
-header, .user-picture
+header, .user-picture--header
 {
 	min-height : 2.3em;
 	max-height : 2.3em;

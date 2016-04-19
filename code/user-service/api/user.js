@@ -63,8 +63,10 @@ function public_user(user)
 {
 	const result =
 	{
-		id   : user.id,
-		name : user.name
+		id      : user.id,
+		name    : user.name,
+		city    : user.city,
+		country : user.country
 	}
 
 	return result

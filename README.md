@@ -374,11 +374,20 @@ Troubleshooting
 To do
 ====================
 
-react-sticky сделать, когда выйдет 5.0.0 (и проверить дизайн на всех размерах)
+проверить en.js в продакшене
 
-на малых экранах глючит при раскрытом меню и скроллинге вниз-вверх
 
-на малых экранах не стичится
+после коммита сделать:
+git update-index --assume-unchanged code/client/international/translations/messages/en.js
+
+
+
+автодополнение для города
+
+
+
+
+возможность выбрать пол в настройках
 
 
 
@@ -907,4 +916,4 @@ maxmemory 1gb
 
 Для того, чтобы git не отслеживал файл с переводом en.js, нужно выполнить такую команду:
 
-git update-index --assume-unchanged code/client/international/translations/en.js
+git update-index --assume-unchanged code/client/international/translations/messages/en.js

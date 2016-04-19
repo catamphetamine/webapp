@@ -115,7 +115,7 @@ export default class Layout extends Component
 
 					{/* header */}
 					<Sticky>
-						<header>
+						<header className="card">
 							{/* menu button for small screens */}
 							<div className="menu-button-container">
 								<Menu_button toggle={this.toggle_menu}/>
@@ -140,7 +140,7 @@ export default class Layout extends Component
 					{/* page content */}
 					{this.props.children}
 
-					<footer>
+					<footer className="card">
 						<div><a href="https://github.com/halt-hammerzeit">halt-hammerzeit@github.com</a></div>
 
 						{/* language chooser */}

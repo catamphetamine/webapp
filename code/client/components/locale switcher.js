@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { PropTypes as React_router_prop_types } from 'react-router'
 
-import { write as cookie } from '../tools/cookie'
+// import { write as cookie } from '../tools/cookie'
 
 import { connect } from 'react-redux'
 

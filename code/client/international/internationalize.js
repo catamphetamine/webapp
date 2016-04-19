@@ -7,7 +7,7 @@ export default function()
 	return function(Wrapped)
 	{
 		// this component has no `this.intl` instance variable
-		class International extends Component
+		class _International extends Component
 		{
 			render()
 			{
@@ -16,7 +16,7 @@ export default function()
 		}
 
 		// `this.intl` will be available for this component
-		International = injectIntl(International)
+		const International = injectIntl(_International)
 
 		International.displayName = `International(${get_display_name(Wrapped)})`
 

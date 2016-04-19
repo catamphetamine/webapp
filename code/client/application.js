@@ -20,16 +20,27 @@ for (let asset of Object.keys(html_assets))
 
 import inject_tap_event_plugin from 'react-tap-event-plugin'
 
-//Needed for onTouchTap
-//Can go away when react 1.0 release
-//Check this repo:
-//https://github.com/zilverline/react-tap-event-plugin
+// Needed for onTouchTap
+// Can go away when react 1.0 release
+// Check this repo:
+// https://github.com/zilverline/react-tap-event-plugin
 inject_tap_event_plugin()
 
 // import ajax from './tools/ajax'
 // global.ajax = ajax
 
 import international from './international/loader'
+
+// // react-hot-loader 3
+// import { AppContainer } from 'react-hot-loader'
+//
+// class react_hot_loader_3_markup_wrapper extends React.Component
+// {
+// 	render()
+// 	{
+// 		return <AppContainer component={markup_wrapper} props={this.props}/>
+// 	}
+// }
 
 // load the Intl polyfill and its locale data before rendering the application
 international.load().then(() =>
@@ -57,9 +68,25 @@ international.load().then(() =>
 
 		// wraps React page component into arbitrary markup (e.g. Redux Provider)
 		markup_wrapper,
+		// markup_wrapper: react_hot_loader_3_markup_wrapper,
 
 		// internationalization
 		load_localized_messages: international.load_translation
 	})
 	.then(({ rerender }) => international.hot_reload(rerender))
 })
+
+// // react-hot-loader 3
+// if (module.hot)
+// {
+// 	module.hot.accept('./markup wrapper', () =>
+// 	{
+// 		render
+// 		(
+// 			<AppContainer
+// 				component={require('./markup wrapper').default}
+// 				props={{ store }}/>,
+// 			document.getElementById('root')
+// 		)
+// 	})
+// }

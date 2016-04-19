@@ -13,7 +13,7 @@ export default function(authorization)
 {
 	return function(Wrapped)
 	{
-		class Authorize extends Component
+		class _Authorize extends Component
 		{
 			state = { error: undefined }
 
@@ -78,9 +78,9 @@ export default function(authorization)
 			}
 		}
 
-		Authorize.displayName = `Authorize(${get_display_name(Wrapped)})`
+		_Authorize.displayName = `Authorize(${get_display_name(Wrapped)})`
 
-		Authorize = hoist_statics(Authorize, Wrapped)
+		const Authorize = hoist_statics(_Authorize, Wrapped)
 
 		const preloads = ['preload', 'preload_blocking']
 

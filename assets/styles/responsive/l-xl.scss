@@ -1,4 +1,4 @@
-body, button, input, textarea, select
+html, body, button, input, textarea, select
 {
 	font-size   : 20pt;
 }
@@ -8,7 +8,7 @@ body, button, input, textarea, select
 	font-size   : 18pt;
 }
 
-header, .user-picture
+header, .user-picture--header
 {
 	min-height : 2.6em;
 	max-height : 2.6em;

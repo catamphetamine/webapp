@@ -8,7 +8,7 @@ input[type="text"], input[type="email"], input[type="password"], textarea, selec
 	width: $input-width-xs;
 }
 
-header, .user-picture
+header, .user-picture--header
 {
 	min-height : 2.0em;
 	max-height : 2.0em;
@@ -22,7 +22,7 @@ header, .user-picture
 	margin-top : $header-vertically-centered-text-margin-top;
 }
 
-body, button, input, textarea, select
+html, body, button, input, textarea, select
 {
 	font-size : 14pt;
 }

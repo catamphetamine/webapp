@@ -1,13 +1,18 @@
 @import "constants.scss";
 
+section, .card
+{
+	background-color: white;
+	box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+}
+
 footer
 {
 	// can be removed later
 	position: relative;
 
-	// height: 1px;
-	background: $footer-background;
-	color: rgb(102, 102, 102);
+	background-color : $footer-background !important;
+	color            : rgb(102, 102, 102);
 
 	border-top: 1px solid $footer-border-color;
 
@@ -89,8 +94,8 @@ header
 	padding-left  : $header-horizontal-padding;
 	padding-right : $header-horizontal-padding;
 
-	background   : $header-background;
-	color        : $header-text-color;
+	background-color : $header-background !important;
+	color            : $header-text-color;
 
 	border-bottom : 1px solid $header-border-color;
 	box-sizing    : border-box;
@@ -110,12 +115,6 @@ header
 		color: $header-text-color;
 		opacity: 0.8;
 	}
-}
-
-section
-{
-	background: white;
-    box-shadow: 0 1px 0 0 #e1e2e6, 0 0 0 1px #e6e7eb;
 }
 
 // This technique drops IE10-11 support.

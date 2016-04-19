@@ -147,7 +147,7 @@ export default class Authentication extends Component
 				{/* <div className="user-picture" onClick={::this.change_user_picture}>
 					<img src={user_picture}/>
 				</div>*/}
-				<img className="user-picture" src={user_picture}/>
+				<img className="user-picture user-picture--header" src={user_picture}/>
 			</div>
 		)
 

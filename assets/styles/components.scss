@@ -378,6 +378,21 @@
 {
 }
 
+.user-profile .user-picture
+{
+	min-width  : 6rem;
+	min-height : 6rem;
+
+	width  : 6rem;
+	height : 6rem;
+
+	border-radius: $border-radius;
+}
+
+// .user-profile h1
+// {
+// }
+
 .sign-in, .sign-out
 {
 	margin-top: $header-vertically-centered-text-margin-top;
