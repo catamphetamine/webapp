@@ -23,7 +23,9 @@ import Button from '../../components/button'
 		adding_error  : model.users.adding_error,
 
 		uploading_picture       : model.users.uploading_picture,
-		uploading_picture_error : model.users.uploading_picture_error
+		uploading_picture_error : model.users.uploading_picture_error,
+
+		user : model.authentication.user
 	}),
 	dispatch => bind_action_creators
 	({
@@ -168,7 +170,15 @@ export default class Page extends Component
 
 								<Button 
 									busy={this.props.uploading_picture} 
-									action={event => this.refs[`upload_picture_${i}`].click()} 
+									action={event =>
+									{
+										if (!this.props.user)
+										{
+											return alert('Image upload works only for authenticated users')
+										}
+
+										this.refs[`upload_picture_${i}`].click()
+									}} 
 									style={style.users.upload_picture}>
 
 									upload picture
@@ -256,6 +266,8 @@ export default class Page extends Component
 	async upload_picture(file, user_id)
 	{
 		const old_picture = this.props.users.find_by({ id: user_id }).picture
+
+		console.log(old_picture)
 
 		try
 		{

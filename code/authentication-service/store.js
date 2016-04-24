@@ -3,9 +3,7 @@ import uid    from 'uid-safe'
 import moment         from 'moment'
 import redis          from 'redis'
 
-import { MongoClient, ObjectId } from 'mongodb'
-
-Promise.promisifyAll(MongoClient)
+import MongoDB from '../common/mongodb'
 
 Promise.promisifyAll(redis)
 
@@ -166,74 +164,46 @@ class Memory_store
 }
 
 // if MongoDB is installed and configured, use it
-class Mongodb_store
+class Mongodb_store extends MongoDB
 {
-	async connect()
-	{
-		// mongoose caches commands until it connects to MongoDB,
-		// so waiting for connection isn't strictly required
-
-		// config.autoIndex = _development_
-		const db = await MongoClient.connect(`mongodb://${configuration.mongodb.user}:${configuration.mongodb.password}@${configuration.mongodb.host}:${configuration.mongodb.port}/${configuration.mongodb.database}`,
-		{
-			// https://docs.mongodb.org/manual/reference/write-concern/
-			db: { w: 'majority' } 
-		})
-
-		this.user_authentication = db.collection('user_authentication')
-		this.authentication_tokens = db.collection('authentication_tokens')
-
-		Promise.promisifyAll(this.user_authentication)
-		Promise.promisifyAll(this.authentication_tokens)
-	}
-
 	async create_user(user)
 	{
-		const result = await this.user_authentication.insertAsync(user)
-		return result.ops[0]._id.toString()
+		const result = await this.collection('user_authentication').insertAsync(user)
+		return this.inserted_id(result).toString()
 	}
 
 	async find_user_by_id(id)
 	{
-		const result = await this.user_authentication.findOneAsync({ _id: ObjectId(id) })
-		return mongodb_to_object(result)
+		const result = await this.collection('user_authentication').get_by_id(id)
+		return this.to_object(result)
 	}
 
 	async find_user_by_email(email)
 	{
-		const result = await this.user_authentication.findOneAsync({ email })
-		return mongodb_to_object(result)
+		const result = await this.collection('user_authentication').findOneAsync({ email })
+		return this.to_object(result)
 	}
 
 	async find_token_by_id(token_id)
 	{
-		const token = await this.authentication_tokens.findOneAsync
-		({
-			_id: ObjectId(token_id)
-		})
+		const token = await this.collection('authentication_tokens').get_by_id(token_id)
 
-		return mongodb_to_object(token)
+		return this.to_object(token)
 	}
 
 	async revoke_token(token_id, user_id)
 	{
 		// remove the token from user data
-		await this.user_authentication.updateOneAsync
-		({
-			_id: ObjectId(user_id)
-		},
+		await this.collection('user_authentication').update_by_id(user_id,
 		{
 			$pull:
 			{
-				authentication_tokens: ObjectId(token_id)
+				authentication_tokens: this.ObjectId(token_id)
 			}
 		})
 
 		// remove the token from the database
-		await this.authentication_tokens.removeAsync
-		({
-			_id: ObjectId(token_id)
-		})
+		await this.collection('authentication_tokens').remove_by_id(token_id)
 	}
 
 	async add_authentication_token(user, ip)
@@ -241,9 +211,9 @@ class Mongodb_store
 		const now = new Date()
 
 		// add the token to the database
-		const authentication_token_id = (await this.authentication_tokens.insertAsync
+		const authentication_token_id = (await this.collection('authentication_tokens').insertAsync
 		({
-			user_id : ObjectId(user.id),
+			user_id : this.ObjectId(user.id),
 
 			history:
 			[{
@@ -254,10 +224,7 @@ class Mongodb_store
 		.insertedIds[0]
 
 		// add the token to user data
-		await this.user_authentication.updateOneAsync
-		({
-			_id: ObjectId(user.id)
-		},
+		await this.collection('user_authentication').update_by_id(user.id,
 		{
 			$set:
 			{
@@ -267,7 +234,7 @@ class Mongodb_store
 
 			$push:
 			{
-				authentication_tokens: ObjectId(authentication_token_id)
+				authentication_tokens: this.ObjectId(authentication_token_id)
 			}
 		})
 
@@ -291,10 +258,7 @@ class Mongodb_store
 		if (!previous_time || now.getTime() > previous_time.getTime())
 		{
 			// update user's `latest_activity_time`
-			await this.user_authentication.updateOneAsync
-			({
-				_id: ObjectId(user.id)
-			},
+			await this.collection('user_authentication').update_by_id(user.id,
 			{
 				$set:
 				{
@@ -304,9 +268,9 @@ class Mongodb_store
 			})
 
 			// update token access information
-			await this.authentication_tokens.updateOneAsync
+			await this.collection('authentication_tokens').updateOneAsync
 			({
-				_id: ObjectId(authentication_token_id),
+				_id: this.ObjectId(authentication_token_id),
 				'history.ip': ip
 			},
 			{
@@ -317,21 +281,6 @@ class Mongodb_store
 			})
 		}
 	}
-}
-
-// converts mongodb mongoose entity to JSON object
-function mongodb_to_object(entity)
-{
-	if (!entity)
-	{
-		return
-	}
-
-	const object = entity //.toObject()
-	object.id = object._id.toString()
-	delete object._id
-
-	return object
 }
 
 // if no Redis connection is configured,

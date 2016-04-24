@@ -7,8 +7,8 @@ exports.up = function(db, next)
 	var user_authentication   = db.collection('user_authentication')
 	var authentication_tokens = db.collection('authentication_tokens')
 
-	user_authentication.createIndex({ email: 1 }, { name: "user_by_email", unique: true })
-	authentication_tokens.createIndex({ user_id: 1 }, { name: "token_by_user_id" })
+	user_authentication.createIndex({ email: 1 }, { name: 'user_by_email', unique: true })
+	authentication_tokens.createIndex({ user_id: 1 }, { name: 'token_by_user_id' })
 
 	next()
 }

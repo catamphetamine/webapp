@@ -105,6 +105,10 @@ export default class Modal extends Component
 		document.body.style.marginRight = margin_right + 'px'
 		document.body.style.overflow    = 'hidden'
 
+		// If the user scrolled on a previously shown react-modal,
+		// then reset that previously scrolled position.
+		document.querySelector('.ReactModal__Overlay').scrollTop = 0
+
 		if (this.props.onAfterOpen)
 		{
 			this.props.onAfterOpen()

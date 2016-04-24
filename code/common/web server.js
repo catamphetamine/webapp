@@ -258,8 +258,12 @@ export default function web_server(options = {})
 		// })
 	}
 
-	// Set up session middleware
 	web.keys = configuration.session_secret_keys
+
+	if (options.authentication === true)
+	{
+		options.authentication = configuration.authentication_token_payload.read || (() => ({}))
+	}
 
 	if (options.authentication)
 	{
@@ -756,7 +760,7 @@ export default function web_server(options = {})
 	// }
 	
 	// can handle file uploads
-	result.file_upload = function({ path = '/', upload_folder, multiple_files = false, postprocess, file_size_limit })
+	result.file_upload = function({ path = '/', upload_folder, requires_authentication = false, multiple_files = false, postprocess, file_size_limit })
 	{
 		if (options.parse_body)
 		{
@@ -770,6 +774,11 @@ export default function web_server(options = {})
 				const error = new Error(`This is supposed to be a "multipart/form-data" http request`)
 				error.code = 404
 				throw error
+			}
+
+			if (requires_authentication !== false && !this.user)
+			{
+				throw new result.errors.Unauthenticated()
 			}
 
 			const file_names = []

@@ -60,17 +60,17 @@ api.delete('/example/users/:id', function({ id })
 	users.delete(id)
 })
 
-api.post('/example/users/:id/picture', function({ id, sizes })
+api.post('/example/users/:user_id/picture', function({ user_id, id, sizes })
 {
 	// testing uploading image spinner
 	// return new Promise((resolve) => setTimeout(resolve, 3000))
 
 	// throw new Error(123)
 
-	if (!users.has(id))
+	if (!users.has(user_id))
 	{
-		throw new Errors.Not_found(`User ${id} not found`)
+		throw new Errors.Not_found(`User ${user_id} not found`)
 	}
 
-	users.get(id).picture = { sizes }
+	users.get(user_id).picture = { id, sizes }
 })

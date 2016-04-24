@@ -54,7 +54,7 @@ export function upload_picture(user_id, file, old_picture)
 {
 	const data = new FormData()
 
-	data.append('target', 'user_picture')
+	data.append('type', 'user_picture')
 	data.append('image', file)
 
 	const action =
@@ -66,7 +66,7 @@ export function upload_picture(user_id, file, old_picture)
 			
 			if (old_picture)
 			{
-				await http.post(`/images/api/delete`, { image: old_picture, target: 'user_picture' })
+				await http.post(`/images/api/delete`, { id: old_picture.id })
 			}
 			
 			return { user_id, picture }

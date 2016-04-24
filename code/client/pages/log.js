@@ -127,7 +127,7 @@ export default class Log extends Component
 						return markup
 					})}
 
-					<button style={style.button} onClick={::this.hide_stack_trace}>
+					<button style={style.stack_trace_modal.button} onClick={::this.hide_stack_trace}>
 						{translate(messages.hide_stack_trace)}
 					</button>
 				</Modal>
@@ -231,6 +231,9 @@ const style = styler
 
 	stack_trace_modal
 		font-family : Monospace
+
+		button
+			float : right
 
 	stack_trace
 		title

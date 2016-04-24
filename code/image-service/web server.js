@@ -5,49 +5,87 @@ import fs   from 'fs-extra'
 
 import get_image_info         from './image info'
 import { resize, autorotate } from './image manipulation'
+import database               from './database'
 
 const upload_folder = path.resolve(Root_folder, configuration.image_service.temporary_files_directory)
 const output_folder = path.resolve(Root_folder, configuration.image_service.files_directory)
 
-const web = web_server({ parse_body: false, routing: '/api' })
+const web = web_server({ authentication: true, parse_body: false, routing: '/api' })
 
 // uploaded images (user pictures, etc)
 web.serve_static_files('/', path.join(Root_folder, configuration.image_service.files_directory))
 
-web.post('/delete', async ({ target, image }) =>
+web.post('/delete', async ({ id }, { user }) =>
 {
-	const image_target = configuration.image_service.target[target]
-
-	if (!image_target)
+	if (!user)
 	{
-		throw new Error(`Unknown image-service target: "${target}"`)
+		throw new web.errors.Unauthenticated()
 	}
 
-	for (let size of image.sizes)
+	const image = await database.get(id)
+
+	if (!image)
 	{
-		const image_path = path.resolve(output_folder, image_target.path, size.name)
+		throw new web.errors.Not_found()
+	}
+
+	if (image.user !== user.id)
+	{
+		throw new web.errors.Unauthorized()
+	}
+
+	const image_type = configuration.image_service.type[image.type]
+
+	if (!image_type)
+	{
+		throw new Error(`Unknown image-service type: "${type}"`)
+	}
+
+	for (let size of image.info.sizes)
+	{
+		const image_path = path.resolve(output_folder, image_type.path, size.name)
 
 		if (await fs_exists(image_path))
 		{
 			await fs.unlinkAsync(image_path)
 		}
 	}
+
+	await database.delete(id)
 })
 
+// returns:
+//
+// {
+//	id: '507f191e810c19729de860ea',
+// 	date: new Date(),
+// 	location:
+// 	{
+// 		latitude: 34.25733333333334,
+// 		longitue: 118.5373333333333
+// 	},
+// 	sizes:
+// 	[{
+// 		name: 'image@100x100.png',
+// 		width: 100,
+// 		height: 100
+// 	},
+// 	...]
+// }
 web.file_upload
 ({
 	path: '/upload',
 	upload_folder,
 	file_size_limit: configuration.image_service.file_size_limit,
-	postprocess: async uploaded =>
+	postprocess: async function(uploaded)
 	{
 		const { file, parameters } = uploaded
 
-		const target = configuration.image_service.target[parameters.target]
+		const target = configuration.image_service.type[parameters.type]
 
 		if (!target)
 		{
-			throw new Error(`Unknown image-service target: "${parameters.target}"`)
+			throw new Error(`Unknown image-service type: "${parameters.type}"`)
 		}
 
 		const from = path.resolve(upload_folder, file.uploaded_file_name)
@@ -69,6 +107,10 @@ web.file_upload
 				// server: 1
 			}
 
+			const image_info = Object.clone(result)
+			image_info.sizes[0].file_size = (await fs.statAsync(to)).size
+
+			result.id = await database.create(this.user, parameters.type, image_info)
 			return result
 		}
 
@@ -83,6 +125,7 @@ web.file_upload
 		const to_temporary = from + dot_extension
 
 		const sizes = []
+		const file_sizes = []
 
 		for (let max_extent of configuration.image_service.sizes)
 		{
@@ -118,6 +161,8 @@ web.file_upload
 				height : resized.height,
 				name   : file_name
 			})
+
+			file_sizes.push((await fs.statAsync(to)).size)
 
 			if (image_min_extent < max_extent)
 			{
@@ -159,6 +204,16 @@ web.file_upload
 			result.location = image_info.location
 		}
 
+		const images_info = Object.clone(result)
+
+		let i = 0
+		while (i < images_info.sizes.length)
+		{
+			images_info.sizes[i].file_size = file_sizes[i]
+			i++
+		}
+
+		result.id = await database.create(this.user, parameters.type, images_info)
 		return result
 	}
 })

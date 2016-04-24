@@ -63,7 +63,7 @@ module.exports =
 			3600,
 			4500
 		],
-		target:
+		type:
 		{
 			user_picture:
 			{

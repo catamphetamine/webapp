@@ -2,4 +2,4 @@ require('../common/server entry')
 
 global.log = require('./log')
 
-require('./main')
+require('./database').connect().then(() => require('./main'))
