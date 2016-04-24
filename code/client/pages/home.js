@@ -27,7 +27,7 @@ export default class Home extends Component
 
 		const markup = 
 		(
-			<section className="content">
+			<section className="content" style={style.content}>
 				{title(this.props.translate(layout_messages.title))}
 
 				<h1 style={style.header}>
@@ -44,6 +44,9 @@ export default class Home extends Component
 
 const style = styler
 `
+	content
+		padding: 1em
+
 	header
 		text-align: center
 

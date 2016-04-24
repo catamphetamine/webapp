@@ -23,6 +23,12 @@ const messages = defineMessages
 							male   {Last seen}
 							female {Last seen}
 							other  {Last seen}}`
+	},
+	edit_profile:
+	{
+		id             : `user.profile.edit`,
+		description    : `Edit user's own profile action`,
+		defaultMessage : `Edit`
 	}
 })
 
@@ -38,6 +44,8 @@ const messages = defineMessages
 (
 	model =>
 	({
+		current_user         : model.authentication.user,
+
 		user                 : model.user_profile.user,
 		latest_activity_time : model.user_profile.latest_activity_time
 	})
@@ -47,34 +55,50 @@ export default class User_profile extends Component
 {
 	static propTypes =
 	{
+		current_user         : PropTypes.object,
+
 		user                 : PropTypes.object.isRequired,
 		latest_activity_time : PropTypes.object
 	}
 
 	render()
 	{
-		const { user, translate } = this.props
+		const { user, translate, current_user } = this.props
 
 		const user_picture = user.picture ? `/upload/user_pictures/${user.id}.jpg` : require('../../../../assets/images/no user picture.png')
 
 		const markup = 
 		(
-			<section className="content  user-profile">
+			<div className="content  user-profile">
 				{title(user.name)}
 
-				{/* Avatar */}
-				<img className="user-picture  user-picture--profile  card" src={user_picture}/>
+				<div className="column-6-of-12">
+					{/* User's personal info */}
+					<section className="content-section user-profile__personal-info" style={style.personal_info}>
+						{/* Avatar */}
+						<img className="user-picture  user-picture--profile  card" src={user_picture}/>
 
-				<h1 style={style.user_name}>{user.name}</h1>
+						{/* "John Brown" */}
+						<h1 style={style.user_name}>{user.name}</h1>
 
-				{ user.city && user.country && (
-					<div style={style.user_origin} className="user-profile__origin">
-						{user.city + ', ' + translate({ id: `country.${user.country}` })}
-					</div>
-				)}
+						{/* "Moscow, Russia" */}
+						{ user.city && user.country && (
+							<div style={style.user_origin} className="user-profile__origin">
+								{user.city + ', ' + translate({ id: `country.${user.country}` })}
+							</div>
+						)}
 
-				{this.render_latest_activity_time()}
-			</section>
+						{/* "Edit profile" */}
+						{ current_user && current_user.id === user.id &&
+						<div style={style.own_profile_actions}>
+							<button style={style.edit_profile}>{translate(messages.edit_profile)}</button>
+						</div> }
+
+						{/* "Last seen: an hour ago" */}
+						{this.render_latest_activity_time()}
+					</section>
+				</div>
+			</div>
 		)
 
 		return markup
@@ -121,11 +145,19 @@ const style = styler
 		margin-bottom : 0em
 
 	user_origin
-		margin-top : 0.1em
+		margin-top : 0.2em
 
 	latest_activity
 		margin-top : 1.2rem
 		opacity    : 0.5
 
 	latest_activity_time
+
+	personal_info
+		// display: inline-block
+
+	own_profile_actions
+		margin-top: 1em
+
+	edit_profile
 `

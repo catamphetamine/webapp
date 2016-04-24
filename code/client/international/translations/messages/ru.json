@@ -47,6 +47,8 @@
 	"log.entry.show_stack_trace" : "Подробнее",
 	"log.entry.hide_stack_trace" : "Скрыть",
 
+	"user.profile.edit" : "Редактировать",
+
 	"user.profile.latest_activity_time" : "{gender, select, male {Заходил} female {Заходила} other {В сети:}}",
 
 	"unauthenticated.header" : "Войдите, чтобы посмотреть эту страницу",

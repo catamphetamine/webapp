@@ -11,7 +11,7 @@ export default class Page extends Component
 	{
 		const markup = 
 		(
-			<section className="content">
+			<section className="content" style={{ padding: '1.6em' }}>
 				{title("REST API Example")}
 
 				<ul style={style.menu}>

@@ -148,8 +148,8 @@ const style = styler
 
 	locale
 		flag
-			margin-right   : 0.4em
-			margin-bottom  : -0.03em
+			// margin-right   : 0.4em
+			// margin-bottom  : -0.03em
 			vertical-align : baseline
 
 		form

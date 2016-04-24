@@ -35,27 +35,40 @@ footer
 	flex-grow   : 1;
 	flex-shrink : 0;
 	flex-basis  : auto;
+}
 
-	margin-top    : 1em;
-	margin-bottom : 1.5em;
-	margin-left   : 1em;
-	margin-right  : 1em;
+.content-section
+{
+	margin : 1em;
+	padding : 2em;
+}
 
-	padding-top    : 2em;
-	padding-bottom : 2em;
-	padding-left   : 1.8em;
-	padding-right  : 1.8em;
+.column-3-of-12,
+.column-4-of-12,
+.column-6-of-12
+{
+	overflow: visible;
+}
+
+.column-3-of-12
+{
+	width: 25%;
+}
+
+.column-4-of-12
+{
+	width: 33.33333%;
+}
+
+.column-6-of-12
+{
+	width: 50%;
 }
 
 .nav-collapsible
 {
 	transform  : translate3d(-100%, 0, 0);
 	transition : transform 210ms ease-out;
-}
-
-.menu-icon
-{
-	display : none;
 }
 
 .menu-item-selected
@@ -74,12 +87,6 @@ footer
 	{
 		margin-right: 0 !important;
 	}
-}
-
-.logo
-{
-	display : inline-block;
-	vertical-align : bottom;
 }
 
 header

@@ -17,7 +17,7 @@ export default class Page extends Component
 	{
 		const markup = 
 		(
-			<section className="content">
+			<section className="content" style={{ padding: '1.6em' }}>
 				{title(this.props.translate(layout_messages.menu_components_showcase))}
 
 				<ul style={style.menu}>

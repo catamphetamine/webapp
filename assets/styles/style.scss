@@ -8,25 +8,8 @@
 
 // https://github.com/sass/libsass/issues/1766
 
-@media all and (min-width: $medium-screen-width + 1pt)                                                   { @import "responsive/l-xl.scss"; }
-@media all and (min-width: $small-screen-width + 1pt)        and (max-width: $medium-screen-width)       { @import "responsive/m-l.scss";  }
-@media all and (min-width: $extra-small-screen-width + 1pt)  and (max-width: $medium-screen-width)       { @import "responsive/s-m.scss";  }
-@media all                                                   and (max-width: $medium-screen-width)       { @import "responsive/xs-m.scss"; }
-@media all                                                   and (max-width: $small-screen-width)        { @import "responsive/xs-s.scss"; }
-
-@media all and (min-width: $large-screen-width + 1pt)                                                    { @import "responsive/xl.scss"; }
-@media all and (min-width: $medium-screen-width + 1pt)       and (max-width: $large-screen-width)        { @import "responsive/l.scss";  }
-@media all and (min-width: $small-screen-width + 1pt)        and (max-width: $medium-screen-width)       { @import "responsive/m.scss";  }
-@media all and (min-width: $extra-small-screen-width + 1pt)  and (max-width: $small-screen-width)        { @import "responsive/s.scss";  }
-@media all                                                   and (max-width: $extra-small-screen-width)  { @import "responsive/xs.scss"; }
-
-// @import "xl.scss"     all and (min-width: 1921px);
-// @import "l-xl.scss"   all and (min-width: 1201px);
-// @import "l.scss"      all and (min-width: 1201px) and (max-width: 1920px);
-// @import "m-l.scss"    all and (min-width: 641px)  and (max-width: 1920px);
-// @import "m.scss"      all and (min-width: 641px)  and (max-width: 1200px);
-// @import "s-m.scss"    all and (min-width: 281px)  and (max-width: 1200px);
-// @import "s.scss"      all and (min-width: 281px)  and (max-width: 640px);
-// @import "xs-m.scss"   all and                         (max-width: 1200px);
-// @import "xs-s.scss"   all and                         (max-width: 640px);
-// @import "xs.scss"     all and                         (max-width: 280px);
+@media all                                                { @import "responsive/xs.scss"; }
+@media all and (min-width: $small-screen-min-width)       { @import "responsive/s.scss";  }
+@media all and (min-width: $medium-screen-min-width)      { @import "responsive/m.scss";  }
+@media all and (min-width: $large-screen-min-width)       { @import "responsive/l.scss";  }
+@media all and (min-width: $extra-large-screen-min-width) { @import "responsive/xl.scss"; }

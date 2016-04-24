@@ -29,7 +29,7 @@ export default class Menu_page extends Component
 
 		const markup = 
 		(
-			<section className="content menu-page">
+			<section className="content menu-page" style={{ padding: '1.6em' }}>
 				{title(translate(messages.title))}
 
 				<h1 style={style.header}>

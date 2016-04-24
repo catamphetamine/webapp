@@ -1,0 +1,156 @@
+@include font-size(18pt);
+@include header-height(2.2em);
+
+.language button
+{
+	font-size   : 18pt;
+}
+
+.content-section
+{
+	margin  : 0.65em;
+	padding : 1.1em;
+}
+
+header
+{
+	text-align: left;
+}
+
+.logo
+{
+	display: inline-block;
+	vertical-align : bottom;
+
+	margin-left: 0;
+	margin-right: 4em;
+
+	// in firefox there is a bug when it goes invisible for 26pt
+	font-size   : 22pt;
+}
+
+// .page
+// {
+// 	transform: none !important;
+// }
+
+.menu
+{
+	display: inline-block;
+
+	li
+	{
+		display: inline-block;
+	}
+
+	li:not(:last-child)
+	{
+		margin-right: 1em;
+	}
+}
+
+.menu-item
+{
+	// padding-left    : 0.4em;
+	// padding-right   : 0.4em;
+
+	padding-left    : 0.6em;
+	padding-right   : 0.6em;
+
+	padding-top    : 0.3em;
+	padding-bottom : 0.3em;
+
+	// padding-top : $header-vertically-centered-text-margin-top;
+
+	// border-bottom-width : 0.12em;
+	// border-bottom-color : transparent;
+	// border-bottom-style : solid;
+}
+
+.nav-collapsible
+{
+	display: none !important;
+}
+
+.language
+{
+	right : 0.5em;
+	
+    margin-top: 0.25em;
+    margin-right: 0.5em;
+
+	.dropdown-item-selected
+	{
+		text-align: right !important;
+		border: none;
+	}
+
+	.dropdown-item-icon > img
+	{
+		width: 1.2em;
+		margin-right: 0.4em;
+		margin-bottom: -0.03em;
+	}
+
+	&, .dropdown-item-list li, .dropdown-item, .dropdown-item-selected
+	{
+		line-height: normal;
+	}
+
+	.dropdown-arrow
+	{
+		margin-bottom : 0.1em !important;
+	}
+
+	.dropdown-item-label
+	{
+		display: inline-block;
+	}
+
+	.dropdown-item
+	{
+	    padding-top: 0.2em;
+	    padding-bottom: 0.2em;
+	}
+}
+
+.authentication-form, .registration-form
+{
+	width : 25em;
+}
+
+header > .nav-widescreen
+{
+	display: inline-block;
+}
+
+header
+{
+	text-align: left;
+	justify-content : flex-start;
+}
+
+.menu-icon
+{
+	display : none;
+}
+
+.menu
+{
+	margin: 0;
+
+	> li
+	{
+		display: inline-block;
+
+		&:first-child
+		{
+			padding-top: 0;
+		}
+
+		&:last-child
+		{
+			padding-bottom: 0;
+		}
+	}
+}

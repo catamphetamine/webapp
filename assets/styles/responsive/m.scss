@@ -1,9 +1,14 @@
-@include font-size(18pt);
+@include font-size(16pt);
 @include header-height(2.3em);
 
 .logo
 {
-	font-size : 22pt
+	font-size : 20pt
+}
+
+.content-section
+{
+	padding : 1.1em;
 }
 
 .menu-button
@@ -12,13 +17,31 @@
 	margin-left: 0.2em;
 }
 
-.content
-{
-	padding-left:  1.2em;
-	padding-right: 1.2em;
-}
-
 .sign-in
 {
 	margin-right: 0.6em;
+}
+
+.user-profile .user-picture
+{
+	width      : 5rem;
+	height     : 5rem;
+	min-width  : 5rem;
+	min-height : 5rem;
+}
+
+.authentication-form, .registration-form
+{
+	width : 22em;
+
+	h2
+	{
+		float : left;
+	}
+
+	.or-register
+	{
+		float: right !important;
+	    margin-top: 0.42em;
+	}
 }

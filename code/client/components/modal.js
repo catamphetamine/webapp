@@ -27,7 +27,8 @@ export default class Modal extends Component
 		this.onRequestClose = this.onRequestClose.bind(this)
 		this.onAfterOpen    = this.onAfterOpen.bind(this)
 
-		this.on_window_resize = this.on_window_resize.bind(this)
+		this.on_window_resize        = this.on_window_resize.bind(this)
+		this.restore_document_scroll = this.restore_document_scroll.bind(this)
 	}
 
 	componentDidMount()
@@ -41,6 +42,15 @@ export default class Modal extends Component
 	componentWillUnmount()
 	{
 		window.removeEventListener('resize', this.on_window_resize)
+		this.restore_document_scroll()
+	}
+
+	componentWillUpdate(next_props)
+	{
+		if (next_props.isOpen === false && this.props.isOpen === true)
+		{
+			this.restore_document_scroll()
+		}
 	}
 
 	render()
@@ -78,16 +88,7 @@ export default class Modal extends Component
 
 	onRequestClose()
 	{
-		const { closeTimeoutMS } = this.props
-
-		setTimeout(() =>
-		{
-			this.header.style.right = 0
-
-			document.body.style.marginRight = 0
-			document.body.style.overflow    = 'auto'
-		},
-		closeTimeoutMS || default_close_timeout)
+		this.restore_document_scroll()
 
 		if (this.props.onRequestClose)
 		{
@@ -113,6 +114,18 @@ export default class Modal extends Component
 		{
 			this.props.onAfterOpen()
 		}
+	}
+
+	restore_document_scroll()
+	{
+		setTimeout(() =>
+		{
+			this.header.style.right = 0
+
+			document.body.style.marginRight = 0
+			document.body.style.overflow    = 'auto'
+		},
+		this.props.closeTimeoutMS || default_close_timeout)
 	}
 
 	on_window_resize()

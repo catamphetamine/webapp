@@ -608,12 +608,10 @@ const style = styler
 		margin-right : auto
 
 	form_title
-		float : left
 		margin-top : 0
 
 	or_register
-		float : right
-		margin-top : 0.42em
+		// margin-top : 0.42em
 
 		register
 			text-transform : lowercase
