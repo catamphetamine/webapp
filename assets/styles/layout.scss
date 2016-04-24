@@ -91,8 +91,8 @@ header
 	// .authentication - position: absolute
 	position: relative;
 
-	padding-left  : $header-horizontal-padding;
-	padding-right : $header-horizontal-padding;
+	padding-left  : 1em;
+	padding-right : 1em;
 
 	background-color : $header-background !important;
 	color            : $header-text-color;
@@ -116,6 +116,18 @@ header
 		opacity: 0.8;
 	}
 }
+
+// body:not(.javascript-is-enabled)
+// {
+header
+{
+	position : fixed;
+	top      : 0;
+	left     : 0;
+	right    : 0;
+	z-index  : 1
+}
+// }
 
 // This technique drops IE10-11 support.
 // https://github.com/philipwalton/flexbugs#3-min-height-on-a-flex-container-wont-apply-to-its-flex-items

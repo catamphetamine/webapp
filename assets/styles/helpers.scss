@@ -20,3 +20,25 @@
 		@content;
 	}
 }
+
+@mixin font-size($size)
+{
+	html, body, button, input, textarea, select
+	{
+		font-size : $size;
+	}
+}
+
+@mixin header-height($height)
+{
+	header, .user-picture--header
+	{
+		min-height: $height;
+		max-height: $height;
+	}
+
+	body // :not(.javascript-is-enabled)
+	{
+		margin-top: $height;
+	}
+}

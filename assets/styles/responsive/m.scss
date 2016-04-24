@@ -1,15 +1,5 @@
-html, body, button, input, textarea, select
-{
-	font-size : 18pt;
-}
-
-$header-height: 1.3em;
-
-header, .user-picture--header
-{
-	min-height : 2.3em;
-	max-height : 2.3em;
-}
+@include font-size(18pt);
+@include header-height(2.3em);
 
 .logo
 {

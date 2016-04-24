@@ -26,6 +26,21 @@ export default class Modal extends Component
 
 		this.onRequestClose = this.onRequestClose.bind(this)
 		this.onAfterOpen    = this.onAfterOpen.bind(this)
+
+		this.on_window_resize = this.on_window_resize.bind(this)
+	}
+
+	componentDidMount()
+	{
+		this.header = document.querySelector('header')
+
+		window.addEventListener('resize', this.on_window_resize)
+		this.on_window_resize()
+	}
+
+	componentWillUnmount()
+	{
+		window.removeEventListener('resize', this.on_window_resize)
 	}
 
 	render()
@@ -67,9 +82,10 @@ export default class Modal extends Component
 
 		setTimeout(() =>
 		{
-			document.body.style.maxWidth = 'none'
-			document.body.style.height   = '100%' // it's a good idea to always have it set to 100%
-			document.body.style.overflow = 'auto'
+			this.header.style.right = 0
+
+			document.body.style.marginRight = 0
+			document.body.style.overflow    = 'auto'
 		},
 		closeTimeoutMS || default_close_timeout)
 
@@ -82,14 +98,22 @@ export default class Modal extends Component
 	// This solution may break a bit when a user resizes the browser window
 	onAfterOpen()
 	{
-		document.body.style.maxWidth = document.body.clientWidth + 'px'
-		document.body.style.height   = '100%'
-		document.body.style.overflow = 'hidden'
+		const margin_right = this.max_width - document.body.clientWidth
+
+		this.header.style.right = margin_right + 'px'
+
+		document.body.style.marginRight = margin_right + 'px'
+		document.body.style.overflow    = 'hidden'
 
 		if (this.props.onAfterOpen)
 		{
 			this.props.onAfterOpen()
 		}
+	}
+
+	on_window_resize()
+	{
+		this.max_width = window.innerWidth
 	}
 }
 

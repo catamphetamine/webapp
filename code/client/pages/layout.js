@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { StickyContainer, Sticky } from 'react-sticky'
+// import { StickyContainer, Sticky } from 'react-sticky'
 import { bindActionCreators as bind_action_creators } from 'redux'
 
 // testing `flat` styler
@@ -108,13 +108,14 @@ export default class Layout extends Component
 				{/* main menu */}
 				<Menu show={this.state.show_menu} show_while={this.state.page_moved_aside} toggle={this.toggle_menu} update_width={this.update_menu_width} items={menu_entries(translate)}/>
 
-				{/* webpage */}
-				<StickyContainer className="page" style={style.page}>
-					{/* "page is preloading" spinner */}
-					<Preloading/>
+				{/* "page is preloading" spinner */}
+				<Preloading/>
 
+				{/* webpage */}
+				{/* <StickyContainer className="page" style={style.page}> */}
+				<div className="page" style={style.page}>
 					{/* header */}
-					<Sticky>
+					{/* <Sticky> */}
 						<header className="card">
 							{/* menu button for small screens */}
 							<div className="menu-button-container">
@@ -135,7 +136,7 @@ export default class Layout extends Component
 							{/* User accout section */}
 							<Authentication/>
 						</header>
-					</Sticky>
+					{/* </Sticky> */}
 
 					{/* page content */}
 					{this.props.children}
@@ -148,7 +149,8 @@ export default class Layout extends Component
 							<Locale_switcher upward={true} style={style.locale_switcher}/>
 						</div>
 					</footer>
-				</StickyContainer>
+				</div>
+				{/* </StickyContainer> */}
 			</div>
 		)
 

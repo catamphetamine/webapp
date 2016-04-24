@@ -1,17 +1,9 @@
-// .language
-// {
-// 	display: none !important;
-// }
+@include font-size(14pt);
+@include header-height(2.0em);
 
 input[type="text"], input[type="email"], input[type="password"], textarea, select
 {
 	width: $input-width-xs;
-}
-
-header, .user-picture--header
-{
-	min-height : 2.0em;
-	max-height : 2.0em;
 }
 
 .logo
@@ -20,11 +12,6 @@ header, .user-picture--header
 	margin-right : 1.2em;
 	
 	margin-top : $header-vertically-centered-text-margin-top;
-}
-
-html, body, button, input, textarea, select
-{
-	font-size : 14pt;
 }
 
 .logo
