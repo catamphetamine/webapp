@@ -374,6 +374,11 @@
 	}
 }
 
+header > .nav-widescreen
+{
+	margin-top: $header-vertically-centered-text-margin-top;
+}
+
 .user-picture
 {
 }
@@ -521,11 +526,6 @@
 {
 	color            : white !important;
 	background-color : $button-color !important;
-}
-
-.authentication-form, .registration-form
-{
-	width : 25em;
 }
 
 .form-error-message

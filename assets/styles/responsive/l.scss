@@ -23,7 +23,7 @@ header
 	vertical-align : bottom;
 
 	margin-left: 0;
-	margin-right: 4em;
+	margin-right: 2em;
 
 	// in firefox there is a bug when it goes invisible for 26pt
 	font-size   : 22pt;
@@ -45,7 +45,7 @@ header
 
 	li:not(:last-child)
 	{
-		margin-right: 1em;
+		margin-right: 0.4em;
 	}
 }
 
@@ -75,7 +75,7 @@ header
 .language
 {
 	right : 0.5em;
-	
+
     margin-top: 0.25em;
     margin-right: 0.5em;
 
