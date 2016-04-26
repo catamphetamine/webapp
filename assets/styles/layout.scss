@@ -1,8 +1,12 @@
 @import "constants.scss";
 
-.card
+.content-section
 {
 	background-color: white;
+}
+
+.card, .content-section
+{
 	box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
 }
 
@@ -84,7 +88,7 @@ header
 	padding-left  : 1em;
 	padding-right : 1em;
 
-	background-color : $base-color-darker !important;
+	background-color : $base-color-darker;
 
 	// border-bottom : 1px solid $header-border-color;
 	// box-sizing    : border-box;
