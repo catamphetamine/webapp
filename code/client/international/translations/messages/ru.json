@@ -48,6 +48,7 @@
 	"log.entry.hide_stack_trace" : "Скрыть",
 
 	"user.profile.edit"                : "Правка",
+	"user.profile.cancel_editing"      : "Отмена",
 	"user.profile.save"                : "Сохранить",
 	"user.profile.change_user_picture" : "Поменять картинку",
 

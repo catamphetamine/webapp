@@ -667,7 +667,23 @@ header > .nav-widescreen
 	text-align : center;
 }
 
+.user-profile
+{
+	input[type="text"]
+	{
+		width: 100%;
+	}
+}
+
 .user-profile__last-seen
 {
 	color: $gray-color-darker;
+}
+
+.user-profile__actions
+{
+	.button:not(:last-child)
+	{
+		margin-right: 1em;
+	}
 }

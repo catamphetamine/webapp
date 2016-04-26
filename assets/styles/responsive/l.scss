@@ -154,3 +154,24 @@ header
 		}
 	}
 }
+
+.user-profile
+{
+	input[type="text"]
+	{
+		width: 17rem;
+	}
+}
+
+.user-profile__actions
+{
+	.button
+	{
+		display: inline-block !important;
+
+		&:not(:last-child)
+		{
+			margin-right: 1em;
+		}
+	}
+}

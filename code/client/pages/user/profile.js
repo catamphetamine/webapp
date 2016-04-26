@@ -34,6 +34,12 @@ const messages = defineMessages
 		description    : `Edit user's own profile action`,
 		defaultMessage : `Edit`
 	},
+	cancel_profile_edits:
+	{
+		id             : `user.profile.cancel_editing`,
+		description    : `Cancel user's own profile edits`,
+		defaultMessage : `Cancel`
+	},
 	save_profile_edits:
 	{
 		id             : `user.profile.save`,
@@ -83,8 +89,9 @@ export default class User_profile extends Component
 	{
 		super(props, context)
 
-		this.edit_profile       = this.edit_profile.bind(this)
-		this.save_profile_edits = this.save_profile_edits.bind(this)
+		this.edit_profile         = this.edit_profile.bind(this)
+		this.cancel_profile_edits = this.cancel_profile_edits.bind(this)
+		this.save_profile_edits   = this.save_profile_edits.bind(this)
 	}
 
 	render()
@@ -112,7 +119,7 @@ export default class User_profile extends Component
 
 						{/* Edit/Save own profile */}
 						{ current_user && current_user.id === user.id &&
-						<div style={style.own_profile_actions}>
+						<div style={style.own_profile_actions} className="user-profile__actions">
 
 							{/* "Edit profile" */}
 							{ !edit && 
@@ -124,10 +131,21 @@ export default class User_profile extends Component
 								</Button>
 							}
 
+							{/* "Cancel changes" */}
+							{  edit && 
+								<Button 
+									style={style.own_profile_actions.action}
+									button_style={style.own_profile_actions.action.button}
+									action={this.cancel_profile_edits}>
+									{translate(messages.cancel_profile_edits)}
+								</Button>
+							}
+
 							{/* "Save changes" */}
 							{  edit && 
 								<Button 
 									style={style.own_profile_actions.action}
+									buttonClassName="primary"
 									button_style={style.own_profile_actions.action.button}
 									action={this.save_profile_edits}>
 									{translate(messages.save_profile_edits)}
@@ -149,16 +167,19 @@ export default class User_profile extends Component
 								style={style.user_picture.element.image}
 								src={user_picture}/>
 
-							{/* "Change user picture" on overlay */}
-							{ edit && [
-								// Black overlay background
-								<div key="background" style={style.user_picture.element.overlay.background}/>,
+							{/* "Change user picture" overlay */}
+							{ edit && 
+								<div style={style.user_picture.element.overlay.background}/>
+							}
 
-								// "Change user picture" label
-								<label key="label" style={style.user_picture.element.overlay.label}>
+							{/* "Change user picture" label */}
+							{ edit &&
+								<label
+									className="user-profile__picture__change__label"
+									style={style.user_picture.element.overlay.label}>
 									{translate(messages.change_user_picture)}
 								</label>
-							]}
+							}
 						</div>
 
 						{/* Name: "John Brown" */}
@@ -243,6 +264,11 @@ export default class User_profile extends Component
 		})
 	}
 
+	cancel_profile_edits()
+	{
+		this.setState({ edit: false })
+	}
+
 	save_profile_edits()
 	{
 		this.setState({ edit: false })
@@ -304,11 +330,11 @@ const style = styler
 		// display: inline-block
 
 	own_profile_actions
-		float : right
+		float      : right
+		margin-top : -0.4em
 
 		action
-			display        : block
-			margin-top     : -0.4em
+			display        : inline-block
 
 			button
 				text-transform : lowercase

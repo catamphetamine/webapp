@@ -75,3 +75,21 @@
 {
 	width: 50%;
 }
+
+.user-profile__actions
+{
+	.button
+	{
+		display: block !important;
+
+		&:not(:last-child)
+		{
+			margin-right: 0;
+		}
+	}
+}
+
+.user-profile__picture__change__label
+{
+	font-size: 1rem;
+}
