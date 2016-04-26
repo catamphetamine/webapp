@@ -11,10 +11,10 @@ footer
 	// can be removed later
 	position: relative;
 
-	background-color : $footer-background !important;
-	color            : rgb(102, 102, 102);
+	// background-color : $footer-background !important;
+	// color            : rgb(102, 102, 102);
 
-	border-top: 1px solid $footer-border-color;
+	// border-top: 1px solid $footer-border-color;
 
 	padding-top    : 1.3em;
 	padding-bottom : 1.2em;
@@ -51,7 +51,7 @@ footer
 
 .menu-item-selected
 {
-	color : $active-lighter-color;
+	color : $base-color-lightest;
 }
 
 .menu-collapsible
@@ -79,19 +79,18 @@ header
 	padding-left  : 1em;
 	padding-right : 1em;
 
-	background-color : $header-background !important;
-	color            : $header-text-color;
+	background-color : $base-color-darker !important;
 
-	border-bottom : 1px solid $header-border-color;
-	box-sizing    : border-box;
+	// border-bottom : 1px solid $header-border-color;
+	// box-sizing    : border-box;
 
-	button, a, .dropdown-item-selected
+	button, .button, a, .dropdown-item-selected
 	{
-		color: $header-text-color;
+		color: white;
 
 		&:active
 		{
-			color: $header-text-color-active;
+			color: $base-color-lightest;
 		}
 	}
 

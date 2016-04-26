@@ -290,9 +290,9 @@ export default class Authentication extends Component
 				<input type="hidden" name="request" value={should_redirect_to(this.props.location)}/>
 
 				<div style={style.sign_in_buttons}>
-					<Button className="secondary" style={style.forgot_password} action={::this.forgot_password}>{this.translate(messages.forgot_password)}</Button>
+					<Button style={style.forgot_password} action={::this.forgot_password}>{this.translate(messages.forgot_password)}</Button>
 
-					<Button style={style.form_action} submit={true} busy={this.props.signing_in}>{this.translate(authentication_messages.sign_in)}</Button>
+					<Button buttonClassName="primary" style={style.form_action} submit={true} busy={this.props.signing_in}>{this.translate(authentication_messages.sign_in)}</Button>
 				</div>
 			</Form>
 		)

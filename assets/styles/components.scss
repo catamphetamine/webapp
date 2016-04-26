@@ -251,7 +251,7 @@
 	margin-bottom  : -$input-border-width;
 
 	border: none;
-	border-bottom: $input-border-width solid $input-border-color;
+	border-bottom: $input-border-width solid $gray-color;
 	transition: border 0.1s;
 }
 
@@ -262,13 +262,13 @@
 
 	&:active
 	{
-		color: $active-darker-color;
+		color: $base-color-darker;
 	}
 }
 
 .dropdown-expanded .dropdown-item-selected
 {
-	color: $active-darker-color;
+	color: $base-color-darker;
 }
 
 .dropdown-arrow
@@ -286,10 +286,14 @@
 	{
 		.menu-icon:before
 		{
-			// border-color: $active-lighter-color;
 			border-color: $header-text-color-active;
 		}
 	}
+}
+
+.logo
+{
+	color: white;
 }
 
 .language-wrapper
@@ -326,24 +330,23 @@
 
 .checkbox path
 {
-	stroke: $active-color !important;
+	stroke: $base-color-darker !important;
 	stroke-width: 0.6em !important;
 }
 
-.checkbox input:active + .checkbox_border
+.checkbox input:active + .checkbox-border
 {
-	// border-color: $active-color !important;
-	border-color: #bfbfbf !important;
+	border-color: $base-color-darker !important;
 }
 
 .checkbox-label:active
 {
-	color: $active-darker-color !important;
+	color: $base-color-darker !important;
 }
 
 .checkbox-invalid .checkbox-border
 {
-	border-color: $input-invalid-border-color !important;
+	border-color: $error-color !important;
 }
 
 .user-info
@@ -496,12 +499,12 @@ header > .nav-widescreen
 {
 	color            : black !important;
 	background-color : transparent !important;
-	border : 0.1em solid $button-color;
+	border : 0.1em solid $base-color-darker;
 
 	&:active
 	{
 		color            : white !important;
-		background-color : $gray-to-active-color !important;
+		background-color : $base-color !important;
 
 		transition : none !important;
 	}
@@ -525,13 +528,13 @@ header > .nav-widescreen
 .button-group-selected
 {
 	color            : white !important;
-	background-color : $button-color !important;
+	background-color : $base-color-darker !important;
 }
 
 .form-error-message
 {
 	margin-top: 1em;
-	color: $input-error-message-color;
+	color: $error-color-darker;
 }
 
 .file-upload
@@ -579,7 +582,7 @@ header > .nav-widescreen
 
 .text-input-invalid .text-input-field
 {
-	border-bottom-color: $input-invalid-border-color !important;
+	border-bottom-color: $error-color !important;
 }
 
 .text-input-error-message
@@ -587,14 +590,14 @@ header > .nav-widescreen
 	padding: $input-padding;
 	padding-bottom: 0;
 
-	color: $input-error-message-color;
+	color: $error-color-darker;
 }
 
 .checkbox-error-message
 {
 	padding-top: $input-padding;
 
-	color: $input-error-message-color;
+	color: $error-color-darker;
 }
 
 .preloading
@@ -660,6 +663,11 @@ header > .nav-widescreen
 	padding-left    : 0;
 	list-style-type : none;
 
-	color      : $input-error-message-color;
+	color      : $error-color-darker;
 	text-align : center;
+}
+
+.user-profile__last-seen
+{
+	color: $gray-color-darker;
 }

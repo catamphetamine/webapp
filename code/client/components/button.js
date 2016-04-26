@@ -7,13 +7,14 @@ export default class Button extends Component
 {
 	static propTypes =
 	{
-		action       : PropTypes.func,
-		busy         : PropTypes.bool,
-		submit       : PropTypes.bool,
-		link         : PropTypes.string,
-		className    : PropTypes.string,
-		style        : PropTypes.object,
-		button_style : PropTypes.object
+		action          : PropTypes.func,
+		busy            : PropTypes.bool,
+		submit          : PropTypes.bool,
+		link            : PropTypes.string,
+		className       : PropTypes.string,
+		buttonClassName : PropTypes.string,
+		style           : PropTypes.object,
+		button_style    : PropTypes.object
 	}
 
 	render()
@@ -34,7 +35,7 @@ export default class Button extends Component
 
 	render_button()
 	{
-		const { link, busy, action, submit } = this.props
+		const { link, busy, action, submit, className, buttonClassName } = this.props
 
 		let button_style = busy ? style.button.hide : style.button.show 
 
@@ -71,6 +72,7 @@ export default class Button extends Component
 
 						action()
 					}}
+					className={'button' + (buttonClassName ? ' ' + buttonClassName : '')}
 					style={button_style}>
 
 					{this.props.children}
@@ -86,6 +88,7 @@ export default class Button extends Component
 				type={submit ? 'submit' : 'button'}
 				disabled={busy}
 				onClick={action}
+				className={buttonClassName}
 				style={button_style}>
 
 				{this.props.children}

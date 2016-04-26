@@ -296,7 +296,7 @@ const style = styler
 
 	latest_activity
 		margin-top : 1.2rem
-		opacity    : 0.5
+		// opacity    : 0.5
 
 	latest_activity_time
 

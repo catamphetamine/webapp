@@ -141,7 +141,7 @@ export default class Layout extends Component
 					{/* page content */}
 					{this.props.children}
 
-					<footer className="card">
+					<footer>
 						<div><a href="https://github.com/halt-hammerzeit">halt-hammerzeit@github.com</a></div>
 
 						{/* language chooser */}

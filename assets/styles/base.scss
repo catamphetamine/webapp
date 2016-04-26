@@ -50,12 +50,13 @@ body
 // https://github.com/philipwalton/solved-by-flexbox/issues/79
 .page, body
 {
-	background-color: $background-color;
+	background-color: $gray-color-lightest;
 }
 
 html, body, button, input, textarea, select
 {
 	font-family : Scada, Arial, Helvetica;
+	color       : $black-color;
 }
 
 input[type="checkbox"], input[type="radio"]
@@ -81,13 +82,13 @@ input[type="radio"]
 
 input[type="text"], input[type="email"], input[type="password"], textarea, select, .date-picker
 {
-	display: block;
-	width: $input-width-l;
-	padding: $input-padding;
+	display : block;
+	width   : $input-width-l;
+	padding : $input-padding;
 
-	border: none;
-	border-bottom: $input-border-width solid $input-border-color;
-	transition: border 0.1s;
+	border        : none;
+	border-bottom : $input-border-width solid $gray-color;
+	transition    : border 0.1s;
 }
 
 .date-picker
@@ -112,7 +113,7 @@ input[type="text"], input[type="email"], input[type="password"], textarea
 	{
 		outline: none;
 
-		border-bottom: $input-border-width solid $active-color;
+		border-bottom: $input-border-width solid $accent-color;
 	}
 }
 
@@ -158,7 +159,7 @@ select
 	{
 		outline: none;
 
-		border-bottom: $input-border-width solid $active-color;
+		border-bottom: $input-border-width solid $base-color-darker;
 	}
 }
 
@@ -175,16 +176,16 @@ h1, h2
 
 a
 {
-	color: $active-darker-color;
+	color: $base-color-darkest;
 	text-decoration: none;
 
 	&:active
 	{
-		color: $active-darker-color;
+		color: $base-color-darker;
 	}
 }
 
-button
+button, .button
 {
 	background : none;
 	border     : none;
@@ -194,15 +195,23 @@ button
 	white-space: nowrap;
 
 	// font-weight : bold;
-	// color       : $active-color;
-	color       : $button-color;
+	color       : $base-color-darker;
 
 	transition: color 30ms ease-out;
 
 	&:active
 	{
-		// color: $active-lighter-color;
-		color: $active-color;
+		color: $base-color;
+	}
+
+	&.primary
+	{
+		color : $accent-color;
+
+		&:active
+		{
+			color: $accent-color-lighter;
+		}
 	}
 }
 
