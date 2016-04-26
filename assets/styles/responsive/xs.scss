@@ -28,6 +28,14 @@ input[type="text"], input[type="email"], input[type="password"], textarea, selec
 	padding-bottom : 1em !important;
 }
 
+.authentication
+{
+	.user-name
+	{
+		display: none;
+	}
+}
+
 .authentication-form, .registration-form
 {
 	width : 12em;

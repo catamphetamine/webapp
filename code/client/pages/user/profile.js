@@ -4,12 +4,16 @@ import { preload }                     from 'react-isomorphic-render/redux'
 import { connect }                     from 'react-redux'
 import styler                          from 'react-styling'
 import React_time_ago                  from 'react-time-ago'
+import classNames                      from 'classnames'
 
 import { defineMessages, FormattedRelative }          from 'react-intl'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
 
 import { get_user, get_users_latest_activity_time }  from '../../actions/users'
+
+import Text_input from '../../components/text input'
+import Button from '../../components/button'
 
 import international from '../../international/internationalize'
 
@@ -29,6 +33,18 @@ const messages = defineMessages
 		id             : `user.profile.edit`,
 		description    : `Edit user's own profile action`,
 		defaultMessage : `Edit`
+	},
+	save_profile_edits:
+	{
+		id             : `user.profile.save`,
+		description    : `Save user's own profile edits`,
+		defaultMessage : `Save`
+	},
+	change_user_picture:
+	{
+		id             : `user.profile.change_user_picture`,
+		description    : `An action label to change user picture`,
+		defaultMessage : `Change picture`
 	}
 })
 
@@ -53,6 +69,8 @@ const messages = defineMessages
 @international()
 export default class User_profile extends Component
 {
+	state = {}
+
 	static propTypes =
 	{
 		current_user         : PropTypes.object,
@@ -61,8 +79,17 @@ export default class User_profile extends Component
 		latest_activity_time : PropTypes.object
 	}
 
+	constructor(props, context)
+	{
+		super(props, context)
+
+		this.edit_profile       = this.edit_profile.bind(this)
+		this.save_profile_edits = this.save_profile_edits.bind(this)
+	}
+
 	render()
 	{
+		const { edit } = this.state
 		const { user, translate, current_user } = this.props
 
 		const user_picture = user.picture ? `/upload/user_pictures/${user.id}.jpg` : require('../../../../assets/images/no user picture.png')
@@ -72,29 +99,100 @@ export default class User_profile extends Component
 			<div className="content  user-profile">
 				{title(user.name)}
 
-				<div className="column-6-of-12">
+				{/* Left column */}
+				<div className="column-m-6-of-12">
+
 					{/* User's personal info */}
-					<section className="content-section user-profile__personal-info" style={style.personal_info}>
-						{/* Avatar */}
-						<img className="user-picture  user-picture--profile  card" src={user_picture}/>
-
-						{/* "John Brown" */}
-						<h1 style={style.user_name}>{user.name}</h1>
-
-						{/* "Moscow, Russia" */}
-						{ user.city && user.country && (
-							<div style={style.user_origin} className="user-profile__origin">
-								{user.city + ', ' + translate({ id: `country.${user.country}` })}
-							</div>
+					<section
+						className={classNames(
+							'content-section',
+							'user-profile__personal-info'
 						)}
+						style={style.personal_info}>
 
-						{/* "Edit profile" */}
+						{/* Edit/Save own profile */}
 						{ current_user && current_user.id === user.id &&
 						<div style={style.own_profile_actions}>
-							<button style={style.edit_profile}>{translate(messages.edit_profile)}</button>
+
+							{/* "Edit profile" */}
+							{ !edit && 
+								<Button 
+									style={style.own_profile_actions.action}
+									button_style={style.own_profile_actions.action.button}
+									action={this.edit_profile}>
+									{translate(messages.edit_profile)}
+								</Button>
+							}
+
+							{/* "Save changes" */}
+							{  edit && 
+								<Button 
+									style={style.own_profile_actions.action}
+									button_style={style.own_profile_actions.action.button}
+									action={this.save_profile_edits}>
+									{translate(messages.save_profile_edits)}
+								</Button>
+							}
 						</div> }
 
-						{/* "Last seen: an hour ago" */}
+						{/* User picture */}
+						<div
+							style={style.user_picture}
+							className={classNames(
+								'user-picture',
+								'user-picture--profile',
+								'card'
+							)}>
+							
+							{/* The picture itself */}
+							<img
+								style={style.user_picture.element.image}
+								src={user_picture}/>
+
+							{/* "Change user picture" on overlay */}
+							{ edit && [
+								// Black overlay background
+								<div key="background" style={style.user_picture.element.overlay.background}/>,
+
+								// "Change user picture" label
+								<label key="label" style={style.user_picture.element.overlay.label}>
+									{translate(messages.change_user_picture)}
+								</label>
+							]}
+						</div>
+
+						{/* Name: "John Brown" */}
+						{ edit ?
+							<Text_input
+								style={style.user_name.edit}
+								input_style={style.user_name.edit}
+								value={this.state.name}/>
+							:
+							<h1 style={style.user_name.idle}>{user.name}</h1>
+						}
+
+						{/* From: "Moscow, Russia" */}
+						{ edit ?
+							[
+								// City
+								<Text_input
+									value={this.state.city}/>,
+
+								// Country
+								<Text_input
+									value={this.state.country}/>
+							]
+							:
+							(user.city && user.country &&
+								<div
+									style={style.user_location}
+									className="user-profile__location">
+									{user.city + ', ' + translate({ id: `country.${user.country}` })}
+								</div>
+							)
+						}
+
+						{/* Online status: "Last seen: an hour ago" */}
 						{this.render_latest_activity_time()}
 					</section>
 				</div>
@@ -130,21 +228,70 @@ export default class User_profile extends Component
 
 		return markup
 	}
+
+	edit_profile()
+	{
+		const { user } = this.props
+
+		this.setState
+		({
+			edit: true,
+
+			name     : user.name,
+			country  : user.country,
+			city     : user.city
+		})
+	}
+
+	save_profile_edits()
+	{
+		this.setState({ edit: false })
+	}
 }
 
 const style = styler
 `
-	picture
-		border: 1px solid #E1E3DF
+	user_picture
+		position: relative
+
+		element
+			width            : 100%
+			height           : 100%
+			border-radius    : inherit
+
+			&overlay
+				position         : absolute
+				top              : 0
+				left             : 0
+				cursor           : pointer
+
+				&background
+					background-color : black
+					opacity          : 0.5
+
+				&label
+					display     : flex
+					align-items : center
+					text-align  : center
+					color       : white
+					text-shadow : 0 0.05em 0.1em rgba(0, 0, 0, 0.75)
+					user-select : none
+
+			&image
 
 	header
 		text-align : center
 
 	user_name
-		font-size : 1.5rem
+		font-size     : 1.5rem
 		margin-bottom : 0em
 
-	user_origin
+		&idle
+
+		&edit
+			margin-top : 1em
+
+	user_location
 		margin-top : 0.2em
 
 	latest_activity
@@ -157,7 +304,12 @@ const style = styler
 		// display: inline-block
 
 	own_profile_actions
-		margin-top: 1em
+		float : right
 
-	edit_profile
+		action
+			display        : block
+			margin-top     : -0.4em
+
+			button
+				text-transform : lowercase
 `

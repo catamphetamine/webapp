@@ -33,8 +33,12 @@ export default class Text_input extends Component
 	{
 		const markup = 
 		(
-			<div className={'text-input ' + (this.state.valid === false ? 'text-input-invalid' : '')} style={this.props.style}>
+			<div
+				className={'text-input ' + (this.state.valid === false ? 'text-input-invalid' : '')}
+				style={this.props.style}>
+
 				{this.render_input()}
+
 				{ this.state.valid === false ? <div className="text-input-error-message">{this.state.error_message}</div> : null }
 			</div>
 		)
@@ -61,16 +65,43 @@ export default class Text_input extends Component
 			type = 'text'
 		}
 
+		// let input_style = style.input
+		// if (this.props.input_style)
+		// {
+		// 	input_style = merge(input_style, this.props.input_style)
+		// }
+
+		const input_style = this.props.input_style
+
 		if (multiline)
 		{
 			// onBlur={::this.on_blur}
 			// maybe add autoresize for textarea (smoothly animated)
-			return <textarea ref="input" name={name} className="text-input-field" style={this.props.style ? this.props.style.input : ''} value={value} onFocus={::this.on_focus} onChange={::this.on_change} placeholder={placeholder} autoFocus={focus}/>
+			return <textarea
+				ref="input"
+				name={name}
+				className="text-input-field"
+				style={input_style}
+				value={value}
+				onFocus={::this.on_focus}
+				onChange={::this.on_change}
+				placeholder={placeholder}
+				autoFocus={focus}/>
 		}
 		else
 		{
 			// onBlur={::this.on_blur}
-			return <input ref="input" type={type} name={name} className="text-input-field" style={this.props.style ? this.props.style.input : ''} value={value} onFocus={::this.on_focus} onChange={::this.on_change} placeholder={placeholder} autoFocus={focus}/>
+			return <input
+				ref="input"
+				type={type}
+				name={name}
+				className="text-input-field"
+				style={input_style}
+				value={value}
+				onFocus={::this.on_focus}
+				onChange={::this.on_change}
+				placeholder={placeholder}
+				autoFocus={focus}/>
 		}
 	}
 
@@ -132,4 +163,6 @@ export default class Text_input extends Component
 
 const style = styler
 `
+	input
+		width : 100%
 `

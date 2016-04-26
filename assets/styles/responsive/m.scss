@@ -30,6 +30,14 @@
 	min-height : 5rem;
 }
 
+.authentication
+{
+	.user-name
+	{
+		display: flex;
+	}
+}
+
 .authentication-form, .registration-form
 {
 	width : 22em;
@@ -44,4 +52,26 @@
 		float: right !important;
 	    margin-top: 0.42em;
 	}
+}
+
+.column-m-3-of-12,
+.column-m-4-of-12,
+.column-m-6-of-12
+{
+	overflow: visible;
+}
+
+.column-m-3-of-12
+{
+	width: 25%;
+}
+
+.column-m-4-of-12
+{
+	width: 33.33333%;
+}
+
+.column-m-6-of-12
+{
+	width: 50%;
 }

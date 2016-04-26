@@ -271,7 +271,8 @@ export default class Authentication extends Component
 					validate={::this.validate_email_on_sign_in}
 					on_change={email => this.setState({ email })}
 					placeholder={this.translate(messages.email)}
-					style={style.input}/>
+					style={style.input}
+					input_style={style.input.input}/>
 
 				<Text_input
 					ref="password"
@@ -282,7 +283,8 @@ export default class Authentication extends Component
 					validate={::this.validate_password_on_sign_in}
 					on_change={password => this.setState({ password })}
 					placeholder={this.translate(messages.password)}
-					style={style.input}/>
+					style={style.input}
+					input_style={style.input.input}/>
 
 				{/* Support redirecting to the initial page when javascript is disabled */}
 				<input type="hidden" name="request" value={should_redirect_to(this.props.location)}/>
@@ -334,7 +336,8 @@ export default class Authentication extends Component
 					validate={::this.validate_name_on_registration}
 					on_change={name => this.setState({ name })}
 					placeholder={this.translate(messages.name)}
-					style={style.input}/>
+					style={style.input}
+					input_style={style.input.input}/>
 
 				<Text_input
 					ref="email"
@@ -345,7 +348,8 @@ export default class Authentication extends Component
 					validate={::this.validate_email_on_registration}
 					on_change={email => this.setState({ email })}
 					placeholder={this.translate(messages.email)}
-					style={style.input}/>
+					style={style.input}
+					input_style={style.input.input}/>
 
 				<Text_input
 					ref="password"
@@ -356,7 +360,8 @@ export default class Authentication extends Component
 					validate={::this.validate_password_on_registration}
 					on_change={password => this.setState({ password })}
 					placeholder={this.translate(messages.password)}
-					style={style.input}/>
+					style={style.input}
+					input_style={style.input.input}/>
 
 				<div>
 					<Checkbox
