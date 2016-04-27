@@ -11,9 +11,11 @@ import { defineMessages, FormattedRelative }          from 'react-intl'
 import { bindActionCreators as bind_action_creators } from 'redux'
 
 import { get_user, get_users_latest_activity_time }  from '../../actions/users'
+import { update_user } from '../../actions/profile'
 
 import Text_input from '../../components/text input'
-import Button from '../../components/button'
+import Button     from '../../components/button'
+import Dropdown   from '../../components/dropdown'
 
 import international from '../../international/internationalize'
 
@@ -51,6 +53,24 @@ const messages = defineMessages
 		id             : `user.profile.change_user_picture`,
 		description    : `An action label to change user picture`,
 		defaultMessage : `Change picture`
+	},
+	send_message:
+	{
+		id             : `user.profile.send_message`,
+		description    : `An action label to contact the user`,
+		defaultMessage : `Contact`
+	},
+	subscribe:
+	{
+		id             : `user.profile.subscribe`,
+		description    : `An action label to subscribe to this user's activity updates`,
+		defaultMessage : `Subscribe`
+	},
+	update_error:
+	{
+		id             : `user.profile.update_error`,
+		description    : `Failed to update user's own profile`,
+		defaultMessage : `Couldn't update your profile`
 	}
 })
 
@@ -69,8 +89,18 @@ const messages = defineMessages
 		current_user         : model.authentication.user,
 
 		user                 : model.user_profile.user,
-		latest_activity_time : model.user_profile.latest_activity_time
-	})
+		latest_activity_time : model.user_profile.latest_activity_time,
+
+		user_update_error    : model.user_profile.update_error,
+
+		locale : model.locale.locale
+	}),
+	dispatch => bind_action_creators
+	({
+		update_user,
+		dispatch
+	},
+	dispatch)
 )
 @international()
 export default class User_profile extends Component
@@ -82,7 +112,18 @@ export default class User_profile extends Component
 		current_user         : PropTypes.object,
 
 		user                 : PropTypes.object.isRequired,
-		latest_activity_time : PropTypes.object
+		latest_activity_time : PropTypes.object,
+		user_update_error    : PropTypes.any,
+
+		locale               : PropTypes.string.isRequired,
+
+		update_user          : PropTypes.func.isRequired,
+		dispatch             : PropTypes.func.isRequired
+	}
+
+	static contextTypes =
+	{
+		intl: PropTypes.object
 	}
 
 	constructor(props, context)
@@ -92,13 +133,41 @@ export default class User_profile extends Component
 		this.edit_profile         = this.edit_profile.bind(this)
 		this.cancel_profile_edits = this.cancel_profile_edits.bind(this)
 		this.save_profile_edits   = this.save_profile_edits.bind(this)
+
+		this.send_message = this.send_message.bind(this)
+		this.subscribe    = this.subscribe.bind(this)
+
+		// fill two-letter country codes list
+
+		this.countries = []
+
+		for (let key of Object.keys(context.intl.messages))
+		{
+			if (key.starts_with('country.'))
+			{
+				key = key.substring('country.'.length)
+				if (key.length === 2)
+				{
+					this.countries.push(key)
+				}
+			}
+		}
+
+		this.countries = this.countries.filter(code => code !== 'ZZ')
+			.map(code =>
+			({
+				value: code,
+				label: context.intl.messages[`country.${code}`]
+			}))
+			.sort((a, b) => a.label.localeCompare(b.label, this.props.locale))
 	}
 
 	render()
 	{
 		const { edit } = this.state
-		const { user, translate, current_user } = this.props
+		const { user, translate, current_user, latest_activity_time, user_update_error } = this.props
 
+		const is_own_profile = current_user && current_user.id === user.id
 		const user_picture = user.picture ? `/upload/user_pictures/${user.id}.jpg` : require('../../../../assets/images/no user picture.png')
 
 		const markup = 
@@ -118,40 +187,47 @@ export default class User_profile extends Component
 						style={style.personal_info}>
 
 						{/* Edit/Save own profile */}
-						{ current_user && current_user.id === user.id &&
-						<div style={style.own_profile_actions} className="user-profile__actions">
+						{ is_own_profile &&
+							<div style={style.own_profile_actions} className="user-profile__actions">
 
-							{/* "Edit profile" */}
-							{ !edit && 
-								<Button 
-									style={style.own_profile_actions.action}
-									button_style={style.own_profile_actions.action.button}
-									action={this.edit_profile}>
-									{translate(messages.edit_profile)}
-								</Button>
-							}
+								{/* "Edit profile" */}
+								{ !edit && 
+									<Button 
+										style={style.own_profile_actions.action}
+										button_style={style.own_profile_actions.action.button}
+										action={this.edit_profile}>
+										{translate(messages.edit_profile)}
+									</Button>
+								}
 
-							{/* "Cancel changes" */}
-							{  edit && 
-								<Button 
-									style={style.own_profile_actions.action}
-									button_style={style.own_profile_actions.action.button}
-									action={this.cancel_profile_edits}>
-									{translate(messages.cancel_profile_edits)}
-								</Button>
-							}
+								{/* "Cancel changes" */}
+								{  edit && 
+									<Button 
+										style={style.own_profile_actions.action}
+										button_style={style.own_profile_actions.action.button}
+										action={this.cancel_profile_edits}>
+										{translate(messages.cancel_profile_edits)}
+									</Button>
+								}
 
-							{/* "Save changes" */}
-							{  edit && 
-								<Button 
-									style={style.own_profile_actions.action}
-									buttonClassName="primary"
-									button_style={style.own_profile_actions.action.button}
-									action={this.save_profile_edits}>
-									{translate(messages.save_profile_edits)}
-								</Button>
-							}
-						</div> }
+								{/* "Save changes" */}
+								{  edit && 
+									<Button 
+										style={style.own_profile_actions.action}
+										buttonClassName="primary"
+										button_style={style.own_profile_actions.action.button}
+										action={this.save_profile_edits}>
+										{translate(messages.save_profile_edits)}
+									</Button>
+								}
+
+								{ user_update_error &&
+									<div style={style.own_profile_actions.error} className="error">
+										{translate(messages.update_error)}
+									</div>
+								}
+							</div>
+						}
 
 						{/* User picture */}
 						<div
@@ -169,7 +245,9 @@ export default class User_profile extends Component
 
 							{/* "Change user picture" overlay */}
 							{ edit && 
-								<div style={style.user_picture.element.overlay.background}/>
+								<div
+									className="user-profile__picture__change__overlay"
+									style={style.user_picture.element.overlay.background}/>
 							}
 
 							{/* "Change user picture" label */}
@@ -187,63 +265,77 @@ export default class User_profile extends Component
 							<Text_input
 								style={style.user_name.edit}
 								input_style={style.user_name.edit}
-								value={this.state.name}/>
+								value={this.state.name}
+								on_change={name => this.setState({ name })}/>
 							:
 							<h1 style={style.user_name.idle}>{user.name}</h1>
 						}
 
-						{/* From: "Moscow, Russia" */}
-						{ edit ?
-							[
-								// City
-								<Text_input
-									value={this.state.city}/>,
+						{/* Place: "Moscow" */}
+						{ edit &&
+							// City, town, etc
+							<Text_input
+								value={this.state.place}
+								on_change={place => this.setState({ place })}/>
+						}
 
-								// Country
-								<Text_input
-									value={this.state.country}/>
-							]
-							:
-							(user.city && user.country &&
+						{/* Country: "Russia" */}
+						{ edit &&
+							// Country
+							<Dropdown
+								options={this.countries}
+								value={this.state.country}
+								on_change={country => this.setState({ country })}/>
+						}
+
+						{ !edit &&
+							(user.place && user.country &&
 								<div
 									style={style.user_location}
 									className="user-profile__location">
-									{user.city + ', ' + translate({ id: `country.${user.country}` })}
+									{user.place + ', ' + translate({ id: `country.${user.country}` })}
 								</div>
 							)
 						}
 
+						{/* "Send message", "Subscribe" */}
+						{ !is_own_profile &&
+							<div style={style.user_actions}>
+								{/* "Subscribe" */}
+								<Button
+									style={style.user_actions.button}
+									action={this.subscribe}>
+
+									{/* Icon */}
+									<i className="material-icons">person_add</i>
+									{/* Text */}
+									{translate(messages.subscribe)}
+								</Button>
+
+								{/* "Send message" */}
+								<Button
+									style={style.user_actions.button.last}
+									action={this.send_message}>
+
+									{/* Icon */}
+									<i className="material-icons">chat_bubble_outline</i>
+									{/* Text */}
+									{translate(messages.send_message)}
+								</Button>
+							</div>
+						}
+
 						{/* Online status: "Last seen: an hour ago" */}
-						{this.render_latest_activity_time()}
+						{ latest_activity_time &&
+							<div style={style.latest_activity} className="user-profile__last-seen">
+								{/* Icon */}
+								<i className="material-icons">schedule</i>
+								{/* "an hour ago" */}
+								<React_time_ago date={latest_activity_time}/>
+							</div>
+						}
 					</section>
 				</div>
-			</div>
-		)
-
-		return markup
-	}
-
-	// "Last seen 2 days ago"
-	render_latest_activity_time()
-	{
-		const { latest_activity_time, translate } = this.props
-
-		if (!latest_activity_time)
-		{
-			return null
-		}
-
-		const markup =
-		(
-			<div style={style.latest_activity} className="user-profile__last-seen">
-				{/* "Last seen" */}
-				{translate(messages.latest_activity_time, { gender: null })}
-				<span>&nbsp;</span>
-
-				{/* how long ago the user was online */}
-				<span style={style.latest_activity_time} className="user-profile__last-seen__time">
-					<React_time_ago date={latest_activity_time}/>
-				</span>
 			</div>
 		)
 
@@ -260,18 +352,39 @@ export default class User_profile extends Component
 
 			name     : user.name,
 			country  : user.country,
-			city     : user.city
+			place    : user.place
 		})
 	}
 
 	cancel_profile_edits()
 	{
+		this.props.dispatch({ type: 'dismiss user update error' })
+
 		this.setState({ edit: false })
 	}
 
-	save_profile_edits()
+	async save_profile_edits()
 	{
+		this.props.dispatch({ type: 'dismiss user update error' })
+
+		await this.props.update_user
+		({
+			name    : this.state.name,
+			country : this.state.country,
+			place   : this.state.place
+		})
+
 		this.setState({ edit: false })
+	}
+
+	send_message()
+	{
+
+	}
+
+	subscribe()
+	{
+
 	}
 }
 
@@ -281,18 +394,18 @@ const style = styler
 		position: relative
 
 		element
+			position         : absolute
+			top              : 0
+			left             : 0
+
 			width            : 100%
 			height           : 100%
 			border-radius    : inherit
 
 			&overlay
-				position         : absolute
-				top              : 0
-				left             : 0
 				cursor           : pointer
 
 				&background
-					background-color : black
 					opacity          : 0.5
 
 				&label
@@ -322,20 +435,32 @@ const style = styler
 
 	latest_activity
 		margin-top : 1.2rem
-		// opacity    : 0.5
-
-	latest_activity_time
+		cursor     : default
 
 	personal_info
 		// display: inline-block
 
+	user_actions
+		margin-top: 1em
+
+		button
+			display: block
+			margin-bottom: 0.3em
+
+			&last
+				margin-bottom: 0
+
 	own_profile_actions
 		float      : right
 		margin-top : -0.4em
+		text-align : right
 
 		action
 			display        : inline-block
 
 			button
 				text-transform : lowercase
+
+		error
+			margin-top: 0.5em
 `

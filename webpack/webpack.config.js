@@ -92,7 +92,7 @@ var configuration =
 			// 	]
 			// },
 			{
-				test    : /\.(woff|woff2|eot|ttf)$/,
+				test    : webpack_isomorphic_tools_plugin.regular_expression('fonts'),
 				include : assets_source_folder,
 				loaders : 
 				[

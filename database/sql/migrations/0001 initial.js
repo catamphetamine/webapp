@@ -12,7 +12,7 @@ exports.up = function(knex, Promise)
 		table.text('name').notNullable().unique()
 		table.string('email', email_max_length).notNullable().unique()
 
-		table.string('city', 128)
+		table.string('place', 128)
 
 		// currently using 2-digit codes, but for being future proof
 		// https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3

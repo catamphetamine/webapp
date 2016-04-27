@@ -655,6 +655,7 @@ header > .nav-widescreen
 	// 2em x 2em
 }
 
+// e.g. <ul/> with errors in `pages/register.js`
 .errors
 {
 	margin-top    : 2em;
@@ -665,6 +666,11 @@ header > .nav-widescreen
 
 	color      : $error-color-darker;
 	text-align : center;
+}
+
+.error
+{
+	color : $error-color-darker;
 }
 
 .user-profile
@@ -682,8 +688,13 @@ header > .nav-widescreen
 
 .user-profile__actions
 {
-	.button:not(:last-child)
+	.button:not(:first-child)
 	{
-		margin-right: 1em;
+		margin-left: 1em;
 	}
+}
+
+.user-profile__picture__change__overlay
+{
+	background-color: $black-color;
 }

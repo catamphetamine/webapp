@@ -27,7 +27,7 @@ module.exports =
 		},
 		fonts:
 		{
-			extension: 'woff'
+			extensions: ['woff', 'woff2', 'eot', 'ttf']
 		},
 		styles:
 		{

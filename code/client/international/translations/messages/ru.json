@@ -51,6 +51,10 @@
 	"user.profile.cancel_editing"      : "Отмена",
 	"user.profile.save"                : "Сохранить",
 	"user.profile.change_user_picture" : "Поменять картинку",
+	"user.profile.update_error"        : "Не удалось обновить ваши данные",
+
+	"user.profile.subscribe"    : "Подписаться",
+	"user.profile.send_message" : "Связаться",
 
 	"user.profile.latest_activity_time" : "{gender, select, male {Заходил} female {Заходила} other {В сети:}}",
 

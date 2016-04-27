@@ -82,9 +82,9 @@
 	{
 		display: block !important;
 
-		&:not(:last-child)
+		&:not(:first-child)
 		{
-			margin-right: 0;
+			margin-left: 0;
 		}
 	}
 }

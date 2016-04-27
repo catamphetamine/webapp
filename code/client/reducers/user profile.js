@@ -68,6 +68,49 @@ const handlers =
 		}
 
 		return new_state
+	},
+
+	'update user pending': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state
+		}
+
+		return new_state
+	},
+
+	'update user done': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			user : result
+		}
+
+		return new_state
+	},
+
+	'update user failed': (error, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			update_error : error
+		}
+
+		return new_state
+	},
+
+	'dismiss user update error': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			update_error : undefined
+		}
+
+		return new_state
 	}
 }
 

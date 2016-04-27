@@ -169,9 +169,9 @@ header
 	{
 		display: inline-block !important;
 
-		&:not(:last-child)
+		&:not(:first-child)
 		{
-			margin-right: 1em;
+			margin-left: 1em;
 		}
 	}
 }

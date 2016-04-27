@@ -97,7 +97,6 @@ export default function() // (store)
 				<Route path="form"   component={Form_showcase}/>
 			</Route>
 
-			{ /* Routes requiring login */ }
 			<Route path="user">
 				<Route path="account" component={authorize(Account)}/>
 				<Route path=":id"     component={Profile}/>

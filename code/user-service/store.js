@@ -48,9 +48,17 @@ function create_store()
 			return new User({ email }).fetch().then(x => x !== null ? x.toJSON() : null)
 		},
 
-		update_user(user)
+		update_user(id, data)
 		{
-			return new User(user).save()
+			return new User
+			({
+				id,
+
+				name    : data.name,
+				country : data.country,
+				place   : data.place
+			})
+			.save()
 		},
 
 		update_locale(user_id, locale)
@@ -96,8 +104,14 @@ class Memory_store
 		return Promise.resolve()
 	}
 
-	update_user(user)
+	update_user(id, data)
 	{
+		const user = this.users.get(String(id))
+
+		user.name    = data.name
+		user.country = data.country
+		user.place   = data.place
+
 		this.users.set(String(user.id), user)
 
 		return Promise.resolve()
