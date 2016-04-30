@@ -86,6 +86,13 @@ Object.merge = function()
 
 global.merge = Object.merge
 
+global.shallow_merge = function()
+{
+	const parameters = Array.prototype.slice.call(arguments, 0)
+	parameters.unshift({})
+	return Object.assign.apply(this, parameters)
+}
+
 Object.clone = function(object)
 {
 	if (is_object(object))

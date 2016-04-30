@@ -108,12 +108,12 @@ export default class Button_group extends Component
 			option_style.borderRightWidth = 0
 		}
 
-		const selected = this.props.value === option.value
-
-		if (selected)
-		{
-			extend(option_style, style.option.selected)
-		}
+		// const selected = this.props.value === option.value
+		//
+		// if (selected)
+		// {
+		// 	extend(option_style, style.option.selected)
+		// }
 
 		return option_style
 	}
@@ -129,16 +129,13 @@ const style = styler
 		white-space : nowrap
 
 	option
-		padding-left  : 0.8em
-		padding-right : 0.8em
+		// padding-left  : 0.8em
+		// padding-right : 0.8em
 
-		padding-top    : 0.3em
-		padding-bottom : 0.3em
+		// padding-top    : 0.3em
+		// padding-bottom : 0.3em
 
 		transition: all 50ms ease-out
-
-		// color      : #758A92
-		background : #e4eaec
 
 		&first
 			border-bottom-left-radius : ${border_radius}
@@ -147,8 +144,4 @@ const style = styler
 		&last
 			border-bottom-right-radius : ${border_radius}
 			border-top-right-radius    : ${border_radius}
-
-		&selected
-			color      : #fff
-			background : #62a8ea
 `

@@ -111,6 +111,69 @@ const handlers =
 		}
 
 		return new_state
+	},
+
+	'upload user picture done': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			uploaded_picture : result
+		}
+
+		return new_state
+	},
+
+	'upload user picture failed': (error, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			user_picture_upload_error : error
+		}
+
+		return new_state
+	},
+
+	'save user picture done': (result, state) =>
+	{
+		state.user.picture = state.uploaded_picture
+		return state
+	},
+
+	'dismiss uploaded user picture': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			uploaded_picture : undefined
+		}
+
+		new_state.user.picture = state.uploaded_picture
+
+		return new_state
+	},
+
+	'dismiss user picture upload error': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			user_picture_upload_error : undefined
+		}
+
+		return new_state
+	},
+
+	'dismiss uploaded user picture': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			uploaded_picture : undefined
+		}
+
+		return new_state
 	}
 }
 

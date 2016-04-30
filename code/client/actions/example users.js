@@ -66,7 +66,7 @@ export function upload_picture(user_id, file, old_picture)
 			
 			if (old_picture)
 			{
-				await http.post(`/images/api/delete`, { id: old_picture.id })
+				await http.delete(`/images/api`, { id: old_picture.id })
 			}
 			
 			return { user_id, picture }

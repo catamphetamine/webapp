@@ -30,19 +30,18 @@ export default class Dropdown extends Component
 		upward     : PropTypes.bool,
 		max_items  : PropTypes.number,
 
-		transition_item_count_min : PropTypes.number,
-		transition_duration_min : PropTypes.number,
-		transition_duration_max : PropTypes.number
+		// transition_item_count_min : PropTypes.number,
+		// transition_duration_min : PropTypes.number,
+		// transition_duration_max : PropTypes.number
 	}
 
 	static defaultProps = 
 	{
 		max_items : 6,
 
-		// transition_item_count_min : 3,
-		transition_item_count_min : 1,
-		transition_duration_min : 60, // milliseconds
-		transition_duration_max : 100 // milliseconds
+		// transition_item_count_min : 1,
+		// transition_duration_min : 60, // milliseconds
+		// transition_duration_max : 100 // milliseconds
 	}
 
 	state = {}
@@ -355,7 +354,6 @@ const style = styler
 	selected_item_label
 		// width      : 100%
 		// display: inline-block;
-		text-align : left
 
 	arrow
 		display  : inline-block

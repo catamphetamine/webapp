@@ -74,7 +74,7 @@
 	width  : 2em;
 	height : 2em;
 
-	stroke : #000000;
+	stroke : var(--black-color);
 
 	svg
 	{
@@ -157,18 +157,18 @@
 
 .dropdown-item
 {
-	padding-left  : $dropdown-item-horizontal-padding;
-	padding-right : $dropdown-item-horizontal-padding;
+	padding-left  : var(--dropdown-item-horizontal-padding);
+	padding-right : var(--dropdown-item-horizontal-padding);
 
-	padding-top    : $dropdown-item-vertical-padding;
-	padding-bottom : $dropdown-item-vertical-padding;
+	padding-top    : var(--dropdown-item-vertical-padding);
+	padding-bottom : var(--dropdown-item-vertical-padding);
 
 	width: 100%;
 	text-align: left;
 
 	&:active
 	{
-		background-color: $dropdown-item-active-color;
+		background-color: var(--gray-color-lightest);
 	}
 }
 
@@ -183,7 +183,7 @@
 {
 	.dropdown-item-selected
 	{
-		transform: translateX(-($dropdown-item-horizontal-padding - $input-padding));
+		transform: translateX(-(var(--dropdown-item-horizontal-padding) - var(--input-padding)));
 	}
 }
 */
@@ -194,7 +194,7 @@
 	transform-origin: 50% top 0px;
 
 	// 250ms - too slow for short lists
-	transition: all 150ms cubic-bezier(.76,.04,.46,.75) 0ms !important;
+	transition: all 150ms cubic-bezier(.76,.04,.46,.75) 0ms;
 	
 	li
 	{
@@ -215,7 +215,7 @@
 	transform: scaleY(1);
 	transform-origin: 50% top 0px;
 
-	transition: all 150ms cubic-bezier(0.23, 1, 0.32, 1) 0ms !important;
+	transition: all 150ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
 
 	li
 	{
@@ -225,33 +225,33 @@
 
 .dropdown-item-selected-in-list
 {
-	background-color: $dropdown-item-active-color;
+	background-color: var(--gray-color-lightest);
 }
 
 .dropdown-item-list
 {
 	> li:first-child
 	{
-		padding-top    : 2 * $dropdown-item-vertical-padding;
+		padding-top    : calc(2 * var(--dropdown-item-vertical-padding));
 	}
 
 	> li:last-child
 	{
-		padding-bottom : 2 * $dropdown-item-vertical-padding;
+		padding-bottom : calc(2 * var(--dropdown-item-vertical-padding));
 	}
 }
 
 .dropdown-item-selected
 {
-	padding-left  : $input-padding; // $dropdown-item-horizontal-padding;
-	padding-right : $input-padding;
+	padding-left  : var(--input-padding); // var(--dropdown-item-horizontal-padding);
+	padding-right : var(--input-padding);
 
-	padding-top    : $input-padding;
-	padding-bottom : $input-padding;
-	margin-bottom  : -$input-border-width;
+	padding-top    : var(--input-padding);
+	padding-bottom : var(--input-padding);
+	margin-bottom  : -var(--input-border-width);
 
 	border: none;
-	border-bottom: $input-border-width solid $gray-color;
+	border-bottom: var(--input-border-width) solid var(--gray-color);
 	transition: border 0.1s;
 }
 
@@ -262,39 +262,34 @@
 
 	&:active
 	{
-		color: $base-color-darker;
+		color: var(--base-color-darker);
 	}
 }
 
 .dropdown-expanded .dropdown-item-selected
 {
-	color: $base-color-darker;
+	color: var(--base-color-darker);
 }
 
 .dropdown-arrow
 {
-	color: black;
+	color: var(--gray-color);
 }
 
 // https://css-tricks.com/three-line-menu-navicon/
 
-.menu-button
-{
-	display: none;
+// .menu-button
+// {
+// 	display: none;
 
-	&:active
-	{
-		.menu-icon:before
-		{
-			border-color: $header-text-color-active;
-		}
-	}
-}
-
-.logo
-{
-	color: white;
-}
+// 	&:active
+// 	{
+// 		.menu-icon:before
+// 		{
+// 			border-color: $header-text-color-active;
+// 		}
+// 	}
+// }
 
 .language-wrapper
 {
@@ -316,7 +311,7 @@
 
 	.dropdown-item-selected
 	{
-		text-align: right !important;
+		text-align: right;
 		border: none;
 	}
 
@@ -330,23 +325,23 @@
 
 .checkbox path
 {
-	stroke: $base-color-darker !important;
+	stroke: var(--base-color-darker) !important;
 	stroke-width: 0.6em !important;
 }
 
 .checkbox input:active + .checkbox-border
 {
-	border-color: $base-color-darker !important;
+	border-color: var(--base-color-darker) !important;
 }
 
 .checkbox-label:active
 {
-	color: $base-color-darker !important;
+	color: var(--base-color-darker) !important;
 }
 
 .checkbox-invalid .checkbox-border
 {
-	border-color: $error-color !important;
+	border-color: var(--error-color) !important;
 }
 
 .user-info
@@ -369,7 +364,7 @@
 
 	margin-right: 0.8em;
 
-	margin-top: $header-vertically-centered-text-margin-top;
+	margin-top: var(--header-vertically-centered-text-margin-top);
 
 	a
 	{
@@ -379,7 +374,7 @@
 
 header > .nav-widescreen
 {
-	margin-top: $header-vertically-centered-text-margin-top;
+	margin-top: var(--header-vertically-centered-text-margin-top);
 }
 
 .user-picture
@@ -388,7 +383,7 @@ header > .nav-widescreen
 
 .user-profile .user-picture
 {
-	border-radius: $border-radius;
+	border-radius: var(--border-radius);
 }
 
 // .user-profile h1
@@ -397,14 +392,14 @@ header > .nav-widescreen
 
 .sign-in, .sign-out
 {
-	margin-top: $header-vertically-centered-text-margin-top;
+	margin-top: var(--header-vertically-centered-text-margin-top);
 	margin-right: 0.8em;
 }
 
 .sign-out-form
 {
 	// centers children vertically
-	display         : flex !important;
+	display         : flex;
 	flex-direction  : column;
 	justify-content : center;
 }
@@ -497,14 +492,14 @@ header > .nav-widescreen
 
 .button-group-button
 {
-	color            : black !important;
-	background-color : transparent !important;
-	border : 0.1em solid $base-color-darker;
+	color            : var(--black-color);
+	background-color : transparent;
+	border : 0.1em solid var(--base-color-darker);
 
 	&:active
 	{
-		color            : white !important;
-		background-color : $base-color !important;
+		color            : white;
+		background-color : var(--base-color);
 
 		transition : none !important;
 	}
@@ -515,8 +510,8 @@ header > .nav-widescreen
 	// revert the above :active style
 	.button-group-button:active
 	{
-		color            : black !important;
-		background-color : transparent !important;
+		color            : black;
+		background-color : transparent;
 	}
 
 	.button-group-button input
@@ -527,14 +522,14 @@ header > .nav-widescreen
 
 .button-group-selected
 {
-	color            : white !important;
-	background-color : $base-color-darker !important;
+	color            : white;
+	background-color : var(--base-color-darker);
 }
 
 .form-error-message
 {
 	margin-top: 1em;
-	color: $error-color-darker;
+	color: var(--error-color-darker);
 }
 
 .file-upload
@@ -582,22 +577,22 @@ header > .nav-widescreen
 
 .text-input-invalid .text-input-field
 {
-	border-bottom-color: $error-color !important;
+	border-bottom-color: var(--error-color);
 }
 
 .text-input-error-message
 {
-	padding: $input-padding;
+	padding: var(--input-padding);
 	padding-bottom: 0;
 
-	color: $error-color-darker;
+	color: var(--error-color-darker);
 }
 
 .checkbox-error-message
 {
-	padding-top: $input-padding;
+	padding-top: var(--input-padding);
 
-	color: $error-color-darker;
+	color: var(--error-color-darker);
 }
 
 .preloading
@@ -664,13 +659,13 @@ header > .nav-widescreen
 	padding-left    : 0;
 	list-style-type : none;
 
-	color      : $error-color-darker;
+	color      : var(--error-color-darker);
 	text-align : center;
 }
 
 .error
 {
-	color : $error-color-darker;
+	color : var(--error-color-darker);
 }
 
 .user-profile
@@ -683,7 +678,7 @@ header > .nav-widescreen
 
 .user-profile__last-seen
 {
-	color: $gray-color-darker;
+	color: var(--gray-color-darker);
 }
 
 .user-profile__actions
@@ -696,5 +691,5 @@ header > .nav-widescreen
 
 .user-profile__picture__change__overlay
 {
-	background-color: $black-color;
+	background-color: var(--black-color);
 }

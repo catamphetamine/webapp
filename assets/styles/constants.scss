@@ -3,53 +3,43 @@
 // https://www.smashingmagazine.com/2016/04/web-developer-guide-color/
 // http://paletton.com/
 
-$base-color            : #fa9c20;
-$base-color-lighter    : #FFB24B;
-$base-color-lightest   : #FFC474;
-$base-color-darker     : #D07904;
-$base-color-darkest    : #A45E00;
+:root
+{
+	--base-color            : #fa9c20;
+	--base-color-lighter    : #FFB24B;
+	--base-color-lightest   : #FFC474;
+	--base-color-darker     : #D07904;
+	--base-color-darkest    : #A45E00;
 
-$accent-color          : #03B2CB;
-$accent-color-lighter  : #53D5E7;
-$accent-color-lightest : #94EBF7;
-$accent-color-darker   : #018395;
-$accent-color-darkest  : #016674;
+	--accent-color          : #03B2CB;
+	--accent-color-lighter  : #53D5E7;
+	--accent-color-lightest : #94EBF7;
+	--accent-color-darker   : #018395;
+	--accent-color-darkest  : #016674;
 
-$gray-color-lightest   : #f6f1ec;
-// $gray-color-lighter    : #cfcfcf;
-$gray-color            : #c4bfb8;
-$gray-color-darker     : #918d88;
-$black-color           : #4e3d27;
+	--gray-color-lightest   : #f6f1ec;
+	// --gray-color-lighter    : #cfcfcf;
+	--gray-color            : #c4bfb8;
+	--gray-color-darker     : #918d88;
+	--black-color           : #4e3d27;
 
-$error-color        : #FF1300;
-$error-color-darker : #D30F00;
+	--error-color        : #FF1300;
+	--error-color-darker : #D30F00;
 
-$input-border-width         : 2pt;
-$input-padding              : 0.3em;
-$input-width-l              : 18em;
-$input-width-xs              : 8em;
+	--input-border-width         : 2pt;
+	--input-padding              : 0.3em;
 
-$dropdown-item-vertical-padding   : 0.2em;
-$dropdown-item-horizontal-padding : 0.8em;
-$dropdown-item-active-color       : #f7f7f7;
+	--dropdown-item-vertical-padding   : 0.2em;
+	--dropdown-item-horizontal-padding : 0.8em;
+	
+	--menu-item-compact-vertical-padding: 0.3em;
 
-// Undefined variable: "$menu-item-compact-vertical-padding"
-// if placed inside xs-m.scss
-$menu-item-compact-vertical-padding: 0.3em;
+	--header-vertically-centered-text-margin-top: 0.1em;
 
-$header-background: #d77827;
-$header-border-color: #c4681a;
-$header-text-color: #fff8eb;
-$header-text-color-active: #ffd3b2;
-
-$header-vertically-centered-text-margin-top: 0.1em;
-
-$footer-background   : #ede6dc;
-$footer-border-color : #e8e0d4;
+	--border-radius : 3pt;
+}
 
 $extra-large-screen-min-width : 1260pt;
 $large-screen-min-width       : 680pt;
 $medium-screen-min-width      : 460pt;
 $small-screen-min-width       : 320pt;
-
-$border-radius : 3pt;

@@ -1,9 +1,9 @@
 @include font-size(14pt);
 @include header-height(2.0em);
 
-input[type="text"], input[type="email"], input[type="password"], textarea, select
+:root
 {
-	width: $input-width-xs;
+	--input-width : 8em;
 }
 
 .logo
@@ -11,7 +11,7 @@ input[type="text"], input[type="email"], input[type="password"], textarea, selec
 	margin-left  : 1.2em;
 	margin-right : 1.2em;
 	
-	margin-top : $header-vertically-centered-text-margin-top;
+	margin-top : var(--header-vertically-centered-text-margin-top);
 }
 
 .logo
@@ -21,9 +21,9 @@ input[type="text"], input[type="email"], input[type="password"], textarea, selec
 
 .modal-content
 {
+	// overwrites inline css
 	padding-left   : 1em !important;
 	padding-right  : 1em !important;
-
 	padding-top    : 1em !important;
 	padding-bottom : 1em !important;
 }
@@ -56,23 +56,10 @@ input[type="text"], input[type="email"], input[type="password"], textarea, selec
 {
 	.button-primary
 	{
+		// overwrites inline css
 		display: block !important;
 		margin-bottom: 1em;
 	}
-}
-
-.registration-form
-{
-	.button-primary
-	{
-		float: none !important;
-		// margin-top: 1em;
-	}
-}
-
-.text-input
-{
-	margin-bottom: 0.5em !important;
 }
 
 .content-section
@@ -98,11 +85,10 @@ input[type="text"], input[type="email"], input[type="password"], textarea, selec
 
 .button-group-button
 {
-	// padding-top    : 0.2em !important;
-	// padding-bottom : 0.2em !important;
-
-	padding-left  : 0.5em !important;
-	padding-right : 0.5em !important;
+	padding-top    : 0.2em;
+	padding-bottom : 0.2em;
+	padding-left   : 0.5em;
+	padding-right  : 0.5em;
 }
 
 header
@@ -124,21 +110,13 @@ header
 	{
 		&:first-child
 		{
-			padding-top    : 2 * $menu-item-compact-vertical-padding;
+			padding-top    : calc(2 * var(--menu-item-compact-vertical-padding));
 		}
 
 		&:last-child
 		{
-			padding-bottom : 2 * $menu-item-compact-vertical-padding;
+			padding-bottom : calc(2 * var(--menu-item-compact-vertical-padding));
 		}
-	}
-}
-
-.nav-collapsible
-{
-	a
-	{
-		color: #dfdfdf;
 	}
 }
 
@@ -154,13 +132,14 @@ header
 
 .menu-item
 {
+	// overrides inline css
 	display : block !important;
 	border  : none;
 
 	margin : 0;
 
-	padding-top:    $menu-item-compact-vertical-padding;
-	padding-bottom: $menu-item-compact-vertical-padding;
+	padding-top:    var(--menu-item-compact-vertical-padding);
+	padding-bottom: var(--menu-item-compact-vertical-padding);
 
 	padding-left  : 0.7em;
 	padding-right : 1.0em;
@@ -195,6 +174,7 @@ header
 
 	.dropdown-arrow
 	{
+		// overrides inline css
 		margin-bottom : 0.25em !important;
 	}
 }
@@ -242,7 +222,8 @@ header
 
 	path
 	{
-		fill: $header-text-color !important;
+		// overrides inline css
+		fill: var(--gray-color-lightest) !important;
 	}
 }
 
@@ -250,7 +231,8 @@ header
 {
 	path
 	{
-		fill: $header-text-color-active !important;
+		// overrides inline css
+		fill: var(--gray-color-lightest) !important;
 	}
 }
 
@@ -262,6 +244,7 @@ header
 
 	svg path
 	{
+		// overrides inline css
 		stroke: #eeeeee !important;
 	}
 
@@ -269,6 +252,7 @@ header
 	{
 		svg path
 		{
+		// overrides inline css
 			stroke: #ffffff !important;
 		}
 	}
@@ -307,13 +291,13 @@ header
 	// transform  : translate3d(0px, 0px, 0px);
 }
 
-.layout > nav
+.nav-collapsible
 {
 	display: inline-block;
 
 	min-height: 100%;
 
-	position : fixed !important;
+	position : fixed;
 	left     : 0;
 	top      : 0;
 	bottom   : 0;
@@ -321,14 +305,16 @@ header
 
 	overflow-y: auto;
 
-	background: #505050;
-}
+	background: var(--black-color);
 
-.nav-collapsible
-{
-	.menu-item:active
+	.menu-item
 	{
-		color: #efefef;
+		color: var(--gray-color-lightest);
+
+		&:active
+		{
+			color: var(--base-color-lighter);
+		}
 	}
 }
 

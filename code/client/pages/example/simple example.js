@@ -267,8 +267,6 @@ export default class Page extends Component
 	{
 		const old_picture = this.props.users.find_by({ id: user_id }).picture
 
-		console.log(old_picture)
-
 		try
 		{
 			await this.props.upload_picture(user_id, file, old_picture)

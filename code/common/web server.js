@@ -624,6 +624,7 @@ export default function web_server(options = {})
 						user                    : this.user,
 						authentication_error    : this.authentication_error,
 						authentication_token_id : this.jwt_id,
+						authentication_token    : this.jwt,
 
 						secret : options.secret ? web.keys[0] : undefined,
 

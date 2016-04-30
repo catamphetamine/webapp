@@ -105,13 +105,13 @@ export default class Authentication extends Component
 
 		const markup =
 		(
-			<div className="authentication" style={ this.props.style ? extend({ display: 'inline-block' }, this.props.style) : { display: 'inline-block' } }>
+			<div className="authentication" style={this.props.style}>
 				
 				{/* Sign in action */}
-				{ !user ? <Button className="sign-in" link="/sign-in" action={::this.show}>{this.translate(messages.sign_in)}</Button> : null }
+				{ !user && <Button className="sign-in" link="/sign-in" action={::this.show}>{this.translate(messages.sign_in)}</Button> }
 
 				{/* User info if authenticated */}
-				{ user ? this.render_user_info(user) : null }
+				{ user && this.render_user_info(user) }
 
 				<Modal
 					isOpen={exists(this.state.password) || (!user && this.state.show)}

@@ -50,6 +50,7 @@ const style = styler
 		text-align: center
 
 	menu
+		// overrides inline css
 		display: block !important
 		z-index: 1
 `

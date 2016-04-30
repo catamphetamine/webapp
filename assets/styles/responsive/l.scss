@@ -29,11 +29,6 @@ header
 	font-size   : 22pt;
 }
 
-// .page
-// {
-// 	transform: none !important;
-// }
-
 .menu
 {
 	display: inline-block;
@@ -60,7 +55,7 @@ header
 	padding-top    : 0.3em;
 	padding-bottom : 0.3em;
 
-	// padding-top : $header-vertically-centered-text-margin-top;
+	// padding-top : var(--header-vertically-centered-text-margin-top);
 
 	// border-bottom-width : 0.12em;
 	// border-bottom-color : transparent;
@@ -69,6 +64,7 @@ header
 
 .nav-collapsible
 {
+	// overwrites XS size settings
 	display: none !important;
 }
 
@@ -81,7 +77,7 @@ header
 
 	.dropdown-item-selected
 	{
-		text-align: right !important;
+		text-align: right;
 		border: none;
 	}
 
@@ -99,6 +95,7 @@ header
 
 	.dropdown-arrow
 	{
+		// overwrites inline css
 		margin-bottom : 0.1em !important;
 	}
 
@@ -167,6 +164,7 @@ header
 {
 	.button
 	{
+		// overwrites M size settings
 		display: inline-block !important;
 
 		&:not(:first-child)

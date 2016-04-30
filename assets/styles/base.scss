@@ -1,37 +1,5 @@
 @import "constants.scss";
 
-@font-face
-{
-	font-family : 'Scada';
-	font-style  : normal;
-	font-weight : 400;
-	src         : url('../fonts/Scada/Scada-Regular.ttf') format('truetype');
-}
-
-// @font-face
-// {
-// 	font-family : 'Scada';
-// 	font-style  : italic;
-// 	font-weight : 400;
-// 	src         : url('../fonts/Scada/Scada-Italic.ttf') format('truetype');
-// }
-
-// @font-face
-// {
-// 	font-family : 'Scada';
-// 	font-style  : normal;
-// 	font-weight : 700;
-// 	src         : url('../fonts/Scada/Scada-Bold.ttf') format('truetype');
-// }
-
-// @font-face
-// {
-// 	font-family : 'Scada';
-// 	font-style  : italic;
-// 	font-weight : 700;
-// 	src         : url('../fonts/Scada/Scada-BoldItalic.ttf') format('truetype');
-// }
-
 html
 {
 	// https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away
@@ -50,13 +18,13 @@ body
 // https://github.com/philipwalton/solved-by-flexbox/issues/79
 .page, body
 {
-	background-color: $gray-color-lightest;
+	background-color: var(--gray-color-lightest);
 }
 
 html, body, button, input, textarea, select
 {
-	font-family : Scada, Arial, Helvetica;
-	color       : $black-color;
+	font-family : Scada, Arial, Helvetica; // Roboto maybe, but Arial has better kerning
+	color       : var(--black-color);
 }
 
 input[type="checkbox"], input[type="radio"]
@@ -83,11 +51,11 @@ input[type="radio"]
 input[type="text"], input[type="email"], input[type="password"], textarea, select, .date-picker
 {
 	display : block;
-	width   : $input-width-l;
-	padding : $input-padding;
+	width   : var(--input-width);
+	padding : var(--input-padding);
 
 	border        : none;
-	border-bottom : $input-border-width solid $gray-color;
+	border-bottom : var(--input-border-width) solid var(--gray-color);
 	transition    : border 0.1s;
 }
 
@@ -97,7 +65,7 @@ input[type="text"], input[type="email"], input[type="password"], textarea, selec
 
 	input
 	{
-		padding-bottom: $input-padding;
+		padding-bottom: var(--input-padding);
 	}
 }
 
@@ -113,7 +81,7 @@ input[type="text"], input[type="email"], input[type="password"], textarea
 	{
 		outline: none;
 
-		border-bottom: $input-border-width solid $accent-color;
+		border-bottom: var(--input-border-width) solid var(--accent-color);
 	}
 }
 
@@ -128,7 +96,7 @@ input[type="text"], input[type="email"], input[type="password"], textarea
 .select
 {
 	position: relative;
-	width: $input-width-l;
+	width: var(--input-width);
 
 	// down arrow
 	&:after
@@ -159,7 +127,7 @@ select
 	{
 		outline: none;
 
-		border-bottom: $input-border-width solid $base-color-darker;
+		border-bottom: var(--input-border-width) solid var(--base-color-darker);
 	}
 }
 
@@ -176,12 +144,12 @@ h1, h2
 
 a
 {
-	color: $base-color-darkest;
+	color: var(--base-color-darkest);
 	text-decoration: none;
 
 	&:active
 	{
-		color: $base-color-darker;
+		color: var(--base-color-darker);
 	}
 }
 
@@ -195,22 +163,22 @@ button, a.button
 	white-space: nowrap;
 
 	// font-weight : bold;
-	color       : $base-color-darker;
+	color       : var(--base-color-darker);
 
 	transition: color 30ms ease-out;
 
 	&:active
 	{
-		color: $base-color;
+		color: var(--base-color);
 	}
 
 	&.primary
 	{
-		color : $accent-color;
+		color : var(--accent-color);
 
 		&:active
 		{
-			color: $accent-color-lighter;
+			color: var(--accent-color-lighter);
 		}
 	}
 }

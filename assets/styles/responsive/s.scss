@@ -5,7 +5,7 @@
 {
 	font-size : 16pt;
 
-	margin-top : $header-vertically-centered-text-margin-top;
+	margin-top : var(--header-vertically-centered-text-margin-top);
 }
 
 .menu-button

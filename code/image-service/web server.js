@@ -15,7 +15,7 @@ const web = web_server({ authentication: true, parse_body: false, routing: '/api
 // uploaded images (user pictures, etc)
 web.serve_static_files('/', path.join(Root_folder, configuration.image_service.files_directory))
 
-web.post('/delete', async ({ id }, { user }) =>
+web.delete('/', async ({ id }, { user }) =>
 {
 	if (!user)
 	{

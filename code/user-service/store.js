@@ -1,8 +1,8 @@
 import path from 'path'
 import fs   from 'fs'
 
-import Knex      from 'knex'
-import Bookshelf from 'bookshelf'
+import Knex         from 'knex'
+import Bookshelf    from 'bookshelf'
 
 function create_store()
 {
@@ -50,15 +50,7 @@ function create_store()
 
 		update_user(id, data)
 		{
-			return new User
-			({
-				id,
-
-				name    : data.name,
-				country : data.country,
-				place   : data.place
-			})
-			.save()
+			return new User({ id }).save(data)
 		},
 
 		update_locale(user_id, locale)
@@ -108,9 +100,10 @@ class Memory_store
 	{
 		const user = this.users.get(String(id))
 
-		user.name    = data.name
-		user.country = data.country
-		user.place   = data.place
+		for (let key of Object.keys(data))
+		{
+			user[key] = data[key]
+		}
 
 		this.users.set(String(user.id), user)
 

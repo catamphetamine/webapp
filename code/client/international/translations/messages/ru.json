@@ -47,11 +47,12 @@
 	"log.entry.show_stack_trace" : "Подробнее",
 	"log.entry.hide_stack_trace" : "Скрыть",
 
-	"user.profile.edit"                : "Правка",
-	"user.profile.cancel_editing"      : "Отмена",
-	"user.profile.save"                : "Сохранить",
-	"user.profile.change_user_picture" : "Поменять картинку",
-	"user.profile.update_error"        : "Не удалось обновить ваши данные",
+	"user.profile.edit"                      : "Правка",
+	"user.profile.cancel_editing"            : "Отмена",
+	"user.profile.save"                      : "Сохранить",
+	"user.profile.change_user_picture"       : "Поменять картинку",
+	"user.profile.update_error"              : "Не удалось обновить ваши данные",
+	"user.profile.user_picture_upload_error" : "Не удалось загрузить картинку",
 
 	"user.profile.subscribe"    : "Подписаться",
 	"user.profile.send_message" : "Связаться",

@@ -3,7 +3,7 @@
 .content-section
 {
 	background-color: white;
-	border-radius: $border-radius;
+	border-radius: var(--border-radius);
 }
 
 .card, .content-section
@@ -20,9 +20,6 @@ footer
 {
 	// can be removed later
 	position: relative;
-
-	// background-color : $footer-background !important;
-	// color            : rgb(102, 102, 102);
 
 	// border-top: 1px solid $footer-border-color;
 
@@ -61,20 +58,7 @@ footer
 
 .menu-item-selected
 {
-	color : $base-color-lightest;
-}
-
-.menu-collapsible
-{
-	a
-	{
-		color: inherit;
-	}
-
-	li
-	{
-		margin-right: 0 !important;
-	}
+	color : var(--base-color-lightest);
 }
 
 header
@@ -89,30 +73,30 @@ header
 	padding-left  : 1em;
 	padding-right : 1em;
 
-	background-color : $base-color-darker;
+	background-color : var(--base-color-darker);
 
 	// border-bottom : 1px solid $header-border-color;
 	// box-sizing    : border-box;
 
+	color: white;
+
 	button, a.button, a, .dropdown-item-selected
 	{
-		color: white;
-
+		color: inherit;
+		
 		&:active
 		{
-			color: $base-color-lightest;
+			color: var(--base-color-lightest);
 		}
 	}
 
 	.dropdown-arrow
 	{
-		color: $header-text-color;
+		color: var(--gray-color-lightest);
 		opacity: 0.8;
 	}
 }
 
-// body:not(.javascript-is-enabled)
-// {
 header
 {
 	position : fixed;
@@ -121,7 +105,6 @@ header
 	right    : 0;
 	z-index  : 1
 }
-// }
 
 // This technique drops IE10-11 support.
 // https://github.com/philipwalton/flexbugs#3-min-height-on-a-flex-container-wont-apply-to-its-flex-items

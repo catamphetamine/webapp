@@ -91,6 +91,7 @@
     "pretty-error": "^1.1.2",
     "query-string": "^3.0.0",
     "react": "^15.0.1",
+    "react-addons-shallow-compare": "^15.0.2",
     "react-document-meta": "^2.0.0",
     "react-dom": "^15.0.1",
     "react-hot-loader": "^3.0.0-alpha.9",

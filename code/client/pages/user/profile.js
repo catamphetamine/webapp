@@ -11,11 +11,13 @@ import { defineMessages, FormattedRelative }          from 'react-intl'
 import { bindActionCreators as bind_action_creators } from 'redux'
 
 import { get_user, get_users_latest_activity_time }  from '../../actions/users'
-import { update_user } from '../../actions/profile'
+import { update_user, upload_user_picture, save_user_picture } from '../../actions/profile'
 
-import Text_input from '../../components/text input'
-import Button     from '../../components/button'
-import Dropdown   from '../../components/dropdown'
+import Text_input  from '../../components/text input'
+import Button      from '../../components/button'
+import Dropdown    from '../../components/dropdown'
+import File_upload from '../../components/file upload'
+import Image       from '../../components/image'
 
 import international from '../../international/internationalize'
 
@@ -71,6 +73,12 @@ const messages = defineMessages
 		id             : `user.profile.update_error`,
 		description    : `Failed to update user's own profile`,
 		defaultMessage : `Couldn't update your profile`
+	},
+	user_picture_upload_error:
+	{
+		id             : `user.profile.user_picture_upload_error`,
+		description    : `Failed to upload user picture`,
+		defaultMessage : `Couldn't process the picture`
 	}
 })
 
@@ -91,13 +99,18 @@ const messages = defineMessages
 		user                 : model.user_profile.user,
 		latest_activity_time : model.user_profile.latest_activity_time,
 
-		user_update_error    : model.user_profile.update_error,
+		user_update_error         : model.user_profile.update_error,
+		user_picture_upload_error : model.user_profile.user_picture_upload_error,
+
+		uploaded_picture : model.user_profile.uploaded_picture,
 
 		locale : model.locale.locale
 	}),
 	dispatch => bind_action_creators
 	({
 		update_user,
+		upload_user_picture,
+		save_user_picture,
 		dispatch
 	},
 	dispatch)
@@ -115,9 +128,13 @@ export default class User_profile extends Component
 		latest_activity_time : PropTypes.object,
 		user_update_error    : PropTypes.any,
 
+		uploaded_picture     : PropTypes.object,
+
 		locale               : PropTypes.string.isRequired,
 
 		update_user          : PropTypes.func.isRequired,
+		upload_user_picture  : PropTypes.func.isRequired,
+		save_user_picture    : PropTypes.func.isRequired,
 		dispatch             : PropTypes.func.isRequired
 	}
 
@@ -136,6 +153,8 @@ export default class User_profile extends Component
 
 		this.send_message = this.send_message.bind(this)
 		this.subscribe    = this.subscribe.bind(this)
+
+		this.upload_user_picture = this.upload_user_picture.bind(this)
 
 		// fill two-letter country codes list
 
@@ -165,10 +184,20 @@ export default class User_profile extends Component
 	render()
 	{
 		const { edit } = this.state
-		const { user, translate, current_user, latest_activity_time, user_update_error } = this.props
+
+		const
+		{
+			user,
+			translate,
+			current_user,
+			latest_activity_time,
+			user_update_error,
+			user_picture_upload_error,
+			uploaded_picture
+		}
+		= this.props
 
 		const is_own_profile = current_user && current_user.id === user.id
-		const user_picture = user.picture ? `/upload/user_pictures/${user.id}.jpg` : require('../../../../assets/images/no user picture.png')
 
 		const markup = 
 		(
@@ -221,10 +250,11 @@ export default class User_profile extends Component
 									</Button>
 								}
 
-								{ user_update_error &&
-									<div style={style.own_profile_actions.error} className="error">
-										{translate(messages.update_error)}
-									</div>
+								{ (user_update_error || user_picture_upload_error) &&
+									<ul style={style.own_profile_actions.error} className="errors">
+										{user_update_error && <li>{translate(messages.update_error)}</li>}
+										{user_picture_upload_error && <li>{translate(messages.user_picture_upload_error)}</li>}
+									</ul>
 								}
 							</div>
 						}
@@ -239,24 +269,28 @@ export default class User_profile extends Component
 							)}>
 							
 							{/* The picture itself */}
-							<img
+							<Image
 								style={style.user_picture.element.image}
-								src={user_picture}/>
+								type="user_picture"
+								{...this.get_user_picture()}/>
 
 							{/* "Change user picture" overlay */}
-							{ edit && 
+							{ edit && !uploaded_picture &&
 								<div
 									className="user-profile__picture__change__overlay"
 									style={style.user_picture.element.overlay.background}/>
 							}
 
-							{/* "Change user picture" label */}
+							{/* "Change user picture" file uploader */}
 							{ edit &&
-								<label
+								<File_upload
 									className="user-profile__picture__change__label"
-									style={style.user_picture.element.overlay.label}>
-									{translate(messages.change_user_picture)}
-								</label>
+									style={style.user_picture.element.overlay.label}
+									action={this.upload_user_picture}>
+
+									{/* "Change user picture" label */}
+									{!uploaded_picture && translate(messages.change_user_picture)}
+								</File_upload>
 							}
 						</div>
 
@@ -358,14 +392,22 @@ export default class User_profile extends Component
 
 	cancel_profile_edits()
 	{
-		this.props.dispatch({ type: 'dismiss user update error' })
+		this.dismiss_user_info_edit_errors()
 
 		this.setState({ edit: false })
+		this.props.dispatch({ type: 'dismiss uploaded user picture' })
 	}
 
 	async save_profile_edits()
 	{
-		this.props.dispatch({ type: 'dismiss user update error' })
+		this.dismiss_user_info_edit_errors()
+
+		const { uploaded_picture } = this.props
+
+		if (uploaded_picture)
+		{
+			await this.props.save_user_picture(uploaded_picture)
+		}
 
 		await this.props.update_user
 		({
@@ -375,6 +417,13 @@ export default class User_profile extends Component
 		})
 
 		this.setState({ edit: false })
+		this.props.dispatch({ type: 'dismiss uploaded user picture' })
+	}
+
+	dismiss_user_info_edit_errors()
+	{
+		this.props.dispatch({ type: 'dismiss user update error' })
+		this.props.dispatch({ type: 'dismiss user picture upload error' })
 	}
 
 	send_message()
@@ -385,6 +434,28 @@ export default class User_profile extends Component
 	subscribe()
 	{
 
+	}
+
+	async upload_user_picture(file)
+	{
+		await this.props.upload_user_picture(file)
+	}
+
+	get_user_picture()
+	{
+		const { user, uploaded_picture } = this.props
+
+		if (this.state.edit && uploaded_picture)
+		{
+			return uploaded_picture
+		}
+		
+		if (user.picture)
+		{
+			return user.picture
+		}
+
+		return { src: require('../../../../assets/images/no user picture.png') }
 	}
 }
 

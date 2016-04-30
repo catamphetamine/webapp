@@ -21,6 +21,8 @@ exports.up = function(knex, Promise)
 		table.string('role', 256)
 		table.string('locale', 128)
 
+		table.json('picture')
+
 		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
 	})
 	.createTable('messages', function(table)

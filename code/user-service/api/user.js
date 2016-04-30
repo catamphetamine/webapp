@@ -1,4 +1,5 @@
 import store from '../store'
+import http from '../../common/http'
 
 import { get_user } from './user.base'
 
@@ -24,9 +25,36 @@ api.patch('/', async function(data, { user })
 		throw new Errors.Unauthenticated()
 	}
 	
-	await store.update_user(user.id, data)
+	await store.update_user(user.id,
+	{
+		name    : data.name,
+		country : data.country,
+		place   : data.place
+	})
 
 	return await get_user({ id: user.id }, { user })
+})
+
+api.post('/picture', async function(picture, { user, authentication_token })
+{
+	if (!user)
+	{
+		throw new Errors.Unauthenticated()
+	}
+
+	const user_data = await get_user(user, { user })
+
+	await store.update_user(user.id, { picture })
+
+	if (user_data.picture)
+	{
+		await http.delete
+		(
+			`${address_book.image_service}/api`,
+			{ id: user_data.picture.id },
+			{ headers: { Authorization: `Bearer ${authentication_token}` } }
+		)
+	}
 })
 
 // api.patch('/locale', async function()

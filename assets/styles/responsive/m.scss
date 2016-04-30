@@ -1,6 +1,11 @@
 @include font-size(16pt);
 @include header-height(2.3em);
 
+:root
+{
+	--input-width : 18em;
+}
+
 .logo
 {
 	font-size : 20pt
@@ -49,7 +54,7 @@
 
 	.or-register
 	{
-		float: right !important;
+		float: right;
 	    margin-top: 0.42em;
 	}
 }
@@ -80,6 +85,7 @@
 {
 	.button
 	{
+		// overwrites inline css
 		display: block !important;
 
 		&:not(:first-child)
@@ -92,4 +98,10 @@
 .user-profile__picture__change__label
 {
 	font-size: 1rem;
+}
+
+.button-group-button
+{
+	padding-left   : 0.6em;
+	padding-right  : 0.6em;
 }

@@ -14,12 +14,20 @@ export async function get_user({ id }, { user })
 
 function public_user(user)
 {
-	const result =
+	const fields =
+	[
+		'id',
+		'name',
+		'place',
+		'country',
+		'picture'
+	]
+
+	const result = {}
+
+	for (let key of fields)
 	{
-		id      : user.id,
-		name    : user.name,
-		place   : user.place,
-		country : user.country
+		result[key] = user[key]
 	}
 
 	return result
