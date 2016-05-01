@@ -48,9 +48,7 @@ export async function sign_in({ email, password }, { ip, set_cookie, secret, htt
 		throw new Errors.Not_found(`No user with this id`)
 	}
 
-	// await store.update_user(user)
-
-	return own_user(user_data, user.id)
+	return own_user(user_data)
 }
 
 export async function sign_out({}, { destroy_cookie, user, authentication_token_id })
@@ -135,19 +133,24 @@ export async function register({ name, email, password, terms_of_service_accepte
 	return { id }
 }
 
-export function own_user(user, id)
+export function own_user(user)
 {
-	const result = 
+	const fields =
+	[
+		'id',
+		'name',
+		'picture',
+		'role',
+		// 'moderation',
+		// 'switches',
+		'locale'
+	]
+
+	const result = {}
+
+	for (let key of fields)
 	{
-		id         : user.id || id,
-
-		name       : user.name,
-
-		role       : user.role,
-		// moderation : user.moderation,
-		// switches   : user.switches,
-
-		locale     : user.locale
+		result[key] = user[key]
 	}
 
 	return result

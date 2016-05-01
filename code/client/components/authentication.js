@@ -14,6 +14,7 @@ import Button              from './button'
 import Form                from './form'
 import Modal               from './modal'
 import Authentication_form from './authentication form'
+import User_picture        from './user picture'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
 
@@ -99,9 +100,7 @@ export default class Authentication extends Component
 
 	render()
 	{
-		const translate = this.props.intl.formatMessage
-
-		const { user } = this.props
+		const { user, translate } = this.props
 
 		const markup =
 		(
@@ -127,8 +126,6 @@ export default class Authentication extends Component
 
 	render_user_info(user)
 	{
-		const user_picture = user.picture ? `/upload/user_pictures/${user.id}.jpg` : require('../../../assets/images/user picture.png')
-
 		const markup = 
 		(
 			<div className="user-info">
@@ -147,7 +144,11 @@ export default class Authentication extends Component
 				{/* <div className="user-picture" onClick={::this.change_user_picture}>
 					<img src={user_picture}/>
 				</div>*/}
-				<img className="user-picture user-picture--header" src={user_picture}/>
+
+				{/* The picture itself */}
+				<User_picture
+					className="user-picture--header"
+					user={user}/>
 			</div>
 		)
 

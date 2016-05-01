@@ -55,6 +55,8 @@ api.post('/picture', async function(picture, { user, authentication_token })
 			{ headers: { Authorization: `Bearer ${authentication_token}` } }
 		)
 	}
+
+	return picture
 })
 
 // api.patch('/locale', async function()

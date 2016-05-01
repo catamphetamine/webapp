@@ -13,11 +13,11 @@ import { bindActionCreators as bind_action_creators } from 'redux'
 import { get_user, get_users_latest_activity_time }  from '../../actions/users'
 import { update_user, upload_user_picture, save_user_picture } from '../../actions/profile'
 
-import Text_input  from '../../components/text input'
-import Button      from '../../components/button'
-import Dropdown    from '../../components/dropdown'
-import File_upload from '../../components/file upload'
-import Image       from '../../components/image'
+import Text_input   from '../../components/text input'
+import Button       from '../../components/button'
+import Dropdown     from '../../components/dropdown'
+import File_upload  from '../../components/file upload'
+import User_picture from '../../components/user picture'
 
 import international from '../../international/internationalize'
 
@@ -269,11 +269,10 @@ export default class User_profile extends Component
 							)}>
 							
 							{/* The picture itself */}
-							<Image
+							<User_picture
 								style={style.user_picture.element.image}
-								type="user_picture"
-								max_width={1000}
-								{...this.get_user_picture()}/>
+								user={user}
+								picture={edit ? uploaded_picture : undefined}/>
 
 							{/* "Change user picture" overlay */}
 							{ edit && !uploaded_picture &&
@@ -440,23 +439,6 @@ export default class User_profile extends Component
 	async upload_user_picture(file)
 	{
 		await this.props.upload_user_picture(file)
-	}
-
-	get_user_picture()
-	{
-		const { user, uploaded_picture } = this.props
-
-		if (this.state.edit && uploaded_picture)
-		{
-			return uploaded_picture
-		}
-		
-		if (user.picture)
-		{
-			return user.picture
-		}
-
-		return { src: require('../../../../assets/images/user picture.png') }
 	}
 }
 

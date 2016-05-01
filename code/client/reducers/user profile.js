@@ -137,7 +137,12 @@ const handlers =
 
 	'save user picture done': (result, state) =>
 	{
-		state.user.picture = state.uploaded_picture
+		state.user =
+		{
+			...state.user,
+			picture: result
+		}
+		
 		return state
 	},
 

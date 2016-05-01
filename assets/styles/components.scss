@@ -381,6 +381,11 @@ header > .nav-widescreen
 {
 }
 
+.user-picture--header
+{
+	border-left: 1px solid var(--base-color-darkest);
+}
+
 .user-profile .user-picture
 {
 	border-radius: var(--border-radius);
@@ -498,7 +503,7 @@ header > .nav-widescreen
 
 	&:active
 	{
-		color            : white;
+		color            : var(--white-color);
 		background-color : var(--base-color);
 
 		transition : none !important;
@@ -522,7 +527,7 @@ header > .nav-widescreen
 
 .button-group-selected
 {
-	color            : white;
+	color            : var(--white-color);
 	background-color : var(--base-color-darker);
 }
 

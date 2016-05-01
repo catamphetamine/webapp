@@ -12,8 +12,8 @@ export default class Image extends React.Component
 
 		sizes : PropTypes.arrayOf(PropTypes.shape
 		({
-			width  : PropTypes.number.isRequired,
-			name   : PropTypes.string.isRequired
+			width : PropTypes.number.isRequired,
+			name  : PropTypes.string.isRequired
 		}))
 	}
 
