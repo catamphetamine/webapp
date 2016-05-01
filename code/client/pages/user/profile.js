@@ -456,7 +456,7 @@ export default class User_profile extends Component
 			return user.picture
 		}
 
-		return { src: require('../../../../assets/images/no user picture.png') }
+		return { src: require('../../../../assets/images/user picture.png') }
 	}
 }
 

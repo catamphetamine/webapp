@@ -15,7 +15,6 @@ export default class Image extends React.Component
 			width  : PropTypes.number.isRequired,
 			name   : PropTypes.string.isRequired
 		}))
-		.isRequired
 	}
 
 	state = {}

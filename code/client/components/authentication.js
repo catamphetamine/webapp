@@ -127,7 +127,7 @@ export default class Authentication extends Component
 
 	render_user_info(user)
 	{
-		const user_picture = user.picture ? `/upload/user_pictures/${user.id}.jpg` : require('../../../assets/images/no user picture.png')
+		const user_picture = user.picture ? `/upload/user_pictures/${user.id}.jpg` : require('../../../assets/images/user picture.png')
 
 		const markup = 
 		(
