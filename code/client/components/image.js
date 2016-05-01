@@ -5,12 +5,14 @@ export default class Image extends React.Component
 {
 	static propTypes = 
 	{
-		src   : PropTypes.string,
-		type  : PropTypes.string,
+		src           : PropTypes.string,
+		type          : PropTypes.string,
+		default_width : PropTypes.number,
+		max_width     : PropTypes.number,
+
 		sizes : PropTypes.arrayOf(PropTypes.shape
 		({
 			width  : PropTypes.number.isRequired,
-			height : PropTypes.number.isRequired,
 			name   : PropTypes.string.isRequired
 		}))
 		.isRequired
@@ -24,7 +26,7 @@ export default class Image extends React.Component
 		
 		if (props.sizes)
 		{
-			this.state.size = props.sizes[0]
+			this.state.size = get_preferred_size(props.sizes, props.default_width)
 		}
 	}
 
@@ -38,7 +40,7 @@ export default class Image extends React.Component
 
 	componentWillReceiveProps(next_props)
 	{
-		if (shallow_not_equal(this, next_props, this.state) && next_props.sizes)
+		if (next_props.sizes && next_props.sizes !== this.props.sizes)
 		{
 			this.refresh_size(next_props.sizes, true)
 		}
@@ -67,7 +69,7 @@ export default class Image extends React.Component
 
 		if (force ||
 			!size || 
-			(preferred_size.width > size.width || preferred_size.height > size.height))
+			preferred_size.width > size.width)
 		{
 			this.setState({ size: preferred_size })
 		}
@@ -75,7 +77,7 @@ export default class Image extends React.Component
 
 	get_preferred_size(sizes)
 	{
-		return get_preferred_size(sizes, this.refs.image.offsetWidth, this.refs.image.offsetHeight)
+		return get_preferred_size(sizes, this.refs.image.offsetWidth, this.props.max_width)
 	}
 
 	url()
@@ -95,8 +97,13 @@ export default class Image extends React.Component
 	}
 }
 
-function get_preferred_size(sizes, width, height)
+function get_preferred_size(sizes, width, max_width)
 {
+	if (!width)
+	{
+		return sizes.first()
+	}
+	
 	let device_pixel_ratio = 1
 
 	if (typeof(window) !== 'undefined' && window.devicePixelRatio !== undefined)
@@ -105,42 +112,22 @@ function get_preferred_size(sizes, width, height)
 	}
 
 	width  *= device_pixel_ratio
-	height *= device_pixel_ratio
 
+	let previous_size
 	for (let size of sizes)
 	{
-		if (size.width >= width && size.height >= height)
+		if (size.width > max_width)
+		{
+			return previous_size || sizes.first()
+		}
+
+		if (size.width >= width)
 		{
 			return size
 		}
+
+		previous_size = size
 	}
 
-	return sizes[sizes.length - 1]
+	return sizes.last()
 }
-
-// let width
-// let height
-
-// if (arguments.length === 2)
-// {
-// 	if (dimensions.nodeType === 1)
-// 	{
-// 		width  = dimensions.offsetWidth
-// 		height = dimensions.offsetHeight
-// 	}
-// 	else if (Array.isArray(dimensions))
-// 	{
-// 		width  = dimensions[0]
-// 		height = dimensions[1]
-// 	}
-// 	else
-// 	{
-// 		return sizes[0]
-// 	}
-// }
-// else
-// {
-// 	sizes  = arguments[0]
-// 	width  = arguments[1]
-// 	height = arguments[2]
-// }

@@ -272,6 +272,7 @@ export default class User_profile extends Component
 							<Image
 								style={style.user_picture.element.image}
 								type="user_picture"
+								max_width={1000}
 								{...this.get_user_picture()}/>
 
 							{/* "Change user picture" overlay */}

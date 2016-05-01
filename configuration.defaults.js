@@ -52,6 +52,15 @@ module.exports =
 		temporary_image_expiration_interval: { days: 1 }, 
 		clean_up_interval: { hours: 1 },
 		file_size_limit: '10mb',
+		//
+		// Estimated JPEG image file size based on image width (in pixels):
+		//
+		// 1500w = 1 MB
+		// 1000w = 523 KB
+		// 750w = 315 KB
+		// 300w = 55 KB
+		// 100w = 8 KB
+		//
 		sizes:
 		[
 			300,
