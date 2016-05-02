@@ -97,7 +97,7 @@ export default class Locale_switcher extends Component
 						{
 							const markup =
 							(
-								<div key={value} value={value} label={label}>
+								<div key={value} value={value} label={label} style={style.item}>
 									<Flag locale={value} style={style.locale.flag}/>
 									{label}
 								</div>
@@ -183,4 +183,7 @@ const style = styler
 			button	
 				margin-left   : 0.5em
 				margin-bottom : 0.2em
+
+	item
+		cursor : default
 `

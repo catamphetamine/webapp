@@ -229,16 +229,18 @@ export default class Dropdown extends Component
 
 		if (element)
 		{
-			button = React.cloneElement(element,
+			const extra_props =
 			{
-				onClick   : event =>
-				{
-					element.props.onClick(event)
-					// this.item_clicked(value, event)
-				},
-				style     : extend(item_style, element.props.style),
+				style     : merge(item_style, element.props.style),
 				className : element.props.className ? element.props.className + ' ' + className : className
-			})
+			}
+
+			if (!this.props.menu)
+			{
+				extra_props.onClick = event => this.item_clicked(value, event)
+			}
+
+			button = React.cloneElement(element, extra_props)
 		}
 		else
 		{

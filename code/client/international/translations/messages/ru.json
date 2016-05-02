@@ -47,6 +47,11 @@
 	"log.entry.show_stack_trace" : "Подробнее",
 	"log.entry.hide_stack_trace" : "Скрыть",
 
+	"user_menu.notifications" : "Уведомления",
+	"user_menu.messages"      : "Сообщения",
+	"user_menu.profile"       : "Профиль",
+	"user_menu.settings"      : "Настройки",
+
 	"user.profile.edit"                      : "Правка",
 	"user.profile.cancel_editing"            : "Отмена",
 	"user.profile.save"                      : "Сохранить",

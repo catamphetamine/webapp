@@ -40,6 +40,30 @@ export const messages = defineMessages
 		id             : 'authentication.register',
 		description    : 'Registration action',
 		defaultMessage : 'Register'
+	},
+	notifications:
+	{
+		id             : 'user_menu.notifications',
+		description    : 'Notifications user menu item',
+		defaultMessage : 'Notifications'
+	},
+	messages:
+	{
+		id             : 'user_menu.messages',
+		description    : 'Messages user menu item',
+		defaultMessage : 'Messages'
+	},
+	profile:
+	{
+		id             : 'user_menu.profile',
+		description    : 'Profile user menu item',
+		defaultMessage : 'Profile'
+	},
+	settings:
+	{
+		id             : 'user_menu.settings',
+		description    : 'Settings user menu item',
+		defaultMessage : 'Settings'
 	}
 })
 
@@ -131,6 +155,8 @@ export default class Authentication extends Component
 
 	render_user_info(user)
 	{
+		const { translate } = this.props
+		
 		{/* Username and user picture */}
 		const user_info =
 		(
@@ -162,23 +188,39 @@ export default class Authentication extends Component
 					toggler={user_info}
 					alignment="right">
 
+					{/* Feed */}
 					<Link key="notifications" to="/feed">
-						Уведомления
+						{/* Icon */}
+						<i className="material-icons">notifications</i>
+						{/* Text */}
+						{translate(messages.notifications)}
 					</Link>
 
+					{/* Messages */}
 					<Link key="messages" to="/messages">
-						Сообщения
+						{/* Icon */}
+						<i className="material-icons">chat_bubble_outline</i>
+						{/* Text */}
+						{translate(messages.messages)}
 					</Link>
 
+					{/* Profile */}
 					<Link key="profile" to="/profile">
-						Профиль
+						{/* Icon */}
+						<i className="material-icons">account_box</i>
+						{/* Text */}
+						{translate(messages.profile)}
 					</Link>
 
+					{/* Settings */}
 					<Link key="settings" to="/settings">
-						Настройки
+						{/* Icon */}
+						<i className="material-icons">settings</i>
+						{/* Text */}
+						{translate(messages.settings)}
 					</Link>
 
-					{/* Sign out action */}
+					{/* Sign out */}
 					<div key="log_out" onClick={event =>
 					{
 						if (event.target.type !== 'submit')
@@ -187,7 +229,10 @@ export default class Authentication extends Component
 						}
 					}}>
 						<Form className="sign-out-form" post="/authentication/legacy/sign-out">
-							<Button className="sign-out" submit={true} action={this.sign_out}>{this.translate(messages.sign_out)}</Button>
+							{/* Icon */}
+							<i className="material-icons material-icons--empty"></i>
+							{/* Text */}
+							<Button style={style.sign_out} className="sign-out" submit={true} action={this.sign_out}>{this.translate(messages.sign_out)}</Button>
 						</Form>
 					</div>
 				</Dropdown>
@@ -242,6 +287,9 @@ export default class Authentication extends Component
 
 const style = styler
 `
+	sign_out
+		display: inline-block
+
 	user_menu_toggler
 		element
 			display: inline-block
