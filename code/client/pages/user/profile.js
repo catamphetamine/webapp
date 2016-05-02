@@ -181,6 +181,20 @@ export default class User_profile extends Component
 			.sort((a, b) => a.label.localeCompare(b.label, this.props.locale))
 	}
 
+	componentDidMount()
+	{
+		this.latest_activity_time_refresh = setInterval(() =>
+		{
+			this.props.dispatch(get_users_latest_activity_time(this.props.user.id))
+		},
+		60 * 1000)
+	}
+
+	componentWillUnmount()
+	{
+		clearInterval(this.latest_activity_time_refresh)
+	}
+
 	render()
 	{
 		const { edit } = this.state
