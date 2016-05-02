@@ -158,18 +158,13 @@ header
 
 	&, .dropdown-item-list li, .dropdown-item, .dropdown-item-selected
 	{
-		line-height: 0;
+		// line-height: 0;
 	}
 
 	.dropdown-item
 	{
 		padding-top: 0;
 		padding-bottom: 0;
-	}
-
-	.dropdown-item-label
-	{
-		display: none;
 	}
 
 	.dropdown-arrow

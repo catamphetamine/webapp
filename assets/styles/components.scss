@@ -307,16 +307,15 @@
 	margin-top: 0.1em;
 	margin-right: 1.5em;
 
-	.dropdown-item-selected
+	.dropdown
 	{
-		text-align: right;
-		border: none;
+		text-align: right !important;
 	}
 
-	// .dropdown-item-icon > img
-	// {
-	// 	width: 1.2em;
-	// }
+	.dropdown-item-selected
+	{
+		border: none;
+	}
 }
 
 // http://tympanus.net/codrops/2013/10/15/animated-checkboxes-and-radio-buttons-with-svg/

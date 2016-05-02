@@ -81,13 +81,6 @@ header
 		border: none;
 	}
 
-	.dropdown-item-icon > img
-	{
-		width: 1.2em;
-		margin-right: 0.4em;
-		margin-bottom: -0.03em;
-	}
-
 	&, .dropdown-item-list li, .dropdown-item, .dropdown-item-selected
 	{
 		line-height: normal;
@@ -97,11 +90,6 @@ header
 	{
 		// overwrites inline css
 		margin-bottom : 0.1em !important;
-	}
-
-	.dropdown-item-label
-	{
-		display: inline-block;
 	}
 
 	.dropdown-item

@@ -39,6 +39,11 @@
 
 	body
 	{
-		margin-top: $height;
+		padding-top: $height;
+	}
+
+	.page
+	{
+		min-height: calc(100vh - #{$height});
 	}
 }

@@ -97,7 +97,7 @@ export default class Locale_switcher extends Component
 						{
 							const markup =
 							(
-								<div value={value} label={label}>
+								<div key={value} value={value} label={label}>
 									<Flag locale={value} style={style.locale.flag}/>
 									{label}
 								</div>
@@ -171,8 +171,8 @@ const style = styler
 	locale
 		flag
 			position       : relative
-			top            : 0.1em
-			height         : 0.8em
+			top            : 0.05em
+			width          : 1.2em
 			margin-right   : 0.4em
 			vertical-align : baseline
 

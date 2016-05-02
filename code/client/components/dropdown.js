@@ -56,6 +56,22 @@ export default class Dropdown extends Component
 
 		this.toggle           = this.toggle.bind(this)
 		this.document_clicked = this.document_clicked.bind(this)
+
+		if (props.children)
+		{
+			React.Children.forEach(props.children, function(element)
+			{
+				if (!element.props.value)
+				{
+					throw new Error(`You must specify "value" prop on each child of <Dropdown/>`)
+				}
+
+				if (!element.props.label)
+				{
+					throw new Error(`You must specify "label" prop on each child of <Dropdown/>`)
+				}
+			})
+		}
 	}
 
 	componentDidMount()
@@ -115,7 +131,7 @@ export default class Dropdown extends Component
 				<div style={ this.state.expanded ? style.container.expanded : style.container }>
 
 					{/* Currently selected item */}
-					{ options ? this.render_selected_item() : <button onClick={this.toggle}>afsdfsd</button> }
+					{this.render_selected_item()}
 
 					{/* A placeholder to stretch the parent <div/> to 100% width of the list */}
 					{/* (because the list to select from has `position: absolute` set) */}
@@ -140,26 +156,9 @@ export default class Dropdown extends Component
 
 	render_list_item({ element, value, label, overflow }) // , first, last
 	{
-		if (value === undefined)
+		if (element)
 		{
-			if (element)
-			{
-				value = element.props.value
-
-				if (!element.props.value)
-				{
-					throw new Error(`You must specify "value" prop on each child of <Dropdown/>`)
-				}
-
-				if (!element.props.label)
-				{
-					throw new Error(`You must specify "label" prop on each child of <Dropdown/>`)
-				}
-			}
-			else
-			{
-				throw new Error(`You must supply a "value" for each option of <Dropdown/>`)
-			}
+			value = element.props.value
 		}
 
 		const is_selected = value === this.props.value
@@ -201,13 +200,34 @@ export default class Dropdown extends Component
 
 	render_selected_item()
 	{
-		const selected = this.props.options.filter(x => x.value === this.props.value)[0]
+		const { options, children, value, label } = this.props
+
+		let selected_label
+
+		if (options)
+		{
+			const selected = options.filter(x => x.value === value).first()
+			if (selected)
+			{
+				selected_label = selected.label
+			}
+		}
+		else
+		{
+			React.Children.forEach(children, function(child)
+			{
+				if (child.props.value === value)
+				{
+					selected_label = child.props.label
+				}
+			})
+		}
 
 		const markup =
 		(
 			<button onClick={this.toggle} style={style.selected_item_label} className="dropdown-item-selected">
 				{/* the label */}
-				{selected ? selected.label : this.props.label}
+				{selected_label || label}
 
 				{/* an arrow */}
 				<div className="dropdown-arrow" style={ this.state.expanded ? style.arrow.expanded : style.arrow }/>
@@ -344,10 +364,13 @@ const style = styler
 	wrapper
 		display        : inline-block
 		vertical-align : bottom
+		text-align     : left
 
 	container
 		position : relative
 		// margin   : 0 auto
+
+		text-align : inherit
 
 		-webkit-user-select : none  /* Chrome all / Safari all */
 		-moz-user-select    : none  /* Firefox all */
@@ -358,7 +381,7 @@ const style = styler
 
 	selected_item_label
 		// width      : 100%
-		// display: inline-block;
+		// display: inline-block
 
 	arrow
 		display  : inline-block
