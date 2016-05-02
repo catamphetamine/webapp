@@ -86,6 +86,10 @@ export default class Authentication extends Component
 	{
 		super(properties)
 
+		this.hide     = this.hide.bind(this)
+		this.show     = this.show.bind(this)
+		this.sign_out = this.sign_out.bind(this)
+
 		extend(this.state, this.pristine_form_state)
 	}
 
@@ -107,14 +111,14 @@ export default class Authentication extends Component
 			<div className="authentication" style={this.props.style}>
 				
 				{/* Sign in action */}
-				{ !user && <Button className="sign-in" link="/sign-in" action={::this.show}>{this.translate(messages.sign_in)}</Button> }
+				{ !user && <Button className="sign-in" link="/sign-in" action={this.show}>{this.translate(messages.sign_in)}</Button> }
 
 				{/* User info if authenticated */}
 				{ user && this.render_user_info(user) }
 
 				<Modal
 					isOpen={exists(this.state.password) || (!user && this.state.show)}
-					onRequestClose={::this.hide}>
+					onRequestClose={this.hide}>
 
 					<Authentication_form/>
 				</Modal>
@@ -135,15 +139,8 @@ export default class Authentication extends Component
 
 				{/* Sign out action */}
 				<Form className="sign-out-form" post="/authentication/legacy/sign-out">
-					<Button className="sign-out" submit={true} action={::this.sign_out}>{this.translate(messages.sign_out)}</Button>
+					<Button className="sign-out" submit={true} action={this.sign_out}>{this.translate(messages.sign_out)}</Button>
 				</Form>
-
-				{/* Avatar */}
-				{/*<div className="user-picture" style={{ backgroundImage: `url("${user_picture}")` }}></div>*/}
-				{/* the wrapping <div/> keeps image aspect ratio */}
-				{/* <div className="user-picture" onClick={::this.change_user_picture}>
-					<img src={user_picture}/>
-				</div>*/}
 
 				{/* The picture itself */}
 				<User_picture

@@ -14,13 +14,20 @@ export default class Form extends Component
 		style     : PropTypes.object
 	}
 
+	constructor(props, context)
+	{
+		super(props, context)
+		
+		this.submit = this.submit.bind(this)
+	}
+
 	render()
 	{
 		const { post, error, className } = this.props
 
 		const markup = 
 		(
-			<form className={className} style={this.props.style} onSubmit={::this.submit} action={post} method="POST">
+			<form className={className} style={this.props.style} onSubmit={this.submit} action={post} method="POST">
 				{this.props.children}
 
 				{ error ? <div className="form-error-message">{error.message ? error.message : error}</div> : null }

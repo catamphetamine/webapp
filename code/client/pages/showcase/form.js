@@ -26,6 +26,13 @@ export default class Form_showcase extends Component
 		// switched: true,
 	}
 
+	constructor(props, context)
+	{
+		super(props, context)
+
+		this.on_selection_changed = this.on_selection_changed.bind(this)
+	}
+
 	render()
 	{
 		const markup = 
@@ -43,7 +50,7 @@ export default class Form_showcase extends Component
 					You entered: {this.state.textarea_value}
 
 					<h2 style={style.form.label}>{'Select'}</h2>
-					<select style={style.form.select} name="select" value={this.state.select_value} onChange={::this.on_selection_changed}>
+					<select style={style.form.select} name="select" value={this.state.select_value} onChange={this.on_selection_changed}>
 						<option value="A">Apple</option>
 						<option value="B">Banana</option>
 						<option value="C">Cranberry</option>

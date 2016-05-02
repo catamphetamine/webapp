@@ -206,6 +206,19 @@ export default class Authentication extends Component
 	{
 		super(properties)
 
+		this.sign_in                           = this.sign_in.bind(this)
+		this.start_registration                = this.start_registration.bind(this)
+		this.validate_email_on_sign_in         = this.validate_email_on_sign_in.bind(this)
+		this.validate_password_on_sign_in      = this.validate_password_on_sign_in.bind(this)
+		this.forgot_password                   = this.forgot_password.bind(this)
+		this.register                          = this.register.bind(this)
+		this.cancel_registration               = this.cancel_registration.bind(this)
+		this.validate_name_on_registration     = this.validate_name_on_registration.bind(this)
+		this.validate_email_on_registration    = this.validate_email_on_registration.bind(this)
+		this.validate_password_on_registration = this.validate_password_on_registration.bind(this)
+		this.accept_terms_of_service           = this.accept_terms_of_service.bind(this)
+		this.validate_terms_of_service         = this.validate_terms_of_service.bind(this)
+
 		extend(this.state, this.pristine_form_state)
 
 		if (this.props.registration)
@@ -242,7 +255,7 @@ export default class Authentication extends Component
 				ref="form" 
 				className="authentication-form" 
 				style={this.props.style ? merge(style.form, this.props.style) : style.form} 
-				action={::this.sign_in}
+				action={this.sign_in}
 				inputs={() => [this.refs.email, this.refs.password]} 
 				error={this.props.sign_in_error && this.sign_in_error(this.props.sign_in_error)}
 				post="/authentication/legacy/sign-in">
@@ -254,7 +267,7 @@ export default class Authentication extends Component
 					<Button
 						link={add_redirect('/register', this.props.location)} 
 						button_style={style.or_register.register} 
-						action={::this.start_registration}>
+						action={this.start_registration}>
 
 						{this.translate(authentication_messages.register)}
 					</Button>
@@ -268,7 +281,7 @@ export default class Authentication extends Component
 					email={false}
 					focus={this.props.focus_on === 'email'}
 					value={this.state.email}
-					validate={::this.validate_email_on_sign_in}
+					validate={this.validate_email_on_sign_in}
 					on_change={email => this.setState({ email })}
 					placeholder={this.translate(messages.email)}
 					style={style.input}
@@ -280,7 +293,7 @@ export default class Authentication extends Component
 					password={true}
 					focus={this.props.focus_on === 'password'}
 					value={this.state.password}
-					validate={::this.validate_password_on_sign_in}
+					validate={this.validate_password_on_sign_in}
 					on_change={password => this.setState({ password })}
 					placeholder={this.translate(messages.password)}
 					style={style.input}
@@ -290,7 +303,7 @@ export default class Authentication extends Component
 				<input type="hidden" name="request" value={should_redirect_to(this.props.location)}/>
 
 				<div style={style.sign_in_buttons}>
-					<Button style={style.forgot_password} action={::this.forgot_password}>{this.translate(messages.forgot_password)}</Button>
+					<Button style={style.forgot_password} action={this.forgot_password}>{this.translate(messages.forgot_password)}</Button>
 
 					<Button buttonClassName="primary" style={style.form_action} submit={true} busy={this.props.signing_in}>{this.translate(authentication_messages.sign_in)}</Button>
 				</div>
@@ -308,7 +321,7 @@ export default class Authentication extends Component
 				ref="form" 
 				className="registration-form" 
 				style={this.props.style ? merge(style.form, this.props.style) : style.form} 
-				action={::this.register} 
+				action={this.register} 
 				inputs={() => [this.refs.name, this.refs.email, this.refs.password, this.refs.accept_terms_of_service]} 
 				error={this.props.registration_error && this.registration_error(this.props.registration_error)}
 				post="/authentication/legacy/register">
@@ -320,7 +333,7 @@ export default class Authentication extends Component
 					<Button
 						link={add_redirect('/sign-in', this.props.location)} 
 						button_style={style.or_register.register} 
-						action={::this.cancel_registration}>
+						action={this.cancel_registration}>
 
 						{this.translate(authentication_messages.sign_in)}
 					</Button>
@@ -333,7 +346,7 @@ export default class Authentication extends Component
 					name="name"
 					focus={this.props.focus_on === 'name'}
 					value={this.state.name}
-					validate={::this.validate_name_on_registration}
+					validate={this.validate_name_on_registration}
 					on_change={name => this.setState({ name })}
 					placeholder={this.translate(messages.name)}
 					style={style.input}
@@ -345,7 +358,7 @@ export default class Authentication extends Component
 					email={false}
 					focus={this.props.focus_on === 'email'}
 					value={this.state.email}
-					validate={::this.validate_email_on_registration}
+					validate={this.validate_email_on_registration}
 					on_change={email => this.setState({ email })}
 					placeholder={this.translate(messages.email)}
 					style={style.input}
@@ -357,7 +370,7 @@ export default class Authentication extends Component
 					password={true}
 					focus={this.props.focus_on === 'password'}
 					value={this.state.password}
-					validate={::this.validate_password_on_registration}
+					validate={this.validate_password_on_registration}
 					on_change={password => this.setState({ password })}
 					placeholder={this.translate(messages.password)}
 					style={style.input}
@@ -370,8 +383,8 @@ export default class Authentication extends Component
 						focus={this.props.focus_on === 'terms_of_service_accepted'}
 						style={style.terms_of_service}
 						value={this.state.terms_of_service_accepted}
-						on_change={::this.accept_terms_of_service}
-						validate={::this.validate_terms_of_service}>
+						on_change={this.accept_terms_of_service}
+						validate={this.validate_terms_of_service}>
 
 						{this.translate(messages.i_accept)}
 

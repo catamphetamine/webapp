@@ -26,6 +26,8 @@ export default class Checkbox extends Component
 		super(props, context)
 
 		inject(this)
+
+		this.toggle = this.toggle.bind(this)
 	}
 
 	componentDidMount()
@@ -62,7 +64,7 @@ export default class Checkbox extends Component
 				<input 
 					ref="input" 
 					type="checkbox" 
-					onChange={::this.toggle} 
+					onChange={this.toggle} 
 					style={style.checkbox.input} 
 					value={value}/>
 
@@ -72,7 +74,7 @@ export default class Checkbox extends Component
 					{ value ? this.render_checkmark() : null }
 				</svg>
 
-				<label className="checkbox-label" style={style.label} onClick={::this.toggle}>
+				<label className="checkbox-label" style={style.label} onClick={this.toggle}>
 					{this.props.children}
 				</label>
 

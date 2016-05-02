@@ -27,6 +27,9 @@ export default class Text_input extends Component
 		super(props, context)
 
 		inject(this)
+
+		this.on_focus  = this.on_focus.bind(this)
+		this.on_change = this.on_change.bind(this)
 	}
 
 	render()
@@ -75,7 +78,6 @@ export default class Text_input extends Component
 
 		if (multiline)
 		{
-			// onBlur={::this.on_blur}
 			// maybe add autoresize for textarea (smoothly animated)
 			return <textarea
 				ref="input"
@@ -83,14 +85,13 @@ export default class Text_input extends Component
 				className="text-input-field"
 				style={input_style}
 				value={value}
-				onFocus={::this.on_focus}
-				onChange={::this.on_change}
+				onFocus={this.on_focus}
+				onChange={this.on_change}
 				placeholder={placeholder}
 				autoFocus={focus}/>
 		}
 		else
 		{
-			// onBlur={::this.on_blur}
 			return <input
 				ref="input"
 				type={type}
@@ -98,8 +99,8 @@ export default class Text_input extends Component
 				className="text-input-field"
 				style={input_style}
 				value={value}
-				onFocus={::this.on_focus}
-				onChange={::this.on_change}
+				onFocus={this.on_focus}
+				onChange={this.on_change}
 				placeholder={placeholder}
 				autoFocus={focus}/>
 		}

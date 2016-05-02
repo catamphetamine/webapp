@@ -36,6 +36,13 @@ const messages = defineMessages
 @international()
 export default class Sign_in extends Component
 {
+	constructor(props, context)
+	{
+		super(props, context)
+
+		this.redirect = this.redirect.bind(this)
+	}
+
 	componentWillMount()
 	{
 		// при обновлении этой страницы (Ctrl + R), 
@@ -61,7 +68,7 @@ export default class Sign_in extends Component
 					fields={{ email }}
 					focus_on={this.get_focused_element()}
 					style={style.form} 
-					on_sign_in={::this.redirect}/>
+					on_sign_in={this.redirect}/>
 
 				{ this.props.error ? this.render_error() : null }
 			</section>

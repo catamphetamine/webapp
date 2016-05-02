@@ -12,6 +12,13 @@ export default class Dialog extends Component
 		show_dialog: false
 	}
 
+	constructor(props, context)
+	{
+		super(props, context)
+
+		this.toggle_dialog = this.toggle_dialog.bind(this)
+	}
+
 	render()
 	{
 		const markup = 
@@ -25,11 +32,11 @@ export default class Dialog extends Component
 					<br/>
 					<br/>
 
-					<button style={style.button} onClick={::this.toggle_dialog}>Show</button>
+					<button style={style.button} onClick={this.toggle_dialog}>Show</button>
 
 					<Modal
 						isOpen={this.state.show_dialog}
-						onRequestClose={::this.toggle_dialog}
+						onRequestClose={this.toggle_dialog}
 						// closeTimeoutMS={1000}
 						style={style.modal}>
 
@@ -39,7 +46,7 @@ export default class Dialog extends Component
 							На этом этапе электрификации все потребители электроэнергии (каковыми являлись исключительно осветительные приборы) использовали постоянный ток, и существовали определенные проблемы с передачей электроэнергии на значительные расстояния. Вследствие этого источник электроэнергии располагался в непосредственной близости от потребителя. Так, например, в случае с Киевскими железнодорожными мастерскими каждый из четырех фонарей имел свою электромагнитную машину Грамма.
 						</p>
 
-						<button style={style.button} onClick={::this.toggle_dialog}>Hide</button>
+						<button style={style.button} onClick={this.toggle_dialog}>Hide</button>
 					</Modal>
 				</div>
 			</div>

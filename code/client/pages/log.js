@@ -66,6 +66,14 @@ export default class Log extends Component
 		error   : PropTypes.object
 	}
 
+	constructor(props, context)
+	{
+		super(props, context)
+
+		this.render_log_entry = this.render_log_entry.bind(this)
+		this.hide_stack_trace = this.hide_stack_trace.bind(this)
+	}
+
 	render()
 	{
 		const { error, log, translate } = this.props
@@ -88,7 +96,7 @@ export default class Log extends Component
 						</thead>
 
 						<tbody>
-							{log.map(::this.render_log_entry)}
+							{log.map(this.render_log_entry)}
 						</tbody>
 					</table>
 				</section>
@@ -96,7 +104,7 @@ export default class Log extends Component
 				{/* Error stack trace */}
 				<Modal
 					isOpen={this.state.show_stack_trace}
-					onRequestClose={::this.hide_stack_trace}
+					onRequestClose={this.hide_stack_trace}
 					style={style.stack_trace_modal}>
 
 					<h1 style={style.stack_trace.title}>{this.state.error_message}</h1>
@@ -127,7 +135,7 @@ export default class Log extends Component
 						return markup
 					})}
 
-					<button style={style.stack_trace_modal.button} onClick={::this.hide_stack_trace}>
+					<button style={style.stack_trace_modal.button} onClick={this.hide_stack_trace}>
 						{translate(messages.hide_stack_trace)}
 					</button>
 				</Modal>
