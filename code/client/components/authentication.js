@@ -15,6 +15,7 @@ import Form                from './form'
 import Modal               from './modal'
 import Authentication_form from './authentication form'
 import User_picture        from './user picture'
+import Dropdown            from './dropdown'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
 
@@ -130,22 +131,66 @@ export default class Authentication extends Component
 
 	render_user_info(user)
 	{
+		{/* Username and user picture */}
+		const user_info =
+		(
+			<Link
+				to={`/user/${user.id}`}>
+
+				{/* Username */}
+				<span
+					style={style.user_menu_toggler.element}
+					className="user-name">
+					{user.name}
+				</span>
+
+				{/* User picture */}
+				<User_picture
+					style={style.user_menu_toggler.element} 
+					className="user-picture--header"
+					user={user}/>
+			</Link>
+		)
+
 		const markup = 
 		(
 			<div className="user-info">
-				{/* Username */}
-				{/* <a href="/"></a> */}
-				<Link to={`/user/${user.id}`} className="user-name">{user.name}</Link>
 
-				{/* Sign out action */}
-				<Form className="sign-out-form" post="/authentication/legacy/sign-out">
-					<Button className="sign-out" submit={true} action={this.sign_out}>{this.translate(messages.sign_out)}</Button>
-				</Form>
+				{/* Dropdown */}
+				<Dropdown
+					menu={true}
+					toggler={user_info}
+					alignment="right">
 
-				{/* The picture itself */}
-				<User_picture
-					className="user-picture--header"
-					user={user}/>
+					<Link key="notifications" to="/feed">
+						Уведомления
+					</Link>
+
+					<Link key="messages" to="/messages">
+						Сообщения
+					</Link>
+
+					<Link key="profile" to="/profile">
+						Профиль
+					</Link>
+
+					<Link key="settings" to="/settings">
+						Настройки
+					</Link>
+
+					{/* Sign out action */}
+					<div key="log_out" onClick={event =>
+					{
+						if (event.target.type !== 'submit')
+						{
+							this.sign_out()
+						}
+					}}>
+						<Form className="sign-out-form" post="/authentication/legacy/sign-out">
+							<Button className="sign-out" submit={true} action={this.sign_out}>{this.translate(messages.sign_out)}</Button>
+						</Form>
+					</div>
+				</Dropdown>
 			</div>
 		)
 
@@ -197,4 +242,8 @@ export default class Authentication extends Component
 
 const style = styler
 `
+	user_menu_toggler
+		element
+			display: inline-block
+			vertical-align: middle
 `

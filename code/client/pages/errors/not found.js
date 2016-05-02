@@ -40,5 +40,6 @@ export default class Page_not_found extends Component
 const style = styler
 `
 	header
+		margin-top: 4rem
 		text-align: center
 `

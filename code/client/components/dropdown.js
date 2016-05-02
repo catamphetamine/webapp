@@ -23,9 +23,12 @@ export default class Dropdown extends Component
 		name       : PropTypes.string,
 		label      : PropTypes.string,
 		value      : PropTypes.any,
-		on_change  : PropTypes.func.isRequired,
+		on_change  : PropTypes.func,
 		validate   : PropTypes.func,
 
+		alignment  : PropTypes.string,
+		menu       : PropTypes.bool,
+		toggler    : PropTypes.element,
 		scroll     : PropTypes.bool,
 		upward     : PropTypes.bool,
 		max_items  : PropTypes.number,
@@ -37,6 +40,8 @@ export default class Dropdown extends Component
 
 	static defaultProps = 
 	{
+		alignment : 'left',
+
 		scroll : true,
 
 		max_items : 6,
@@ -57,7 +62,7 @@ export default class Dropdown extends Component
 		this.toggle           = this.toggle.bind(this)
 		this.document_clicked = this.document_clicked.bind(this)
 
-		if (props.children)
+		if (props.children && !props.menu)
 		{
 			React.Children.forEach(props.children, function(element)
 			{
@@ -71,6 +76,16 @@ export default class Dropdown extends Component
 					throw new Error(`You must specify "label" prop on each child of <Dropdown/>`)
 				}
 			})
+		}
+
+		if (props.menu && !props.toggler)
+		{
+			throw new Error(`Supply a "toggler" component when enabling "menu" in <Dropdown/>`)
+		}
+
+		if (!props.menu && !props.on_change)
+		{
+			throw new Error(`"on_change" property must be specified for <Dropdown/>`)
 		}
 	}
 
@@ -100,17 +115,32 @@ export default class Dropdown extends Component
 
 	render()
 	{
-		const { options, upward, scroll, children } = this.props
+		const { options, upward, scroll, children, menu, toggler, alignment } = this.props
 
 		let list_style = upward ? style.list.upward : style.list.downward
 
-		if (scroll && exists(this.state.list_height))
+		list_style = clone(list_style)
+
+		switch (alignment)
 		{
-			list_style = clone(list_style)
+			case 'left':
+				list_style.left = 0
+				break
+
+			case 'right':
+				list_style.right = 0
+				break
+
+			default:
+				throw new Error(`Unsupported alignment: "${alignment}"`)
+		}
+
+		if (!menu && scroll && exists(this.state.list_height))
+		{
 			list_style.maxHeight = this.state.list_height + 'px'
 		}
 
-		const overflow = options && this.overflown()
+		const overflow = scroll && options && this.overflown()
 
 		let list_items
 
@@ -123,15 +153,22 @@ export default class Dropdown extends Component
 			list_items = React.Children.map(children, element => this.render_list_item({ element }))
 		}
 
+		const wrapper_style = merge(style.wrapper, { textAlign: alignment })
+
 		const markup = 
 		(
-			<div style={ this.props.style ? merge(style.wrapper, this.props.style) : style.wrapper } className={"rich dropdown" + " " + (upward ? "dropdown-upward" : "") + " " + (this.state.expanded ? "dropdown-expanded" : "dropdown-collapsed")}>
+			<div
+				style={ this.props.style ? merge(wrapper_style, this.props.style) : wrapper_style }
+				className={"rich dropdown" + " " + (upward ? "dropdown-upward" : "") + " " + (this.state.expanded ? "dropdown-expanded" : "dropdown-collapsed")}>
 
 				{/* List container */}
 				<div style={ this.state.expanded ? style.container.expanded : style.container }>
 
 					{/* Currently selected item */}
-					{this.render_selected_item()}
+					{!menu && this.render_selected_item()}
+
+					{/* Menu toggler */}
+					{menu && React.cloneElement(toggler, { onClick: this.toggle })}
 
 					{/* A placeholder to stretch the parent <div/> to 100% width of the list */}
 					{/* (because the list to select from has `position: absolute` set) */}
@@ -161,7 +198,7 @@ export default class Dropdown extends Component
 			value = element.props.value
 		}
 
-		const is_selected = value === this.props.value
+		const is_selected = this.props.value !== undefined && value === this.props.value
 
 		let list_item_style = { textAlign: 'left' } 
 
@@ -186,12 +223,37 @@ export default class Dropdown extends Component
 			// list_item_style.paddingRight = scrollbar_width
 		}
 
+		const className = "dropdown-item " + (is_selected ? 'dropdown-item-selected-in-list' : '')
+
+		let button
+
+		if (element)
+		{
+			button = React.cloneElement(element,
+			{
+				onClick   : event =>
+				{
+					element.props.onClick(event)
+					// this.item_clicked(value, event)
+				},
+				style     : extend(item_style, element.props.style),
+				className : element.props.className ? element.props.className + ' ' + className : className
+			})
+		}
+		else
+		{
+			button = <button
+				onClick={event => this.item_clicked(value, event)}
+				style={item_style}
+				className={className}>
+				{label}
+			</button>
+		}
+
 		const markup =
 		(
 			<li key={value} style={list_item_style}>
-				<button onClick={event => this.item_clicked(value, event)} style={item_style} className={ "dropdown-item " + (is_selected ? 'dropdown-item-selected-in-list' : '') }>
-					{element || label}
-				</button>
+				{button}
 			</li>
 		)
 
@@ -320,7 +382,7 @@ export default class Dropdown extends Component
 
 		const state = { height, vertical_padding, border }
 
-		if (this.props.scroll && this.props.options && this.overflown())
+		if (!this.props.menu && this.props.scroll && this.props.options && this.overflown())
 		{
 			state.list_height = this.scrollable_list_height(state)
 		}
@@ -364,7 +426,6 @@ const style = styler
 	wrapper
 		display        : inline-block
 		vertical-align : bottom
-		text-align     : left
 
 	container
 		position : relative
@@ -407,7 +468,6 @@ const style = styler
   
 	list
 		position : absolute
-		left : 0
 
 		z-index  : 1
 

@@ -31,16 +31,19 @@ header
 	// border-bottom : 1px solid $header-border-color;
 	// box-sizing    : border-box;
 
-	color: var(--white-color);
-
-	button, a.button, a, .dropdown-item-selected
+	a.button, a, .dropdown-item-selected
 	{
-		color: inherit;
+		color: var(--white-color);
 
 		&:active
 		{
 			color: var(--base-color-lightest);
 		}
+	}
+	
+	.logo
+	{
+		color: var(--white-color);
 	}
 }
 

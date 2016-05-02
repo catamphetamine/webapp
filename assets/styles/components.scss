@@ -155,13 +155,16 @@
 
 .dropdown-item
 {
+	width: 100%;
+
 	padding-left  : var(--dropdown-item-horizontal-padding);
 	padding-right : var(--dropdown-item-horizontal-padding);
 
 	padding-top    : var(--dropdown-item-vertical-padding);
 	padding-bottom : var(--dropdown-item-vertical-padding);
 
-	width: 100%;
+	box-sizing: border-box;
+
 	text-align: left;
 
 	&:active
@@ -362,11 +365,6 @@
 	margin-right: 0.8em;
 
 	margin-top: var(--header-vertically-centered-text-margin-top);
-
-	a
-	{
-
-	}
 }
 
 header > .nav-widescreen
@@ -408,6 +406,11 @@ header > .nav-widescreen
 	display         : flex;
 	flex-direction  : column;
 	justify-content : center;
+
+	button
+	{
+		color: inherit;
+	}
 }
 
 .authentication

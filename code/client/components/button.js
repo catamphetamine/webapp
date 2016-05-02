@@ -53,7 +53,7 @@ export default class Button extends Component
 					href={link}
 					onClick={event =>
 					{
-						// ignore mouse wheel clicks
+						// Ignore mouse wheel clicks
 						// and clicks with a modifier key pressed
 						if (event.nativeEvent.which === 2
 							|| event.shiftKey 
@@ -71,7 +71,7 @@ export default class Button extends Component
 							return
 						}
 
-						action()
+						action(event)
 					}}
 					className={'button' + (buttonClassName ? ' ' + buttonClassName : '')}
 					style={button_style}>

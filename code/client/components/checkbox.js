@@ -66,7 +66,7 @@ export default class Checkbox extends Component
 					type="checkbox" 
 					onChange={this.toggle} 
 					style={style.checkbox.input} 
-					value={value}/>
+					value={value === undefined ? false : value}/>
 
 				<div className="checkbox-border" style={ !value ? style.checkbox.label_before : style.checkbox.label_before.when_checked }/>
 

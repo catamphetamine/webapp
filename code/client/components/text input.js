@@ -84,7 +84,7 @@ export default class Text_input extends Component
 				name={name}
 				className="text-input-field"
 				style={input_style}
-				value={value}
+				value={value === undefined ? '' : value}
 				onFocus={this.on_focus}
 				onChange={this.on_change}
 				placeholder={placeholder}
@@ -98,7 +98,7 @@ export default class Text_input extends Component
 				name={name}
 				className="text-input-field"
 				style={input_style}
-				value={value}
+				value={value === undefined ? '' : value}
 				onFocus={this.on_focus}
 				onChange={this.on_change}
 				placeholder={placeholder}
