@@ -131,9 +131,9 @@
 	transition-duration        : 0ms; // don't animate short lists
 	transition-timing-function : ease-out;
 
-	border-width : 1px;
-	border-style : solid;
-	border-color : transparent;
+	// border-width : 1px;
+	// border-style : solid;
+	// border-color : transparent;
 
 	opacity: 0; // 0.85;
 
@@ -148,9 +148,7 @@
 
 .dropdown-item-list-expanded
 {
-	box-shadow : 0 3px 20px rgba(0, 0, 0, 0.05);
-
-	border-color : #e7e7e7;
+	// border-color : #e7e7e7;
 
 	opacity: 1;
 }
@@ -248,7 +246,7 @@
 
 	padding-top    : var(--input-padding);
 	padding-bottom : var(--input-padding);
-	margin-bottom  : -var(--input-border-width);
+	margin-bottom  : calc(-1 * var(--input-border-width));
 
 	border: none;
 	border-bottom: var(--input-border-width) solid var(--gray-color);
@@ -315,10 +313,10 @@
 		border: none;
 	}
 
-	.dropdown-item-icon > img
-	{
-		width: 1.2em;
-	}
+	// .dropdown-item-icon > img
+	// {
+	// 	width: 1.2em;
+	// }
 }
 
 // http://tympanus.net/codrops/2013/10/15/animated-checkboxes-and-radio-buttons-with-svg/

@@ -19,14 +19,14 @@ export default class Dropdown extends Component
 				value: React.PropTypes.string.isRequired,
 				label: React.PropTypes.string.isRequired
 			})
-		)
-		.isRequired,
+		),
 		name       : PropTypes.string,
 		label      : PropTypes.string,
 		value      : PropTypes.any,
 		on_change  : PropTypes.func.isRequired,
 		validate   : PropTypes.func,
 
+		scroll     : PropTypes.bool,
 		upward     : PropTypes.bool,
 		max_items  : PropTypes.number,
 
@@ -37,6 +37,8 @@ export default class Dropdown extends Component
 
 	static defaultProps = 
 	{
+		scroll : true,
+
 		max_items : 6,
 
 		// transition_item_count_min : 1,
@@ -82,41 +84,53 @@ export default class Dropdown extends Component
 
 	render()
 	{
-		const { options, upward } = this.props
+		const { options, upward, scroll, children } = this.props
 
-		const item_list = this.list_items()
+		let list_style = upward ? style.list.upward : style.list.downward
 
-		const list_style = clone(upward ? style.list.upward : style.list.downward)
-
-		if (exists(this.state.list_height))
+		if (scroll && exists(this.state.list_height))
 		{
+			list_style = clone(list_style)
 			list_style.maxHeight = this.state.list_height + 'px'
 		}
 
-		const overflow = this.overflown()
+		const overflow = options && this.overflown()
+
+		let list_items
+
+		if (options)
+		{
+			list_items = options.map(({ value, label, icon }, index) => this.render_list_item({ value, label, overflow }))
+		}
+		else
+		{
+			list_items = React.Children.map(children, element => this.render_list_item({ element }))
+		}
 
 		const markup = 
 		(
 			<div style={ this.props.style ? merge(style.wrapper, this.props.style) : style.wrapper } className={"rich dropdown" + " " + (upward ? "dropdown-upward" : "") + " " + (this.state.expanded ? "dropdown-expanded" : "dropdown-collapsed")}>
 
-				{/* list container */}
+				{/* List container */}
 				<div style={ this.state.expanded ? style.container.expanded : style.container }>
 
-					{/* currently selected item label */}
-					{ this.render_selected_item() }
+					{/* Currently selected item */}
+					{ options ? this.render_selected_item() : <button onClick={this.toggle}>afsdfsd</button> }
 
-					{/* a placeholder to make the parent <div/> take the whole width */}
+					{/* A placeholder to stretch the parent <div/> to 100% width of the list */}
+					{/* (because the list to select from has `position: absolute` set) */}
 					<ul style={style.list.placeholder} className="dropdown-item-list">
-						{ options.map(({ value, label, icon }, index) => this.render_list_item(value, label, icon, overflow))} {/*, index === 0, index === item_list.length - 1*/ }
+						{list_items}
 					</ul>
 
-					{/* a list to select from */}
+					{/* A list to select from */}
 					{/* Math.max(this.state.height, this.props.max_height) */}
 					<ul ref="list" style={list_style} className={'dropdown-item-list' + ' ' + (this.state.expanded ? 'dropdown-item-list-expanded' : '')}>
-						{ item_list.map(({ value, label, icon }, index) => this.render_list_item(value, label, icon, overflow))}
+						{list_items}
 					</ul>
 				</div>
 
+				{/* Fallback in case javascript is disabled */}
 				{this.render_static()}
 			</div>
 		)
@@ -124,24 +138,31 @@ export default class Dropdown extends Component
 		return markup
 	}
 
-	render_list_item(value, label, icon, overflow) // , first, last
+	render_list_item({ element, value, label, overflow }) // , first, last
 	{
+		if (value === undefined)
+		{
+			if (element)
+			{
+				value = element.props.value
+
+				if (!element.props.value)
+				{
+					throw new Error(`You must specify "value" prop on each child of <Dropdown/>`)
+				}
+
+				if (!element.props.label)
+				{
+					throw new Error(`You must specify "label" prop on each child of <Dropdown/>`)
+				}
+			}
+			else
+			{
+				throw new Error(`You must supply a "value" for each option of <Dropdown/>`)
+			}
+		}
+
 		const is_selected = value === this.props.value
-
-		let item_style = Object.clone(style.list.item)
-
-		// if (first && last)
-		// {
-		// 	item_style = item_style.single
-		// }
-		// else if (first)
-		// {
-		// 	item_style = item_style.first
-		// }
-		// else if (last)
-		// {
-		// 	item_style = item_style.last
-		// }
 
 		let list_item_style = { textAlign: 'left' } 
 
@@ -151,6 +172,8 @@ export default class Dropdown extends Component
 			list_item_style.overflow  = 'hidden'
 		}
 
+		let item_style = style.list.item
+
 		// on overflow the vertical scrollbar will take up space
 		// reducing padding-right and the only way to fix that
 		// is to add additional padding-right
@@ -158,6 +181,8 @@ export default class Dropdown extends Component
 		// a hack to restore padding-right taken up by a vertical scrollbar
 		if (overflow && add_padding_for_scrollbar)
 		{
+			item_style = Object.clone(style.list.item)
+
 			item_style.marginRight = scrollbar_width
 			// list_item_style.paddingRight = scrollbar_width
 		}
@@ -166,8 +191,7 @@ export default class Dropdown extends Component
 		(
 			<li key={value} style={list_item_style}>
 				<button onClick={event => this.item_clicked(value, event)} style={item_style} className={ "dropdown-item " + (is_selected ? 'dropdown-item-selected-in-list' : '') }>
-					<span className="dropdown-item-icon">{icon}</span>
-					<span className="dropdown-item-label">{label}</span>
+					{element || label}
 				</button>
 			</li>
 		)
@@ -179,27 +203,11 @@ export default class Dropdown extends Component
 	{
 		const selected = this.props.options.filter(x => x.value === this.props.value)[0]
 
-		let label
-
-		if (selected)
-		{
-			label = 
-			(
-				<span>
-					<span className="dropdown-item-icon">{selected.icon}</span>
-					<span className="dropdown-item-label">{selected.label}</span>
-				</span>
-			)
-		}
-		else
-		{
-			label = <span className="dropdown-item-label">{this.props.label}</span>
-		}
-
 		const markup =
 		(
 			<button onClick={this.toggle} style={style.selected_item_label} className="dropdown-item-selected">
-				{label}
+				{/* the label */}
+				{selected ? selected.label : this.props.label}
 
 				{/* an arrow */}
 				<div className="dropdown-arrow" style={ this.state.expanded ? style.arrow.expanded : style.arrow }/>
@@ -212,6 +220,8 @@ export default class Dropdown extends Component
 	// supports disabled javascript
 	render_static()
 	{
+		let { options, children } = this.props
+
 		const markup =
 		(
 			<div className="rich-fallback">
@@ -220,8 +230,13 @@ export default class Dropdown extends Component
 					value={this.props.value} 
 					onChange={event => {}} 
 					style={{ width: 'auto' }}>
-					
-					{this.list_items().map(item => <option className="dropdown-item" key={item.value} value={item.value}>{item.label}</option>)}
+					{
+						options
+						?
+						options.map(item => <option className="dropdown-item" key={item.value} value={item.value}>{item.label}</option>)
+						:
+						React.Children.map(children, child => <option className="dropdown-item" key={child.props.value} value={child.props.value}>{child.props.label}</option>)
+					}
 				</select>
 			</div>
 		)
@@ -231,29 +246,19 @@ export default class Dropdown extends Component
 
 	overflown()
 	{
-		return this.list_items().length > this.props.max_items
+		return this.props.options.length > this.props.max_items
 	}
 
-	overflown_height(state = this.state)
+	scrollable_list_height(state = this.state)
 	{
-		return (state.height - 2 * state.vertical_padding) * (this.props.max_items / this.list_items().length) + state.vertical_padding
-	}
-
-	list_items()
-	{
-		if (show_selected_item_in_list)
-		{
-			return this.props.options
-		}
-
-		return this.props.options.filter(({ value }) => value !== this.props.value)
+		return (state.height - 2 * state.vertical_padding) * (this.props.max_items / this.props.options.length) + state.vertical_padding
 	}
 
 	should_animate()
 	{
 		return true
 
-		// return this.list_items().length >= this.props.transition_item_count_min
+		// return this.props.options.length >= this.props.transition_item_count_min
 	}
 
 	toggle(event)
@@ -295,9 +300,9 @@ export default class Dropdown extends Component
 
 		const state = { height, vertical_padding, border }
 
-		if (this.overflown())
+		if (this.props.scroll && this.props.options && this.overflown())
 		{
-			state.list_height = this.overflown_height(state)
+			state.list_height = this.scrollable_list_height(state)
 		}
 
 		this.setState(state)

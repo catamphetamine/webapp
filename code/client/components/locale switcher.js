@@ -65,6 +65,13 @@ export default class Locale_switcher extends Component
 		locale: PropTypes.string.isRequired
 	}
 
+	constructor(props, context)
+	{
+		super(props, context)
+
+		this.set_locale = this.set_locale.bind(this)
+	}
+
 	render()
 	{
 		const { locale } = this.props
@@ -82,10 +89,23 @@ export default class Locale_switcher extends Component
 						name="locale"
 						label={this.props.translate(messages.language)} 
 						value={locale} 
-						on_change={::this.set_locale} 
-						options={locales.map(({ value, label }) => ({ value, label, icon: <Flag locale={value} style={style.locale.flag}/> }))} 
+						on_change={this.set_locale} 
 						title={this.props.translate(messages.language)}
-						upward={this.props.upward}/>
+						upward={this.props.upward}>
+
+						{locales.map(({ value, label }) =>
+						{
+							const markup =
+							(
+								<div value={value} label={label}>
+									<Flag locale={value} style={style.locale.flag}/>
+									{label}
+								</div>
+							)
+
+							return markup
+						})}
+					</Dropdown>
 
 					{/* submit */}
 					<Button 
@@ -150,8 +170,10 @@ const style = styler
 
 	locale
 		flag
-			// margin-right   : 0.4em
-			// margin-bottom  : -0.03em
+			position       : relative
+			top            : 0.1em
+			height         : 0.8em
+			margin-right   : 0.4em
 			vertical-align : baseline
 
 		form
@@ -160,5 +182,5 @@ const style = styler
 
 			button	
 				margin-left   : 0.5em
-				margin-bottom : 0.5em
+				margin-bottom : 0.2em
 `
