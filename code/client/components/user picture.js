@@ -56,6 +56,6 @@ export default class User_picture extends React.Component
 			type="user_picture"
 			max_width={1000}
 			sizes={sizes}
-			src={!sizes && require('../../../assets/images/user picture.png')}/>
+			src={sizes ? undefined : require('../../../assets/images/user picture.png')}/>
 	}
 }
