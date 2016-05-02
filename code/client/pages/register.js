@@ -8,7 +8,7 @@ import { should_redirect_to } from '../helpers/redirection'
 
 import international from '../international/internationalize'
 
-import { messages as authentication_messages }                           from '../components/authentication'
+import { messages as user_bar_messages }                           from '../components/user bar'
 import Authentication_form, { messages as authentication_form_messages } from '../components/authentication form'
 
 const messages = defineMessages
@@ -59,7 +59,7 @@ export default class Sign_in extends Component
 		const markup = 
 		(
 			<section className="content">
-				{title(this.props.translate(authentication_messages.register))}
+				{title(this.props.translate(user_bar_messages.register))}
 
 				<Authentication_form 
 					registration={true}
@@ -163,5 +163,6 @@ const style = styler
 		text-align: center
 
 	form
-		margin-top: 1.5em
+		margin-top    : 3rem
+		margin-bottom : 3rem
 `

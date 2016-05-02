@@ -13,7 +13,7 @@ import Button     from './button'
 import Form       from './form'
 import Modal      from './modal'
 
-import { messages as authentication_messages } from './authentication'
+import { messages as user_bar_messages } from './user bar'
 
 import { add_redirect, should_redirect_to } from '../helpers/redirection'
 
@@ -260,7 +260,7 @@ export default class Authentication extends Component
 				error={this.props.sign_in_error && this.sign_in_error(this.props.sign_in_error)}
 				post="/authentication/legacy/sign-in">
 
-				<h2 style={style.form_title}>{this.translate(authentication_messages.sign_in)}</h2>
+				<h2 style={style.form_title}>{this.translate(user_bar_messages.sign_in)}</h2>
 
 				<div style={style.or_register} className="or-register">
 					<span>{this.translate(messages.or)}&nbsp;</span>
@@ -269,7 +269,7 @@ export default class Authentication extends Component
 						button_style={style.or_register.register} 
 						action={this.start_registration}>
 
-						{this.translate(authentication_messages.register)}
+						{this.translate(user_bar_messages.register)}
 					</Button>
 				</div>
 
@@ -305,7 +305,7 @@ export default class Authentication extends Component
 				<div style={style.sign_in_buttons}>
 					<Button style={style.forgot_password} action={this.forgot_password}>{this.translate(messages.forgot_password)}</Button>
 
-					<Button buttonClassName="primary" style={style.form_action} submit={true} busy={this.props.signing_in}>{this.translate(authentication_messages.sign_in)}</Button>
+					<Button buttonClassName="primary" style={style.form_action} submit={true} busy={this.props.signing_in}>{this.translate(user_bar_messages.sign_in)}</Button>
 				</div>
 			</Form>
 		)
@@ -326,7 +326,7 @@ export default class Authentication extends Component
 				error={this.props.registration_error && this.registration_error(this.props.registration_error)}
 				post="/authentication/legacy/register">
 
-				<h2 style={style.form_title}>{this.translate(authentication_messages.register)}</h2>
+				<h2 style={style.form_title}>{this.translate(user_bar_messages.register)}</h2>
 
 				<div style={style.or_register} className="or-register">
 					<span>{this.translate(messages.or)}&nbsp;</span>
@@ -335,7 +335,7 @@ export default class Authentication extends Component
 						button_style={style.or_register.register} 
 						action={this.cancel_registration}>
 
-						{this.translate(authentication_messages.sign_in)}
+						{this.translate(user_bar_messages.sign_in)}
 					</Button>
 				</div>
 
@@ -395,7 +395,7 @@ export default class Authentication extends Component
 				{/* Support redirecting to the initial page when javascript is disabled */}
 				<input type="hidden" name="request" value={should_redirect_to(this.props.location)}/>
 
-				<Button submit={true} style={style.form_action.register} busy={this.props.signing_in || this.props.registering}>{this.translate(authentication_messages.register)}</Button>
+				<Button submit={true} style={style.form_action.register} busy={this.props.signing_in || this.props.registering}>{this.translate(user_bar_messages.register)}</Button>
 			</Form>
 		)
 

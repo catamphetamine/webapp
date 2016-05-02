@@ -17,7 +17,7 @@ import international   from '../international/internationalize'
 import Menu            from '../components/menu'
 import Menu_button     from '../components/menu button'
 import Locale_switcher from '../components/locale switcher'
-import Authentication  from '../components/authentication'
+import User_bar        from '../components/user bar'
 import Preloading      from '../components/preloading'
 
 // import { authenticate } from '../actions/authentication'
@@ -134,7 +134,7 @@ export default class Layout extends Component
 							<Menu items={menu_entries(translate)}/>
 
 							{/* User accout section */}
-							<Authentication/>
+							<User_bar/>
 						</header>
 					{/* </Sticky> */}
 
