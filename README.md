@@ -380,19 +380,6 @@ Troubleshooting
 To do
 ====================
 
-обновлять время онлайновости раз минуту мб
-
-аватарку по умолчанию изменить
-
-на время загрузки картинки показывать крутилку и дисейблить "отмену" и "сохранить"
-
-на время отмены и на время сохранения - дисейблить кнопки
-
-
-
-  
-
-
 hot reload для action'ов сделать можно (user profile)
 
 
@@ -454,6 +441,7 @@ if (!(/^\d+$/.test(id) || id.length === 24))
 
 
 
+
 Напоминания взять отсюда
 
 http://materializecss.com/dialogs.html
@@ -479,9 +467,6 @@ http://materializecss.com/media.html
 
 
 
-
-
-также сделать правку имени пользователя
 
 
 
@@ -616,17 +601,25 @@ endless scroll в логах: выгрузка тех страниц, котор
 
 
 
-в button.js сделать автопрефиксы
-
-
-
-
-
-
-
-
 В react-isomorphic-render мб перейти потом на async-props и react-router-redux, когда они стабилизируются со второй версией react-router'а
 
+
+
+
+
+
+Магазин:
+
+
+
+
+на страницах товара и магазина (профиль + список) 
+сделать скинирование страницы через переменные CSS:
+
+const styles = getComputedStyle(document.documentElement)
+const value = String(styles.getPropertyValue('--primary-color')).trim()
+
+document.documentElement.style.setProperty('--primary-color', 'green')
 
 
 

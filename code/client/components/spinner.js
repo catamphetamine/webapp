@@ -89,7 +89,7 @@ export default class Spinner extends Component
 
 		const markup = 
 		(
-			<div className="spinner" style={ this.props.style ? merge(style.container, this.props.style) : style.container }>
+			<div className="spinner" style={this.props.style}>
 				<svg viewBox="0 0 50 50">
 					<circle 
 						style={path_style} 

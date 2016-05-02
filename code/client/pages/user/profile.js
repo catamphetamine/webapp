@@ -18,6 +18,7 @@ import Button       from '../../components/button'
 import Dropdown     from '../../components/dropdown'
 import File_upload  from '../../components/file upload'
 import User_picture from '../../components/user picture'
+import Spinner      from '../../components/spinner'
 
 import international from '../../international/internationalize'
 
@@ -102,7 +103,10 @@ const messages = defineMessages
 		user_update_error         : model.user_profile.update_error,
 		user_picture_upload_error : model.user_profile.user_picture_upload_error,
 
-		uploaded_picture : model.user_profile.uploaded_picture,
+		uploaded_picture  : model.user_profile.uploaded_picture,
+		uploading_picture : model.user_profile.uploading_picture,
+
+		updating_user : model.user_profile.updating_user,
 
 		locale : model.locale.locale
 	}),
@@ -129,6 +133,9 @@ export default class User_profile extends Component
 		user_update_error    : PropTypes.any,
 
 		uploaded_picture     : PropTypes.object,
+
+		updating_user        : PropTypes.bool,
+		uploading_picture    : PropTypes.bool,
 
 		locale               : PropTypes.string.isRequired,
 
@@ -207,7 +214,9 @@ export default class User_profile extends Component
 			latest_activity_time,
 			user_update_error,
 			user_picture_upload_error,
-			uploaded_picture
+			uploaded_picture,
+			updating_user,
+			uploading_picture
 		}
 		= this.props
 
@@ -235,7 +244,7 @@ export default class User_profile extends Component
 
 								{/* "Edit profile" */}
 								{ !edit && 
-									<Button 
+									<Button
 										style={style.own_profile_actions.action}
 										button_style={style.own_profile_actions.action.button}
 										action={this.edit_profile}>
@@ -248,7 +257,8 @@ export default class User_profile extends Component
 									<Button 
 										style={style.own_profile_actions.action}
 										button_style={style.own_profile_actions.action.button}
-										action={this.cancel_profile_edits}>
+										action={this.cancel_profile_edits}
+										disabled={updating_user || uploading_picture}>
 										{translate(messages.cancel_profile_edits)}
 									</Button>
 								}
@@ -259,7 +269,9 @@ export default class User_profile extends Component
 										style={style.own_profile_actions.action}
 										buttonClassName="primary"
 										button_style={style.own_profile_actions.action.button}
-										action={this.save_profile_edits}>
+										action={this.save_profile_edits}
+										disabled={uploading_picture}
+										busy={updating_user}>
 										{translate(messages.save_profile_edits)}
 									</Button>
 								}
@@ -303,7 +315,10 @@ export default class User_profile extends Component
 									action={this.upload_user_picture}>
 
 									{/* "Change user picture" label */}
-									{!uploaded_picture && translate(messages.change_user_picture)}
+									{!uploaded_picture && !uploading_picture && translate(messages.change_user_picture)}
+
+									{/* "Uploading picture" spinner */}
+									{uploading_picture && <Spinner style={style.user_picture.element.spinner}/>}
 								</File_upload>
 							}
 						</div>
@@ -469,6 +484,12 @@ const style = styler
 			width            : 100%
 			height           : 100%
 			border-radius    : inherit
+
+			&spinner
+				display    : block
+				color      : white
+				padding    : 20%
+				box-sizing : border-box
 
 			&overlay
 				cursor           : pointer

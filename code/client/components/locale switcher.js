@@ -133,6 +133,8 @@ export default class Locale_switcher extends Component
 const style = styler
 `
 	spinner
+		display : inline-block
+
 		width  : 1em
 		height : 1em
 

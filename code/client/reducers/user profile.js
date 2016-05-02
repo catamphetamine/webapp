@@ -74,7 +74,8 @@ const handlers =
 	{
 		const new_state = 
 		{
-			...state
+			...state,
+			updating_user : true
 		}
 
 		return new_state
@@ -85,7 +86,8 @@ const handlers =
 		const new_state = 
 		{
 			...state,
-			user : result
+			user : result,
+			updating_user : false
 		}
 
 		return new_state
@@ -96,7 +98,8 @@ const handlers =
 		const new_state = 
 		{
 			...state,
-			update_error : error
+			update_error : error,
+			updating_user : false
 		}
 
 		return new_state
@@ -113,12 +116,24 @@ const handlers =
 		return new_state
 	},
 
+	'upload user picture pending': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			uploading_picture : true
+		}
+
+		return new_state
+	},
+
 	'upload user picture done': (result, state) =>
 	{
 		const new_state = 
 		{
 			...state,
-			uploaded_picture : result
+			uploaded_picture  : result,
+			uploading_picture : false
 		}
 
 		return new_state
@@ -129,7 +144,8 @@ const handlers =
 		const new_state = 
 		{
 			...state,
-			user_picture_upload_error : error
+			user_picture_upload_error : error,
+			uploading_picture         : false
 		}
 
 		return new_state

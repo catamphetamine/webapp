@@ -9,6 +9,7 @@ export default class Button extends Component
 	{
 		action          : PropTypes.func,
 		busy            : PropTypes.bool,
+		disabled        : PropTypes.bool,
 		submit          : PropTypes.bool,
 		link            : PropTypes.string,
 		className       : PropTypes.string,
@@ -35,7 +36,7 @@ export default class Button extends Component
 
 	render_button()
 	{
-		const { link, busy, action, submit, className, buttonClassName } = this.props
+		const { link, busy, disabled, action, submit, className, buttonClassName } = this.props
 
 		let button_style = busy ? style.button.hide : style.button.show 
 
@@ -65,7 +66,7 @@ export default class Button extends Component
 
 						event.preventDefault()
 
-						if (busy)
+						if (busy || disabled)
 						{
 							return
 						}
@@ -86,7 +87,7 @@ export default class Button extends Component
 		(
 			<button
 				type={submit ? 'submit' : 'button'}
-				disabled={busy}
+				disabled={busy || disabled}
 				onClick={action}
 				className={buttonClassName}
 				style={button_style}>

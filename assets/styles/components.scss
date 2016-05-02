@@ -379,6 +379,10 @@ header > .nav-widescreen
 
 .user-picture
 {
+	.spinner
+	{
+		stroke : var(--white-color);
+	}
 }
 
 .user-picture--header
