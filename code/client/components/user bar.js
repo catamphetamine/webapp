@@ -156,7 +156,7 @@ export default class Authentication extends Component
 	render_user_info(user)
 	{
 		const { translate } = this.props
-		
+
 		{/* Username and user picture */}
 		const user_info =
 		(
@@ -188,6 +188,14 @@ export default class Authentication extends Component
 					toggler={user_info}
 					alignment="right">
 
+					{/* Profile */}
+					<Link key="profile" to={`/user/${user.id}`}>
+						{/* Icon */}
+						<i className="material-icons">account_box</i>
+						{/* Text */}
+						{translate(messages.profile)}
+					</Link>
+
 					{/* Feed */}
 					<Link key="notifications" to="/feed">
 						{/* Icon */}
@@ -202,14 +210,6 @@ export default class Authentication extends Component
 						<i className="material-icons">chat_bubble_outline</i>
 						{/* Text */}
 						{translate(messages.messages)}
-					</Link>
-
-					{/* Profile */}
-					<Link key="profile" to="/profile">
-						{/* Icon */}
-						<i className="material-icons">account_box</i>
-						{/* Text */}
-						{translate(messages.profile)}
 					</Link>
 
 					{/* Settings */}
