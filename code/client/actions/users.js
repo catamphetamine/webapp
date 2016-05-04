@@ -11,7 +11,6 @@ export function get_user(user_id)
 
 export function get_users_latest_activity_time(user_id)
 {
-
 	const action =
 	{
 		promise : http => http.get(`/authentication/latest-activity/${user_id}`),

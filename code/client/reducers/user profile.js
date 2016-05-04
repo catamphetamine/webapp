@@ -153,13 +153,17 @@ const handlers =
 
 	'save user picture done': (result, state) =>
 	{
-		state.user =
+		const new_state = 
 		{
-			...state.user,
-			picture: result
+			...state,
+			user:
+			{
+				...state.user,
+				picture : result
+			}
 		}
-		
-		return state
+
+		return new_state
 	},
 
 	'dismiss uploaded user picture': (result, state) =>
@@ -167,10 +171,13 @@ const handlers =
 		const new_state = 
 		{
 			...state,
-			uploaded_picture : undefined
+			uploaded_picture : undefined,
+			user:
+			{
+				...state.user,
+				picture : state.uploaded_picture
+			}
 		}
-
-		new_state.user.picture = state.uploaded_picture
 
 		return new_state
 	},
@@ -192,6 +199,28 @@ const handlers =
 		{
 			...state,
 			uploaded_picture : undefined
+		}
+
+		return new_state
+	},
+
+	'uploaded user picture is too big': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			uploaded_user_picture_is_too_big_error : true
+		}
+
+		return new_state
+	},
+
+	'dismiss uploaded user picture is too big error': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			uploaded_user_picture_is_too_big_error : undefined
 		}
 
 		return new_state

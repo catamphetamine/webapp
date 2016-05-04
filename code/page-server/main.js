@@ -5,6 +5,7 @@ import React from 'react'
 
 import webpage_server from 'react-isomorphic-render/page-server'
 import is_intl_locale_supported from 'intl-locales-supported'
+import file_size_parser from 'filesize-parser'
 
 import create_store   from '../client/redux store'
 import create_routes  from '../client/routes'
@@ -152,7 +153,17 @@ webpage_server
 	// returns an array of React elements.
 	// allows adding arbitrary React components to the start of the <body/>
 	// (use `key`s to prevent React warning when returning an array of React elements)
-	body_start: () => <script dangerouslySetInnerHTML={{__html: `document.body.classList.add('javascript-is-enabled')`}}/>,
+	body_start: () => <script dangerouslySetInnerHTML={{__html: `
+		document.body.classList.add('javascript-is-enabled')
+
+		window.configuration =
+		{
+			image_service:
+			{
+				file_size_limit: ${file_size_parser(configuration.image_service.file_size_limit)}
+			}
+		}
+	`}}/>,
 
 	// (optional)
 	// returns an array of React elements.

@@ -80,6 +80,12 @@ const messages = defineMessages
 		id             : `user.profile.user_picture_upload_error`,
 		description    : `Failed to upload user picture`,
 		defaultMessage : `Couldn't process the picture`
+	},
+	uploaded_user_picture_is_too_big_error:
+	{
+		id             : `user.profile.uploaded_user_picture_is_too_big_error`,
+		description    : `The image user tried to upload is too big`,
+		defaultMessage : `The image file you tried to upload is too big. Only images up to 10 Megabytes are allowed.`
 	}
 })
 
@@ -100,8 +106,9 @@ const messages = defineMessages
 		user                 : model.user_profile.user,
 		latest_activity_time : model.user_profile.latest_activity_time,
 
-		user_update_error         : model.user_profile.update_error,
-		user_picture_upload_error : model.user_profile.user_picture_upload_error,
+		user_update_error                      : model.user_profile.update_error,
+		user_picture_upload_error              : model.user_profile.user_picture_upload_error,
+		uploaded_user_picture_is_too_big_error : model.user_profile.uploaded_user_picture_is_too_big_error,
 
 		uploaded_picture  : model.user_profile.uploaded_picture,
 		uploading_picture : model.user_profile.uploading_picture,
@@ -115,6 +122,7 @@ const messages = defineMessages
 		update_user,
 		upload_user_picture,
 		save_user_picture,
+		get_users_latest_activity_time,
 		dispatch
 	},
 	dispatch)
@@ -130,7 +138,10 @@ export default class User_profile extends Component
 
 		user                 : PropTypes.object.isRequired,
 		latest_activity_time : PropTypes.object,
-		user_update_error    : PropTypes.any,
+
+		user_update_error                      : PropTypes.any,
+		user_picture_upload_error              : PropTypes.any,
+		uploaded_user_picture_is_too_big_error : PropTypes.bool,
 
 		uploaded_picture     : PropTypes.object,
 
@@ -139,10 +150,11 @@ export default class User_profile extends Component
 
 		locale               : PropTypes.string.isRequired,
 
-		update_user          : PropTypes.func.isRequired,
-		upload_user_picture  : PropTypes.func.isRequired,
-		save_user_picture    : PropTypes.func.isRequired,
-		dispatch             : PropTypes.func.isRequired
+		update_user                    : PropTypes.func.isRequired,
+		upload_user_picture            : PropTypes.func.isRequired,
+		save_user_picture              : PropTypes.func.isRequired,
+		get_users_latest_activity_time : PropTypes.func.isRequired,
+		dispatch                       : PropTypes.func.isRequired
 	}
 
 	static contextTypes =
@@ -192,7 +204,7 @@ export default class User_profile extends Component
 	{
 		this.latest_activity_time_refresh = setInterval(() =>
 		{
-			this.props.dispatch(get_users_latest_activity_time(this.props.user.id))
+			this.props.get_users_latest_activity_time(this.props.user.id)
 		},
 		60 * 1000)
 	}
@@ -214,6 +226,7 @@ export default class User_profile extends Component
 			latest_activity_time,
 			user_update_error,
 			user_picture_upload_error,
+			uploaded_user_picture_is_too_big_error,
 			uploaded_picture,
 			updating_user,
 			uploading_picture
@@ -276,10 +289,11 @@ export default class User_profile extends Component
 									</Button>
 								}
 
-								{ (user_update_error || user_picture_upload_error) &&
+								{ (user_update_error || user_picture_upload_error || uploaded_user_picture_is_too_big_error) &&
 									<ul style={style.own_profile_actions.error} className="errors">
 										{user_update_error && <li>{translate(messages.update_error)}</li>}
 										{user_picture_upload_error && <li>{translate(messages.user_picture_upload_error)}</li>}
+										{uploaded_user_picture_is_too_big_error && <li>{translate(messages.uploaded_user_picture_is_too_big_error)}</li>}
 									</ul>
 								}
 							</div>
@@ -312,6 +326,7 @@ export default class User_profile extends Component
 								<File_upload
 									className="user-profile__picture__change__label"
 									style={style.user_picture.element.overlay.label}
+									on_choose={() => this.props.dispatch({ type: 'dismiss uploaded user picture is too big error' })}
 									action={this.upload_user_picture}>
 
 									{/* "Change user picture" label */}
@@ -453,6 +468,7 @@ export default class User_profile extends Component
 	{
 		this.props.dispatch({ type: 'dismiss user update error' })
 		this.props.dispatch({ type: 'dismiss user picture upload error' })
+		this.props.dispatch({ type: 'dismiss uploaded user picture is too big error' })
 	}
 
 	send_message()
@@ -467,6 +483,11 @@ export default class User_profile extends Component
 
 	async upload_user_picture(file)
 	{
+		if (file.size > configuration.image_service.file_size_limit)
+		{
+			return this.props.dispatch({ type: 'uploaded user picture is too big' })
+		}
+
 		await this.props.upload_user_picture(file)
 	}
 }
