@@ -251,167 +251,172 @@ export default class User_profile extends Component
 						)}
 						style={style.personal_info}>
 
-						{/* Edit/Save own profile */}
-						{ is_own_profile &&
-							<div style={style.own_profile_actions} className="user-profile__actions">
-
-								{/* "Edit profile" */}
-								{ !edit && 
-									<Button
-										style={style.own_profile_actions.action}
-										button_style={style.own_profile_actions.action.button}
-										action={this.edit_profile}>
-										{translate(messages.edit_profile)}
-									</Button>
-								}
-
-								{/* "Cancel changes" */}
-								{  edit && 
-									<Button 
-										style={style.own_profile_actions.action}
-										button_style={style.own_profile_actions.action.button}
-										action={this.cancel_profile_edits}
-										disabled={updating_user || uploading_picture}>
-										{translate(messages.cancel_profile_edits)}
-									</Button>
-								}
-
-								{/* "Save changes" */}
-								{  edit && 
-									<Button 
-										style={style.own_profile_actions.action}
-										buttonClassName="primary"
-										button_style={style.own_profile_actions.action.button}
-										action={this.save_profile_edits}
-										disabled={uploading_picture}
-										busy={updating_user}>
-										{translate(messages.save_profile_edits)}
-									</Button>
-								}
-
-								{ (user_update_error || user_picture_upload_error || uploaded_user_picture_is_too_big_error) &&
-									<ul style={style.own_profile_actions.error} className="errors">
-										{user_update_error && <li>{translate(messages.update_error)}</li>}
-										{user_picture_upload_error && <li>{translate(messages.user_picture_upload_error)}</li>}
-										{uploaded_user_picture_is_too_big_error && <li>{translate(messages.uploaded_user_picture_is_too_big_error)}</li>}
-									</ul>
-								}
-							</div>
+						{/* User profile edit errors */}
+						{ (user_update_error || user_picture_upload_error || uploaded_user_picture_is_too_big_error) &&
+							<ul style={style.own_profile_actions.errors} className="errors">
+								{user_update_error && <li>{translate(messages.update_error)}</li>}
+								{user_picture_upload_error && <li>{translate(messages.user_picture_upload_error)}</li>}
+								{uploaded_user_picture_is_too_big_error && <li>{translate(messages.uploaded_user_picture_is_too_big_error)}</li>}
+							</ul>
 						}
 
-						{/* User picture */}
-						<div
-							style={style.user_picture}
-							className={classNames(
-								'user-picture',
-								'user-picture--profile',
-								'card'
-							)}>
-							
-							{/* The picture itself */}
-							<User_picture
-								style={style.user_picture.element.image}
-								user={user}
-								picture={edit ? uploaded_picture : undefined}/>
+						{/* User profile content (solely for "position: relative") */}
+						<div style={{ position: 'relative' }}>
 
-							{/* "Change user picture" overlay */}
-							{ edit && !uploaded_picture &&
-								<div
-									className="user-profile__picture__change__overlay"
-									style={style.user_picture.element.overlay.background}/>
+							{/* Edit/Save own profile */}
+							{ is_own_profile &&
+								<div style={style.own_profile_actions} className="user-profile__actions">
+
+									{/* "Edit profile" */}
+									{ !edit && 
+										<Button
+											style={style.own_profile_actions.action}
+											button_style={style.own_profile_actions.action.button}
+											action={this.edit_profile}>
+											{translate(messages.edit_profile)}
+										</Button>
+									}
+
+									{/* "Cancel changes" */}
+									{  edit && 
+										<Button 
+											style={style.own_profile_actions.action}
+											button_style={style.own_profile_actions.action.button}
+											action={this.cancel_profile_edits}
+											disabled={updating_user || uploading_picture}>
+											{translate(messages.cancel_profile_edits)}
+										</Button>
+									}
+
+									{/* "Save changes" */}
+									{  edit && 
+										<Button 
+											style={style.own_profile_actions.action}
+											buttonClassName="primary"
+											button_style={style.own_profile_actions.action.button}
+											action={this.save_profile_edits}
+											disabled={uploading_picture}
+											busy={updating_user}>
+											{translate(messages.save_profile_edits)}
+										</Button>
+									}
+								</div>
 							}
 
-							{/* "Change user picture" file uploader */}
+							{/* User picture */}
+							<div
+								style={style.user_picture}
+								className={classNames(
+									'user-picture',
+									'user-picture--profile',
+									'card'
+								)}>
+								
+								{/* The picture itself */}
+								<User_picture
+									style={style.user_picture.element.image}
+									user={user}
+									picture={edit ? uploaded_picture : undefined}/>
+
+								{/* "Change user picture" overlay */}
+								{ edit && !uploaded_picture &&
+									<div
+										className="user-profile__picture__change__overlay"
+										style={style.user_picture.element.overlay.background}/>
+								}
+
+								{/* "Change user picture" file uploader */}
+								{ edit &&
+									<File_upload
+										className="user-profile__picture__change__label"
+										style={style.user_picture.element.overlay.label}
+										on_choose={() => this.props.dispatch({ type: 'dismiss uploaded user picture is too big error' })}
+										action={this.upload_user_picture}>
+
+										{/* "Change user picture" label */}
+										{!uploaded_picture && !uploading_picture && translate(messages.change_user_picture)}
+
+										{/* "Uploading picture" spinner */}
+										{uploading_picture && <Spinner style={style.user_picture.element.spinner}/>}
+									</File_upload>
+								}
+							</div>
+
+							{/* Name: "John Brown" */}
+							{ edit ?
+								<Text_input
+									style={style.user_name.edit}
+									input_style={style.user_name.edit}
+									value={this.state.name}
+									on_change={name => this.setState({ name })}/>
+								:
+								<h1 style={style.user_name.idle}>{user.name}</h1>
+							}
+
+							{/* Place: "Moscow" */}
 							{ edit &&
-								<File_upload
-									className="user-profile__picture__change__label"
-									style={style.user_picture.element.overlay.label}
-									on_choose={() => this.props.dispatch({ type: 'dismiss uploaded user picture is too big error' })}
-									action={this.upload_user_picture}>
+								// City, town, etc
+								<Text_input
+									value={this.state.place}
+									on_change={place => this.setState({ place })}/>
+							}
 
-									{/* "Change user picture" label */}
-									{!uploaded_picture && !uploading_picture && translate(messages.change_user_picture)}
+							{/* Country: "Russia" */}
+							{ edit &&
+								// Country
+								<Dropdown
+									options={this.countries}
+									value={this.state.country}
+									on_change={country => this.setState({ country })}/>
+							}
 
-									{/* "Uploading picture" spinner */}
-									{uploading_picture && <Spinner style={style.user_picture.element.spinner}/>}
-								</File_upload>
+							{ !edit &&
+								(user.place && user.country &&
+									<div
+										style={style.user_location}
+										className="user-profile__location">
+										{user.place + ', ' + translate({ id: `country.${user.country}` })}
+									</div>
+								)
+							}
+
+							{/* "Send message", "Subscribe" */}
+							{ !is_own_profile &&
+								<div style={style.user_actions}>
+									{/* "Subscribe" */}
+									<Button
+										style={style.user_actions.button}
+										action={this.subscribe}>
+
+										{/* Icon */}
+										<i className="material-icons">person_add</i>
+										{/* Text */}
+										{translate(messages.subscribe)}
+									</Button>
+
+									{/* "Send message" */}
+									<Button
+										style={style.user_actions.button.last}
+										action={this.send_message}>
+
+										{/* Icon */}
+										<i className="material-icons">chat_bubble_outline</i>
+										{/* Text */}
+										{translate(messages.send_message)}
+									</Button>
+								</div>
+							}
+
+							{/* Online status: "Last seen: an hour ago" */}
+							{ latest_activity_time &&
+								<div style={style.latest_activity} className="user-profile__last-seen">
+									{/* Icon */}
+									<i className="material-icons">schedule</i>
+									{/* "an hour ago" */}
+									<React_time_ago date={latest_activity_time}/>
+								</div>
 							}
 						</div>
-
-						{/* Name: "John Brown" */}
-						{ edit ?
-							<Text_input
-								style={style.user_name.edit}
-								input_style={style.user_name.edit}
-								value={this.state.name}
-								on_change={name => this.setState({ name })}/>
-							:
-							<h1 style={style.user_name.idle}>{user.name}</h1>
-						}
-
-						{/* Place: "Moscow" */}
-						{ edit &&
-							// City, town, etc
-							<Text_input
-								value={this.state.place}
-								on_change={place => this.setState({ place })}/>
-						}
-
-						{/* Country: "Russia" */}
-						{ edit &&
-							// Country
-							<Dropdown
-								options={this.countries}
-								value={this.state.country}
-								on_change={country => this.setState({ country })}/>
-						}
-
-						{ !edit &&
-							(user.place && user.country &&
-								<div
-									style={style.user_location}
-									className="user-profile__location">
-									{user.place + ', ' + translate({ id: `country.${user.country}` })}
-								</div>
-							)
-						}
-
-						{/* "Send message", "Subscribe" */}
-						{ !is_own_profile &&
-							<div style={style.user_actions}>
-								{/* "Subscribe" */}
-								<Button
-									style={style.user_actions.button}
-									action={this.subscribe}>
-
-									{/* Icon */}
-									<i className="material-icons">person_add</i>
-									{/* Text */}
-									{translate(messages.subscribe)}
-								</Button>
-
-								{/* "Send message" */}
-								<Button
-									style={style.user_actions.button.last}
-									action={this.send_message}>
-
-									{/* Icon */}
-									<i className="material-icons">chat_bubble_outline</i>
-									{/* Text */}
-									{translate(messages.send_message)}
-								</Button>
-							</div>
-						}
-
-						{/* Online status: "Last seen: an hour ago" */}
-						{ latest_activity_time &&
-							<div style={style.latest_activity} className="user-profile__last-seen">
-								{/* Icon */}
-								<i className="material-icons">schedule</i>
-								{/* "an hour ago" */}
-								<React_time_ago date={latest_activity_time}/>
-							</div>
-						}
 					</section>
 				</div>
 			</div>
@@ -566,11 +571,12 @@ const style = styler
 		text-align : right
 
 		action
-			display        : inline-block
+			display : inline-block
 
 			button
 				text-transform : lowercase
 
-		error
-			margin-top: 0.5em
+		errors
+			margin-bottom : 1em
+			text-align    : left
 `

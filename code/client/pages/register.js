@@ -79,7 +79,7 @@ export default class Sign_in extends Component
 	{
 		const markup =
 		(
-			<ul className="errors">
+			<ul className="errors" style={style.errors}>
 				<li>{this.error_message()}</li>
 			</ul>
 		)
@@ -165,4 +165,7 @@ const style = styler
 	form
 		margin-top    : 3rem
 		margin-bottom : 3rem
+
+	errors
+		margin-top : 2em
 `
