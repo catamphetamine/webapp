@@ -220,6 +220,9 @@ export default class Authentication extends Component
 						{translate(messages.settings)}
 					</Link>
 
+					{/* Separator */}
+					<div className="dropdown-separator"/>
+
 					{/* Sign out */}
 					<div key="log_out" onClick={event =>
 					{

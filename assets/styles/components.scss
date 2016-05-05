@@ -173,6 +173,14 @@
 	}
 }
 
+.dropdown-separator
+{
+	height: var(--input-separator-width);
+	padding: 0;
+	font-size: 0;
+	background-color: var(--gray-color);
+}
+
 /*
 .dropdown-item-selected
 {

@@ -170,12 +170,6 @@ export default class Dropdown extends Component
 					{/* Menu toggler */}
 					{menu && React.cloneElement(toggler, { onClick: this.toggle })}
 
-					{/* A placeholder to stretch the parent <div/> to 100% width of the list */}
-					{/* (because the list to select from has `position: absolute` set) */}
-					<ul style={style.list.placeholder} className="dropdown-item-list">
-						{list_items}
-					</ul>
-
 					{/* A list to select from */}
 					{/* Math.max(this.state.height, this.props.max_height) */}
 					<ul ref="list" style={list_style} className={'dropdown-item-list' + ' ' + (this.state.expanded ? 'dropdown-item-list-expanded' : '')}>
@@ -206,6 +200,12 @@ export default class Dropdown extends Component
 		{
 			list_item_style.maxHeight = 0
 			list_item_style.overflow  = 'hidden'
+		}
+
+		if (element && element.props.className && element.props.className.split(/\s/).has('dropdown-separator'))
+		{
+			list_item_style.paddingTop    = '0.5em'
+			list_item_style.paddingBottom = '0.3em'
 		}
 
 		let item_style = style.list.item
@@ -495,13 +495,13 @@ const style = styler
 			// this top margin takes effect
 			margin-top : 1em
 
-		&placeholder
-			position            : static
-			max-height          : 0
-			border-top-width    : 0
-			border-bottom-width : 0
-			opacity             : 1
-			visibility          : hidden
+		// &placeholder
+		// 	position            : static
+		// 	max-height          : 0
+		// 	border-top-width    : 0
+		// 	border-bottom-width : 0
+		// 	opacity             : 1
+		// 	visibility          : hidden
 
 		item
 			display     : inline-block
