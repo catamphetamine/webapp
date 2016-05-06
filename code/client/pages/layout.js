@@ -20,6 +20,9 @@ import Locale_switcher from '../components/locale switcher'
 import User_bar        from '../components/user bar'
 import Preloading      from '../components/preloading'
 
+import HTML5Backend        from 'react-dnd-html5-backend'
+import { DragDropContext } from 'react-dnd'
+
 // import { authenticate } from '../actions/authentication'
 
 // when adjusting this transition time also adjust it in styles/xs-m.scss
@@ -30,6 +33,7 @@ const menu_transition_duration = 0 // 210 // milliseconds
 // 	blocking: (dispatch, get_model) => dispatch(authenticate())
 // })
 @international()
+@DragDropContext(HTML5Backend)
 export default class Layout extends Component
 {
 	state = 

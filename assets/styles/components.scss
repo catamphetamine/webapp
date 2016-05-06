@@ -710,3 +710,19 @@ header > .nav-widescreen
 {
 	background-color: var(--black-color);
 }
+
+.user-profile__picture
+{
+	--box-shadow-spread: 0.15rem;
+	transition: box-shadow 100ms ease-out;
+}
+
+.user-profile__picture--dragged-over
+{
+	box-shadow: 0 0 0 var(--box-shadow-spread) var(--accent-color-lighter);
+}
+
+.user-profile__picture--dragged-over-cannot-drop
+{
+	box-shadow: 0 0 0 var(--box-shadow-spread) var(--error-color);
+}

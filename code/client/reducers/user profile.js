@@ -224,6 +224,28 @@ const handlers =
 		}
 
 		return new_state
+	},
+
+	'unsupported uploaded user picture file': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			unsupported_uploaded_user_picture_file_error : true
+		}
+
+		return new_state
+	},
+
+	'dismiss unsupported uploaded user picture file error': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			unsupported_uploaded_user_picture_file_error : undefined
+		}
+
+		return new_state
 	}
 }
 

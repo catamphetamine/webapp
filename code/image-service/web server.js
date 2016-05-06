@@ -127,13 +127,14 @@ web.file_upload
 		const sizes = []
 		const file_sizes = []
 
+		const image_min_extent = Math.min(image_info.width, image_info.height)
+
 		for (let max_extent of configuration.image_service.sizes)
 		{
-			const image_min_extent = Math.min(image_info.width, image_info.height)
-
-			// if the image is smaller then the next resize step,
-			// then generate no more resizes of this image
-			if (image_min_extent < max_extent)
+			// If the image is smaller than (or equal to) the current resize step extent
+			// then don't stretch the image to the lengh of the current resize step extent
+			// and leave its scale as it is.
+			if (image_min_extent <= max_extent)
 			{
 				if (target.square)
 				{
@@ -144,6 +145,7 @@ web.file_upload
 					await autorotate(from, to_temporary)
 				}
 			}
+			// Otherwise scale down the image to the length of the current resize step extent
 			else
 			{
 				await resize(from, to_temporary, { max_extent, square: target.square })
@@ -164,7 +166,10 @@ web.file_upload
 
 			file_sizes.push((await fs.statAsync(to)).size)
 
-			if (image_min_extent < max_extent)
+			// If the image is smaller than (or equal to) the current resize step extent
+			// then it means that the next (bigger) resize step won't be applied,
+			// so just exit the loop and generate no more (bigger) resizes of this image.
+			if (image_min_extent <= max_extent)
 			{
 				break
 			}

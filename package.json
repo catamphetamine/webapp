@@ -92,6 +92,8 @@
     "query-string": "^3.0.0",
     "react": "^15.0.1",
     "react-addons-shallow-compare": "^15.0.2",
+    "react-dnd": "^2.1.4",
+    "react-dnd-html5-backend": "^2.1.2",
     "react-document-meta": "^2.0.0",
     "react-dom": "^15.0.1",
     "react-hot-loader": "^3.0.0-alpha.9",
@@ -118,7 +120,7 @@
     "superagent": "^1.7.2",
     "uid-safe": "^2.1.0",
     "warning": "^2.1.0",
-    "webpack": "^2.1.0-beta.5",
+    "webpack": "^2.1.0-beta.7",
     "webpack-isomorphic-tools": "^2.2.48"
   },
   "devDependencies": {

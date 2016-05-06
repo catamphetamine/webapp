@@ -5,6 +5,8 @@ import { connect }                     from 'react-redux'
 import styler                          from 'react-styling'
 import React_time_ago                  from 'react-time-ago'
 import classNames                      from 'classnames'
+import { NativeTypes }                 from 'react-dnd-html5-backend'
+import { DropTarget }                  from 'react-dnd'
 
 import { defineMessages, FormattedRelative }          from 'react-intl'
 
@@ -86,6 +88,12 @@ const messages = defineMessages
 		id             : `user.profile.uploaded_user_picture_is_too_big_error`,
 		description    : `The image user tried to upload is too big`,
 		defaultMessage : `The image file you tried to upload is too big. Only images up to 10 Megabytes are allowed.`
+	},
+	unsupported_uploaded_user_picture_file_error:
+	{
+		id             : `user.profile.unsupported_uploaded_user_picture_file_error`,
+		description    : `The image user tried to upload is of an unsupported file format`,
+		defaultMessage : `The file you tried to upload is not supported for user pictures. Only JPG, PNG and SVG images are supported.`
 	}
 })
 
@@ -106,9 +114,10 @@ const messages = defineMessages
 		user                 : model.user_profile.user,
 		latest_activity_time : model.user_profile.latest_activity_time,
 
-		user_update_error                      : model.user_profile.update_error,
-		user_picture_upload_error              : model.user_profile.user_picture_upload_error,
-		uploaded_user_picture_is_too_big_error : model.user_profile.uploaded_user_picture_is_too_big_error,
+		user_update_error                            : model.user_profile.update_error,
+		user_picture_upload_error                    : model.user_profile.user_picture_upload_error,
+		uploaded_user_picture_is_too_big_error       : model.user_profile.uploaded_user_picture_is_too_big_error,
+		unsupported_uploaded_user_picture_file_error : model.user_profile.unsupported_uploaded_user_picture_file_error,
 
 		uploaded_picture  : model.user_profile.uploaded_picture,
 		uploading_picture : model.user_profile.uploading_picture,
@@ -139,9 +148,10 @@ export default class User_profile extends Component
 		user                 : PropTypes.object.isRequired,
 		latest_activity_time : PropTypes.object,
 
-		user_update_error                      : PropTypes.any,
-		user_picture_upload_error              : PropTypes.any,
-		uploaded_user_picture_is_too_big_error : PropTypes.bool,
+		user_update_error                            : PropTypes.any,
+		user_picture_upload_error                    : PropTypes.any,
+		uploaded_user_picture_is_too_big_error       : PropTypes.bool,
+		unsupported_uploaded_user_picture_file_error : PropTypes.bool,
 
 		uploaded_picture     : PropTypes.object,
 
@@ -173,7 +183,8 @@ export default class User_profile extends Component
 		this.send_message = this.send_message.bind(this)
 		this.subscribe    = this.subscribe.bind(this)
 
-		this.upload_user_picture = this.upload_user_picture.bind(this)
+		this.choosing_user_picture = this.choosing_user_picture.bind(this)
+		this.upload_user_picture   = this.upload_user_picture.bind(this)
 
 		// fill two-letter country codes list
 
@@ -227,6 +238,7 @@ export default class User_profile extends Component
 			user_update_error,
 			user_picture_upload_error,
 			uploaded_user_picture_is_too_big_error,
+			unsupported_uploaded_user_picture_file_error,
 			uploaded_picture,
 			updating_user,
 			uploading_picture
@@ -252,11 +264,16 @@ export default class User_profile extends Component
 						style={style.personal_info}>
 
 						{/* User profile edit errors */}
-						{ (user_update_error || user_picture_upload_error || uploaded_user_picture_is_too_big_error) &&
+						{ (user_update_error
+							|| user_picture_upload_error
+							|| uploaded_user_picture_is_too_big_error
+							|| unsupported_uploaded_user_picture_file_error)
+							&&
 							<ul style={style.own_profile_actions.errors} className="errors">
 								{user_update_error && <li>{translate(messages.update_error)}</li>}
 								{user_picture_upload_error && <li>{translate(messages.user_picture_upload_error)}</li>}
 								{uploaded_user_picture_is_too_big_error && <li>{translate(messages.uploaded_user_picture_is_too_big_error)}</li>}
+								{unsupported_uploaded_user_picture_file_error && <li>{translate(messages.unsupported_uploaded_user_picture_file_error)}</li>}
 							</ul>
 						}
 
@@ -301,43 +318,15 @@ export default class User_profile extends Component
 						}
 
 						{/* User picture */}
-						<div
-							style={style.user_picture}
-							className={classNames(
-								'user-picture',
-								'user-picture--profile',
-								'card'
-							)}>
-							
-							{/* The picture itself */}
-							<User_picture
-								style={style.user_picture.element.image}
-								user={user}
-								picture={edit ? uploaded_picture : undefined}/>
-
-							{/* "Change user picture" overlay */}
-							{ edit && !uploaded_picture &&
-								<div
-									className="user-profile__picture__change__overlay"
-									style={style.user_picture.element.overlay.background}/>
-							}
-
-							{/* "Change user picture" file uploader */}
-							{ edit &&
-								<File_upload
-									className="user-profile__picture__change__label"
-									style={style.user_picture.element.overlay.label}
-									on_choose={() => this.props.dispatch({ type: 'dismiss uploaded user picture is too big error' })}
-									action={this.upload_user_picture}>
-
-									{/* "Change user picture" label */}
-									{!uploaded_picture && !uploading_picture && translate(messages.change_user_picture)}
-
-									{/* "Uploading picture" spinner */}
-									{uploading_picture && <Spinner style={style.user_picture.element.spinner}/>}
-								</File_upload>
-							}
-						</div>
+						<Uploadable_user_picture
+							edit={edit}
+							user={user}
+							uploaded_picture={uploaded_picture}
+							uploading_picture={uploading_picture}
+							upload_user_picture={this.upload_user_picture}
+							choosing_user_picture={this.choosing_user_picture}
+							translate={translate}
+							style={style}/>
 
 						{/* Name: "John Brown" */}
 						{ edit ?
@@ -470,6 +459,13 @@ export default class User_profile extends Component
 		this.props.dispatch({ type: 'dismiss user update error' })
 		this.props.dispatch({ type: 'dismiss user picture upload error' })
 		this.props.dispatch({ type: 'dismiss uploaded user picture is too big error' })
+		this.props.dispatch({ type: 'dismiss unsupported uploaded user picture file error' })
+	}
+
+	choosing_user_picture()
+	{
+		this.props.dispatch({ type: 'dismiss uploaded user picture is too big error' })
+		this.props.dispatch({ type: 'dismiss unsupported uploaded user picture file error' })
 	}
 
 	send_message()
@@ -484,12 +480,100 @@ export default class User_profile extends Component
 
 	async upload_user_picture(file)
 	{
+		if (!['image/jpeg', 'image/png', 'image/svg+xml'].has(file.type))
+		{
+			return this.props.dispatch({ type: 'unsupported uploaded user picture file' })
+		}
+
 		if (file.size > configuration.image_service.file_size_limit)
 		{
 			return this.props.dispatch({ type: 'uploaded user picture is too big' })
 		}
 
 		await this.props.upload_user_picture(file)
+	}
+}
+
+const drop_file_target =
+{
+	drop(props, monitor)
+	{
+		props.choosing_user_picture()
+
+		const file = monitor.getItem().files[0]
+		props.upload_user_picture(file)
+	}
+}
+
+@DropTarget(NativeTypes.FILE, drop_file_target, (connect, monitor) =>
+({
+	drop_target  : connect.dropTarget(),
+	dragged_over : monitor.isOver(),
+	can_drop     : monitor.canDrop()
+}))
+class Uploadable_user_picture extends User_picture
+{
+	render()
+	{
+		const
+		{
+			edit,
+			user,
+			uploaded_picture,
+			uploading_picture,
+			upload_user_picture,
+			choosing_user_picture,
+			translate,
+			style,
+
+			drop_target,
+			dragged_over,
+			can_drop
+		}
+		= this.props
+
+		{/* User picture */}
+		return drop_target(
+			<div
+				style={style.user_picture}
+				className={classNames(
+					'user-picture',
+					'user-profile__picture',
+					{ 'user-profile__picture--dragged-over' : dragged_over },
+					{ 'user-profile__picture--dragged-over-cannot-drop'  : dragged_over && !can_drop },
+					'card'
+				)}>
+				
+				{/* The picture itself */}
+				<User_picture
+					style={style.user_picture.element.image}
+					user={user}
+					picture={edit ? uploaded_picture : undefined}/>
+
+				{/* "Change user picture" overlay */}
+				{ edit && !uploaded_picture &&
+					<div
+						className="user-profile__picture__change__overlay"
+						style={style.user_picture.element.overlay.background}/>
+				}
+
+				{/* "Change user picture" file uploader */}
+				{ edit &&
+					<File_upload
+						className="user-profile__picture__change__label"
+						style={style.user_picture.element.overlay.label}
+						on_choose={choosing_user_picture}
+						action={upload_user_picture}>
+
+						{/* "Change user picture" label */}
+						{!uploaded_picture && !uploading_picture && translate(messages.change_user_picture)}
+
+						{/* "Uploading picture" spinner */}
+						{uploading_picture && <Spinner style={style.user_picture.element.spinner}/>}
+					</File_upload>
+				}
+			</div>
+		)
 	}
 }
 

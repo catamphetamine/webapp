@@ -57,9 +57,10 @@
 	"user.profile.save"                      : "Сохранить",
 	"user.profile.change_user_picture"       : "Поменять картинку",
 
-	"user.profile.update_error"              : "Не удалось обновить ваши данные",
-	"user.profile.user_picture_upload_error" : "Не удалось загрузить картинку",
-	"user.profile.uploaded_user_picture_is_too_big_error" : "Выбранная вами картинка слишком велика. Выбирайте файлы не более 10 Мегабайтов.",
+	"user.profile.update_error"                                 : "Не удалось обновить ваши данные",
+	"user.profile.user_picture_upload_error"                    : "Не удалось загрузить картинку",
+	"user.profile.uploaded_user_picture_is_too_big_error"       : "Выбранная вами картинка слишком велика. Выбирайте файлы не более 10 Мегабайтов.",
+	"user.profile.unsupported_uploaded_user_picture_file_error" : "Выбранный вами файл не может быть использован в качестве картинки. Выберайте изображения в форматах JPG, PNG или SVG.",
 
 	"user.profile.subscribe"    : "Подписаться",
 	"user.profile.send_message" : "Связаться",

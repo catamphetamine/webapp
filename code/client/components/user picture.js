@@ -13,7 +13,8 @@ export default class User_picture extends React.Component
 			({
 				sizes : PropTypes.arrayOf(PropTypes.shape
 				({
-					width : PropTypes.number.isRequired,
+					// `width` is not required for vector graphics
+					width : PropTypes.number,
 					name  : PropTypes.string.isRequired
 				}))
 				.isRequired
