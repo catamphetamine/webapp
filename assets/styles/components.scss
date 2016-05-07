@@ -713,16 +713,25 @@ header > .nav-widescreen
 
 .user-profile__picture
 {
-	--box-shadow-spread: 0.15rem;
 	transition: box-shadow 100ms ease-out;
 }
 
-.user-profile__picture--dragged-over
+.layout--dragging .user-profile__picture
 {
-	box-shadow: 0 0 0 var(--box-shadow-spread) var(--accent-color-lighter);
+	box-shadow: 0 0 0 0.15rem var(--accent-color-lighter);
 }
 
-.user-profile__picture--dragged-over-cannot-drop
+.user-profile__picture__change__droppable-overlay
 {
-	box-shadow: 0 0 0 var(--box-shadow-spread) var(--error-color);
+	transition: background-color 100ms ease-out;
+}
+
+.user-profile__picture__change__droppable-overlay--can-drop
+{
+	background-color: var(--accent-color-lighter);
+}
+
+.user-profile__picture__change__droppable-overlay--cannot-drop
+{
+	background-color: var(--error-color);
 }

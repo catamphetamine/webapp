@@ -539,8 +539,6 @@ class Uploadable_user_picture extends User_picture
 				className={classNames(
 					'user-picture',
 					'user-profile__picture',
-					{ 'user-profile__picture--dragged-over' : dragged_over },
-					{ 'user-profile__picture--dragged-over-cannot-drop'  : dragged_over && !can_drop },
 					'card'
 				)}>
 				
@@ -554,6 +552,20 @@ class Uploadable_user_picture extends User_picture
 				{ edit && !uploaded_picture &&
 					<div
 						className="user-profile__picture__change__overlay"
+						style={style.user_picture.element.overlay.background}/>
+				}
+
+				{/* A colored overlay indicating "can drop image file here" situation */}
+				{ edit &&
+					<div
+						className={classNames
+						(
+							'user-profile__picture__change__droppable-overlay',
+							{
+								'user-profile__picture__change__droppable-overlay--can-drop'    : dragged_over,
+								'user-profile__picture__change__droppable-overlay--cannot-drop' : dragged_over && !can_drop
+							}
+						)}
 						style={style.user_picture.element.overlay.background}/>
 				}
 

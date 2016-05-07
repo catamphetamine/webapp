@@ -89,7 +89,8 @@ footer
 .nav-collapsible
 {
 	transform  : translate3d(-100%, 0, 0);
-	transition : transform 210ms ease-out;
+	transition : transform 120ms ease-out;
+	opacity    : 0.9;
 }
 
 .menu-item-selected

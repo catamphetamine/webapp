@@ -9,6 +9,7 @@ import { connect }         from 'react-redux'
 import { Link, IndexLink } from 'react-router'
 import { defineMessages }  from 'react-intl'
 import { head }            from 'react-isomorphic-render'
+import classNames          from 'classnames'
 
 // import autoprefixer from 'autoprefixer'
 
@@ -20,8 +21,8 @@ import Locale_switcher from '../components/locale switcher'
 import User_bar        from '../components/user bar'
 import Preloading      from '../components/preloading'
 
-import HTML5Backend        from 'react-dnd-html5-backend'
-import { DragDropContext } from 'react-dnd'
+import HTML5Backend                   from 'react-dnd-html5-backend'
+import { DragDropContext, DragLayer } from 'react-dnd'
 
 // import { authenticate } from '../actions/authentication'
 
@@ -34,6 +35,13 @@ const menu_transition_duration = 0 // 210 // milliseconds
 // })
 @international()
 @DragDropContext(HTML5Backend)
+@DragLayer(monitor =>
+({
+	// item           : monitor.getItem(),
+	// item_type      : monitor.getItemType(),
+	// current_offset : monitor.getSourceClientOffset(),
+	is_dragging    : monitor.isDragging()
+}))
 export default class Layout extends Component
 {
 	state = 
@@ -46,7 +54,14 @@ export default class Layout extends Component
 
 	static propTypes =
 	{
-		children : PropTypes.node.isRequired
+		// item: PropTypes.object,
+		// item_type: PropTypes.string,
+		// current_offset: PropTypes.shape
+		// ({
+		// 	x: PropTypes.number.isRequired,
+		// 	y: PropTypes.number.isRequired
+		// }),
+		is_dragging: PropTypes.bool.isRequired
 	}
 
 	constructor(props, context)
@@ -60,7 +75,7 @@ export default class Layout extends Component
 
 	render()
 	{
-		const { translate } = this.props
+		const { translate, is_dragging } = this.props
 
 		const title       = translate(messages.title)
 		const description = translate(messages.description)
@@ -104,7 +119,11 @@ export default class Layout extends Component
 
 		const markup = 
 		(
-			<div onTouchStart={this.hide_menu_on_click} onMouseDown={this.hide_menu_on_click} className={ 'layout' + ' ' + (this.state.page_moved_aside ? 'layout-with-page-aside' : '') }>
+			<div
+				onTouchStart={this.hide_menu_on_click}
+				onMouseDown={this.hide_menu_on_click}
+				className={classNames('layout', { 'layout--dragging': is_dragging })}>
+
 				{/* <head/> */}
 				{head(title, description, meta)}
 
