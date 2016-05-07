@@ -34,8 +34,63 @@ export default class Image extends React.Component
 	{
 		if (this.props.sizes)
 		{
-			this.refresh_size(this.props.sizes)
+			this.refresh_size()
 		}
+
+		if (!window._responsive_images)
+		{
+			const _responsive_images =
+			{
+				_components : [],
+				_register(component)
+				{
+					this._components.push(component)
+				},
+				_unregister(component)
+				{
+					this._components.remove(component)
+				},
+				_on_resize()
+				{
+					if (this._debounce_timer)
+					{
+						clearTimeout(this._debounce_timer)
+					}
+
+					this._debounce_timer = setTimeout(this._resize, 500)
+				},
+				_resize()
+				{
+					this._debounce_timer = undefined
+
+					for (let component of this._components)
+					{
+						component.refresh_size()
+					}
+				},
+				_destroy()
+				{
+					for (let component of this._components)
+					{
+						this._unregister(component)
+					}
+
+					window.removeEventListener('resize', this._on_resize)
+				}
+			}
+
+			_responsive_images._resize    = _responsive_images._resize.bind(_responsive_images)
+			_responsive_images._on_resize = _responsive_images._on_resize.bind(_responsive_images)
+
+			window.addEventListener('resize', _responsive_images._on_resize)
+
+			window._responsive_images = _responsive_images
+		}
+	}
+
+	componentWillUnmount()
+	{
+		window._responsive_images._destroy()
 	}
 
 	componentWillReceiveProps(next_props)
@@ -62,7 +117,7 @@ export default class Image extends React.Component
 			className={className}/>
 	}
 
-	refresh_size(sizes, force)
+	refresh_size(sizes = this.props.sizes, force)
 	{
 		const { size } = this.state
 		const preferred_size = this.get_preferred_size(sizes)

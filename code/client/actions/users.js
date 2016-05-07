@@ -13,7 +13,7 @@ export function get_users_latest_activity_time(user_id)
 {
 	const action =
 	{
-		promise : http => http.get(`/authentication/latest-activity/${user_id}`),
+		promise : http => http.get(`/authentication/latest-activity/${user_id}`, { bot: true }),
 		event   : 'fetch users latest activity time'
 	}
 
