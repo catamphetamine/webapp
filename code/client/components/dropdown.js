@@ -204,7 +204,8 @@ export default class Dropdown extends Component
 
 		if (element && element.props.className && element.props.className.split(/\s/).has('dropdown-separator'))
 		{
-			list_item_style.paddingTop    = '0.5em'
+			list_item_style.lineHeight    = 0
+			list_item_style.paddingTop    = '0.3em'
 			list_item_style.paddingBottom = '0.3em'
 		}
 
