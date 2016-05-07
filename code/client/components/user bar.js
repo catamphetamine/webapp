@@ -133,7 +133,7 @@ export default class Authentication extends Component
 
 		const markup =
 		(
-			<div className="authentication" style={this.props.style}>
+			<div className="user-bar" style={this.props.style}>
 				
 				{/* Sign in action */}
 				{ !user && <Button className="sign-in" link="/sign-in" action={this.show}>{this.translate(messages.sign_in)}</Button> }

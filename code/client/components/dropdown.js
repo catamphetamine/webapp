@@ -205,7 +205,7 @@ export default class Dropdown extends Component
 		if (element && element.props.className && element.props.className.split(/\s/).has('dropdown-separator'))
 		{
 			list_item_style.lineHeight    = 0
-			list_item_style.paddingTop    = '0.3em'
+			list_item_style.paddingTop    = '0.2em'
 			list_item_style.paddingBottom = '0.3em'
 		}
 
@@ -305,7 +305,12 @@ export default class Dropdown extends Component
 	// supports disabled javascript
 	render_static()
 	{
-		let { options, children } = this.props
+		let { options, menu, toggler, children } = this.props
+
+		if (menu)
+		{
+			return <div className="rich-fallback">{toggler}</div>
+		}
 
 		const markup =
 		(
