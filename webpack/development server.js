@@ -1,4 +1,4 @@
-// import path from 'path'
+import path from 'path'
 // import fs   from 'fs'
 
 import language from '../code/common/language'
@@ -13,7 +13,8 @@ import application_configuration from '../code/common/configuration'
 
 const configuration = Object.clone(base_configuration)
 
-configuration.devtool = 'inline-source-map'
+// configuration.devtool = 'inline-source-map'
+configuration.devtool = 'inline-eval-cheap-source-map'
 // configuration.devtool = 'eval-source-map'
 // configuration.devtool = 'eval-cheap-module-source-map'
 
@@ -33,6 +34,14 @@ configuration.plugins = configuration.plugins.concat
 		_production_        : false,
 		_development_       : true,
 		_development_tools_ : false  // <-------- DISABLE redux-devtools HERE
+	}),
+
+	// Slightly faster webpack builds
+	// https://github.com/erikras/react-redux-universal-hot-example/issues/616
+	new webpack.DllReferencePlugin
+	({
+		context  : configuration.context,
+		manifest : require(path.join(configuration.output.path, 'vendor-manifest.json'))
 	}),
 
 	// faster code reload on changes

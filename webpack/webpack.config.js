@@ -121,12 +121,12 @@ var configuration =
 	resolve:
 	{
 		// you can now require('file') instead of require('file.coffee')
-		extensions: ['', '.json', '.js']
+		extensions: ['', '.json', '.js'],
 
-		// // An array of directory names to be resolved to the current directory 
-		// // as well as its ancestors, and searched for modules. 
-		// // This functions similarly to how node finds “node_modules” directories. 
-		// modulesDirectories: ['server', 'client', 'node_modules', 'web_modules']
+		// An array of directory names to be resolved to the current directory 
+		// as well as its ancestors, and searched for modules. 
+		// This functions similarly to how node finds “node_modules” directories. 
+		modulesDirectories: ['node_modules']
 	},
 
 	plugins:

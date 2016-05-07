@@ -19,6 +19,18 @@ import load_locale_data from './locale'
 // (`intl-messageformat` will load everything automatically when run in Node.js)
 require('javascript-time-ago/load-all-locales')
 
+const initializing_javascript = `
+	document.body.classList.add('javascript-is-enabled')
+
+	window.configuration =
+	{
+		image_service:
+		{
+			file_size_limit: ${file_size_parser(configuration.image_service.file_size_limit)}
+		}
+	}
+`
+
 // starts webpage rendering server
 webpage_server
 ({
@@ -153,17 +165,18 @@ webpage_server
 	// returns an array of React elements.
 	// allows adding arbitrary React components to the start of the <body/>
 	// (use `key`s to prevent React warning when returning an array of React elements)
-	body_start: () => <script dangerouslySetInnerHTML={{__html: `
-		document.body.classList.add('javascript-is-enabled')
-
-		window.configuration =
+	body_start: () =>
+	{
+		if (_development_)
 		{
-			image_service:
-			{
-				file_size_limit: ${file_size_parser(configuration.image_service.file_size_limit)}
-			}
+			return [
+				<script key="1" dangerouslySetInnerHTML={{__html: initializing_javascript}}/>,
+				<script key="2" src="/assets/vendor.dll.js"/>
+			]
 		}
-	`}}/>,
+		
+		return <script dangerouslySetInnerHTML={{__html: initializing_javascript}}/>
+	},
 
 	// (optional)
 	// returns an array of React elements.
