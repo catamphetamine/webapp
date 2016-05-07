@@ -23,7 +23,7 @@ export default class Flag extends Component
 
 		const markup = 
 		(
-			<img style={styling} width="auto" height="auto" src={flag}/>
+			<img style={styling} src={flag}/>
 		)
 
 		return markup

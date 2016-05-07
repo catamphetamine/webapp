@@ -91,6 +91,7 @@ export default class Locale_switcher extends Component
 						value={locale} 
 						on_change={this.set_locale} 
 						title={this.props.translate(messages.language)}
+						alignment={this.props.alignment}
 						upward={this.props.upward}>
 
 						{locales.map(({ value, label }) =>

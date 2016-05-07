@@ -150,7 +150,7 @@ export default class Layout extends Component
 
 						{/* language chooser */}
 						<div className="language-wrapper">
-							<Locale_switcher upward={true} style={style.locale_switcher}/>
+							<Locale_switcher alignment="right" upward={true} style={style.locale_switcher}/>
 						</div>
 					</footer>
 				</div>
