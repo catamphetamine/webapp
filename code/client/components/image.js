@@ -75,9 +75,14 @@ export default class Image extends React.Component
 		}
 	}
 
+	width()
+	{
+		return this.refs.image.offsetWidth
+	}
+
 	get_preferred_size(sizes)
 	{
-		return get_preferred_size(sizes, this.refs.image.offsetWidth, this.props.max_width)
+		return get_preferred_size(sizes, this.width(), this.props.max_width)
 	}
 
 	url()
@@ -85,19 +90,24 @@ export default class Image extends React.Component
 		const { type } = this.props
 		const { size } = this.state
 
-		let subpath = ''
-		switch (type)
-		{
-			case 'user_picture':
-				subpath = `${_user_pictures_path_}/`
-				break
-		}
-
-		return `${_image_service_url_}/${subpath}${size.name}`
+		return url(type, size)
 	}
 }
 
-function get_preferred_size(sizes, width, max_width)
+export function url(type, size)
+{
+	let subpath = ''
+	switch (type)
+	{
+		case 'user_picture':
+			subpath = `${_user_pictures_path_}/`
+			break
+	}
+
+	return `${_image_service_url_}/${subpath}${size.name}`
+}
+
+export function get_preferred_size(sizes, width, max_width)
 {
 	if (!width)
 	{

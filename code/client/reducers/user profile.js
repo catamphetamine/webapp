@@ -132,8 +132,10 @@ const handlers =
 		const new_state = 
 		{
 			...state,
-			uploaded_picture  : result,
-			uploading_picture : false
+			// uploaded_picture  : result,
+			// Will be set to `false` when the image is prefetched
+			// to avoid a flash of a not yet loaded image.
+			// uploading_picture : false
 		}
 
 		return new_state
@@ -144,7 +146,35 @@ const handlers =
 		const new_state = 
 		{
 			...state,
+			uploaded_picture          : undefined,
 			user_picture_upload_error : error,
+			uploading_picture         : false
+		}
+
+		return new_state
+	},
+
+	// Prefetching is done to avoid a flash of a not yet loaded image
+
+	'prefetching uploaded user picture done': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			uploading_picture : false,
+			uploaded_picture  : result
+		}
+
+		return new_state
+	},
+
+	'prefetching uploaded user picture failed': (error, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			uploaded_picture          : undefined,
+			user_picture_upload_error : true,
 			uploading_picture         : false
 		}
 

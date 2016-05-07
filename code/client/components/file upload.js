@@ -6,6 +6,7 @@ export default class File_upload extends React.Component
 	{
 		action    : PropTypes.func.isRequired,
 		multiple  : PropTypes.bool,
+		disabled  : PropTypes.bool,
 		on_choose : PropTypes.func,
 		style     : PropTypes.object,
 		className : PropTypes.string
@@ -95,6 +96,11 @@ export default class File_upload extends React.Component
 
 	on_click(event)
 	{
+		if (this.props.disabled)
+		{
+			return event.preventDefault()
+		}
+
 		if (this.props.on_choose)
 		{
 			this.props.on_choose()

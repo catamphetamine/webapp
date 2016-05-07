@@ -22,6 +22,8 @@ import File_upload  from '../../components/file upload'
 import User_picture from '../../components/user picture'
 import Spinner      from '../../components/spinner'
 
+import { get_preferred_size, url } from '../../components/image'
+
 import international from '../../international/internationalize'
 
 const messages = defineMessages
@@ -319,6 +321,7 @@ export default class User_profile extends Component
 
 						{/* User picture */}
 						<Uploadable_user_picture
+							ref="user_picture"
 							edit={edit}
 							user={user}
 							uploaded_picture={uploaded_picture}
@@ -490,7 +493,23 @@ export default class User_profile extends Component
 			return this.props.dispatch({ type: 'uploaded user picture is too big' })
 		}
 
-		await this.props.upload_user_picture(file)
+		const uploaded_picture = await this.props.upload_user_picture(file)
+
+		// preload the image
+
+		const image = new Image()
+
+		image.onload = () =>
+		{
+			this.props.dispatch({ type: 'prefetching uploaded user picture done', result: uploaded_picture })
+		}
+
+		image.onerror = () =>
+		{
+			this.props.dispatch({ type: 'prefetching uploaded user picture failed' })
+		}
+
+		image.src = url('user_picture', get_preferred_size(uploaded_picture.sizes, this.refs.user_picture.decoratedComponentInstance.width()))
 	}
 }
 
@@ -498,6 +517,11 @@ const drop_file_target =
 {
 	drop(props, monitor)
 	{
+		if (props.uploading_picture)
+		{
+			return
+		}
+
 		props.choosing_user_picture()
 
 		const file = monitor.getItem().files[0]
@@ -511,7 +535,7 @@ const drop_file_target =
 	dragged_over : monitor.isOver(),
 	can_drop     : monitor.canDrop()
 }))
-class Uploadable_user_picture extends User_picture
+class Uploadable_user_picture extends React.Component
 {
 	render()
 	{
@@ -544,6 +568,7 @@ class Uploadable_user_picture extends User_picture
 				
 				{/* The picture itself */}
 				<User_picture
+					ref="user_picture"
 					style={style.user_picture.element.image}
 					user={user}
 					picture={edit ? uploaded_picture : undefined}/>
@@ -574,6 +599,7 @@ class Uploadable_user_picture extends User_picture
 					<File_upload
 						className="user-profile__picture__change__label"
 						style={style.user_picture.element.overlay.label}
+						disabled={uploading_picture}
 						on_choose={choosing_user_picture}
 						action={upload_user_picture}>
 
@@ -586,6 +612,11 @@ class Uploadable_user_picture extends User_picture
 				}
 			</div>
 		)
+	}
+
+	width()
+	{
+		return this.refs.user_picture.width()
 	}
 }
 

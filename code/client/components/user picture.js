@@ -52,11 +52,17 @@ export default class User_picture extends React.Component
 		}
 
 		return <Image
+			ref="image"
 			style={style}
 			className={classNames('user-picture', className)}
 			type="user_picture"
 			max_width={1000}
 			sizes={sizes}
 			src={sizes ? undefined : require('../../../assets/images/user picture.png')}/>
+	}
+
+	width()
+	{
+		return this.refs.image.width()
 	}
 }
