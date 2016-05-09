@@ -11,8 +11,8 @@ import Switch       from '../../components/switch'
 import Button_group from '../../components/button group'
 import Spinner      from '../../components/spinner'
 
-import { DatePicker as Date_picker } from 'material-ui/lib/date-picker'
-import { CircularProgress as Circular_progress } from 'material-ui/lib'
+import Date_picker from 'material-ui/DatePicker/DatePicker'
+import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
 export default class Form_showcase extends Component
 {
@@ -24,6 +24,18 @@ export default class Form_showcase extends Component
 		checked        : true,
 		// selected: 'A',
 		// switched: true,
+	}
+
+	static childContextTypes =
+	{
+		muiTheme: React.PropTypes.object
+	}
+
+	getChildContext()
+	{
+		return {
+			muiTheme: getMuiTheme()
+		}
 	}
 
 	constructor(props, context)
@@ -105,8 +117,9 @@ export default class Form_showcase extends Component
 					<h2 style={style.form.label}>Spinner</h2>
 					<Spinner style={style.form.spinner}/>
 
-					<h2 style={style.form.label}>Date picker (part of Material UI)</h2>
+					<h2 style={style.form.label}>Date picker (part of Material UI)</h2>					
 					<p><i>You may see a "React attempted to reuse markup in a container" warning in the console because of this 3rd party component</i></p>
+					<p><a href="https://github.com/callemall/material-ui/issues/4219">has calendar positioning issue</a></p>
 					<div className="date-picker">
 						<Date_picker style={style.form.date_picker} hintText="Portrait Dialog" autoOk={true} container="inline" textFieldStyle={style.form.date_picker.input} hintStyle={style.form.date_picker.hint} underlineShow={false}/>
 					</div>

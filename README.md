@@ -27,6 +27,7 @@ Features
 Quick Start
 ===========
 
+* make sure you have [Node.js version >= 6.0.0](https://www.npmjs.com/package/babel-preset-node6) installed
 * `npm install`
 * `npm run dev`
 * wait for it to finish the build (green stats will appear in the terminal, and it will say "Now go to http://127.0.0.1:3000")
@@ -388,7 +389,32 @@ To do
 
 возможность менять почту
 
-возможность смотреть токены входа
+возможность смотреть (и удалять) токены входа - кроме текущего
+
+
+
+
+
+
+
+можно будет попробовать перейти на react-hot-loader 3, когда он исправит ошибки
+https://github.com/gaearon/react-hot-boilerplate/pull/61
+
+
+
+
+
+`npm install hiredis@latest --save`, когда его зарелизят
+
+https://www.npmjs.com/package/hiredis
+
+
+
+
+`npm install dtrace-provider@latest`, когда он исправит ошибку:
+
+https://github.com/chrisa/node-dtrace-provider/issues/74
+
 
 
 

@@ -30,15 +30,7 @@ if (_development_)
 }
 
 import React from 'react'
-
-// import Relay from 'react-relay'
-// npm install react@^0.14.0 --save
-
 import { Router, Route, IndexRoute } from 'react-router'
-
-// import RelayNestedRoutes from 'relay-nested-routes'
-// // maybe move this to the function (if needed)
-// const NestedRootContainer = RelayNestedRoutes(React, Relay)
 
 import Layout           from './pages/layout'
 import Not_found        from './pages/errors/not found'
@@ -64,27 +56,12 @@ import authorization from './helpers/authorize'
 
 const authorize = (component, is_authorized) => authorization(is_authorized)(component)
 
-// playing with GraphQL/Relay a bit
-
-const Layout_queries = {}
-
-const Home_queries = 
-{
-	// widget: (React.Component) => Relay.QL`
-	// query {
-	// 	node(id: $id) {
-	// 		${Component.getFragment('widget')},
-	// 	}
-	// }
-	// `
-}
-
 export default function() // (store)
 {
 	const routes =
 	(
-		<Route path="/" component={Layout} queries={Layout_queries}>
-			<IndexRoute component={Home} queries={Home_queries}/>
+		<Route path="/" component={Layout}>
+			<IndexRoute component={Home}/>
 
 			<Route path="example" component={Example}>
 				<Route path="simple"   component={Simple_example}/>

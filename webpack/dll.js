@@ -1,3 +1,6 @@
+// Webpack DLL Plugin claims to speed up incremental Webpack builds
+// https://github.com/erikras/react-redux-universal-hot-example/issues/616
+
 import language from '../code/common/language'
 import path     from 'path'
 

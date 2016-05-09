@@ -1,3 +1,12 @@
+// This module has a lot of dependencies
+// because it `require()`s all the client side code,
+// and therefore it takes about 5 sec to start 
+// this webpage rendering webserver.
+//
+// Maybe it's because Babel on-the-fly code transformation 
+// is slow, or maybe Node.js require() is slow 
+// (which I don't think could be the case).
+
 // import look from 'look'
 // look.start()
 

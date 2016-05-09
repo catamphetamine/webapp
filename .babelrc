@@ -16,9 +16,22 @@
 
 	"env":
 	{
-		"development":
+		"server":
 		{
-			"plugins": []
+			"presets":
+			[
+				"react", 
+				"node6", 
+				"stage-0"
+			],
+
+			"plugins":
+			[
+				"transform-runtime",
+				"add-module-exports",
+				"transform-decorators-legacy",
+				"transform-react-display-name"
+			]
 		},
 
 		"react-intl-extract-default-messages":

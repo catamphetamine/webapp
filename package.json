@@ -18,17 +18,18 @@
     "babel-plugin-transform-runtime": "^6.6.0",
     "babel-polyfill": "^6.5.0",
     "babel-preset-es2015": "^6.6.0",
+    "babel-preset-node6": "^11.0.0",
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.7.2",
     "babel-relay-plugin": "^0.7.3",
     "babel-runtime": "^6.6.1",
-    "bcrypt": "^0.8.5",
+    "bcrypt": "^0.8.6",
     "better-npm-run": "0.0.8",
     "bluebird": "^2.10.0",
     "body-parser": "^1.2.0",
     "bookshelf": "~0.8.1",
-    "bunyan": "^1.3.5",
+    "bunyan": "^1.8.1",
     "bytes": "^2.1.0",
     "classnames": "^2.2.3",
     "co-busboy": "^1.3.1",
@@ -78,32 +79,31 @@
     "koa-static": "^1.5.2",
     "log4js": "^0.6.14",
     "markdown": "^0.5.0",
-    "material-ui": "^0.14.2",
+    "material-ui": "^0.15.0",
     "minimist": "^1.1.1",
     "moment": "^2.10.6",
     "mongodb": "^2.1.7",
     "mongodb-migrate": "^2.0.0",
     "mongojs": "^1.4.1",
+    "node-sass": "^3.7.0",
     "npm-run-all": "^1.2.13",
     "parseurl": "^1.3.1",
     "pg": "~4.4.0",
     "pretty-error": "^1.1.2",
-    "react": "^15.0.1",
+    "react": "^15.0.2",
     "react-addons-shallow-compare": "^15.0.2",
     "react-dnd": "^2.1.4",
     "react-dnd-html5-backend": "^2.1.2",
-    "react-dom": "^15.0.1",
+    "react-dom": "^15.0.2",
     "react-hot-loader": "^3.0.0-alpha.9",
     "react-intl": "^2.1.2",
     "react-isomorphic-render": "^2.1.31",
     "react-modal": "^1.1.1",
     "react-redux": "^4.0.0",
-    "react-relay": "^0.4.0",
     "react-router": "^2.0.1",
-    "react-router-relay": "^0.7.0",
     "react-sticky": "^5.0.0",
     "react-styling": "^1.3.0",
-    "react-tap-event-plugin": "^0.2.1",
+    "react-tap-event-plugin": "^1.0.0",
     "react-time-ago": "^0.1.10",
     "redis": "^2.4.2",
     "redux": "^3.0.0",
@@ -137,8 +137,7 @@
     "jsx-loader": "^0.13.1",
     "mocha": "^2.2.5",
     "node-libs-browser": "^0.5.0",
-    "node-sass": "^3.4.2",
-    "nodemon": "^1.9.0",
+    "nodemon": "^1.9.2",
     "react-transform-catch-errors": "^1.0.0",
     "react-transform-hmr": "^1.0.0",
     "redbox-react": "^1.2.0",
@@ -159,34 +158,34 @@
     "development-client": "npm-run-all update-relay-schema development-client-webpack-dll development-client-webpack",
     "development-client-webpack-dll": "webpack --color --display-error-details --config \"webpack/dll.entry.js\"",
     "development-client-webpack": "node --harmony -- \"webpack/development server.entry.js\"",
-    "development-log-service": "nodemon ./code/log-service/entry.js --watch ./code/log-service --watch ./code/common",
-    "development-authentication-service": "nodemon ./code/authentication-service/entry.js --watch ./code/authentication-service --watch ./code/common",
-    "development-authentication-service-delayed": "npm-run-all delay delay delay delay delay development-authentication-service",
-    "development-user-service": "nodemon ./code/user-service/entry.js --watch ./code/user-service --watch ./code/common",
-    "development-user-service-delayed": "npm-run-all delay delay delay delay delay delay development-user-service",
-    "development-password-service": "nodemon ./code/password-service/entry.js --watch ./code/password-service --watch ./code/common",
-    "development-password-service-delayed": "npm-run-all delay delay delay delay development-password-service",
-    "development-api-service": "nodemon ./code/api-service/entry.js --watch ./code/api-service --watch ./code/common",
+    "development-log-service": "better-npm-run development-log-service",
+    "development-authentication-service": "better-npm-run development-authentication-service",
+    "development-user-service": "better-npm-run development-user-service",
+    "development-password-service": "better-npm-run development-password-service",
+    "development-api-service": "better-npm-run development-api-service",
+    "development-page-server": "better-npm-run development-page-server",
+    "development-image-service": "better-npm-run development-image-service",
+    "development-web-server": "better-npm-run development-web-server",
     "development-api-service-delayed": "npm-run-all delay development-api-service",
-    "development-page-server": "nodemon ./code/page-server/entry.js --watch ./code/page-server --watch ./code/client --watch ./code/common",
     "development-page-server-delayed": "npm-run-all delay delay development-page-server",
-    "development-image-service": "nodemon ./code/image-service/entry.js --watch ./code/image-service --watch ./code/common",
     "development-image-service-delayed": "npm-run-all delay delay delay development-image-service",
-    "development-web-server": "nodemon ./code/web-server/entry.js  --watch ./code/web-server --watch ./code/common",
+    "development-password-service-delayed": "npm-run-all delay delay delay delay development-password-service",
+    "development-authentication-service-delayed": "npm-run-all delay delay delay delay delay development-authentication-service",
+    "development-user-service-delayed": "npm-run-all delay delay delay delay delay delay development-user-service",
     "development-web-server-delayed": "npm-run-all delay delay delay delay delay delay delay development-web-server",
     "delay": "node ./code/sleep 600",
     "development-server": "npm-run-all --parallel development-log-service development-authentication-service-delayed development-user-service-delayed development-password-service-delayed development-api-service-delayed development-page-server-delayed development-image-service-delayed development-web-server-delayed",
     "production": "npm-run-all production-build-client production-server",
     "production-build-client": "npm-run-all update-relay-schema react-intl-clean-messages react-intl-babel-run react-intl-default-translation production-build-client-webpack",
     "production-build-client-webpack": "webpack --color --progress --display-error-details --config \"webpack/production build.entry.js\"",
-    "production-log-service": "node --harmony ./code/log-service/entry.js --production",
-    "production-authentication-service": "node --harmony ./code/authentication-service/entry.js --production",
-    "production-user-service": "node --harmony ./code/user-service/entry.js --production",
-    "production-password-service": "node --harmony ./code/password-service/entry.js --production",
-    "production-api-service": "node --harmony ./code/api-service/entry.js --production",
-    "production-page-server": "node --harmony ./code/page-server/entry.js --production",
-    "production-image-service": "node --harmony ./code/image-service/entry.js --production",
-    "production-web-server": "node --harmony ./code/web-server/entry.js --production",
+    "production-log-service": "better-npm-run production-log-service",
+    "production-authentication-service": "better-npm-run production-authentication-service",
+    "production-user-service": "better-npm-run production-user-service",
+    "production-password-service": "better-npm-run production-password-service",
+    "production-api-service": "better-npm-run production-api-service",
+    "production-page-server": "better-npm-run production-page-server",
+    "production-image-service": "better-npm-run production-image-service",
+    "production-web-server": "better-npm-run production-web-server",
     "production-server": "npm-run-all --parallel production-log-service production-authentication-service production-user-service production-password-service production-api-service production-page-server production-image-service production-web-server",
     "update-relay-schema": "node \"./automation/relay/update schema.entry.js\"",
     "react-intl-default-translation": "node ./automation/international/react-intl-default-translation.entry.js",
@@ -208,6 +207,118 @@
       "env": {
         "NODE_ENV": "production",
         "BABEL_ENV": "react-intl-extract-default-messages"
+      }
+    },
+    "development-page-server": {
+      "command": "nodemon ./code/page-server/entry.js --watch ./code/page-server --watch ./code/client --watch ./code/common",
+      "env": {
+        "NODE_ENV": "development",
+        "BABEL_ENV": "server"
+      }
+    },
+    "development-web-server": {
+      "command": "nodemon ./code/web-server/entry.js  --watch ./code/web-server --watch ./code/common",
+      "env": {
+        "NODE_ENV": "development",
+        "BABEL_ENV": "server"
+      }
+    },
+    "development-image-service": {
+      "command": "nodemon ./code/image-service/entry.js --watch ./code/image-service --watch ./code/common",
+      "env": {
+        "NODE_ENV": "development",
+        "BABEL_ENV": "server"
+      }
+    },
+    "development-api-service": {
+      "command": "nodemon ./code/api-service/entry.js --watch ./code/api-service --watch ./code/common",
+      "env": {
+        "NODE_ENV": "development",
+        "BABEL_ENV": "server"
+      }
+    },
+    "development-password-service": {
+      "command": "nodemon ./code/password-service/entry.js --watch ./code/password-service --watch ./code/common",
+      "env": {
+        "NODE_ENV": "development",
+        "BABEL_ENV": "server"
+      }
+    },
+    "development-user-service": {
+      "command": "nodemon ./code/user-service/entry.js --watch ./code/user-service --watch ./code/common",
+      "env": {
+        "NODE_ENV": "development",
+        "BABEL_ENV": "server"
+      }
+    },
+    "development-authentication-service": {
+      "command": "nodemon ./code/authentication-service/entry.js --watch ./code/authentication-service --watch ./code/common",
+      "env": {
+        "NODE_ENV": "development",
+        "BABEL_ENV": "server"
+      }
+    },
+    "development-log-service": {
+      "command": "nodemon ./code/log-service/entry.js --watch ./code/log-service --watch ./code/common",
+      "env": {
+        "NODE_ENV": "development",
+        "BABEL_ENV": "server"
+      }
+    },
+    "production-page-server": {
+      "command": "node --harmony ./code/page-server/entry.js",
+      "env": {
+        "NODE_ENV": "production",
+        "BABEL_ENV": "server"
+      }
+    },
+    "production-web-server": {
+      "command": "node --harmony ./code/web-server/entry.js",
+      "env": {
+        "NODE_ENV": "production",
+        "BABEL_ENV": "server"
+      }
+    },
+    "production-image-service": {
+      "command": "node --harmony ./code/image-service/entry.js",
+      "env": {
+        "NODE_ENV": "production",
+        "BABEL_ENV": "server"
+      }
+    },
+    "production-api-service": {
+      "command": "node --harmony ./code/api-service/entry.js",
+      "env": {
+        "NODE_ENV": "production",
+        "BABEL_ENV": "server"
+      }
+    },
+    "production-password-service": {
+      "command": "node --harmony ./code/password-service/entry.js",
+      "env": {
+        "NODE_ENV": "production",
+        "BABEL_ENV": "server"
+      }
+    },
+    "production-user-service": {
+      "command": "node --harmony ./code/user-service/entry.js",
+      "env": {
+        "NODE_ENV": "production",
+        "BABEL_ENV": "server"
+      }
+    },
+    "production-authentication-service": {
+      "command": "node --harmony ./code/authentication-service/entry.js",
+      "env": {
+        "NODE_ENV": "production",
+        "BABEL_ENV": "server"
+      }
+    },
+    "production-log-service": {
+      "command": "node --harmony ./code/log-service/entry.js",
+      "env": {
+        "NODE_ENV": "production",
+        "BABEL_ENV": "server"
       }
     }
   },

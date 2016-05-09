@@ -1,19 +1,21 @@
-var path    = require('path')
-var webpack = require('webpack')
+import path from 'path'
+import webpack from 'webpack'
+
+import Webpack_isomorphic_tools_plugin        from 'webpack-isomorphic-tools/plugin'
+import webpack_isomorphic_tools_configuration from './webpack-isomorphic-tools'
+
+import global_variables from '../code/common/global variables'
 
 var root_folder = path.resolve(__dirname, '..')
 
 var assets_source_folder = path.resolve(root_folder, 'assets')
 
-var Webpack_isomorphic_tools_plugin        = require('webpack-isomorphic-tools/plugin')
-var webpack_isomorphic_tools_configuration = require('./webpack-isomorphic-tools')
 var webpack_isomorphic_tools_plugin        = new Webpack_isomorphic_tools_plugin(webpack_isomorphic_tools_configuration)
 
-var environment_variables = require('../code/common/environment variables')
-var define_plugin_environment_variables = {}
-Object.keys(environment_variables).forEach(function(key)
+var define_plugin_global_variables = {}
+Object.keys(global_variables).forEach(function(key)
 {
-	define_plugin_environment_variables[key] = JSON.stringify(environment_variables[key])
+	define_plugin_global_variables[key] = JSON.stringify(global_variables[key])
 })
 
 var regular_expressions =
@@ -135,8 +137,8 @@ var configuration =
 		// // (use [contenthash] in production)
 		// new webpack.optimize.CommonsChunkPlugin('common', 'common.[hash].js'),
 
-		// environment variables
-		new webpack.DefinePlugin(define_plugin_environment_variables)
+		// global variables
+		new webpack.DefinePlugin(define_plugin_global_variables)
 	]
 }
 

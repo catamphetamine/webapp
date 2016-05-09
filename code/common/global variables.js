@@ -1,4 +1,4 @@
-var configuration = require('./configuration')
+import configuration from './configuration'
 
 module.exports =
 {
