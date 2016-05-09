@@ -9,8 +9,12 @@ import global_variables from './global variables'
 
 const command_line_arguments = minimist(process.argv.slice(2))
 
-global._production_ = command_line_arguments.production
-global._development_ = command_line_arguments.development || process.env.NODE_ENV === 'development'
+global._development_ = false
+if (process.env.NODE_ENV === 'development' || command_line_arguments.development)
+{
+	global._development_ = true
+}
+global._production_ = !global._development_
 
 if (global._development_)
 {
