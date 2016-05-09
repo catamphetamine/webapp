@@ -18,7 +18,7 @@ export function upload_user_picture(file)
 
 	const action =
 	{
-		promise: async (http) => http.post(`/images/upload`, data),
+		promise: async http => http.post(`/images/upload`, data),
 		event: 'upload user picture'
 	}
 
@@ -29,7 +29,7 @@ export function save_user_picture(picture)
 {
 	const action =
 	{
-		promise: async (http) => http.post(`/users/picture`, picture),
+		promise: async http => http.post(`/users/picture`, picture),
 		event: 'save user picture'
 	}
 

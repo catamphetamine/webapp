@@ -145,17 +145,21 @@ export default class Image extends React.Component
 		const { type } = this.props
 		const { size } = this.state
 
-		return url(type, size)
+		return url(size, type)
 	}
 }
 
-export function url(type, size)
+export function url(size, type)
 {
-	let subpath = ''
+	let subpath
 	switch (type)
 	{
 		case 'user_picture':
 			subpath = `${_user_pictures_path_}/`
+			break
+
+		default:
+			subpath = `uploaded/`
 			break
 	}
 

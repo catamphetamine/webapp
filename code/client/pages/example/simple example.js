@@ -158,7 +158,7 @@ export default class Page extends Component
 							return <li key={user.id}>
 								<span style={style.user.id}>{user.id}</span>
 
-								<img style={style.user.picture} src={user.picture ? `${_image_service_url_}/${_user_pictures_path_}/${user.picture.sizes[0].name}` : no_user_picture}/>
+								<img style={style.user.picture} src={user.picture ? `${_image_service_url_}/uploaded/${user.picture.sizes[0].name}` : no_user_picture}/>
 
 								<span style={style.user.name}>{user.name}</span>
 

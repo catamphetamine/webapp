@@ -509,7 +509,7 @@ export default class User_profile extends Component
 			this.props.dispatch({ type: 'prefetching uploaded user picture failed' })
 		}
 
-		image.src = url('user_picture', get_preferred_size(uploaded_picture.sizes, this.refs.user_picture.decoratedComponentInstance.width()))
+		image.src = url(get_preferred_size(uploaded_picture.sizes, this.refs.user_picture.decoratedComponentInstance.width()))
 	}
 }
 

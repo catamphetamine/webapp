@@ -63,12 +63,6 @@ export function upload_picture(user_id, file, old_picture)
 		{
 			const picture = await http.post(`/images/upload`, data)
 			await http.post(`/api/example/users/${user_id}/picture`, picture)
-			
-			if (old_picture)
-			{
-				await http.delete(`/images/api`, { id: old_picture.id })
-			}
-			
 			return { user_id, picture }
 		},
 		events: ['uploading user picture', 'user picture uploaded', 'uploading user picture failed']

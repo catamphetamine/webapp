@@ -14,11 +14,13 @@ export default class Page extends Component
 			<section className="content" style={{ padding: '1.6em' }}>
 				{title("REST API Example")}
 
+				{/*
 				<ul style={style.menu}>
 					<li style={style.menu.item}><Link to="/example/simple" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Simple'}</Link></li>
 					<li style={style.menu.item}><Link to="/example/database" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Database'}</Link></li>
 					<li style={style.menu.item}><Link to="/example/graphql" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'GraphQL'}</Link></li>
 				</ul>
+				*/}
 				
         		{this.props.children}
 			</section>

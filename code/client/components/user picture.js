@@ -26,7 +26,8 @@ export default class User_picture extends React.Component
 		({
 			sizes : PropTypes.arrayOf(PropTypes.shape
 			({
-				width : PropTypes.number.isRequired,
+				// `width` is not required for vector graphics
+				width : PropTypes.number,
 				name  : PropTypes.string.isRequired
 			}))
 			.isRequired
@@ -55,7 +56,7 @@ export default class User_picture extends React.Component
 			ref="image"
 			style={style}
 			className={classNames('user-picture', className)}
-			type="user_picture"
+			type={picture ? undefined : "user_picture"}
 			max_width={1000}
 			sizes={sizes}
 			src={sizes ? undefined : require('../../../assets/images/user picture.png')}/>

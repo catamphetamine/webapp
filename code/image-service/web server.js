@@ -10,10 +10,23 @@ import database               from './database'
 const upload_folder = path.resolve(Root_folder, configuration.image_service.temporary_files_directory)
 const output_folder = path.resolve(Root_folder, configuration.image_service.files_directory)
 
+function temporary_path(file_name)
+{
+	return path.resolve(upload_folder, file_name)
+}
+
+function permanent_path(file_name, type)
+{
+	return path.resolve(output_folder, type.path, file_name)
+}
+
 const web = web_server({ authentication: true, parse_body: false, routing: '/api' })
 
-// uploaded images (user pictures, etc)
-web.serve_static_files('/', path.join(Root_folder, configuration.image_service.files_directory))
+// temporary uploaded images
+web.serve_static_files('/uploaded', upload_folder)
+
+// saved uploaded images (user pictures, etc)
+web.serve_static_files('/', output_folder)
 
 web.delete('/', async ({ id }, { user }) =>
 {
@@ -43,7 +56,7 @@ web.delete('/', async ({ id }, { user }) =>
 
 	for (let size of image.info.sizes)
 	{
-		const image_path = path.resolve(output_folder, image_type.path, size.name)
+		const image_path = permanent_path(size.name, image_type)
 
 		if (await fs_exists(image_path))
 		{
@@ -52,6 +65,35 @@ web.delete('/', async ({ id }, { user }) =>
 	}
 
 	await database.delete(id)
+})
+
+web.post('/save', async ({ type, image }, { user }) =>
+{
+	if (!user)
+	{
+		throw new web.errors.Unauthenticated()
+	}
+
+	const image_type = configuration.image_service.type[type]
+
+	if (!image_type)
+	{
+		throw new Error(`Unknown image-service type: "${type}"`)
+	}
+	
+	if (!image)
+	{
+		throw new web.errors.Not_found()
+	}
+
+	for (let size of image.sizes)
+	{
+		await fs.moveAsync(temporary_path(size.name), permanent_path(size.name, image_type))
+	}
+
+	image.id = await database.create(user, type, image)
+
+	return image
 })
 
 // returns:
@@ -81,9 +123,9 @@ web.file_upload
 	{
 		const { file, parameters } = uploaded
 
-		const target = configuration.image_service.type[parameters.type]
+		const image_type = configuration.image_service.type[parameters.type]
 
-		if (!target)
+		if (!image_type)
 		{
 			throw new Error(`Unknown image-service type: "${parameters.type}"`)
 		}
@@ -94,7 +136,7 @@ web.file_upload
 		{
 			const file_name = file.uploaded_file_name + '.svg'
 
-			const to = path.resolve(output_folder, target.path, file_name)
+			const to = temporary_path(file_name)
 
 			await fs.copyAsync(from, to, { replace: false })
 
@@ -110,7 +152,6 @@ web.file_upload
 			const image_info = Object.clone(result)
 			image_info.sizes[0].file_size = (await fs.statAsync(to)).size
 
-			result.id = await database.create(this.user, parameters.type, image_info)
 			return result
 		}
 
@@ -136,7 +177,7 @@ web.file_upload
 			// and leave its scale as it is.
 			if (image_min_extent <= max_extent)
 			{
-				if (target.square)
+				if (image_type.square)
 				{
 					await resize(from, to_temporary, { max_extent: image_min_extent, square: true })
 				}
@@ -148,13 +189,13 @@ web.file_upload
 			// Otherwise scale down the image to the length of the current resize step extent
 			else
 			{
-				await resize(from, to_temporary, { max_extent, square: target.square })
+				await resize(from, to_temporary, { max_extent, square: image_type.square })
 			}
 
 			const resized = await get_image_info(to_temporary, { simple: true })
 			const file_name = `${file.uploaded_file_name}@${resized.width}x${resized.height}${dot_extension}`
 
-			const to = path.resolve(output_folder, target.path, file_name)
+			const to = temporary_path(file_name)
 			await fs.moveAsync(to_temporary, to)
 
 			sizes.push
@@ -188,8 +229,7 @@ web.file_upload
 			{
 				sizes.remove(previous)
 
-				const previous_path = path.resolve(output_folder, target.path, previous.name)
-				await fs.unlinkAsync(previous_path)
+				await fs.unlinkAsync(temporary_path(previous.name))
 			}
 		}
 
@@ -218,7 +258,6 @@ web.file_upload
 			i++
 		}
 
-		result.id = await database.create(this.user, parameters.type, images_info)
 		return result
 	}
 })

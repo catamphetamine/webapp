@@ -44,6 +44,13 @@ api.post('/picture', async function(picture, { user, authentication_token })
 
 	const user_data = await get_user(user, { user })
 
+	picture = await http.post
+	(
+		`${address_book.image_service}/api/save`,
+		{ type: 'user_picture', image: picture },
+		{ headers: { Authorization: `Bearer ${authentication_token}` } }
+	)
+
 	await store.update_user(user.id, { picture })
 
 	if (user_data.picture)
