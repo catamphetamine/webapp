@@ -74,6 +74,8 @@ web.delete('/', async ({ id }, { user }) =>
 		}
 	}
 
+	await database.decrease_user_images_size(user, image.info.files_size)
+
 	await database.delete(id)
 })
 
@@ -98,10 +100,17 @@ web.post('/save', async ({ type, image }, { user }) =>
 
 	for (let size of image.sizes)
 	{
-		await fs.moveAsync(temporary_path(size.name), permanent_path(size.name, image_type))
+		const to = permanent_path(size.name, image_type)
+		await fs.moveAsync(temporary_path(size.name), to)
+
+		size.file_size = (await fs.statAsync(to)).size
 	}
 
+	image.files_size = image.sizes.reduce((total, size) => total + size.file_size, 0)
+
 	image.id = await database.create(user, type, image)
+
+	await database.increase_user_images_size(user, image.files_size)
 
 	return image
 })
@@ -159,8 +168,7 @@ web.file_upload
 				// server: 1
 			}
 
-			const image_info = Object.clone(result)
-			image_info.sizes[0].file_size = (await fs.statAsync(to)).size
+			// result.sizes[0].file_size = (await fs.statAsync(to)).size
 
 			return result
 		}
@@ -176,7 +184,7 @@ web.file_upload
 		const to_temporary = from + dot_extension
 
 		const sizes = []
-		const file_sizes = []
+		// const file_sizes = []
 
 		const image_min_extent = Math.min(image_info.width, image_info.height)
 
@@ -215,7 +223,7 @@ web.file_upload
 				name   : file_name
 			})
 
-			file_sizes.push((await fs.statAsync(to)).size)
+			// file_sizes.push((await fs.statAsync(to)).size)
 
 			// If the image is smaller than (or equal to) the current resize step extent
 			// then it means that the next (bigger) resize step won't be applied,
@@ -259,14 +267,12 @@ web.file_upload
 			result.location = image_info.location
 		}
 
-		const images_info = Object.clone(result)
-
-		let i = 0
-		while (i < images_info.sizes.length)
-		{
-			images_info.sizes[i].file_size = file_sizes[i]
-			i++
-		}
+		// let i = 0
+		// while (i < result.sizes.length)
+		// {
+		// 	result.sizes[i].file_size = file_sizes[i]
+		// 	i++
+		// }
 
 		return result
 	}

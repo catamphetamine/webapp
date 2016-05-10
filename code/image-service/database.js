@@ -63,6 +63,16 @@ class memory_database
 		delete this.db[id]
 		return Promise.resolve()
 	}
+
+	async increase_user_images_size(user, size)
+	{
+		return Promise.resolve()
+	}
+
+	async decrease_user_images_size(user, size)
+	{
+		return Promise.resolve()
+	}
 }
 
 class mongodb_database extends MongoDB
@@ -101,6 +111,46 @@ class mongodb_database extends MongoDB
 	async delete(id)
 	{
 		await this.collection('images').remove_by_id(id)
+	}
+
+	async increase_user_images_size(user, size)
+	{
+		const result = await this.collection('user_image_stats').updateAsync
+		({
+			user: this.ObjectId(user.id)
+		},
+		{
+			$inc:
+			{
+				files_size : size,
+				count      : 1
+			}
+		})
+
+		if (!result.result.nModified)
+		{
+			await this.collection('user_image_stats').insertAsync
+			({
+				user       : this.ObjectId(user.id),
+				files_size : size,
+				count      : 1
+			})
+		}
+	}
+
+	async decrease_user_images_size(user, size)
+	{
+		await this.collection('user_image_stats').updateAsync
+		({
+			user: this.ObjectId(user.id)
+		},
+		{
+			$inc:
+			{
+				files_size : -size,
+				count      : -1
+			}
+		})
 	}
 }
 
