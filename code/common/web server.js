@@ -761,14 +761,14 @@ export default function web_server(options = {})
 	// }
 	
 	// can handle file uploads
-	result.file_upload = function({ path = '/', upload_folder, requires_authentication = false, multiple_files = false, postprocess, file_size_limit })
+	result.file_upload = function({ mount_path = '/', upload_folder, requires_authentication = false, multiple_files = false, on_file_uploaded, postprocess, file_size_limit })
 	{
 		if (options.parse_body)
 		{
 			throw new Error(`.file_upload() was enabled but also "parse_body" wasn't set to false, therefore Http POST request bodies are parsed which creates a conflict. Set "parse_body" parameter to false.`)
 		}
 
-		web.use(mount(path, function*()
+		web.use(mount(mount_path, function*()
 		{
 			if (!this.is('multipart/form-data'))
 			{
@@ -815,6 +815,13 @@ export default function web_server(options = {})
 					original_file_name: form_data_item.filename,
 					uploaded_file_name: file_name
 				})
+
+				if (on_file_uploaded)
+				{
+					const file_size = (yield fs.statAsync(path.join(upload_folder, file_name))).size
+
+					yield on_file_uploaded(form_data_item.filename, file_size, this.request.headers['x-forwarded-for'] || this.request.ip)
+				}
 			}
 
 			let result

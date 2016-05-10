@@ -75,7 +75,8 @@ const handlers =
 		const new_state = 
 		{
 			...state,
-			updating_user : true
+			updating_user : true,
+			update_error : undefined
 		}
 
 		return new_state
@@ -121,7 +122,8 @@ const handlers =
 		const new_state = 
 		{
 			...state,
-			uploading_picture : true
+			uploading_picture : true,
+			user_picture_upload_error : undefined
 		}
 
 		return new_state
@@ -191,6 +193,17 @@ const handlers =
 				...state.user,
 				picture : result
 			}
+		}
+
+		return new_state
+	},
+
+	'save user picture failed': (error, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			update_error : error
 		}
 
 		return new_state

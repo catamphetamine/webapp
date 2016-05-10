@@ -33,8 +33,10 @@ function get_file_expiration_date(now)
 	return file_expiration_date.subtract(temporary_image_expiration_interval.value, temporary_image_expiration_interval.units)
 }
 
-function clean_up()
+export function clean_up(options = {})
 {
+	const { force } = options
+
 	log.debug(`Clean up started`)
 
 	most_recent_run_date = new Date()
@@ -55,7 +57,7 @@ function clean_up()
 		{
 			return fs.statAsync(path.join(folder, file_name)).then(stats =>
 			{
-				return { file_name: file_name, is_file: stats.isFile(), created: stats.birthtime }
+				return { file_name: file_name, is_file: stats.isFile(), size: stats.size, created: stats.birthtime }
 			})
 		})
 	})
@@ -68,7 +70,21 @@ function clean_up()
 		}
 
 		// get all expired files
-		return moment(file.created).isBefore(file_expiration_date)
+		return force || moment(file.created).isBefore(file_expiration_date)
+	})
+	.each(function(file)
+	{
+		if (!this.files)
+		{
+			this.files = []
+		}
+
+		this.files.push
+		({
+			name    : file.file_name,
+			size    : file.size,
+			created : file.created
+		})
 	})
 	.map(file =>
 	{
@@ -86,6 +102,15 @@ function clean_up()
 		{
 			log.info(`Clean up finished. Size before ${bytes(this.folder_size_after_clean_up)}. Size after ${bytes(this.folder_size_after_clean_up)}. Space freed ${bytes(this.folder_size_before_clean_up - this.folder_size_after_clean_up)}`)
 		}
+
+		const report =
+		{
+			size_before : this.folder_size_before_clean_up,
+			size_after  : this.folder_size_after_clean_up,
+			files       : this.files
+		}
+
+		return report
 	})
 }
 

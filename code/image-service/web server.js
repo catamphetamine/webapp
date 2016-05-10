@@ -6,6 +6,7 @@ import fs   from 'fs-extra'
 import get_image_info         from './image info'
 import { resize, autorotate } from './image manipulation'
 import database               from './database'
+import { clean_up }           from './cleaner'
 
 const upload_folder = path.resolve(Root_folder, configuration.image_service.temporary_files_directory)
 const output_folder = path.resolve(Root_folder, configuration.image_service.files_directory)
@@ -36,6 +37,13 @@ web.get('/', async function({ skip, amount })
 	amount = amount || 100
 
 	return await database.get_batch(skip, amount)
+})
+
+web.get('/clear_temporary', async function()
+{
+	this.role('administrator')
+
+	return await clean_up({ force: true })
 })
 
 web.delete('/', async ({ id }, { user }) =>
@@ -138,6 +146,10 @@ web.file_upload
 	path: '/upload',
 	upload_folder,
 	file_size_limit: configuration.image_service.file_size_limit,
+	on_file_uploaded: async function(name, size, ip)
+	{
+		console.log(name, size, ip)
+	},
 	postprocess: async function(uploaded)
 	{
 		const { file, parameters } = uploaded
