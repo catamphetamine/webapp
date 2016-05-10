@@ -48,6 +48,30 @@ export default class MongoDB
 				return collection.removeAsync({ _id: ObjectId(id) })
 			}
 
+			collection.query = function(filter, options = {})
+			{
+				const { amount, skip, sort } = options
+
+				let result = collection.find(filter)
+
+				if (amount)
+				{
+					result = result.limit(amount)
+				}
+
+				if (skip)
+				{
+					result = result.skip(skip)
+				}
+
+				if (sort)
+				{
+					result = result.sort(sort)
+				}
+
+				return Promise.promisify(result.toArray, result)()
+			}
+
 			this.collections[name] = collection
 			Promise.promisifyAll(collection)
 		}

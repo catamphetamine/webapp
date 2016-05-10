@@ -10,6 +10,33 @@ class memory_database
 		return Promise.resolve()
 	}
 
+	get_batch(skip, amount)
+	{
+		const result = {}
+
+		let i = 0
+		for (let key of Object.keys(this.db))
+		{
+			if (skip)
+			{
+				skip--
+			}
+			else if (amount)
+			{
+				result[key] = this.db[key]
+				amount--
+			}
+			else
+			{
+				break
+			}
+
+			i++
+		}
+
+		return Promise.resolve(result)
+	}
+
 	get(id)
 	{
 		return Promise.resolve(this.db[id])
@@ -40,6 +67,11 @@ class memory_database
 
 class mongodb_database extends MongoDB
 {
+	async get_batch(skip, amount)
+	{
+		return this.collection('images').query({}, { skip, amount })
+	}
+
 	async get(id)
 	{
 		let result = await this.collection('images').get_by_id(id)

@@ -28,6 +28,16 @@ web.serve_static_files('/uploaded', upload_folder)
 // saved uploaded images (user pictures, etc)
 web.serve_static_files('/', output_folder)
 
+web.get('/', async function({ skip, amount })
+{
+	this.role('administrator')
+
+	skip = skip || 0
+	amount = amount || 100
+
+	return await database.get_batch(skip, amount)
+})
+
 web.delete('/', async ({ id }, { user }) =>
 {
 	if (!user)
@@ -80,7 +90,7 @@ web.post('/save', async ({ type, image }, { user }) =>
 	{
 		throw new Error(`Unknown image-service type: "${type}"`)
 	}
-	
+
 	if (!image)
 	{
 		throw new web.errors.Not_found()
