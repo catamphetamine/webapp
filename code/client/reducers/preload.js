@@ -1,8 +1,6 @@
 import { Preload_started, Preload_finished, Preload_failed } from 'react-isomorphic-render/redux'
 
-const initial_state =
-{
-}
+const initial_state = {}
 
 const handlers =
 {

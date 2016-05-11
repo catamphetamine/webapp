@@ -42,7 +42,7 @@ import Sign_in          from './pages/sign in'
 import Register         from './pages/register'
 import Menu             from './pages/menu'
 import Profile          from './pages/user/profile'
-import Account          from './pages/user/account'
+import Settings         from './pages/user/settings'
 import Showcase         from './pages/showcase'
 import Dialog_showcase  from './pages/showcase/dialog'
 import Form_showcase    from './pages/showcase/form'
@@ -75,9 +75,10 @@ export default function() // (store)
 			</Route>
 
 			<Route path="user">
-				<Route path="account" component={authorize(Account)}/>
-				<Route path=":id"     component={Profile}/>
+				<Route path=":id" component={Profile}/>
 			</Route>
+			
+			<Route path="settings" component={authorize(Settings)}/>
 
 			<Route path="logs" component={authorize(Log, 'administrator')}/>
 

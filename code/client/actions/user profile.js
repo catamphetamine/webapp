@@ -9,6 +9,28 @@ export function update_user(data)
 	return action
 }
 
+export function get_user(user_id)
+{
+	const action =
+	{
+		promise : http => http.get(`/users/${user_id}`),
+		event   : 'user profile: get user'
+	}
+
+	return action
+}
+
+export function get_users_latest_activity_time(user_id)
+{
+	const action =
+	{
+		promise : http => http.get(`/authentication/latest-activity/${user_id}`, { bot: true }),
+		event   : "user profile: get user's latest activity time"
+	}
+
+	return action
+}
+
 export function upload_user_picture(file)
 {
 	const data = new FormData()
@@ -19,7 +41,7 @@ export function upload_user_picture(file)
 	const action =
 	{
 		promise: async http => http.post(`/images/upload`, data),
-		event: 'upload user picture'
+		event: 'user profile: upload user picture'
 	}
 
 	return action

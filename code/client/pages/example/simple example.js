@@ -16,14 +16,14 @@ import Button from '../../components/button'
 (
 	model => 
 	({
-		users         : model.users.users,
-		loading       : model.users.loading,
-		loaded        : model.users.loaded,
-		loading_error : model.users.loading_error,
-		adding_error  : model.users.adding_error,
+		users         : model.example_users.users,
+		loading       : model.example_users.loading,
+		loaded        : model.example_users.loaded,
+		loading_error : model.example_users.loading_error,
+		adding_error  : model.example_users.adding_error,
 
-		uploading_picture       : model.users.uploading_picture,
-		uploading_picture_error : model.users.uploading_picture_error,
+		uploading_picture       : model.example_users.uploading_picture,
+		uploading_picture_error : model.example_users.uploading_picture_error,
 
 		user : model.authentication.user
 	}),

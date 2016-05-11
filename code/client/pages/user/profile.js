@@ -12,8 +12,7 @@ import { defineMessages, FormattedRelative }          from 'react-intl'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
 
-import { get_user, get_users_latest_activity_time }  from '../../actions/users'
-import { update_user, upload_user_picture, save_user_picture } from '../../actions/profile'
+import { get_users_latest_activity_time, get_user, update_user, upload_user_picture, save_user_picture } from '../../actions/user profile'
 
 import Text_input   from '../../components/text input'
 import Button       from '../../components/button'

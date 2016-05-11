@@ -1,7 +1,4 @@
-const initial_state =
-{
-	locale : undefined
-}
+const initial_state = {}
 
 const handlers =
 {

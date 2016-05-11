@@ -133,13 +133,33 @@ const handlers =
 
 	'save user picture done': (result, state) =>
 	{
-		state.user =
+		const new_state = 
 		{
-			...state.user,
-			picture: result
+			...state,
+			user:
+			{
+				...state.user,
+				picture: result
+			}
 		}
-		
-		return state
+
+		return new_state
+	},
+
+	'get user authentication tokens done': (result, state) =>
+	{
+		// It may be not so safe to store 
+		// authentication tokens in RAM infinitely.
+		// Maybe they should be removed from RAM 
+		// when user navigates away from the settings page.
+
+		const new_state = 
+		{
+			...state,
+			tokens: result.tokens
+		}
+
+		return new_state
 	}
 }
 

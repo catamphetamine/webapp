@@ -2,37 +2,34 @@ const initial_state = {}
 
 const handlers =
 {
-	'fetch log pending': (result, state) =>
+	'user settings: get user pending': (result, state) =>
 	{
 		const new_state = 
 		{
 			...state,
-			// loading : true
+			error : undefined
 		}
 
 		return new_state
 	},
 
-	'fetch log done': (result, state) =>
+	'user settings: get user done': (result, state) =>
 	{
 		const new_state = 
 		{
 			...state,
-			// loading : false,
-			// loaded  : true,
-			data    : result
+			user : result
 		}
 
 		return new_state
 	},
 
-	'fetch log failed': (error, state) =>
+	'user settings: get user failed': (error, state) =>
 	{
 		const new_state = 
 		{
 			...state,
-			// loading : false,
-			error   : error
+			error
 		}
 
 		return new_state

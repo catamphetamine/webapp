@@ -39,6 +39,8 @@ function own_user(user)
 	{
 		...public_user(user),
 
+		email      : user.email,
+
 		role       : user.role,
 		// moderation : user.moderation,
 		// switches   : user.switches,

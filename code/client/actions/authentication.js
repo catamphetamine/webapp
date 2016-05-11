@@ -41,3 +41,14 @@ export function register(info)
 
 	return action
 }
+
+export function get_user_authentication_tokens()
+{
+	const action =
+	{
+		promise : http => http.get(`/authentication/tokens`,),
+		event   : 'get user authentication tokens'
+	}
+
+	return action
+}

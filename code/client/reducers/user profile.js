@@ -1,10 +1,8 @@
-const initial_state =
-{
-}
+const initial_state = {}
 
 const handlers =
 {
-	'fetch user pending': (result, state) =>
+	'user profile: get user pending': (result, state) =>
 	{
 		const new_state = 
 		{
@@ -15,29 +13,29 @@ const handlers =
 		return new_state
 	},
 
-	'fetch user done': (result, state) =>
+	'user profile: get user done': (result, state) =>
 	{
 		const new_state = 
 		{
 			...state,
-			user    : result
+			user : result
 		}
 
 		return new_state
 	},
 
-	'fetch user failed': (error, state) =>
+	'user profile: get user failed': (error, state) =>
 	{
 		const new_state = 
 		{
 			...state,
-			error   : error
+			error
 		}
 
 		return new_state
 	},
 
-	'fetch users latest activity time pending': (result, state) =>
+	"user profile: get user's latest activity time pending": (result, state) =>
 	{
 		const new_state = 
 		{
@@ -48,7 +46,7 @@ const handlers =
 		return new_state
 	},
 
-	'fetch users latest activity time done': (result, state) =>
+	"user profile: get user's latest activity time done": (result, state) =>
 	{
 		const new_state = 
 		{
@@ -59,7 +57,7 @@ const handlers =
 		return new_state
 	},
 
-	'fetch users latest activity time failed': (error, state) =>
+	"user profile: get user's latest activity time failed": (error, state) =>
 	{
 		const new_state = 
 		{
@@ -117,7 +115,7 @@ const handlers =
 		return new_state
 	},
 
-	'upload user picture pending': (result, state) =>
+	'user profile: upload user picture pending': (result, state) =>
 	{
 		const new_state = 
 		{
@@ -129,7 +127,7 @@ const handlers =
 		return new_state
 	},
 
-	'upload user picture done': (result, state) =>
+	'user profile: upload user picture done': (result, state) =>
 	{
 		const new_state = 
 		{
@@ -143,7 +141,7 @@ const handlers =
 		return new_state
 	},
 
-	'upload user picture failed': (error, state) =>
+	'user profile: upload user picture failed': (error, state) =>
 	{
 		const new_state = 
 		{

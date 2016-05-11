@@ -163,6 +163,11 @@ class Memory_store
 			user.latest_activity_time = now
 		}
 	}
+
+	async get_tokens(user_id)
+	{
+		return Promise.resolve(this.users.get(user_id).authentication_tokens)
+	}
 }
 
 // if MongoDB is installed and configured, use it
@@ -295,6 +300,17 @@ class Mongodb_store extends MongoDB
 				}
 			})
 		}
+	}
+
+	async get_tokens(user_id)
+	{
+		return await this.collection('authentication_tokens').query
+		({
+			user_id: this.ObjectId(user_id)
+		},
+		{
+			sort: { created: -1 }
+		})
 	}
 }
 
