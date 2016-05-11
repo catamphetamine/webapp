@@ -51,6 +51,11 @@ api.get('/validate-token', async function({ bot }, { ip, authentication_token_id
 		return { valid: false }
 	}
 
+	if (token.revoked)
+	{
+		return { valid: false }
+	}
+
 	// if it's not an automated Http request,
 	// then update this authentication token's last access IP and time
 	if (!bot)

@@ -82,7 +82,8 @@ class Memory_store
 			return
 		}
 
-		user.authentication_tokens.remove(user.authentication_tokens.find_by({ id: token_id }))
+		// user.authentication_tokens.remove(user.authentication_tokens.find_by({ id: token_id }))
+		user.authentication_tokens.find_by({ id: token_id }).revoked = new Date()
 	}
 
 	async add_authentication_token(user, ip)
@@ -115,8 +116,9 @@ class Memory_store
 
 		user.authentication_tokens.push
 		({
-			id: authentication_token_id,
-			history: [{ ip, time: now }]
+			id      : authentication_token_id,
+			created : now,
+			history : [{ ip, time: now }]
 		})
 
 		// redundant field for faster latest activity time querying
@@ -193,17 +195,29 @@ class Mongodb_store extends MongoDB
 
 	async revoke_token(token_id, user_id)
 	{
-		// remove the token from user data
-		await this.collection('user_authentication').update_by_id(user_id,
+		// // remove the token from user data
+		// await this.collection('user_authentication').update_by_id(user_id,
+		// {
+		// 	$pull:
+		// 	{
+		// 		authentication_tokens: this.ObjectId(token_id)
+		// 	}
+		// })
+		//
+		// // remove the token from the database
+		// await this.collection('authentication_tokens').remove_by_id(token_id)
+
+		await this.collection('authentication_tokens').update
+		({
+			_id     : this.ObjectId(token_id),
+			revoked : { $exists: false }
+		},
 		{
-			$pull:
+			$set:
 			{
-				authentication_tokens: this.ObjectId(token_id)
+				revoked: new Date()
 			}
 		})
-
-		// remove the token from the database
-		await this.collection('authentication_tokens').remove_by_id(token_id)
 	}
 
 	async add_authentication_token(user, ip)
@@ -214,6 +228,7 @@ class Mongodb_store extends MongoDB
 		const authentication_token_id = (await this.collection('authentication_tokens').insertAsync
 		({
 			user_id : this.ObjectId(user.id),
+			created : now,
 
 			history:
 			[{
