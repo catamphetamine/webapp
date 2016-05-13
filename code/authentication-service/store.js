@@ -72,18 +72,10 @@ class Memory_store
 		return Promise.resolve()
 	}
 
-	async revoke_token(token_id, user_id)
+	async revoke_token(token_id)
 	{
-		const user = await this.find_user_by_id(user_id)
-		
-		// for in-memory database development testing
-		if (!user)
-		{
-			return
-		}
-
-		// user.authentication_tokens.remove(user.authentication_tokens.find_by({ id: token_id }))
-		user.authentication_tokens.find_by({ id: token_id }).revoked = new Date()
+		const token = await this.find_token_by_id(token_id)
+		token.revoked = new Date()
 	}
 
 	async add_authentication_token(user, ip)
@@ -118,6 +110,8 @@ class Memory_store
 		({
 			id      : authentication_token_id,
 			created : now,
+			// redundant field for faster access token sorting
+			latest_access : now,
 			history : [{ ip, time: now }]
 		})
 
@@ -147,6 +141,9 @@ class Memory_store
 		{
 			// update access time for this authentication token
 			const token = user.authentication_tokens.find_by({ id: authentication_token_id })
+
+			// redundant field for faster access token sorting
+			token.latest_access = now
 
 			const this_ip_access = token.history.find_by({ ip })
 
@@ -198,7 +195,7 @@ class Mongodb_store extends MongoDB
 		return this.to_object(token)
 	}
 
-	async revoke_token(token_id, user_id)
+	async revoke_token(token_id)
 	{
 		// // remove the token from user data
 		// await this.collection('user_authentication').update_by_id(user_id,
@@ -234,6 +231,9 @@ class Mongodb_store extends MongoDB
 		({
 			user_id : this.ObjectId(user.id),
 			created : now,
+
+			// redundant field for faster access token sorting
+			latest_access : now,
 
 			history:
 			[{
@@ -296,6 +296,9 @@ class Mongodb_store extends MongoDB
 			{
 				$set:
 				{
+					// redundant field for faster access token sorting
+					latest_access: now,
+
 					'history.$': { ip, time: now }
 				}
 			})
@@ -304,13 +307,13 @@ class Mongodb_store extends MongoDB
 
 	async get_tokens(user_id)
 	{
-		return await this.collection('authentication_tokens').query
+		return this.to_objects(await this.collection('authentication_tokens').query
 		({
 			user_id: this.ObjectId(user_id)
 		},
 		{
-			sort: { created: -1 }
-		})
+			sort: { latest_access: -1 }
+		}))
 	}
 }
 

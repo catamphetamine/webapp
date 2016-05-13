@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react'
-import { PropTypes as React_router_prop_types } from 'react-router'
 
 import { connect } from 'react-redux'
 import styler      from 'react-styling'
@@ -12,6 +11,8 @@ import Checkbox   from './checkbox'
 import Button     from './button'
 import Form       from './form'
 import Modal      from './modal'
+
+import http_status_codes from '../tools/http status codes'
 
 import { messages as user_bar_messages } from './user bar'
 
@@ -494,11 +495,11 @@ export default class Authentication extends Component
 				throw error
 			}
 
-			if (error.status === 404)
+			if (error.status === http_status_codes.Not_found)
 			{
 				this.refs.email.focus()
 			}
-			else if (error.message === 'Wrong password')
+			else if (error.message === 'User is already registered for this email')
 			{
 				this.refs.password.focus()
 			}
@@ -550,12 +551,12 @@ export default class Authentication extends Component
 
 	sign_in_error(error)
 	{
-		if (error.status === 404)
+		if (error.status === http_status_codes.Not_found)
 		{
 			return this.translate(messages.user_not_found)
 		}
 		
-		if (error.message === 'Wrong password')
+		if (error.status === http_status_codes.Input_rejected)
 		{
 			return this.translate(messages.wrong_password)
 		}

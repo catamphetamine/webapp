@@ -27,7 +27,7 @@ export async function sign_in({ email, password }, { ip, set_cookie, secret, htt
 
 	if (!matches)
 	{
-		throw new Errors.Error(`Wrong password`) 
+		throw new Errors.Input_rejected(`Wrong password`) 
 	}
 
 	const jwt_id = await store.add_authentication_token(user, ip)

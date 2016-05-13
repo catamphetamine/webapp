@@ -95,6 +95,20 @@ export default class MongoDB
 		return object
 	}
 
+	// Converts mongodb entity to JSON object
+	// (`_id` ObjectId -> `id` string)
+	to_objects(array)
+	{
+		let i = 0
+		while (i < array.length)
+		{
+			array[i] = this.to_object(array[i])
+			i++
+		}
+
+		return array
+	}
+
 	// returns ObjectID of the inserted JSON object
 	inserted_id(result)
 	{

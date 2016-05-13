@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
-import { PropTypes as React_router_prop_types } from 'react-router'
 
 import { Link } from 'react-router'
 
@@ -22,7 +21,7 @@ export default class Menu extends Component
 
 	static contextTypes =
 	{
-		history : React_router_prop_types.history
+		history : PropTypes.object
 	}
 
 	constructor(props, context)

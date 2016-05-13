@@ -78,7 +78,7 @@ export default function() // (store)
 				<Route path=":id" component={Profile}/>
 			</Route>
 			
-			<Route path="settings" component={authorize(Settings)}/>
+			<Route path="settings" component={authorize(Settings, 'administrator')}/>
 
 			<Route path="logs" component={authorize(Log, 'administrator')}/>
 

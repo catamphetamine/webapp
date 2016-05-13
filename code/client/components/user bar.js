@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 // import ReactDOM from 'react-dom'
-import { PropTypes as React_router_prop_types, Link } from 'react-router'
+import { Link } from 'react-router'
 
 import { connect } from 'react-redux'
 import styler      from 'react-styling'

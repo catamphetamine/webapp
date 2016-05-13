@@ -8,6 +8,8 @@ import { should_redirect_to } from '../helpers/redirection'
 
 import international from '../international/internationalize'
 
+import http_status_codes from '../tools/http status codes'
+
 import { messages as user_bar_messages }                           from '../components/user bar'
 import Authentication_form, { messages as authentication_form_messages } from '../components/authentication form'
 
@@ -103,12 +105,12 @@ export default class Sign_in extends Component
 			return translate(authentication_form_messages.authentication_password_is_required)
 		}
 
-		if (error_code == 404)
+		if (error_code === http_status_codes.Not_found)
 		{
 			return translate(messages.user_with_email_not_found, { email: this.props.email })
 		}
 
-		if (error === 'Wrong password')
+		if (error_code === http_status_codes.Input_rejected)
 		{
 			return translate(authentication_form_messages.wrong_password)
 		}
@@ -130,12 +132,12 @@ export default class Sign_in extends Component
 			return 'password'
 		}
 
-		if (error_code == 404)
+		if (error_code === http_status_codes.Not_found)
 		{
 			return 'email'
 		}
 
-		if (error === 'Wrong password')
+		if (error_code === http_status_codes.Input_rejected)
 		{
 			return 'password'
 		}

@@ -5,6 +5,9 @@
 
 	"menu" : "Меню",
 
+	"action.save"   : "Сохранить",
+	"action.cancel" : "Отменить",
+
 	"authentication.sign_in"             : "Войти",
 	"authentication.sign_out"            : "Выйти",
 	"authentication.register"            : "Зарегистрироваться",
@@ -66,6 +69,16 @@
 	"user.profile.send_message" : "Связаться",
 
 	"user.profile.latest_activity_time" : "{gender, select, male {Заходил} female {Заходила} other {В сети:}}",
+
+	"user.settings.header"                               : "Настройки",
+	"user.settings.authentication_tokens"                : "Ключи входа",
+	"user.settings.revoke_authentication_token"          : "Отозвать",
+	"user.settings.authentication_token_valid"           : "Действующий",
+	"user.settings.authentication_token_revoked"         : "Отозван",
+	"user.settings.authentication_token_id"              : "Ключ",
+	"user.settings.authentication_token_issued"          : "Выдан",
+	"user.settings.authentication_token_status"          : "Состояние",
+	"user.settings.authentication_token_latest_activity" : "Использован",
 
 	"unauthenticated.header" : "Войдите, чтобы посмотреть эту страницу",
 	"unauthorized.header"    : "У вас нет доступа к странице",

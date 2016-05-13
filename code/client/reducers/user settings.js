@@ -33,7 +33,29 @@ const handlers =
 		}
 
 		return new_state
-	}
+	},
+
+	// 'user settings: revoke authentication token pending': (result, state) =>
+	// {
+	// 	const new_state = 
+	// 	{
+	// 		...state,
+	// 		revoke_authentication_token_error : undefined
+	// 	}
+	//
+	// 	return new_state
+	// },
+
+	// 'user settings: revoke authentication token failed': (error, state) =>
+	// {
+	// 	const new_state = 
+	// 	{
+	// 		...state,
+	// 		revoke_authentication_token_error: error
+	// 	}
+	//
+	// 	return new_state
+	// }
 }
 
 // applies a handler based on the action type
