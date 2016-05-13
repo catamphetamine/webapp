@@ -51,7 +51,7 @@ const handlers =
 		const new_state = 
 		{
 			...state,
-			latest_activity_time : new Date(result.time)
+			latest_activity_time : result.time
 		}
 
 		return new_state

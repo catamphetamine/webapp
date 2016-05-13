@@ -222,7 +222,7 @@ export default class Settings_page extends Component
 
 										{/* Token issued on */}
 										<td>
-											<React_time_ago date={new Date(token.created)}/>
+											<React_time_ago date={token.created}/>
 										</td>
 
 										{/* Token status (valid, revoked) */}
@@ -231,9 +231,9 @@ export default class Settings_page extends Component
 											{token.revoked &&
 												<span>
 													{/* "Revoked" */}
-													translate(messages.authentication_token_revoked)
+													{translate(messages.authentication_token_revoked)}
 													{/* when */}
-													<React_time_ago date={new Date(token.revoked)}/>
+													<React_time_ago date={token.revoked}/>
 												</span>
 											}
 
@@ -264,7 +264,7 @@ export default class Settings_page extends Component
 														{/* IP address, also resolving city and country */}
 														{activity.ip} (city, country),
 														{/* Latest activity time */}
-														<React_time_ago date={new Date(activity.time)}/>
+														<React_time_ago date={activity.time}/>
 													</li>
 												})}
 											</ul>

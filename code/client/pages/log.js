@@ -7,6 +7,7 @@ import { defineMessages } from 'react-intl'
 import styler             from 'react-styling'
 import { title }          from 'react-isomorphic-render'
 import { preload }        from 'react-isomorphic-render/redux'
+import { FormattedDate }  from 'react-intl'
 
 import { get as get_log } from '../actions/log'
 import log_levels         from '../../common/log levels'
@@ -153,7 +154,17 @@ export default class Log extends Component
 				<td>{entry.pid}</td>
 				<td>{entry.hostname}</td>
 				<td>{entry.name}</td>
-				<td>{new Date(entry.time).toString()}</td>
+				<td>
+					<FormattedDate
+						value={entry.time}
+						year='numeric'
+						month='long'
+						day='numeric'
+						weekday='long'
+						hour='2-digit'
+						minute='2-digit'
+						second='2-digit'/>
+				</td>
 				<td>
 					{entry.msg}
 					{!entry.err ? null :

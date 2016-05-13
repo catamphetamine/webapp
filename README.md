@@ -386,32 +386,6 @@ To do
 
 
 
-
-сделать нормальный парсинг дат в react-isomorphic-render
-
-<React_time_ago date={new Date(activity.time)}/>
-
-const ISO = /^(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2}):(\\d{2}(?:\\.\\d*))(?:Z|(\\+|-)([\\d|:]*))?$/
-
-function parse_dates(object)
-{
-  for (let key of Object.keys(object))
-  {
-    const value = object[key]
-    if (typeof value === 'string' && ISO.test(value))
-    {
-      object[key] = new Date(value)
-    }
-    else if (is_object(value))
-    {
-      parse_dates(value)
-    }
-  }
-}
-
-
-
-
 проверить дизайн settings для маленьких экранов
 
 
