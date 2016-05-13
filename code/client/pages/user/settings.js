@@ -179,15 +179,15 @@ export default class Settings_page extends Component
 						on_change={email => this.setState({ email })}
 						placeholder={translate(authentication_form_messages.email)}/>
 
-					{/* "Save changes" */}
-					<Button
-						style={style.save_settings}
-						busy={saving_settings}
-						action={this.save_settings}>
-						{translate(default_messages.save)}
-					</Button>
-
-					<div style={{clear: 'both'}}/>
+					{/* Form actions */}
+					<div className="form__actions">
+						{/* "Save changes" */}
+						<Button
+							busy={saving_settings}
+							action={this.save_settings}>
+							{translate(default_messages.save)}
+						</Button>
+					</div>
 				</section>
 
 				{/* Authentication tokens */}
@@ -315,8 +315,4 @@ const style = styler
 `
 	header
 		text-align: center
-
-	save_settings
-		float: right
-		margin-top: 1em
 `

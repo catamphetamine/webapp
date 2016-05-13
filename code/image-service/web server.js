@@ -148,7 +148,6 @@ web.file_upload
 	file_size_limit: configuration.image_service.file_size_limit,
 	on_file_uploaded: async function(name, size, ip)
 	{
-		console.log(name, size, ip)
 	},
 	postprocess: async function(uploaded)
 	{
