@@ -13,8 +13,15 @@ import { FormattedDate } from 'react-intl'
 
 import international from '../../international/internationalize'
 
-import { get_user, revoke_authentication_token, save_settings, load_advanced_settings } from '../../actions/user settings'
-// import { get_user_authentication_tokens }  from '../../actions/authentication'
+import
+{
+	get_user,
+	get_user_authentication_tokens,
+	revoke_authentication_token,
+	save_settings,
+	load_advanced_settings
+}
+from '../../actions/user settings'
 
 import { messages as authentication_form_messages } from '../../components/authentication form'
 import default_messages from '../../components/messages'
@@ -114,6 +121,7 @@ const messages = defineMessages
 	dispatch => bind_action_creators
 	({
 		load_advanced_settings,
+		get_user_authentication_tokens,
 		revoke_authentication_token,
 		save_settings,
 		dispatch
@@ -131,6 +139,8 @@ export default class Settings_page extends Component
 		load_advanced_settings        : PropTypes.func.isRequired,
 		loading_advanced_settings     : PropTypes.bool,
 		load_advanced_settings_error  : PropTypes.any,
+
+		get_user_authentication_tokens : PropTypes.func.isRequired,
 
 		revoke_authentication_token   : PropTypes.func.isRequired,
 		revoking_authentication_token : PropTypes.bool,
@@ -327,21 +337,20 @@ export default class Settings_page extends Component
 	{
 		try
 		{
-			alert(id)
 			await this.props.revoke_authentication_token(id)
 		}
 		catch (error)
 		{
-			alert(this.props.translate(messages.revoke_authentication_token_failed))
+			return alert(this.props.translate(messages.revoke_authentication_token_failed))
 		}
+
+		this.props.get_user_authentication_tokens()
 	}
 
 	async save_settings()
 	{
 		try
 		{
-			const settings = {}
-			alert(settings)
 			await this.props.save_settings(settings)
 		}
 		catch (error)
@@ -352,8 +361,19 @@ export default class Settings_page extends Component
 
 	async load_advanced_settings()
 	{
-		await this.props.load_advanced_settings()
-		this.setState({ showing_advanced_settings: true })
+		try
+		{
+			this.props.dispatch({ type: 'user settings: load advanced settings pending' })
+
+			await this.props.get_user_authentication_tokens()
+			
+			this.props.dispatch({ type: 'user settings: load advanced settings done' })
+			this.setState({ showing_advanced_settings: true })
+		}
+		catch (error)
+		{
+			this.props.dispatch({ type: 'user settings: load advanced settings failed', error: true })
+		}
 	}
 }
 

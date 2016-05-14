@@ -52,7 +52,6 @@ const handlers =
 		const new_state = 
 		{
 			...state,
-			authentication_tokens: result.tokens,
 			loading_advanced_settings : false
 		}
 
@@ -66,6 +65,42 @@ const handlers =
 			...state,
 			load_advanced_settings_error : error,
 			loading_advanced_settings    : false
+		}
+
+		return new_state
+	},
+
+	'user settings: get user authentication tokens pending': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			get_user_authentication_tokens_error   : undefined,
+			get_user_authentication_tokens_pending : true
+		}
+
+		return new_state
+	},
+
+	'user settings: get user authentication tokens done': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			authentication_tokens: result.tokens,
+			get_user_authentication_tokens_pending : false
+		}
+
+		return new_state
+	},
+
+	'user settings: get user authentication tokens failed': (error, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			get_user_authentication_tokens_error   : error,
+			get_user_authentication_tokens_pending : false
 		}
 
 		return new_state
@@ -91,7 +126,7 @@ const handlers =
 	// 	}
 	//
 	// 	return new_state
-	// }
+	// },
 }
 
 // applies a handler based on the action type

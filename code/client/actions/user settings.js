@@ -1,5 +1,3 @@
-import { get_user_authentication_tokens } from './authentication'
-
 export function get_user(user_id)
 {
 	const action =
@@ -42,6 +40,17 @@ export function load_advanced_settings()
 			return get_user_authentication_tokens().promise(http)
 		},
 		event	 : 'user settings: load advanced settings'
+	}
+
+	return action
+}
+
+export function get_user_authentication_tokens()
+{
+	const action =
+	{
+		promise : http => http.get(`/authentication/tokens`,),
+		event   : 'user settings: get user authentication tokens'
 	}
 
 	return action

@@ -381,8 +381,7 @@ Troubleshooting
 To do
 ====================
 
-сделать content-section__header вместо h1 обычного (будет h2)
-
+инклуды переделать в css vars
 
 
 
@@ -393,6 +392,7 @@ xxx
 xxx_pending
 xxx_error
 
+(можно взять за основу user settings: get user authentication tokens)
 
 
 
