@@ -11,10 +11,7 @@
 	font-size : 20pt
 }
 
-.content-section
-{
-	padding : 1.1em;
-}
+@include content-section-padding(1.1em);
 
 .menu-button
 {

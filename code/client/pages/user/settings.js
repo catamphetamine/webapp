@@ -13,8 +13,8 @@ import { FormattedDate } from 'react-intl'
 
 import international from '../../international/internationalize'
 
-import { get_user, revoke_authentication_token, save_settings }  from '../../actions/user settings'
-import { get_user_authentication_tokens }  from '../../actions/authentication'
+import { get_user, revoke_authentication_token, save_settings, load_advanced_settings } from '../../actions/user settings'
+// import { get_user_authentication_tokens }  from '../../actions/authentication'
 
 import { messages as authentication_form_messages } from '../../components/authentication form'
 import default_messages from '../../components/messages'
@@ -83,6 +83,12 @@ const messages = defineMessages
 		id             : 'user.settings.authentication_token_latest_activity',
 		description    : 'User account authentication tokens table latest activity column header',
 		defaultMessage : 'Activity'
+	},
+	show_advanced_settings:
+	{
+		id             : 'user.settings.show_advanced_settings',
+		description    : 'Show user account\'s advanced settings',
+		defaultMessage : 'Show advanced settings'
 	}
 })
 
@@ -90,8 +96,7 @@ const messages = defineMessages
 {
 	return Promise.all
 	([
-		dispatch(get_user(get_state().authentication.user.id)),
-		dispatch(get_user_authentication_tokens())
+		dispatch(get_user(get_state().authentication.user.id))
 	])
 })
 @connect
@@ -99,13 +104,16 @@ const messages = defineMessages
 	model =>
 	({
 		user                  : model.user_settings.user,
-		authentication_tokens : model.authentication.tokens,
+		authentication_tokens : model.user_settings.authentication_tokens,
 
+		load_advanced_settings_error  : model.user_settings.load_advanced_settings_error,
+		loading_advanced_settings     : model.user_settings.loading_advanced_settings,
 		revoking_authentication_token : model.user_settings.revoking_authentication_token,
 		saving_settings               : model.user_settings.saving_settings
 	}),
 	dispatch => bind_action_creators
 	({
+		load_advanced_settings,
 		revoke_authentication_token,
 		save_settings,
 		dispatch
@@ -118,7 +126,11 @@ export default class Settings_page extends Component
 	static propTypes =
 	{
 		user                  : PropTypes.object.isRequired,
-		authentication_tokens : PropTypes.array.isRequired,
+		authentication_tokens : PropTypes.array,
+
+		load_advanced_settings        : PropTypes.func.isRequired,
+		loading_advanced_settings     : PropTypes.bool,
+		load_advanced_settings_error  : PropTypes.any,
 
 		revoke_authentication_token   : PropTypes.func.isRequired,
 		revoking_authentication_token : PropTypes.bool,
@@ -136,6 +148,7 @@ export default class Settings_page extends Component
 
 		this.revoke_authentication_token = this.revoke_authentication_token.bind(this)
 		this.save_settings               = this.save_settings.bind(this)
+		this.load_advanced_settings      = this.load_advanced_settings.bind(this)
 	}
 
 	render()
@@ -147,9 +160,18 @@ export default class Settings_page extends Component
 			translate,
 			save_settings,
 			saving_settings,
+			// load_advanced_settings,
+			loading_advanced_settings,
+			load_advanced_settings_error,
 			revoking_authentication_token
 		}
 		= this.props
+
+		const
+		{
+			showing_advanced_settings
+		}
+		= this.state
 
 		const markup = 
 		(
@@ -190,93 +212,111 @@ export default class Settings_page extends Component
 					</div>
 				</section>
 
+				<div className="background-section">
+					{/* "Show advanced settings" */}
+					{ !showing_advanced_settings && 
+						<Button
+							busy={loading_advanced_settings}
+							action={this.load_advanced_settings}>
+							{translate(messages.show_advanced_settings)}
+						</Button>
+					}
+
+					{/* Error while loading advanced settings */}
+					{ load_advanced_settings_error &&
+						<div className="error">{translate(default_messages.error)}</div>
+					}
+				</div>
+
 				{/* Authentication tokens */}
-				<section
-					className={classNames
-					(
-						'content-section'
-					)}>
+				{ showing_advanced_settings &&
+					<section
+						className={classNames
+						(
+							'content-section'
+						)}>
 
-					{/* "Authentication tokens" */}
-					<h2 style={style.header}>{translate(messages.authentication_tokens)}</h2>
+						{/* "Authentication tokens" */}
+						<h2 style={style.header}>{translate(messages.authentication_tokens)}</h2>
 
-					{/* Authentication tokens table */}
-					<table>
-						<thead>
-							<tr>
-								<th>{translate(messages.authentication_token_id)}</th>
-								<th>{translate(messages.authentication_token_issued)}</th>
-								<th>{translate(messages.authentication_token_status)}</th>
-								<th>{translate(messages.authentication_token_latest_activity)}</th>
-							</tr>
-						</thead>
+						{/* Authentication tokens table */}
+						<table>
+							<thead>
+								<tr>
+									<th>{translate(messages.authentication_token_id)}</th>
+									<th>{translate(messages.authentication_token_issued)}</th>
+									<th>{translate(messages.authentication_token_status)}</th>
+									<th>{translate(messages.authentication_token_latest_activity)}</th>
+								</tr>
+							</thead>
 
-						<tbody>
-							{authentication_tokens.map((token, token_index) =>
-							{
-								const markup =
-								(
-									<tr key={token_index}>
-										{/* Token id */}
-										<td>{token.id}</td>
+							<tbody>
+								{authentication_tokens.map((token, token_index) =>
+								{
+									const markup =
+									(
+										<tr key={token_index}>
+											{/* Token id */}
+											<td>{token.id}</td>
 
-										{/* Token issued on */}
-										<td>
-											<React_time_ago date={token.created}/>
-										</td>
+											{/* Token issued on */}
+											<td>
+												<React_time_ago date={token.created}/>
+											</td>
 
-										{/* Token status (valid, revoked) */}
-										<td>
-											{/* If the token was revoked, show revocation date */}
-											{token.revoked &&
-												<span>
-													{/* "Revoked" */}
-													{translate(messages.authentication_token_revoked)}
-													{/* when */}
-													<React_time_ago date={token.revoked}/>
-												</span>
-											}
+											{/* Token status (valid, revoked) */}
+											<td>
+												{/* If the token was revoked, show revocation date */}
+												{token.revoked &&
+													<span>
+														{/* "Revoked" */}
+														{translate(messages.authentication_token_revoked)}
+														{/* when */}
+														<React_time_ago date={token.revoked}/>
+													</span>
+												}
 
-											{/* If the token wasn't revoked then it's valid */}
-											{!token.revoked &&
-												<span>
-													{/* "Valid" */}
-													{translate(messages.authentication_token_valid)}
+												{/* If the token wasn't revoked then it's valid */}
+												{!token.revoked &&
+													<span>
+														{/* "Valid" */}
+														{translate(messages.authentication_token_valid)}
 
-													{/* "Revoke" */}
-													<Button
-														busy={revoking_authentication_token}
-														action={() => this.revoke_authentication_token(token.id)}>
-														{translate(messages.revoke_authentication_token)}
-													</Button>
-												</span>
-											}
-										</td>
+														{/* "Revoke" */}
+														<Button
+															busy={revoking_authentication_token}
+															action={() => this.revoke_authentication_token(token.id)}>
+															{translate(messages.revoke_authentication_token)}
+														</Button>
+													</span>
+												}
+											</td>
 
-										{/* Latest activity */}
-										<td>
-											{/* For each different IP address show latest activity time */}
-											<ul>
-												{token.history.map((activity, activity_index) =>
-												{
-													{/* Latest activity time for this IP address */}
-													return <li key={activity_index}>
-														{/* IP address, also resolving city and country */}
-														{activity.ip} (city, country),
-														{/* Latest activity time */}
-														<React_time_ago date={activity.time}/>
-													</li>
-												})}
-											</ul>
-										</td>
-									</tr>
-								)
+											{/* Latest activity */}
+											<td>
+												{/* For each different IP address show latest activity time */}
+												<ul>
+													{token.history.map((activity, activity_index) =>
+													{
+														{/* Latest activity time for this IP address */}
+														return <li key={activity_index}>
+															{/* IP address, also resolving city and country */}
+															{activity.ip} (city, country),
+															{/* Latest activity time */}
+															<React_time_ago date={activity.time}/>
+														</li>
+													})}
+												</ul>
+											</td>
+										</tr>
+									)
 
-								return markup
-							})}
-						</tbody>
-					</table>
-				</section>
+									return markup
+								})}
+							</tbody>
+						</table>
+					</section>
+				}
 			</div>
 		)
 
@@ -308,6 +348,12 @@ export default class Settings_page extends Component
 		{
 			alert(this.props.translate(messages.revoke_authentication_token_failed))
 		}
+	}
+
+	async load_advanced_settings()
+	{
+		await this.props.load_advanced_settings()
+		this.setState({ showing_advanced_settings: true })
 	}
 }
 

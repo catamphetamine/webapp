@@ -5,6 +5,8 @@
 
 	"menu" : "Меню",
 
+	"error.generic" : "Ошибка",
+
 	"action.save"   : "Сохранить",
 	"action.cancel" : "Отменить",
 
@@ -46,7 +48,9 @@
 	"home.header": "Собака",
 
 	"log.title"                  : "Журнал",
-	"log.entry.message"          : "текст",
+	"log.entry.message"          : "Текст",
+	"log.entry.date"             : "Время",
+	"log.entry.service"          : "Служба",
 	"log.entry.show_stack_trace" : "Подробнее",
 	"log.entry.hide_stack_trace" : "Скрыть",
 
@@ -71,6 +75,7 @@
 	"user.profile.latest_activity_time" : "{gender, select, male {Заходил} female {Заходила} other {В сети:}}",
 
 	"user.settings.header"                               : "Настройки",
+	"user.settings.show_advanced_settings"               : "Показать прочие настройки",
 	"user.settings.authentication_tokens"                : "Ключи входа",
 	"user.settings.revoke_authentication_token"          : "Отозвать",
 	"user.settings.authentication_token_valid"           : "Действующий",

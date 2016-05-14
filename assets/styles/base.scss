@@ -52,7 +52,9 @@ input[type="text"], input[type="email"], input[type="password"], textarea, selec
 {
 	display : block;
 	width   : var(--input-width);
-	padding : var(--input-padding);
+	
+	padding-top    : var(--input-padding);
+	padding-bottom : var(--input-padding);
 
 	border        : none;
 	border-bottom : var(--input-border-width) solid var(--gray-color);

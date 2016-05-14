@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 import styler from 'react-styling'
+import classNames from 'classnames'
 
 import { inject } from './common'
 
@@ -172,7 +173,18 @@ export default class Dropdown extends Component
 
 					{/* A list to select from */}
 					{/* Math.max(this.state.height, this.props.max_height) */}
-					<ul ref="list" style={list_style} className={'dropdown-item-list' + ' ' + (this.state.expanded ? 'dropdown-item-list-expanded' : '')}>
+					<ul
+						ref="list"
+						style={list_style}
+						className={classNames
+						(
+							'dropdown-item-list',
+							{
+								'dropdown-item-list-expanded'             : this.state.expanded,
+								'dropdown-item-list-simple-left-aligned'  : !children && alignment === 'left',
+								'dropdown-item-list-simple-right-aligned' : !children && alignment === 'right'
+							}
+						)}>
 						{list_items}
 					</ul>
 				</div>

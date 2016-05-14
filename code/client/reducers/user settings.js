@@ -35,6 +35,42 @@ const handlers =
 		return new_state
 	},
 
+	'user settings: load advanced settings pending': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			loading_advanced_settings    : true,
+			load_advanced_settings_error : undefined
+		}
+
+		return new_state
+	},
+
+	'user settings: load advanced settings done': (result, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			authentication_tokens: result.tokens,
+			loading_advanced_settings : false
+		}
+
+		return new_state
+	},
+
+	'user settings: load advanced settings failed': (error, state) =>
+	{
+		const new_state = 
+		{
+			...state,
+			load_advanced_settings_error : error,
+			loading_advanced_settings    : false
+		}
+
+		return new_state
+	},
+
 	// 'user settings: revoke authentication token pending': (result, state) =>
 	// {
 	// 	const new_state = 

@@ -62,11 +62,8 @@
 	}
 }
 
-.content-section
-{
-	margin  : 0.5em;
-	padding : 0.8em;
-}
+@include content-section-margin(0.5em);
+@include content-section-padding(0.8em);
 
 .sign-in
 {

@@ -26,7 +26,19 @@ export const messages = defineMessages
 	{
 		id             : 'log.entry.message',
 		description    : 'Log entry message text',
-		defaultMessage : 'message'
+		defaultMessage : 'Message'
+	},
+	entry_date:
+	{
+		id             : 'log.entry.date',
+		description    : 'Log entry date',
+		defaultMessage : 'Date'
+	},
+	entry_service:
+	{
+		id             : 'log.entry.service',
+		description    : 'Log entry source service',
+		defaultMessage : 'Service'
 	},
 	show_stack_trace:
 	{
@@ -90,8 +102,8 @@ export default class Log extends Component
 							<tr>
 								<th>pid</th>
 								<th>hostname</th>
-								<th>name</th>
-								<th>date</th>
+								<th>{translate(messages.entry_service)}</th>
+								<th>{translate(messages.entry_date)}</th>
 								<th>{translate(messages.entry_message)}</th>
 							</tr>
 						</thead>

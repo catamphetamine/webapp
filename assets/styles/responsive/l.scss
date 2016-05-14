@@ -6,11 +6,7 @@
 	font-size   : 18pt;
 }
 
-.content-section
-{
-	margin  : 0.65em;
-	padding : 1.1em;
-}
+@include content-section-margin(0.65em);
 
 header
 {

@@ -381,6 +381,21 @@ Troubleshooting
 To do
 ====================
 
+сделать content-section__header вместо h1 обычного (будет h2)
+
+
+
+
+
+вычленить в общий случай ситуации вида:
+
+xxx
+xxx_pending
+xxx_error
+
+
+
+
 переверстать access tokens без таблицы
 
 

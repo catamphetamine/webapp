@@ -8,7 +8,4 @@
 	min-height : 6rem;
 }
 
-.content-section
-{
-	margin  : 0.8em;
-}
+@include content-section-margin(0.8em);

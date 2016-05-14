@@ -52,3 +52,25 @@
 		min-height: calc(100vh - #{$height});
 	}
 }
+
+@mixin content-section-margin($margin)
+{
+	.content-section, .background-section
+	{
+		margin : $margin;
+	}
+}
+
+@mixin content-section-padding($padding)
+{
+	.content-section
+	{
+		padding : $padding;
+	}
+
+	.background-section
+	{
+		padding-left  : $padding;
+		padding-right : $padding;
+	}
+}
