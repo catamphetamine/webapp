@@ -751,14 +751,10 @@ header > .nav-widescreen
 
 .content-section-header
 {
-	margin: -1.1rem;
-	margin-bottom: 1.1rem;
-	padding-top: 0.4em;
-	padding-bottom: 0.35em;
-	padding-left: 1.1rem;
-	padding-right: 1.1rem;
-	border-bottom: 1px solid var(--gray-color-light);
-	font-size: 1.3rem;
-	text-align: left;
-	background-color: var(--gray-color-lightest);
+	padding-top      : 0.4em;
+	padding-bottom   : 0.35em;
+	border-bottom    : 1px solid var(--gray-color-light);
+	font-size        : 1.3rem;
+	text-align       : left;
+	background-color : var(--gray-color-lightest);
 }
