@@ -385,6 +385,11 @@ To do
 
 
 
+для почты сделать отдельную секцию (как в контакте), и отдельный метод её изменения, изменяющий её также в authentication.
+вместо 'user settings: save settings' будет другой event name.
+
+
+
 
 вычленить в общий случай ситуации вида:
 
@@ -393,6 +398,37 @@ xxx_pending
 xxx_error
 
 (можно взять за основу user settings: get user authentication tokens)
+
+
+
+
+Также написать общий случай: сделать какое-то действие типа создать/сохранить/удалить, и потом перезапросить список с сервера.
+
+
+
+
+Вычленить в общий случай:
+
+    await http.patch
+    (
+      `${address_book.authentication_service}`,
+      { id: user_data.picture.id },
+      { headers: { Authorization: `Bearer ${authentication_token}` } }
+    )
+
+
+
+
+
+Вычленить в общий случай:
+
+result.result.n === 1
+
+ok 1
+nModified 0
+upserted []
+
+
 
 
 

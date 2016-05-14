@@ -215,7 +215,7 @@ export default function web_server(options = {})
 			}
 
 			// show error stack trace in development mode for easier debugging
-			if (_development_ && !http_status_code)
+			if (_development_ && (!http_status_code || (http_status_code === 500 && error.message === 'Internal Server Error')))
 			{
 				const { response_status, response_body } = render_stack_trace(error)
 

@@ -84,6 +84,7 @@
 	"user.settings.authentication_token_issued"          : "Выдан",
 	"user.settings.authentication_token_status"          : "Состояние",
 	"user.settings.authentication_token_latest_activity" : "Использован",
+	"user.settings.could_not_save"                       : "Не удалось сохранить ваши настройки",
 
 	"unauthenticated.header" : "Войдите, чтобы посмотреть эту страницу",
 	"unauthorized.header"    : "У вас нет доступа к странице",

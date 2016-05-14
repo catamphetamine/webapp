@@ -18,7 +18,7 @@ import
 	get_user,
 	get_user_authentication_tokens,
 	revoke_authentication_token,
-	save_settings,
+	change_email,
 	load_advanced_settings
 }
 from '../../actions/user settings'
@@ -96,6 +96,12 @@ const messages = defineMessages
 		id             : 'user.settings.show_advanced_settings',
 		description    : 'Show user account\'s advanced settings',
 		defaultMessage : 'Show advanced settings'
+	},
+	save_settings_failed:
+	{
+		id             : 'user.settings.could_not_save',
+		description    : `Couldn't save new user's settings`,
+		defaultMessage : `Couldn't save your settings`
 	}
 })
 
@@ -120,10 +126,11 @@ const messages = defineMessages
 	}),
 	dispatch => bind_action_creators
 	({
+		// get_user,
 		load_advanced_settings,
 		get_user_authentication_tokens,
 		revoke_authentication_token,
-		save_settings,
+		change_email,
 		dispatch
 	},
 	dispatch)
@@ -136,6 +143,8 @@ export default class Settings_page extends Component
 		user                  : PropTypes.object.isRequired,
 		authentication_tokens : PropTypes.array,
 
+		// get_user : PropTypes.func.isRequired,
+
 		load_advanced_settings        : PropTypes.func.isRequired,
 		loading_advanced_settings     : PropTypes.bool,
 		load_advanced_settings_error  : PropTypes.any,
@@ -144,7 +153,7 @@ export default class Settings_page extends Component
 
 		revoke_authentication_token   : PropTypes.func.isRequired,
 		revoking_authentication_token : PropTypes.bool,
-		save_settings                 : PropTypes.func.isRequired,
+		change_email                  : PropTypes.func.isRequired,
 		saving_settings               : PropTypes.bool
 	}
 
@@ -168,7 +177,6 @@ export default class Settings_page extends Component
 			user,
 			authentication_tokens,
 			translate,
-			save_settings,
 			saving_settings,
 			// load_advanced_settings,
 			loading_advanced_settings,
@@ -351,12 +359,19 @@ export default class Settings_page extends Component
 	{
 		try
 		{
-			await this.props.save_settings(settings)
+			// const settings =
+			// {
+			// }
+
+			await this.props.change_email(this.state.email)
 		}
 		catch (error)
 		{
-			alert(this.props.translate(messages.revoke_authentication_token_failed))
+			console.error(error)
+			return alert(this.props.translate(messages.save_settings_failed))
 		}
+
+		// this.props.get_user(this.props.user.id)
 	}
 
 	async load_advanced_settings()
@@ -372,6 +387,7 @@ export default class Settings_page extends Component
 		}
 		catch (error)
 		{
+			console.error(error)
 			this.props.dispatch({ type: 'user settings: load advanced settings failed', error: true })
 		}
 	}

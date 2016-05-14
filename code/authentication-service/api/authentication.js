@@ -125,3 +125,16 @@ api.post('/revoke-token', async function({ id }, { user })
 
 	await store.revoke_token(id)
 })
+
+api.patch('/email', async function({ email }, { user })
+{
+	if (!user)
+	{
+		throw new Errors.Unauthenticated()
+	}
+
+	if (!(await store.update_email(user.id, email)))
+	{
+		throw new Errors.Error(`Couldn't update user's email`)
+	}
+})

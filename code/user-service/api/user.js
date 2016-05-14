@@ -18,6 +18,38 @@ api.post('/', async function(user)
 	await store.create_user(user)
 })
 
+// api.patch('/settings', async function({ xxx }, { user })
+// {
+// 	if (!user)
+// 	{
+// 		throw new Errors.Unauthenticated()
+// 	}
+//
+// 	await store.update_user(user.id, { xxx })
+// })
+
+api.patch('/email', async function({ email }, { user, authentication_token })
+{
+	if (!email)
+	{
+		throw new Errors.Input_missing('email')
+	}
+
+	if (!user)
+	{
+		throw new Errors.Unauthenticated()
+	}
+
+	await store.update_user(user.id, { email })
+
+	await http.patch
+	(
+		`${address_book.authentication_service}/email`,
+		{ email },
+		{ headers: { Authorization: `Bearer ${authentication_token}` } }
+	)
+})
+
 api.patch('/', async function(data, { user })
 {
 	if (!user)

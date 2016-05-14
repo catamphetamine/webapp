@@ -20,12 +20,12 @@ export function revoke_authentication_token(token_id)
 	return action
 }
 
-export function save_settings(settings)
+export function change_email(email)
 {
 	const action =
 	{
-		promise : http => http.post(`/user/settings`, settings),
-		event   : 'user settings: save'
+		promise : http => http.patch(`/users/email`, { email }),
+		event   : 'user settings: save settings'
 	}
 
 	return action

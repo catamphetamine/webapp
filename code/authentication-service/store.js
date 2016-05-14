@@ -54,6 +54,13 @@ class Memory_store
 		return Promise.resolve()
 	}
 
+	update_email(user_id, email)
+	{
+		this.users[user_id].email = email
+
+		return Promise.resolve()
+	}
+
 	find_token_by_id(token_id)
 	{
 		for (let [user_id, user] of this.users)
@@ -193,6 +200,12 @@ class Mongodb_store extends MongoDB
 		const token = await this.collection('authentication_tokens').get_by_id(token_id)
 
 		return this.to_object(token)
+	}
+
+	async update_email(user_id, email)
+	{
+		const result = await this.collection('user_authentication').update_by_id(user_id, { $set: { email } })
+		return result.result.n === 1
 	}
 
 	async revoke_token(token_id)
