@@ -1,17 +1,14 @@
-@include font-size(16pt);
-@include header-height(2.3em);
-
 :root
 {
-	--input-width : 18em;
+	--input-width   : 18em;
+	--header-height : 2.3em;
+	--content-section-padding : 1.1rem;
 }
 
 .logo
 {
 	font-size : 20pt
 }
-
-@include content-section-padding(1.1rem);
 
 .menu-button
 {

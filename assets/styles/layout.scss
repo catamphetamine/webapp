@@ -6,6 +6,61 @@
 	border-radius    : var(--border-radius);
 }
 
+.content-section, .background-section
+{
+	margin : var(--content-section-margin);
+}
+
+.content-section
+{
+	padding : var(--content-section-padding);
+}
+
+.background-section
+{
+	padding-left  : var(--content-section-padding);
+	padding-right : var(--content-section-padding);
+}
+
+.content-section-header
+{
+	margin        : calc(-1 * var(--content-section-padding));
+	margin-bottom : var(--content-section-padding);
+	padding-left  : var(--content-section-padding);
+	padding-right : var(--content-section-padding);
+}
+
+.content-section-header
+{
+	padding-top      : 0.5em;
+	padding-bottom   : 0.45em;
+	border-bottom    : 1px solid var(--gray-color-light);
+	font-size        : 1.3rem;
+	text-align       : left;
+	background-color : var(--gray-color-lightest);
+}
+
+header, .user-picture--header
+{
+	min-height: var(--header-height);
+	max-height: var(--header-height);
+}
+
+.user-picture--header
+{
+	width: var(--header-height);
+}
+
+body
+{
+	padding-top: var(--header-height);
+}
+
+.page
+{
+	min-height: calc(100vh - var(--header-height));
+}
+
 .card, .content-section, .dropdown-item-list-expanded
 {
 	box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
@@ -79,9 +134,6 @@ footer
 	flex-shrink : 0;
 	flex-basis  : auto;
 }
-
-@include content-section-margin(1rem);
-@include content-section-padding(2rem);
 
 .nav-collapsible
 {

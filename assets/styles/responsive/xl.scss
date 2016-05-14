@@ -1,4 +1,8 @@
-@include font-size(20pt);
+:root
+{
+	--font-size : 20pt;
+	--content-section-margin : 0.8rem;
+}
 
 .user-profile .user-picture
 {
@@ -7,5 +11,3 @@
 	min-width  : 6rem;
 	min-height : 6rem;
 }
-
-@include content-section-margin(0.8rem);

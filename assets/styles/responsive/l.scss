@@ -1,12 +1,14 @@
-@include font-size(18pt);
-@include header-height(2.2em);
+:root
+{
+	--font-size     : 18pt;
+	--header-height : 2.2em;
+	--content-section-margin : 0.65rem;
+}
 
 .language button
 {
 	font-size   : 18pt;
 }
-
-@include content-section-margin(0.65rem);
 
 header
 {

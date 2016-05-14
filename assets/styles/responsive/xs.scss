@@ -1,9 +1,10 @@
-@include font-size(14pt);
-@include header-height(2.0em);
-
 :root
 {
-	--input-width : 8em;
+	--font-size     : 14pt;
+	--header-height : 2.0em;
+	--input-width   : 8em;
+	--content-section-margin  : 0.5rem;
+	--content-section-padding : 0.8rem;
 }
 
 .logo
@@ -61,9 +62,6 @@
 		margin-bottom: 1em;
 	}
 }
-
-@include content-section-margin(0.5rem);
-@include content-section-padding(0.8rem);
 
 .sign-in
 {

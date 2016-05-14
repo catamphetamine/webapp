@@ -13,6 +13,11 @@ body
 	overflow-y: scroll;
 }
 
+html, body, button, input, textarea, select
+{
+	font-size : var(--font-size);
+}
+
 // just background on .page is not enough 
 // because it won't stretch to fill all the height
 // https://github.com/philipwalton/solved-by-flexbox/issues/79

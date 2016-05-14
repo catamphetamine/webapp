@@ -255,7 +255,9 @@ export default class Settings_page extends Component
 						)}>
 
 						{/* "Authentication tokens" */}
-						<h2 style={style.header}>{translate(messages.authentication_tokens)}</h2>
+						<h2 className="content-section-header">
+							{translate(messages.authentication_tokens)}
+						</h2>
 
 						{/* Authentication tokens table */}
 						<table>

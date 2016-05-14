@@ -1,74 +1,5 @@
 @import "constants.scss";
 
-/*
-@-moz-keyframes spinner
-{
-	0%
-	{
-		-moz-transform : rotate(0deg);
-		transform      : rotate(0deg);
-	}
-	100%
-	{
-		-moz-transform : rotate(360deg);
-		transform      : rotate(360deg);
-	}
-}
-
-@-webkit-keyframes spinner
-{
-	0%
-	{
-		-webkit-transform : rotate(0deg);
-		transform         : rotate(0deg);
-	}
-	100%
-	{
-		-webkit-transform : rotate(360deg);
-		transform         : rotate(360deg);
-	}
-}
-
-@keyframes spinner
-{
-	0%
-	{
-		-moz-transform    : rotate(0deg);
-		-ms-transform     : rotate(0deg);
-		-webkit-transform : rotate(0deg);
-		transform         : rotate(0deg);
-	}
-	100%
-	{
-		-moz-transform    : rotate(360deg);
-		-ms-transform     : rotate(360deg);
-		-webkit-transform : rotate(360deg);
-		transform         : rotate(360deg);
-	}
-}
-
-.spinner
-{
-	display: inline-block;
-	box-sizing: border-box;
-	position: relative;
-	
-	text-indent: -9999px;
-	overflow: hidden;
-
-	width: 0.6em;
-	height: 0.6em;
-
-	border: 0.05em solid black;
-	border-right-color: transparent;
-	border-radius: 0.3em;
-
-	// -moz-animation    : spinner 1250ms infinite linear;
-	// -webkit-animation : spinner 1250ms infinite linear;
-	animation: spinner 1250ms infinite linear;
-}
-*/
-
 .spinner
 {
 	width  : 2em;
@@ -747,14 +678,4 @@ header > .nav-widescreen
 {
 	margin-top: 1em;
 	text-align: right;
-}
-
-.content-section-header
-{
-	padding-top      : 0.4em;
-	padding-bottom   : 0.35em;
-	border-bottom    : 1px solid var(--gray-color-light);
-	font-size        : 1.3rem;
-	text-align       : left;
-	background-color : var(--gray-color-lightest);
 }
