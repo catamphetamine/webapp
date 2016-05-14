@@ -208,19 +208,16 @@ export default class Settings_page extends Component
 						{translate(messages.header)}
 					</h2>
 
-					{/* "Email" */}
-					<label htmlFor="email">{translate(authentication_form_messages.email)}</label>
-
 					{/* User's email */}
 					<Text_input
 						value={this.state.email}
 						name="email"
+						label={translate(authentication_form_messages.email)}
 						validate={this.validate_email_on_sign_in}
-						on_change={email => this.setState({ email })}
-						placeholder={translate(authentication_form_messages.email)}/>
+						on_change={email => this.setState({ email })}/>
 
 					{/* Form actions */}
-					<div className="form__actions">
+					<div className="form-actions">
 						{/* "Save changes" */}
 						<Button
 							busy={saving_settings}

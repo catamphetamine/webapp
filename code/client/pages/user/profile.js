@@ -27,6 +27,24 @@ import international from '../../international/internationalize'
 
 const messages = defineMessages
 ({
+	name:
+	{
+		id             : `user.profile.name`,
+		description    : `User's name`,
+		defaultMessage : `Name`
+	},
+	place:
+	{
+		id             : `user.profile.place`,
+		description    : `User's place of living`,
+		defaultMessage : `Place`
+	},
+	country:
+	{
+		id             : `user.profile.country`,
+		description    : `User's country`,
+		defaultMessage : `Choose your country`
+	},
 	latest_activity_time:
 	{
 		id             : `user.profile.latest_activity_time`,
@@ -333,8 +351,9 @@ export default class User_profile extends Component
 						{/* Name: "John Brown" */}
 						{ edit ?
 							<Text_input
+								label={translate(messages.name)}
 								style={style.user_name.edit}
-								input_style={style.user_name.edit}
+								input_style={style.user_name}
 								value={this.state.name}
 								on_change={name => this.setState({ name })}/>
 							:
@@ -345,6 +364,8 @@ export default class User_profile extends Component
 						{ edit &&
 							// City, town, etc
 							<Text_input
+								label={translate(messages.place)}
+								style={style.user_location.edit}
 								value={this.state.place}
 								on_change={place => this.setState({ place })}/>
 						}
@@ -353,6 +374,7 @@ export default class User_profile extends Component
 						{ edit &&
 							// Country
 							<Dropdown
+								label={translate(messages.country)}
 								options={this.countries}
 								value={this.state.country}
 								on_change={country => this.setState({ country })}/>
@@ -660,15 +682,19 @@ const style = styler
 
 	user_name
 		font-size     : 1.5rem
-		margin-bottom : 0em
+		margin-bottom : 0
 
 		&idle
 
 		&edit
 			margin-top : 1em
+			margin-bottom : 1rem
 
 	user_location
 		margin-top : 0.2em
+
+		&edit
+			margin-bottom : 1rem
 
 	latest_activity
 		margin-top : 1.2rem

@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 import styler from 'react-styling'
+import classNames from 'classnames'
 
 import { inject } from './common'
 
@@ -10,6 +11,7 @@ export default class Text_input extends Component
 
 	static propTypes =
 	{
+		label       : PropTypes.string,
 		name        : PropTypes.string,
 		value       : PropTypes.any,
 		on_change   : PropTypes.func.isRequired,
@@ -34,15 +36,31 @@ export default class Text_input extends Component
 
 	render()
 	{
+		const { name, value, label, style, className } = this.props
+		const { valid, error_message } = this.state
+
 		const markup = 
 		(
 			<div
-				className={'text-input ' + (this.state.valid === false ? 'text-input-invalid' : '')}
-				style={this.props.style}>
+				style={style}
+				className={classNames
+				(
+					'text-input',
+					{
+						'text-input-empty'   : !value,
+						'text-input-invalid' : valid === false
+					},
+					className
+				)}>
 
+				{/* <input/> */}
 				{this.render_input()}
 
-				{ this.state.valid === false ? <div className="text-input-error-message">{this.state.error_message}</div> : null }
+				{/* input label */}
+				{ label && <label className="text-input-label" htmlFor={name}>{label}</label> }
+
+				{/* Error message */}
+				{ valid === false && <div className="text-input-error-message">{error_message}</div> }
 			</div>
 		)
 

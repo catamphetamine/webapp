@@ -160,7 +160,15 @@ export default class Dropdown extends Component
 		(
 			<div
 				style={ this.props.style ? merge(wrapper_style, this.props.style) : wrapper_style }
-				className={"rich dropdown" + " " + (upward ? "dropdown-upward" : "") + " " + (this.state.expanded ? "dropdown-expanded" : "dropdown-collapsed")}>
+				className={classNames
+				(
+					"rich dropdown",
+					{
+						"dropdown-upward"    : upward,
+						"dropdown-expanded"  : this.state.expanded,
+						"dropdown-collapsed" : !this.state.expanded
+					}
+				)}>
 
 				{/* List container */}
 				<div style={ this.state.expanded ? style.container.expanded : style.container }>
@@ -236,8 +244,6 @@ export default class Dropdown extends Component
 			// list_item_style.paddingRight = scrollbar_width
 		}
 
-		const className = "dropdown-item " + (is_selected ? 'dropdown-item-selected-in-list' : '')
-
 		let button
 
 		if (element)
@@ -245,7 +251,14 @@ export default class Dropdown extends Component
 			const extra_props =
 			{
 				style     : merge(item_style, element.props.style),
-				className : element.props.className ? element.props.className + ' ' + className : className
+				className : classNames
+				(
+					'dropdown-item',
+					{
+						'dropdown-item-selected-in-list': is_selected
+					},
+					element.props.className
+				)
 			}
 
 			if (!this.props.menu)
@@ -260,7 +273,13 @@ export default class Dropdown extends Component
 			button = <button
 				onClick={event => this.item_clicked(value, event)}
 				style={item_style}
-				className={className}>
+				className={classNames
+				(
+					'dropdown-item',
+					{
+						'dropdown-item-selected-in-list': is_selected
+					}
+				)}>
 				{label}
 			</button>
 		}
@@ -302,12 +321,24 @@ export default class Dropdown extends Component
 
 		const markup =
 		(
-			<button onClick={this.toggle} style={style.selected_item_label} className="dropdown-item-selected">
+			<button
+				onClick={this.toggle}
+				style={style.selected_item_label}
+				className={classNames
+				(
+					"dropdown-item-selected",
+					{
+						"dropdown-item-selected-nothing" : !selected_label
+					}
+				)}>
+
 				{/* the label */}
 				{selected_label || label}
 
 				{/* an arrow */}
-				<div className="dropdown-arrow" style={ this.state.expanded ? style.arrow.expanded : style.arrow }/>
+				<div
+					className="dropdown-arrow"
+					style={ this.state.expanded ? style.arrow.expanded : style.arrow }/>
 			</button>
 		)
 

@@ -62,7 +62,7 @@ input[type="text"], input[type="email"], input[type="password"], textarea, selec
 	padding-bottom : var(--input-padding);
 
 	border        : none;
-	border-bottom : var(--input-border-width) solid var(--gray-color);
+	border-bottom : var(--input-border-width) solid var(--gray-color-light);
 	transition    : border 0.1s;
 }
 

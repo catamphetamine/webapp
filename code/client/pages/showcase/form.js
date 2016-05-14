@@ -18,9 +18,9 @@ export default class Form_showcase extends Component
 {
 	state = 
 	{
-		text_value     : 'Text',
+		text_value     : '',
 		select_value   : 'B',
-		textarea_value : 'Lorem ipsum',
+		textarea_value : '',
 		checked        : true,
 		// selected: 'A',
 		// switched: true,
@@ -54,11 +54,11 @@ export default class Form_showcase extends Component
 
 				<Form style={style.form}>
 					<h2 style={style.form.label}>{'Text input field'}</h2>
-					<Text_input style={style.form.input} name="text_input" value={this.state.text_value} on_change={value => this.setState({ text_value: value })} placeholder="Enter text"/>
+					<Text_input style={style.form.input} name="text_input" value={this.state.text_value} on_change={value => this.setState({ text_value: value })} label="Enter text"/>
 					You entered: {this.state.text_value}
 
 					<h2 style={style.form.label}>{'Textarea'}</h2>
-					<Text_input multiline={true} name="description" style={style.form.textarea} value={this.state.textarea_value} on_change={value => this.setState({ textarea_value: value })} placeholder="Enter text"/>
+					<Text_input multiline={true} name="description" style={style.form.textarea} value={this.state.textarea_value} on_change={value => this.setState({ textarea_value: value })} label="Enter text"/>
 					You entered: {this.state.textarea_value}
 
 					<h2 style={style.form.label}>{'Select'}</h2>

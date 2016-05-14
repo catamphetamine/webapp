@@ -198,8 +198,13 @@
 	margin-bottom  : calc(-1 * var(--input-border-width));
 
 	border: none;
-	border-bottom: var(--input-border-width) solid var(--gray-color);
+	border-bottom: var(--input-border-width) solid var(--gray-color-light);
 	transition: border 0.1s;
+}
+
+.dropdown-item-selected-nothing
+{
+	color: var(--gray-color-dark) !important;
 }
 
 .dropdown-item, .dropdown-item-selected
@@ -537,8 +542,7 @@ header > .nav-widescreen
 
 .text-input-error-message
 {
-	padding: var(--input-padding);
-	padding-bottom: 0;
+	padding-top: calc(2 * var(--input-padding));
 
 	color: var(--error-color-darker);
 }
@@ -674,8 +678,58 @@ header > .nav-widescreen
 	background-color: var(--error-color);
 }
 
-.form__actions
+.form-actions
 {
 	margin-top: 1em;
 	text-align: right;
+}
+
+.text-input
+{
+	display: flex;
+	flex-direction: column;
+
+	label
+	{
+		order: -2;
+
+		// font-size: 0.85em;
+		color: var(--gray-color-dark);
+
+		transform: scale(0.85) translateY(0.3em);
+		transform-origin: left top;
+		transition : color 0.1s ease-out, transform 0.1s ease-out;
+		pointer-events : none;
+	}
+
+	input, textarea
+	{
+		order: -1;
+	}
+
+	input:focus + label, textarea:focus + label
+	{
+		color: var(--accent-color);
+	}
+}
+
+.text-input-invalid
+{
+	label
+	{
+		color: var(--error-color-darker);
+	}
+}
+
+.text-input-empty
+{
+	label
+	{
+		transform: translateY(1.45em) scale(1);
+	}
+
+	input:focus + label, textarea:focus + label
+	{
+		color: var(--gray-color-dark);
+	}
 }
