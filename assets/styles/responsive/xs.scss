@@ -62,8 +62,8 @@
 	}
 }
 
-@include content-section-margin(0.5em);
-@include content-section-padding(0.8em);
+@include content-section-margin(0.5rem);
+@include content-section-padding(0.8rem);
 
 .sign-in
 {
@@ -215,7 +215,7 @@ header
 	path
 	{
 		// overrides inline css
-		fill: var(--gray-color-lightest) !important;
+		fill: var(--gray-color-lighter) !important;
 	}
 }
 
@@ -224,7 +224,7 @@ header
 	path
 	{
 		// overrides inline css
-		fill: var(--gray-color-lightest) !important;
+		fill: var(--gray-color-lighter) !important;
 	}
 }
 
@@ -301,7 +301,7 @@ header
 
 	.menu-item
 	{
-		color: var(--gray-color-lightest);
+		color: var(--gray-color-lighter);
 
 		&:active
 		{

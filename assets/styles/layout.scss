@@ -80,8 +80,8 @@ footer
 	flex-basis  : auto;
 }
 
-@include content-section-margin(1em);
-@include content-section-padding(2em);
+@include content-section-margin(1rem);
+@include content-section-padding(2rem);
 
 .nav-collapsible
 {

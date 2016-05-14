@@ -178,17 +178,17 @@ export default class Settings_page extends Component
 			<div className="content  user-settings">
 				{title(translate(messages.header))}
 
-				{/* "Settings" */}
-				<h1 style={style.header}>
-					{translate(messages.header)}
-				</h1>
-
 				{/* User's personal info */}
 				<section
 					className={classNames
 					(
 						'content-section'
 					)}>
+
+					{/* "Settings" */}
+					<h2 className="content-section-header">
+						{translate(messages.header)}
+					</h2>
 
 					{/* "Email" */}
 					<label htmlFor="email">{translate(authentication_form_messages.email)}</label>
@@ -359,6 +359,4 @@ export default class Settings_page extends Component
 
 const style = styler
 `
-	header
-		text-align: center
 `
