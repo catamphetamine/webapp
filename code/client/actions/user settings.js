@@ -39,7 +39,7 @@ export function load_advanced_settings()
 	{
 		promise : http =>
 		{
-			return get_user_authentication_tokens().promise()
+			return get_user_authentication_tokens().promise(http)
 		},
 		event	 : 'user settings: load advanced settings'
 	}
