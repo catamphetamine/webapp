@@ -5,6 +5,8 @@
 	--content-section-margin : 0.65rem;
 }
 
+@include columns(l);
+
 .language button
 {
 	font-size   : 18pt;

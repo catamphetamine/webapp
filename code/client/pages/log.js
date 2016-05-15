@@ -270,8 +270,6 @@ const style = styler
 		title
 		stack
 			margin-left     : 1.6em
-			padding         : 0
-			list-style-type : none
 
 			title
 				color : #C44100

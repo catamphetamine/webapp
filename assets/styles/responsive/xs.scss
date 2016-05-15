@@ -7,6 +7,8 @@
 	--content-section-padding : 0.8rem;
 }
 
+@include columns(xs);
+
 .logo
 {
 	margin-left  : 1.2em;

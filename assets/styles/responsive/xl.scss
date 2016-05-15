@@ -4,6 +4,8 @@
 	--content-section-margin : 0.8rem;
 }
 
+@include columns(xl);
+
 .user-profile .user-picture
 {
 	width      : 6rem;

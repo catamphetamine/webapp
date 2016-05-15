@@ -16,6 +16,19 @@
 	padding : var(--content-section-padding);
 }
 
+.content-section--no-padding
+{
+	padding : 0;
+
+	.content-section-header
+	{
+		margin-top    : var(--content-section-padding);
+		margin-bottom : 0;
+		margin-left   : 0;
+		margin-right  : 0;
+	}
+}
+
 .background-section
 {
 	padding-left  : var(--content-section-padding);
@@ -34,10 +47,20 @@
 {
 	padding-top      : 0.5em;
 	padding-bottom   : 0.45em;
-	border-bottom    : 1px solid var(--gray-color-light);
+	border-bottom    : 1pt solid var(--gray-color-light);
 	font-size        : 1.3rem;
 	text-align       : left;
 	background-color : var(--gray-color-lightest);
+}
+
+.content-section-divider
+{
+	position         : absolute;
+	top              : 0;
+	left             : var(--content-section-padding);
+	right            : var(--content-section-padding);
+	height           : 1pt;
+	background-color : var(--gray-color-light);
 }
 
 header, .user-picture--header
@@ -160,4 +183,14 @@ footer
 	flex-direction : column;
 
     min-height: 100vh;
+}
+
+.row
+{
+	&:after
+	{
+		content : "";
+		display : table;
+		clear   : both;
+	}
 }

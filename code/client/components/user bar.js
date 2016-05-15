@@ -196,6 +196,14 @@ export default class Authentication extends Component
 						{translate(messages.profile)}
 					</Link>
 
+					{/* Settings */}
+					<Link key="settings" to="/settings">
+						{/* Icon */}
+						<i className="material-icons">settings</i>
+						{/* Text */}
+						{translate(messages.settings)}
+					</Link>
+
 					{/* Feed */}
 					<Link key="notifications" to="/feed">
 						{/* Icon */}
@@ -210,14 +218,6 @@ export default class Authentication extends Component
 						<i className="material-icons">chat_bubble_outline</i>
 						{/* Text */}
 						{translate(messages.messages)}
-					</Link>
-
-					{/* Settings */}
-					<Link key="settings" to="/settings">
-						{/* Icon */}
-						<i className="material-icons">settings</i>
-						{/* Text */}
-						{translate(messages.settings)}
 					</Link>
 
 					{/* Separator */}

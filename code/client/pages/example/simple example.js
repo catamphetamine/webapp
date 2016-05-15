@@ -288,7 +288,6 @@ const style = styler
 
 		list
 			display         : inline-block
-			list-style-type : none
 			padding-left    : 1em
 
 			title

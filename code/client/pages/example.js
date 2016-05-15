@@ -33,8 +33,6 @@ export default class Page extends Component
 const style = styler
 `
 	menu
-		list-style-type : none
-		padding : 0
 		margin-top: 0
 
 		item

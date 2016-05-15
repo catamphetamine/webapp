@@ -196,144 +196,162 @@ export default class Settings_page extends Component
 			<div className="content  user-settings">
 				{title(translate(messages.header))}
 
-				{/* User's personal info */}
-				<section
-					className={classNames
-					(
-						'content-section'
-					)}>
+				<div className="row">
+					<div className="column-l-6-of-12">
+						{/* User's personal info */}
+						<section
+							className={classNames
+							(
+								'content-section'
+							)}>
 
-					{/* "Settings" */}
-					<h2 className="content-section-header">
-						{translate(messages.header)}
-					</h2>
+							{/* "Settings" */}
+							<h2 className="content-section-header">
+								{translate(messages.header)}
+							</h2>
 
-					{/* User's email */}
-					<Text_input
-						value={this.state.email}
-						name="email"
-						label={translate(authentication_form_messages.email)}
-						validate={this.validate_email_on_sign_in}
-						on_change={email => this.setState({ email })}/>
+							{/* User's email */}
+							<Text_input
+								value={this.state.email}
+								name="email"
+								label={translate(authentication_form_messages.email)}
+								input_style={style.email}
+								validate={this.validate_email_on_sign_in}
+								on_change={email => this.setState({ email })}/>
 
-					{/* Form actions */}
-					<div className="form-actions">
-						{/* "Save changes" */}
-						<Button
-							busy={saving_settings}
-							action={this.save_settings}>
-							{translate(default_messages.save)}
-						</Button>
+							{/* Form actions */}
+							<div className="form-actions">
+								{/* "Save changes" */}
+								<Button
+									busy={saving_settings}
+									action={this.save_settings}>
+									{translate(default_messages.save)}
+								</Button>
+							</div>
+						</section>
 					</div>
-				</section>
-
-				<div className="background-section">
-					{/* "Show advanced settings" */}
-					{ !showing_advanced_settings && 
-						<Button
-							busy={loading_advanced_settings}
-							action={this.load_advanced_settings}>
-							{translate(messages.show_advanced_settings)}
-						</Button>
-					}
-
-					{/* Error while loading advanced settings */}
-					{ load_advanced_settings_error &&
-						<div className="error">{translate(default_messages.error)}</div>
-					}
 				</div>
 
-				{/* Authentication tokens */}
-				{ showing_advanced_settings &&
-					<section
-						className={classNames
-						(
-							'content-section'
-						)}>
+				<div className="row">
+					<div className="column-l-6-of-12">
+						<div className="background-section">
+							{/* "Show advanced settings" */}
+							{ !showing_advanced_settings && 
+								<Button
+									busy={loading_advanced_settings}
+									action={this.load_advanced_settings}>
+									{translate(messages.show_advanced_settings)}
+								</Button>
+							}
 
-						{/* "Authentication tokens" */}
-						<h2 className="content-section-header">
-							{translate(messages.authentication_tokens)}
-						</h2>
+							{/* Error while loading advanced settings */}
+							{ load_advanced_settings_error &&
+								<div className="error">{translate(default_messages.error)}</div>
+							}
+						</div>
 
-						{/* Authentication tokens table */}
-						<table>
-							<thead>
-								<tr>
-									<th>{translate(messages.authentication_token_id)}</th>
-									<th>{translate(messages.authentication_token_issued)}</th>
-									<th>{translate(messages.authentication_token_status)}</th>
-									<th>{translate(messages.authentication_token_latest_activity)}</th>
-								</tr>
-							</thead>
+						{/* Authentication tokens */}
+						{ showing_advanced_settings &&
+							<section
+								className={classNames
+								(
+									'content-section',
+									'content-section--no-padding'
+								)}>
 
-							<tbody>
-								{authentication_tokens.map((token, token_index) =>
-								{
-									const markup =
-									(
-										<tr key={token_index}>
-											{/* Token id */}
-											<td>{token.id}</td>
+								{/* "Authentication tokens" */}
+								<h2 className="content-section-header">
+									{translate(messages.authentication_tokens)}
+								</h2>
 
-											{/* Token issued on */}
-											<td>
-												<React_time_ago date={token.created}/>
-											</td>
+								{/* Authentication tokens list */}
+								<ul>
+									{authentication_tokens.map((token, token_index) =>
+									{
+										const markup =
+										(
+											<li key={token_index} style={token.revoked ? style.authentication_token.revoked : style.authentication_token}>
+												{/* Divider line */}
+												{ token_index > 0 && <div className="content-section-divider"/> }
 
-											{/* Token status (valid, revoked) */}
-											<td>
-												{/* If the token was revoked, show revocation date */}
-												{token.revoked &&
-													<span>
-														{/* "Revoked" */}
-														{translate(messages.authentication_token_revoked)}
-														{/* when */}
-														<React_time_ago date={token.revoked}/>
-													</span>
-												}
+												{/* Token id */}
+												<div>
+													{/* "Token" */}
+													{translate(messages.authentication_token_id)}
+													{' '}
+													<code>{token.id}</code>
+												</div>
 
-												{/* If the token wasn't revoked then it's valid */}
-												{!token.revoked &&
-													<span>
-														{/* "Valid" */}
-														{translate(messages.authentication_token_valid)}
+												{/* Token issued on */}
+												<div>
+													{/* "Issued" */}
+													{translate(messages.authentication_token_issued)}
+													{' '}
+													{/* when */}
+													<React_time_ago
+														date={token.created}
+														style={style.authentication_token.issued}/>
+												</div>
 
-														{/* "Revoke" */}
-														<Button
-															busy={revoking_authentication_token}
-															action={() => this.revoke_authentication_token(token.id)}>
-															{translate(messages.revoke_authentication_token)}
-														</Button>
-													</span>
-												}
-											</td>
+												{/* Token status (valid, revoked) */}
+												<div style={style.authentication_token.status}>
+													{/* If the token was revoked, show revocation date */}
+													{token.revoked &&
+														<span>
+															{/* "Revoked" */}
+															{translate(messages.authentication_token_revoked)}
+															{' '}
+															{/* when */}
+															<React_time_ago date={token.revoked}/>
+														</span>
+													}
 
-											{/* Latest activity */}
-											<td>
-												{/* For each different IP address show latest activity time */}
-												<ul>
-													{token.history.map((activity, activity_index) =>
-													{
-														{/* Latest activity time for this IP address */}
-														return <li key={activity_index}>
-															{/* IP address, also resolving city and country */}
-															{activity.ip} (city, country),
-															{/* Latest activity time */}
-															<React_time_ago date={activity.time}/>
-														</li>
-													})}
-												</ul>
-											</td>
-										</tr>
-									)
+													{/* If the token wasn't revoked then it's valid */}
+													{!token.revoked &&
+														<span>
+															{/* "Valid" */}
+															{translate(messages.authentication_token_valid)}
+															{' '}
+															{/* "Revoke" */}
+															<Button
+																busy={revoking_authentication_token}
+																action={() => this.revoke_authentication_token(token.id)}>
+																{translate(messages.revoke_authentication_token)}
+															</Button>
+														</span>
+													}
+												</div>
 
-									return markup
-								})}
-							</tbody>
-						</table>
-					</section>
-				}
+												{/* Latest activity */}
+												<div>
+													{/* "Latest activity" */}
+													{translate(messages.authentication_token_latest_activity)}:
+
+													{/* For each different IP address show latest activity time */}
+													<ul style={style.authentication_token.latest_activity}>
+														{token.history.map((activity, activity_index) =>
+														{
+															{/* Latest activity time for this IP address */}
+															return <li key={activity_index}>
+																{/* IP address, also resolving city and country */}
+																<code>{activity.ip}</code>{/* (city, country)*/},
+																{' '}
+																{/* Latest activity time */}
+																<React_time_ago date={activity.time}/>
+															</li>
+														})}
+													</ul>
+												</div>
+											</li>
+										)
+
+										return markup
+									})}
+								</ul>
+							</section>
+						}
+					</div>
+				</div>
 			</div>
 		)
 
@@ -394,4 +412,22 @@ export default class Settings_page extends Component
 
 const style = styler
 `
+	email
+		width: 100%
+
+	authentication_tokens
+
+	authentication_token
+		position    : relative
+		padding     : var(--content-section-padding)
+		line-height : 1.6em
+
+		&revoked
+			// color: var(--gray-color-darker)
+			background-color: var(--gray-color-lightest)
+
+		issued
+			// display: block
+
+		latest_activity
 `

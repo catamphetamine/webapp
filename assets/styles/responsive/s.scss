@@ -5,6 +5,8 @@
 	--content-section-padding : 0.95rem;
 }
 
+@include columns(s);
+
 .logo
 {
 	font-size : 16pt;

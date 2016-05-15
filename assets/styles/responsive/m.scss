@@ -5,6 +5,8 @@
 	--content-section-padding : 1.1rem;
 }
 
+@include columns(m);
+
 .logo
 {
 	font-size : 20pt
@@ -51,28 +53,6 @@
 		float: right;
 	    margin-top: 0.42em;
 	}
-}
-
-.column-m-3-of-12,
-.column-m-4-of-12,
-.column-m-6-of-12
-{
-	overflow: visible;
-}
-
-.column-m-3-of-12
-{
-	width: 25%;
-}
-
-.column-m-4-of-12
-{
-	width: 33.33333%;
-}
-
-.column-m-6-of-12
-{
-	width: 50%;
 }
 
 .user-profile__actions

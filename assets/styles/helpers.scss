@@ -1,1 +1,51 @@
 // mixins go here
+
+@mixin columns($size)
+{
+	.column-#{$size}-3-of-12,
+	.column-#{$size}-4-of-12,
+	.column-#{$size}-6-of-12
+	{
+		float    : left;
+		overflow : visible;
+	}
+
+	.column-#{$size}-3-of-12
+	{
+		width: 25%;
+	}
+
+	.column-#{$size}-4-of-12
+	{
+		width: 33.33333%;
+	}
+
+	.column-#{$size}-6-of-12
+	{
+		width: 50%;
+	}
+
+	.rows-#{$size}-2-columns
+	{
+		> :nth-child(2n + 1)
+		{
+			clear: left;
+		}
+	}
+
+	.rows-#{$size}-3-columns
+	{
+		> :nth-child(3n + 1)
+		{
+			clear: left;
+		}
+	}
+
+	.rows-#{$size}-4-columns
+	{
+		> :nth-child(4n + 1)
+		{
+			clear: left;
+		}
+	}
+}
