@@ -196,7 +196,7 @@ export default class Settings_page extends Component
 			<div className="content  user-settings">
 				{title(translate(messages.header))}
 
-				<div className="row">
+				<div className="row row--content-sections">
 					<div className="column-l-6-of-12">
 						{/* User's personal info */}
 						<section
@@ -232,14 +232,15 @@ export default class Settings_page extends Component
 					</div>
 				</div>
 
-				<div className="row">
+				<div className="row row--content-sections">
 					<div className="column-l-6-of-12">
 						<div className="background-section">
 							{/* "Show advanced settings" */}
 							{ !showing_advanced_settings && 
 								<Button
 									busy={loading_advanced_settings}
-									action={this.load_advanced_settings}>
+									action={this.load_advanced_settings}
+									style={style.show_advanced_settings}>
 									{translate(messages.show_advanced_settings)}
 								</Button>
 							}
@@ -414,6 +415,9 @@ const style = styler
 `
 	email
 		width: 100%
+
+	show_advanced_settings
+		margin-top: var(--content-section-padding)
 
 	authentication_tokens
 
