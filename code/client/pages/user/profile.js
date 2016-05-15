@@ -688,13 +688,13 @@ const style = styler
 
 		&edit
 			margin-top : 1em
-			margin-bottom : 1rem
+			margin-bottom : 0.6rem
 
 	user_location
 		margin-top : 0.2em
 
 		&edit
-			margin-bottom : 1rem
+			margin-bottom : 0.6rem
 
 	latest_activity
 		margin-top : 1.2rem

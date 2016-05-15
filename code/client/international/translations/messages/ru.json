@@ -80,7 +80,7 @@
 
 	"user.settings.header"                               : "Настройки",
 	"user.settings.show_advanced_settings"               : "Показать прочие настройки",
-	"user.settings.authentication_tokens"                : "Ключи входа",
+	"user.settings.authentication_tokens"                : "Ключи доступа",
 	"user.settings.revoke_authentication_token"          : "Отозвать",
 	"user.settings.authentication_token_valid"           : "Действующий",
 	"user.settings.authentication_token_revoked"         : "Отозван",
