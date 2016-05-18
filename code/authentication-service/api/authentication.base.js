@@ -23,12 +23,20 @@ export async function sign_in({ email, password }, { ip, set_cookie, secret, htt
 		throw new Errors.Not_found(`No user with this email`)
 	}
 
+	if (await is_login_attempts_limit_exceeded(user))
+	{
+		throw new Errors.Access_denied(`Login attempts limit exceeded`)
+	}
+
 	const matches = await check_password(password, user.password)
 
 	if (!matches)
 	{
+		await login_attempt_failed(user)
 		throw new Errors.Input_rejected(`Wrong password`) 
 	}
+
+	await login_attempt_succeeded(user)
 
 	const jwt_id = await store.add_authentication_token(user, ip)
 
@@ -49,6 +57,100 @@ export async function sign_in({ email, password }, { ip, set_cookie, secret, htt
 	}
 
 	return own_user(user_data)
+}
+
+// Password bruteforce protection.
+const The_hottest_allowed_temperature = 1000
+
+// Each failed login attempt increases the `temperature` twice.
+// Once the temperature reaches the maximum threshold
+// all further login attempts will be denied.
+// The temperature cools down to a half of its value every 15 minutes.
+async function is_login_attempts_limit_exceeded(user)
+{
+	const Temperature_half_life = 15 * 60 // in seconds
+	
+	// If no login attempts failed so far
+	// then allow the next login attempt.
+	if (!user.latest_failed_login_attempt)
+	{
+		return
+	}
+
+	// Fast forward temperature cooldown 
+	// since the latest failed login attempt till now.
+
+	let temperature = user.latest_failed_login_attempt.temperature
+	let when        = user.latest_failed_login_attempt.when.getTime()
+	const now       = Date.now()
+	
+	while (now >= when + Temperature_half_life * 1000)
+	{
+		// Cool down the temperature to a half of its value
+		temperature /= 2
+		when += Temperature_half_life * 1000
+
+		// Consider all temperatures below 1 to equal 0
+		// because it doesn't really matter and saves CPU cycles
+		if (temperature < 1)
+		{
+			temperature = 0
+			break
+		}
+	}
+
+	// Update the temperature in the database
+	if (temperature !== user.latest_failed_login_attempt.temperature)
+	{
+		await store.set_login_temperature(user.id, temperature)
+		user.latest_failed_login_attempt.temperature = temperature
+	}
+
+	// If the temperature is still too hot,
+	// deny login attempts
+	if (temperature > The_hottest_allowed_temperature)
+	{
+		return true
+	}
+}
+
+async function login_attempt_succeeded(user)
+{
+	await store.clear_latest_failed_login_attempt(user.id)
+}
+
+async function login_attempt_failed(user)
+{
+	const Penalty_interval = 15 * 60 // in seconds
+
+	let temperature
+
+	if (user.latest_failed_login_attempt && user.latest_failed_login_attempt.temperature)
+	{
+		temperature = user.latest_failed_login_attempt.temperature
+
+		// If the two consecutive failed login attempts weren't close enough to each other
+		// then don't penalize and don't double the temperature.
+		if (Date.now() > user.latest_failed_login_attempt.when.getTime() + Penalty_interval * 1000)
+		{
+			// no penalty
+		}
+		// Otherwise add penalty
+		else
+		{
+			// Double the temperature
+			temperature *= 2
+		}
+	}
+	else
+	{
+		// The initial temperature is 2
+		// for a sequence of failed login attempts
+		temperature = 2
+	}
+
+	// Register this failed login attempt
+	await store.set_latest_failed_login_attempt(user.id, temperature)
 }
 
 export async function sign_out({}, { destroy_cookie, user, authentication_token_id })

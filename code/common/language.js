@@ -299,17 +299,21 @@ Object.defineProperty(Array.prototype, 'find_by',
 	enumerable: false,
 	value: function(example)
 	{
-		for (let element of this)
+		for (let candidate of this)
 		{
 			for (let key of Object.keys(example))
 			{
-				if (element.key !== example.key)
+				if (candidate[key] !== example[key])
 				{
+					candidate = undefined
 					break
 				}
 			}
 
-			return element
+			if (candidate)
+			{
+				return candidate
+			}
 		}
 	}
 })

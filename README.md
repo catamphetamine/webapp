@@ -381,6 +381,20 @@ Troubleshooting
 To do
 ====================
 
+в мониторинге показывать график "горячих запросов" (url, method, логгировать параметры)
+
+
+
+
+Задавать максимальную ширину для content-section, если это текст.
+(65 символов в строке)
+
+https://www.smashingmagazine.com/2014/09/balancing-line-length-font-size-responsive-web-design/
+(45 - 85)
+
+
+
+
 для почты сделать отдельную секцию (как в контакте), и отдельный метод её изменения, изменяющий её также в authentication.
 вместо 'user settings: save settings' будет другой event name.
 

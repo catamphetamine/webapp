@@ -115,6 +115,11 @@ export default class Sign_in extends Component
 			return translate(authentication_form_messages.wrong_password)
 		}
 
+		if (error === 'Login attempts limit exceeded')
+		{
+			return translate(authentication_form_messages.login_attempts_limit_exceeded_error)
+		}
+
 		return error
 	}
 

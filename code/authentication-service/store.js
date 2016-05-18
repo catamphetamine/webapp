@@ -125,7 +125,7 @@ class Memory_store
 		// redundant field for faster latest activity time querying
 		user.latest_activity_time = now
 
-		return Promise.resolve(authentication_token_id)
+		return authentication_token_id
 	}
 
 	async record_access(user, authentication_token_id, ip)
@@ -168,9 +168,24 @@ class Memory_store
 		}
 	}
 
-	async get_tokens(user_id)
+	get_tokens(user_id)
 	{
 		return Promise.resolve(this.users.get(user_id).authentication_tokens)
+	}
+
+	set_login_temperature(user_id, temperature)
+	{
+		return Promise.resolve()
+	}
+
+	set_latest_failed_login_attempt(user_id, temperature)
+	{
+		return Promise.resolve()
+	}
+
+	clear_latest_failed_login_attempt(user_id)
+	{
+		return Promise.resolve()
 	}
 }
 
@@ -327,6 +342,43 @@ class Mongodb_store extends MongoDB
 		{
 			sort: { latest_access: -1 }
 		}))
+	}
+
+	async set_login_temperature(user_id, temperature)
+	{
+		await this.collection('user_authentication').update_by_id(user_id,
+		{
+			$set:
+			{
+				'latest_failed_login_attempt.temperature': temperature
+			}
+		})
+	}
+
+	async set_latest_failed_login_attempt(user_id, temperature)
+	{
+		await this.collection('user_authentication').update_by_id(user_id,
+		{
+			$set:
+			{
+				latest_failed_login_attempt:
+				{
+					when: new Date(),
+					temperature
+				}
+			}
+		})
+	}
+
+	async clear_latest_failed_login_attempt(user_id)
+	{
+		await this.collection('user_authentication').update_by_id(user_id,
+		{
+			$unset:
+			{
+				latest_failed_login_attempt: true
+			}
+		})
 	}
 }
 

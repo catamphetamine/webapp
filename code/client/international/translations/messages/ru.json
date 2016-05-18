@@ -30,9 +30,10 @@
 	"registration.email_already_registered"                : "Этот почтовый адрес уже был зарегистрирован ранее",
 	"registration.error"                                   : "Не удалось зарегистрироваться",
 
-	"authentication.email_is_required"    : "Введите вашу почту",
-	"authentication.password_is_required" : "Введите ваш пароль",
-	"authentication.error"                : "Не удалось войти",
+	"authentication.email_is_required"                   : "Введите вашу почту",
+	"authentication.password_is_required"                : "Введите ваш пароль",
+	"authentication.error"                               : "Не удалось войти",
+	"authentication.login_attempts_limit_exceeded_error" : "Превышено допустимое количество попыток входа. Попробуйте войти ещё раз чуть позже.",
 
 	"authentication.user_not_found" : "Нет пользователя с такой почтой",
 	"authentication.wrong_password" : "Неверный пароль",

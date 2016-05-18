@@ -131,6 +131,12 @@ export const messages = defineMessages
 		id             : 'registration.error',
 		description    : 'User registration error',
 		defaultMessage : 'Couldn\'t register'  
+	},
+	login_attempts_limit_exceeded_error:
+	{
+		id             : 'authentication.login_attempts_limit_exceeded_error',
+		description    : `The user's login attempts limit has been reached. The user shold try again in 15 minutes or so.`,
+		defaultMessage : 'Login attempts limit exceeded. Try again later.'  
 	}
 })
 
@@ -499,7 +505,7 @@ export default class Authentication extends Component
 			{
 				this.refs.email.focus()
 			}
-			else if (error.message === 'User is already registered for this email')
+			else if (error.status === http_status_codes.Input_rejected)
 			{
 				this.refs.password.focus()
 			}
@@ -559,6 +565,11 @@ export default class Authentication extends Component
 		if (error.status === http_status_codes.Input_rejected)
 		{
 			return this.translate(messages.wrong_password)
+		}
+
+		if (error.message === `Login attempts limit exceeded`)
+		{
+			return this.translate(messages.login_attempts_limit_exceeded_error)
 		}
 
 		return this.translate(messages.sign_in_error)
