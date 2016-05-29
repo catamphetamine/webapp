@@ -33,6 +33,13 @@ const menu_transition_duration = 0 // 210 // milliseconds
 // ({
 // 	blocking: (dispatch, get_model) => dispatch(authenticate())
 // })
+@connect
+(
+	model => 
+	({
+		locale   : model.locale.locale
+	})
+)
 @international()
 @DragDropContext(HTML5Backend)
 @DragLayer(monitor =>
@@ -61,7 +68,8 @@ export default class Layout extends Component
 		// 	x: PropTypes.number.isRequired,
 		// 	y: PropTypes.number.isRequired
 		// }),
-		is_dragging: PropTypes.bool.isRequired
+		is_dragging : PropTypes.bool.isRequired,
+		locale      : PropTypes.string.isRequired
 	}
 
 	constructor(props, context)
@@ -82,32 +90,25 @@ export default class Layout extends Component
 
 		// <head/> <meta/> tags
 		const meta =
-		{
-			// <meta charset="utf-8" />
-			charSet: 'utf-8',
+		[
+			// <meta charset="utf-8"/>
+			{ charset: 'utf-8' },
 
-			name:
-			{
-				// all <meta name="..." content="..."/> tags go here
+			// <meta name="..." content="..."/>
+			//
+			// i don't fully understand what it does
+			// https://css-tricks.com/probably-use-initial-scale1/
+			//
+			// user-scalable=no removes touch event delay ~300ms
+			//
+			{ name: 'viewport', content: 'width=device-width, initial-scale=1.0, user-scalable=no' },
 
-				// i don't fully understand what it does
-				// https://css-tricks.com/probably-use-initial-scale1/
-				//
-				// user-scalable=no removes touch event delay ~300ms
-				//
-				viewport: 'width=device-width, initial-scale=1.0, user-scalable=no'
-			},
-
-			property:
-			{
-				// all <meta property="..." content="..."/> tags go here
-
-				'og:site_name': title,
-				'og:locale': 'ru_RU',
-				'og:title': title,
-				'og:description': description,
-			}
-		}
+			// <meta property="..." content="..."/>
+			{ property: 'og:title',       content: title },
+			{ property: 'og:site_name',   content: title },
+			{ property: 'og:locale',      content: this.props.locale },
+			{ property: 'og:description', content: description }
+		]
 
 		// Slideout menu pushes the page to the right
 		// const page_style_with_menu_expanded = { transform: `translate3d(${this.state.menu_width}px, 0px, 0px)` }
@@ -125,7 +126,7 @@ export default class Layout extends Component
 				className={classNames('layout', { 'layout--dragging': is_dragging })}>
 
 				{/* <head/> */}
-				{head(title, description, meta)}
+				{head(title, meta)}
 
 				{/* navigation for small screens (will slide out) */}
 				{/* main menu */}
