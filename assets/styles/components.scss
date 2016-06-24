@@ -409,23 +409,23 @@ header > .nav-widescreen
 	outline: none;
 }
 
-.ReactModal__Content .modal-content
+.ReactModal__Content // .modal-content
 {
 	transform: scale(0.7);
 }
 
-.ReactModal__Content--after-open .modal-content
+.ReactModal__Content--after-open // .modal-content
 {
 	transform: scale(1);
 }
 
-.ReactModal__Content--before-close .modal-content
+.ReactModal__Content--before-close // .modal-content
 {
 	transform: scale(0.7);
 }
 
-.ReactModal__Content--after-open .modal-content,
-.ReactModal__Content--before-close .modal-content
+.ReactModal__Content--after-open, // .modal-content,
+.ReactModal__Content--before-close // .modal-content
 {
 	transition: transform 150ms ease-out;
 }
@@ -445,6 +445,16 @@ header > .nav-widescreen
 // }
 
 // end react-modal stying
+
+.modal-header--separated
+{
+	border-bottom: 1px solid #e0e0e0;
+}
+
+.modal-actions--separated
+{
+	border-top: 1px solid #e0e0e0;
+}
 
 .button-group
 {

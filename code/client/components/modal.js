@@ -1,8 +1,11 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 import styler from 'react-styling'
+import className from 'classnames'
 
 import React_modal from 'react-modal'
+
+import Button from './button'
 
 // when changing this also change 
 // your .ReactModal__Overlay and .ReactModal__Content 
@@ -55,7 +58,7 @@ export default class Modal extends Component
 
 	render()
 	{
-		const { isOpen, closeTimeoutMS } = this.props
+		const { isOpen, closeTimeoutMS, title, actions, overflown } = this.props
 
 		const markup = 
 		(
@@ -68,17 +71,42 @@ export default class Modal extends Component
 				className="modal"
 				style={style.modal}>
 
-				<div style={style.modal.content_cell} onClick={this.onRequestClose}>
-					<div style={style.content_wrapper} onClick={this.onRequestClose}>
-						{/* top padding grows less than bottom padding */}
-						<div style={style.top_padding} onClick={this.onRequestClose}></div>
-						
-						{/* dialog window content */}
-						<div className="modal-content" onClick={event => event.stopPropagation()} style={this.props.style ? merge(style.content, this.props.style) : style.content}>{this.props.children}</div>
+				<div style={style.content_wrapper} onClick={this.onRequestClose}>
+					{/* top padding grows less than bottom padding */}
+					<div style={style.top_padding} onClick={this.onRequestClose}></div>
 
-						{/* bottom padding grows more than top padding */}
-						<div style={style.bottom_padding} onClick={this.onRequestClose}></div>
-					</div>
+					{/* dialog window title */}
+					{title &&
+						<h1
+							onClick={event => event.stopPropagation()}
+							className={className('modal-header',
+							{
+								'modal-header--separated': overflown
+							})}
+							style={style.header}>
+							{title}
+						</h1>
+					}
+					
+					{/* dialog window content */}
+					<div className="modal-content" onClick={event => event.stopPropagation()} style={this.props.style ? merge(style.content, this.props.style) : style.content}>{this.props.children}</div>
+
+					{/* dialog window actions */}
+					{actions &&
+						<div
+							className={className('modal-actions',
+							{
+								'modal-actions--separated': overflown
+							})}
+							onClick={event => event.stopPropagation()}
+							style={style.actions}>
+
+							{actions.map(x => <Button {...x}>{x.text}</Button>)}
+						</div>
+					}
+
+					{/* bottom padding grows more than top padding */}
+					<div style={style.bottom_padding} onClick={this.onRequestClose}></div>
 				</div>
 			</React_modal>
 		)
@@ -154,18 +182,65 @@ const style = styler
 		display : inline-block
 
 		flex-grow   : 0
+		flex-shrink : 1
+		flex-basis  : auto
+		overflow    : auto
+
+		padding-left  : 1.2rem
+		padding-right : 1.2rem
+
+		padding-bottom : 1.2rem
+
+		// border-radius  : 0.2em
+		
+		background-color : white
+
+	header
+		flex-grow   : 0
 		flex-shrink : 0
 		flex-basis  : auto
 
-		padding-left  : 2em
-		padding-right : 2em
+		margin : 0
+		width  : 100%
 
-		padding-top    : 1.5em
-		padding-bottom : 1.5em
+		background-color : white
 
-		border-radius  : 0.2em
-		
-		background-color: white
+		border-top-left-radius  : 0.2rem
+		border-top-right-radius : 0.2rem
+
+		text-align : left
+
+		box-sizing: border-box;
+		padding-left   : 1.2rem
+		padding-right  : 1.2rem
+		padding-top    : 1.2rem
+		padding-bottom : 1.05rem
+
+		font-size : 1.3rem
+
+	actions
+		flex-grow   : 0
+		flex-shrink : 0
+		flex-basis  : auto
+
+		margin : 0
+		width  : 100%
+
+		// height     : 2.4rem
+		// max-height : 2.4rem
+
+		background-color : white
+
+		border-bottom-left-radius  : 0.2rem
+		border-bottom-right-radius : 0.2rem
+
+		text-align : right
+
+		box-sizing: border-box;
+		padding-left   : 1.2rem
+		padding-right  : 0.3rem
+		padding-top    : 0.3rem
+		padding-bottom : 0.3rem
 
 	// вместо использования этого content_wrapper'а
 	// можно было бы использовать то же самое на modal.content,
@@ -188,13 +263,13 @@ const style = styler
 			background-color: rgba(0, 0, 0, 0.2)
 
 		content
-			position : static
+			// position : static
 			height : 100%
 
-			top    : auto
-			left   : auto
-			right  : auto
-			bottom : auto
+			// top    : auto
+			// left   : auto
+			// right  : auto
+			// bottom : auto
 
 			text-align : left
 
@@ -222,11 +297,15 @@ const style = styler
 			// margin-right          : -50%
 			// transform             : translate(-50%, -50%)
 			
-			display      : table
-			margin-left  : auto
-			margin-right : auto
+			// // centering
+			// display      : table
+			// margin-left  : auto
+			// margin-right : auto
 
-		content_cell
-			display : table-cell
-			height  : 100%
+			display: inline-block
+
+		// content_cell
+		// 	// // centering
+		// 	// display : table-cell
+		// 	height  : 100%
 `
