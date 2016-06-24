@@ -480,6 +480,7 @@ header > .nav-widescreen
 
 .modal-content--no-bars
 {
+	padding-top   : calc(4 * var(--modular-grid-unit));
 	border-radius : var(--card-border-radius);
 }
 

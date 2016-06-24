@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 import styler from 'react-styling'
-import className from 'classnames'
+import classNames from 'classnames'
 
 import React_modal from 'react-modal'
 
@@ -79,7 +79,7 @@ export default class Modal extends Component
 					{title &&
 						<h1
 							onClick={event => event.stopPropagation()}
-							className={className('modal-header',
+							className={classNames('modal-header',
 							{
 								'modal-header--separated': scroll
 							})}
@@ -90,16 +90,19 @@ export default class Modal extends Component
 					
 					{/* dialog window content */}
 					<div
-						className={className('modal-content',
+						className={classNames('modal-content',
 						{
 							'modal-content--no-bars': !title
 						})}
-						className="modal-content" onClick={event => event.stopPropagation()} style={this.props.style ? merge(style.content, this.props.style) : style.content}>{this.props.children}</div>
+						onClick={event => event.stopPropagation()}
+						style={this.props.style ? merge(style.content, this.props.style) : style.content}>
+						{this.props.children}
+					</div>
 
 					{/* dialog window actions */}
 					{actions &&
 						<div
-							className={className('modal-actions',
+							className={classNames('modal-actions',
 							{
 								'modal-actions--separated': scroll
 							})}
@@ -184,6 +187,9 @@ const style = styler
 		flex-shrink : 0
 		flex-basis  : 80px
 
+	content, header, actions
+		background-color : white
+
 	content
 		display : inline-block
 
@@ -194,14 +200,9 @@ const style = styler
 
 		padding-left  : 1.2rem
 		padding-right : 1.2rem
-
 		padding-bottom : 1.2rem
 
-		// border-radius  : 0.2em
-		
-		background-color : white
-
-	header
+	header, actions
 		flex-grow   : 0
 		flex-shrink : 0
 		flex-basis  : auto
@@ -209,32 +210,19 @@ const style = styler
 		margin : 0
 		width  : 100%
 
-		background-color : white
+		box-sizing: border-box
 
+	header
 		text-align : left
-
-		box-sizing: border-box;
-
 		font-size : 1.3rem
 
 	actions
-		flex-grow   : 0
-		flex-shrink : 0
-		flex-basis  : auto
-
-		margin : 0
-		width  : 100%
-
 		// height     : 2.4rem
 		// max-height : 2.4rem
-
-		background-color : white
 
 		text-align : right
 		// fixes display inline-block whitespaces causing scrollbar
 		line-height : 0
-
-		box-sizing: border-box;
 
 	// вместо использования этого content_wrapper'а
 	// можно было бы использовать то же самое на modal.content,
