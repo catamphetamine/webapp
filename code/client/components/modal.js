@@ -58,7 +58,7 @@ export default class Modal extends Component
 
 	render()
 	{
-		const { isOpen, closeTimeoutMS, title, actions, overflown } = this.props
+		const { isOpen, closeTimeoutMS, title, actions, scroll } = this.props
 
 		const markup = 
 		(
@@ -81,7 +81,7 @@ export default class Modal extends Component
 							onClick={event => event.stopPropagation()}
 							className={className('modal-header',
 							{
-								'modal-header--separated': overflown
+								'modal-header--separated': scroll
 							})}
 							style={style.header}>
 							{title}
@@ -89,14 +89,19 @@ export default class Modal extends Component
 					}
 					
 					{/* dialog window content */}
-					<div className="modal-content" onClick={event => event.stopPropagation()} style={this.props.style ? merge(style.content, this.props.style) : style.content}>{this.props.children}</div>
+					<div
+						className={className('modal-content',
+						{
+							'modal-content--no-bars': !title
+						})}
+						className="modal-content" onClick={event => event.stopPropagation()} style={this.props.style ? merge(style.content, this.props.style) : style.content}>{this.props.children}</div>
 
 					{/* dialog window actions */}
 					{actions &&
 						<div
 							className={className('modal-actions',
 							{
-								'modal-actions--separated': overflown
+								'modal-actions--separated': scroll
 							})}
 							onClick={event => event.stopPropagation()}
 							style={style.actions}>
@@ -206,16 +211,9 @@ const style = styler
 
 		background-color : white
 
-		border-top-left-radius  : 0.2rem
-		border-top-right-radius : 0.2rem
-
 		text-align : left
 
 		box-sizing: border-box;
-		padding-left   : 1.2rem
-		padding-right  : 1.2rem
-		padding-top    : 1.2rem
-		padding-bottom : 1.05rem
 
 		font-size : 1.3rem
 
@@ -232,18 +230,11 @@ const style = styler
 
 		background-color : white
 
-		border-bottom-left-radius  : 0.2rem
-		border-bottom-right-radius : 0.2rem
-
 		text-align : right
 		// fixes display inline-block whitespaces causing scrollbar
 		line-height : 0
 
 		box-sizing: border-box;
-		padding-left   : 1.2rem
-		padding-right  : 0.3rem
-		padding-top    : 0.3rem
-		padding-bottom : 0.3rem
 
 	// вместо использования этого content_wrapper'а
 	// можно было бы использовать то же самое на modal.content,

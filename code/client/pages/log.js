@@ -119,6 +119,7 @@ export default class Log extends Component
 					isOpen={this.state.show_stack_trace}
 					onRequestClose={this.hide_stack_trace}
 					style={style.stack_trace_modal}
+					scroll={true}
 					title={this.state.error_message}
 					actions=
 					{[{
@@ -274,7 +275,6 @@ const style = styler
 
 			title
 				color : #C44100
-				margin-top : 0
 
 			line
 				margin-bottom: 1.2em

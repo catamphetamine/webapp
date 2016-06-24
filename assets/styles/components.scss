@@ -456,6 +456,33 @@ header > .nav-widescreen
 	border-top: 1px solid #e0e0e0;
 }
 
+.modal-header
+{
+	padding-left   : calc(4 * var(--modular-grid-unit));
+	padding-right  : calc(4 * var(--modular-grid-unit));
+	padding-top    : calc(4 * var(--modular-grid-unit));
+	padding-bottom : calc(3.5 * var(--modular-grid-unit));
+
+	border-top-left-radius  : var(--card-border-radius);
+	border-top-right-radius : var(--card-border-radius);
+}
+
+.modal-actions
+{
+	padding-left   : calc(4 * var(--modular-grid-unit));
+	padding-right  : calc(1 * var(--modular-grid-unit));
+	padding-top    : calc(1 * var(--modular-grid-unit));
+	padding-bottom : calc(1 * var(--modular-grid-unit));
+
+	border-bottom-left-radius  : var(--card-border-radius);
+	border-bottom-right-radius : var(--card-border-radius);
+}
+
+.modal-content--no-bars
+{
+	border-radius : var(--card-border-radius);
+}
+
 .button-group
 {
 }
