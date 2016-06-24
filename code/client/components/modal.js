@@ -236,6 +236,7 @@ const style = styler
 		border-bottom-right-radius : 0.2rem
 
 		text-align : right
+		// fixes display block whitespaces causing scrollbar
 		line-height : 0
 
 		box-sizing: border-box;
@@ -261,6 +262,7 @@ const style = styler
 			min-height : 100%
 
 			text-align : center
+			// fixes display block whitespaces causing scrollbar
 			line-height : 0
 
 			background-color: rgba(0, 0, 0, 0.2)
