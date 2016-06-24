@@ -106,7 +106,7 @@ export default class Modal extends Component
 							onClick={event => event.stopPropagation()}
 							style={style.actions}>
 
-							{actions.map(x => <Button {...x}>{x.text}</Button>)}
+							{actions.map((action, i) => <Button key={i} {...action}>{action.text}</Button>)}
 						</div>
 					}
 

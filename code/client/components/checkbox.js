@@ -98,7 +98,7 @@ export default class Checkbox extends Component
 			strokeLinejoin : 'round'
 		}
 
-		if (_server_)
+		if (!_server_)
 		{
 			return <path ref="path" d={path} style={this.state.path_style || path_style}></path>
 		}
