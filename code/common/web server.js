@@ -1,4 +1,5 @@
 import koa           from 'koa'
+import koa_convert   from 'koa-convert'
 
 // import session       from 'koa-generic-session'
 // import redis_store   from 'koa-redis'
@@ -33,7 +34,7 @@ import koa_logger    from 'koa-bunyan'
 import compress      from 'koa-compress'
 import statics       from 'koa-static'
 import koa_locale    from 'koa-locale'
-import busboy        from 'co-busboy'
+import busboy        from 'async-busboy'
 
 // doesn't work well with redirects, is an amateurish project
 // import koa_proxy     from 'koa-proxy'
@@ -55,9 +56,9 @@ import render_stack_trace from './html stack trace'
 // compress            - enables tar/gz compression of Http response data
 //
 // extract_locale      - extracts locale from Http Request headers 
-//                       and places it into this.locale
+//                       and places it into ctx.locale
 //
-// session             - tracks user session (this.session)
+// session             - tracks user session (ctx.session)
 //
 // authentication      - uses a JWT token as a means of user authentication
 //                       (should be a function transforming token payload into user info)
@@ -136,7 +137,7 @@ export default function web_server(options = {})
 	const result = {}
 
 	// instantiate a Koa web application
-	const web = koa()
+	const web = new koa()
 
 	if (options.compress)
 	{
@@ -146,22 +147,22 @@ export default function web_server(options = {})
 	}
 
 	// handle errors
-	web.use(function*(next)
+	web.use(async function(ctx, next)
 	{
 		// generic errors for throwing
 		// (for convenient access from the subsequent middlewares and Http request handlers)
-		this.errors = result.errors
+		ctx.errors = result.errors
 
 		try
 		{
 			// // measure Http request processing time
-			// const key = `${this.host}${this.url}`
+			// const key = `${ctx.host}${ctx.url}`
 
 			// // started processing Http request
 			// console.time(key)
 
 			// try to respond to this Http request
-			yield next
+			await next()
 
 			// // finished processing Http request
 			// console.timeEnd(key)
@@ -184,10 +185,10 @@ export default function web_server(options = {})
 			if (exists(http_status_code))
 			{
 				// set Http Response status code according to the error's `code`
-				this.status = http_status_code
+				ctx.status = http_status_code
 
 				// set Http Response text according to the error message
-				this.body = error.message || 'Internal error'
+				ctx.body = error.message || 'Internal error'
 			}
 			else
 			{
@@ -210,8 +211,8 @@ export default function web_server(options = {})
 
 				log.error(error, '(http request failed)')
 
-				this.status = 500
-				this.body = 'Internal error'
+				ctx.status = 500
+				ctx.body = 'Internal error'
 			}
 
 			// show error stack trace in development mode for easier debugging
@@ -221,9 +222,9 @@ export default function web_server(options = {})
 
 				if (response_body)
 				{
-					this.status = response_status || http_status_code || 500
-					this.body = response_body
-					this.type = 'html'
+					ctx.status = response_status || http_status_code || 500
+					ctx.body = response_body
+					ctx.type = 'html'
 
 					return
 				}
@@ -233,7 +234,7 @@ export default function web_server(options = {})
 
 	if (options.log)
 	{
-		web.use(koa_logger(log,
+		web.use(koa_convert(koa_logger(log,
 		{
 			// which level you want to use for logging.
 			// default is info
@@ -241,7 +242,7 @@ export default function web_server(options = {})
 			// this is optional. Here you can provide request time in ms,
 			// and all requests longer than specified time will have level 'warn'
 			timeLimit: 100
-		}))
+		})))
 	}
 
 	if (options.extract_locale)
@@ -254,7 +255,7 @@ export default function web_server(options = {})
 		//
 		// .use(function*()
 		// {
-		// 	const preferred_locale = this.getLocaleFromQuery() || this.getLocaleFromCookie() || this.getLocaleFromHeader() || 'en'
+		// 	const preferred_locale = ctx.getLocaleFromQuery() || ctx.getLocaleFromCookie() || ctx.getLocaleFromHeader() || 'en'
 		// })
 	}
 
@@ -426,10 +427,10 @@ export default function web_server(options = {})
 			}
 		}
 
-		web.use(function*(next)
+		web.use(async function(ctx, next)
 		{
-			yield authenticate.bind(this)()
-			yield next
+			await authenticate.call(ctx)
+			await next()
 		})
 	}
 
@@ -468,7 +469,7 @@ export default function web_server(options = {})
 				return generate_unique_id()
 			}
 
-			web.use(session
+			web.use(koa_convert(session
 			({
 				key    : 'session:id',
 				prefix,
@@ -482,11 +483,11 @@ export default function web_server(options = {})
 				({
 					client : redis_client
 				})
-			}))
+			})))
 		}
 		else
 		{
-			web.use(session
+			web.use(koa_convert(session
 			({
 				key: 'session:id',
 				// ttl,
@@ -494,7 +495,7 @@ export default function web_server(options = {})
 				{
 					maxAge : ttl
 				},
-			}))
+			})))
 		}
 	}
 
@@ -506,7 +507,7 @@ export default function web_server(options = {})
 	if (options.parse_body)
 	{
 		// Set up http post request handling.
-		// Usage: this.request.body
+		// Usage: ctx.request.body
 		web.use(body_parser({ formLimit: '100mb' }))
 	}
 
@@ -522,20 +523,20 @@ export default function web_server(options = {})
 		// 	// on login:
 		// 	import crypto from 'crypto'
 		// 	const hmac = crypto.createHmac('sha1', configuration.session_secret_keys.first())
-		// 	hmac.update(this.session)
-		// 	this.cookies.set('csrf-token', hmac.digest('hex'))
+		// 	hmac.update(ctx.session)
+		// 	ctx.cookies.set('csrf-token', hmac.digest('hex'))
 		//
 		// 	// else, if logged in
-		// 	if (this.get('X-Csrf-Token') !== this.cookies.get('csrf-token'))
+		// 	if (ctx.get('X-Csrf-Token') !== ctx.cookies.get('csrf-token'))
 		// 	{
-		// 			throw new Errors.Access_denied(`Cross Site Request Forgery token mismatch. Expected "csrf-token" cookie value ${this.cookies.get('csrf-token')} to equal "X-Csrf-Token" header value ${this.get('X-Csrf-Token')}`)
+		// 			throw new Errors.Access_denied(`Cross Site Request Forgery token mismatch. Expected "csrf-token" cookie value ${ctx.cookies.get('csrf-token')} to equal "X-Csrf-Token" header value ${ctx.get('X-Csrf-Token')}`)
 		// 	}
 		// })
 	}
 
 	if (options.routing)
 	{
-		const router = koa_router()
+		const router = new koa_router()
 
 		// supports routing
 		//
@@ -551,30 +552,30 @@ export default function web_server(options = {})
 			{
 				// all errors thrown from this middleware will get caught 
 				// by the error-catching middleware above
-				router[method](path, function*(next)
+				router[method](path, function(ctx, next)
 				{
-					const session = this.session
-					const session_id = this.sessionId
-					const destroy_session = () => this.session = null
+					const session = ctx.session
+					const session_id = ctx.sessionId
+					const destroy_session = () => ctx.session = null
 
-					const get_cookie = name => this.cookies.get(name)
+					const get_cookie = name => ctx.cookies.get(name)
 					
 					const set_cookie = (name, value, options = {}) =>
 					{
 						// http://stackoverflow.com/questions/3290424/set-a-cookie-to-never-expire
 						options.expires = options.expires || new Date(2147483647000)  // January 2038
 
-						this.cookies.set(name, value, options)
+						ctx.cookies.set(name, value, options)
 					}
 
 					const destroy_cookie = name =>
 					{
-						this.cookies.set(name, null)
-						this.cookies.set(name + '.sig', null)
+						ctx.cookies.set(name, null)
+						ctx.cookies.set(name + '.sig', null)
 					}
 
 					// api call parameters
-					const parameters = { ...this.request.body, ...this.query, ...this.params }
+					const parameters = { ...ctx.request.body, ...ctx.query, ...ctx.params }
 
 					// treat empty strings as `undefined`s
 					for (let key of Object.keys(parameters))
@@ -589,11 +590,11 @@ export default function web_server(options = {})
 					
 					let tokenized_http_client = http_client
 
-					if (this.jwt)
+					if (ctx.jwt)
 					{
 						tokenized_http_client = {}
 
-						const jwt_header = `Bearer ${this.jwt}`
+						const jwt_header = `Bearer ${ctx.jwt}`
 
 						for (let key of Object.keys(http_client))
 						{
@@ -609,9 +610,9 @@ export default function web_server(options = {})
 					}
 
 					// call the api method action
-					const result = action.bind(this)(parameters,
+					const result = action.bind(ctx)(parameters,
 					{
-						ip: this.ip,
+						ip: ctx.ip,
 						
 						get_cookie,
 						set_cookie,
@@ -621,10 +622,10 @@ export default function web_server(options = {})
 						session_id,
 						destroy_session,
 
-						user                    : this.user,
-						authentication_error    : this.authentication_error,
-						authentication_token_id : this.jwt_id,
-						authentication_token    : this.jwt,
+						user                    : ctx.user,
+						authentication_error    : ctx.authentication_error,
+						authentication_token_id : ctx.jwt_id,
+						authentication_token    : ctx.jwt,
 
 						secret : options.secret ? web.keys[0] : undefined,
 
@@ -635,7 +636,7 @@ export default function web_server(options = {})
 					switch (method)
 					{
 						case 'delete':
-							this.status = 204 // nothing to be returned
+							ctx.status = 204 // nothing to be returned
 					}
 
 					function postprocess(result)
@@ -662,15 +663,15 @@ export default function web_server(options = {})
 					{
 						if (is_redirect(result))
 						{
-							return this.redirect(result.redirect)
+							return ctx.redirect(result.redirect)
 						}
 
-						this.body = postprocess(result)
+						ctx.body = postprocess(result)
 					}
 
 					if (result instanceof Promise)
 					{
-						yield result.then
+						return result.then
 						(
 							respond,
 							error => { throw error }
@@ -696,9 +697,9 @@ export default function web_server(options = {})
 		}
 		else
 		{
-			web.use(mount(options.routing, body_parser({ formLimit: '100mb' })))
-				.use(mount(options.routing, router.routes()))
-				.use(mount(options.routing, router.allowedMethods()))
+			web.use(koa_convert(mount(options.routing, koa_convert.back(body_parser({ formLimit: '100mb' })))))
+				.use(koa_convert(mount(options.routing, koa_convert.back(router.routes()))))
+				.use(koa_convert(mount(options.routing, koa_convert.back(router.allowedMethods()))))
 		}
 	}
 
@@ -709,16 +710,16 @@ export default function web_server(options = {})
 	let shut_down = false
 
 	// in case of maintenance
-	web.use(function*(next)
+	web.use(async function (ctx, next)
 	{
 		if (shut_down)
 		{
-			this.status = 503
-			this.message = 'The server is shutting down for maintenance'
+			ctx.status = 503
+			ctx.message = 'The server is shutting down for maintenance'
 		}
 		else
 		{
-			yield next
+			await next()
 		}
 	})
 
@@ -768,23 +769,23 @@ export default function web_server(options = {})
 			throw new Error(`.file_upload() was enabled but also "parse_body" wasn't set to false, therefore Http POST request bodies are parsed which creates a conflict. Set "parse_body" parameter to false.`)
 		}
 
-		web.use(mount(mount_path, function*()
+		web.use(koa_convert(mount(mount_path, koa_convert.back(async function(ctx)
 		{
-			if (!this.is('multipart/form-data'))
+			if (!ctx.is('multipart/form-data'))
 			{
 				const error = new Error(`This is supposed to be a "multipart/form-data" http request`)
 				error.code = 404
 				throw error
 			}
 
-			if (requires_authentication !== false && !this.user)
+			if (requires_authentication !== false && !ctx.user)
 			{
 				throw new result.errors.Unauthenticated()
 			}
 
 			const file_names = []
 
-			const form_data = busboy(this,
+			const form_data = await busboy(ctx.req,
 			{
 				limits:
 				{
@@ -792,23 +793,28 @@ export default function web_server(options = {})
 				}
 			})
 
-			const parameters = {}
+			// const parameters = {}
 
-			let form_data_item
-			while (form_data_item = yield form_data)
+			// non-channel approach, since `chan` package currently doesn't support async/await
+			const { files, fields } = form_data
+			const parameters = fields
+
+			// let form_data_item
+			// while (form_data_item = yield form_data)
+			for (let form_data_item of files)
 			{
 				if (!multiple_files && file_names.not_empty())
 				{
 					throw new Error(`Multiple files are being uploaded to a single file upload endpoint`)
 				}
 
-				if (Array.isArray(form_data_item))
-				{
-					parameters[form_data_item[0]] = form_data_item[1]
-					continue
-				}
+				// if (Array.isArray(form_data_item))
+				// {
+				// 	parameters[form_data_item[0]] = form_data_item[1]
+				// 	continue
+				// }
 
-				const file_name = yield upload_file(form_data_item, { upload_folder, log: options.log })
+				const file_name = await upload_file(form_data_item, { upload_folder, log: options.log })
 
 				file_names.push
 				({
@@ -818,9 +824,9 @@ export default function web_server(options = {})
 
 				if (on_file_uploaded)
 				{
-					const file_size = (yield fs.statAsync(path.join(upload_folder, file_name))).size
+					const file_size = (await fs.statAsync(path.join(upload_folder, file_name))).size
 
-					yield on_file_uploaded(form_data_item.filename, file_size, this.request.headers['x-forwarded-for'] || this.request.ip)
+					await on_file_uploaded(form_data_item.filename, file_size, ctx.request.headers['x-forwarded-for'] || ctx.request.ip)
 				}
 			}
 
@@ -837,11 +843,11 @@ export default function web_server(options = {})
 
 			if (postprocess)
 			{
-				result = yield postprocess.call(this, result)
+				result = await postprocess.call(this, result)
 			}
 
-			this.body = result
-		}))
+			ctx.body = result
+		}))))
 	}
 
 	// if (web.errors)
@@ -866,10 +872,10 @@ export default function web_server(options = {})
 	result.serve_static_files = function(url_path, filesystem_path)
 	{
 		// https://github.com/koajs/static
-		web.use(mount(url_path, statics(filesystem_path, 
+		web.use(koa_convert(mount(url_path, statics(filesystem_path,
 		{
 			maxAge  : 365 * 24 * 60 * 60 // 1 year
-		})))
+		}))))
 	}
 
 	// runs http server
@@ -878,15 +884,15 @@ export default function web_server(options = {})
 		return new Promise((resolve, reject) =>
 		{
 			// the last route - throws not found error
-			web.use(function*()
+			web.use(async function(ctx)
 			{
 				// throw new Method_not_found()
-				this.status = 404
-				this.message = `The requested resource not found: ${this.method} ${this.url}`
+				ctx.status = 404
+				ctx.message = `The requested resource not found: ${ctx.method} ${ctx.url}`
 				
-				if (!this.path.ends_with('/favicon.ico'))
+				if (!ctx.path.ends_with('/favicon.ico'))
 				{
-					log.error(this.message, 'Web server error: Not found')
+					log.error(ctx.message, 'Web server error: Not found')
 				}
 			})
 
@@ -928,7 +934,7 @@ export default function web_server(options = {})
 	// mounts middleware at path
 	result.mount = (path, handler) =>
 	{
-		web.use(mount(path, handler))
+		web.use(koa_convert(mount(path, handler)))
 	}
 
 	// exposes Koa .use() function for custom middleware
@@ -951,16 +957,16 @@ export default function web_server(options = {})
 
 		function proxy_middleware(to)
 		{
-			return function*(next)
+			return async function(ctx)
 			{
 				const promise = new Promise((resolve, reject) =>
 				{
-					this.res.on('close', () =>
+					ctx.res.on('close', () =>
 					{
-						reject(new Error(`Http response closed while proxying ${this.url} to ${to}`))
+						reject(new Error(`Http response closed while proxying ${ctx.url} to ${to}`))
 					})
 
-					this.res.on('finish', () =>
+					ctx.res.on('finish', () =>
 					{
 						resolve()
 					})
@@ -969,7 +975,7 @@ export default function web_server(options = {})
 					// because the last parameter is not a "callback",
 					// it's just an error handler.
 					// https://github.com/nodejitsu/node-http-proxy/issues/951
-					proxy.web(this.req, this.res, { target: to }, error =>
+					proxy.web(ctx.req, ctx.res, { target: to }, error =>
 					{
 						// usually errors with "Parse error" which is useless
 
@@ -981,13 +987,13 @@ export default function web_server(options = {})
 					})
 				})
 
-				yield promise
+				await promise
 			}
 		}
 
 		if (from)
 		{
-			web.use(mount(from, proxy_middleware(to)))
+			web.use(koa_convert(mount(from, koa_convert.back(proxy_middleware(to)))))
 		}
 		else
 		{
