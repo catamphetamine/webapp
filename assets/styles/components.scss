@@ -401,7 +401,7 @@ header > .nav-widescreen
 .ReactModal__Overlay--after-open,
 .ReactModal__Overlay--before-close
 {
-	transition: opacity 150ms ease-out;
+	transition: opacity 100ms ease-out;
 }
 
 .ReactModal__Content
@@ -411,7 +411,7 @@ header > .nav-widescreen
 
 .ReactModal__Content // .modal-content
 {
-	transform: scale(0.7);
+	transform: scale(0.8);
 }
 
 .ReactModal__Content--after-open // .modal-content
@@ -421,13 +421,13 @@ header > .nav-widescreen
 
 .ReactModal__Content--before-close // .modal-content
 {
-	transform: scale(0.7);
+	transform: scale(0.8);
 }
 
 .ReactModal__Content--after-open, // .modal-content,
 .ReactModal__Content--before-close // .modal-content
 {
-	transition: transform 150ms ease-out;
+	transition: transform 120ms ease-out;
 }
 
 // hides `react-modal` scrollbar when closing the modal
