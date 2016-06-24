@@ -28,6 +28,7 @@ import net from 'net'
 import stream from 'stream'
 import util from 'util'
 import EventEmitter from 'events'
+import ip from 'ip'
 
 const message_delimiter = '\f' // or '\n'
 
@@ -685,7 +686,7 @@ export function client({ name, server_name, host, port })
 }
 
 // creates a TCP server listening for JSON messages
-export function server({ name, host, port })
+export function server({ name, host, port, access_list })
 {
 	// create a transform stream
 
@@ -708,6 +709,26 @@ export function server({ name, host, port })
 
 	const server = net.createServer(socket =>
 	{
+		// If an Access Control List is set,
+		// then allow only IPs from the list of subnets
+		if (access_list)
+		{
+			let access_granted = false
+
+			for (let subnet of access_list)
+			{
+				if (ip.cidrSubnet(subnet).contains(socket.remoteAddress))
+				{
+					access_granted = true
+				}
+			}
+
+			if (!access_granted)
+			{
+				throw new Error(`Access denied for ip ${socket.remoteAddress}`)
+			}
+		}
+
 		// the data will be interpreted as UTF-8 data, and returned as strings
 		socket.setEncoding('utf8')
 		

@@ -108,7 +108,8 @@ module.exports =
 		tcp:
 		{
 			host: '127.0.0.1',
-			port: 3200
+			port: 3200,
+			access_list: ['0.0.0.0/0']
 		}
 	},
 	session_secret_keys: ['hammertime'],

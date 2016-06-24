@@ -5,7 +5,8 @@ const server = tcp_server
 ({
 	name: 'Log service',
 	host: configuration.log_service.tcp.host,
-	port: configuration.log_service.tcp.port
+	port: configuration.log_service.tcp.port,
+	access_list: configuration.log_service.tcp.access_list
 })
 
 server.on('error', error =>
