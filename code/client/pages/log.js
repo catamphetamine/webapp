@@ -118,9 +118,14 @@ export default class Log extends Component
 				<Modal
 					isOpen={this.state.show_stack_trace}
 					onRequestClose={this.hide_stack_trace}
-					style={style.stack_trace_modal}>
-
-					<h1 style={style.stack_trace.title}>{this.state.error_message}</h1>
+					style={style.stack_trace_modal}
+					title={this.state.error_message}
+					actions=
+					{[{
+						action: this.hide_stack_trace,
+						text: translate(messages.hide_stack_trace),
+						button_style: style.stack_trace_modal.button
+					}]}>
 
 					{!this.state.stack_trace ? null : this.state.stack_trace.map(stack =>
 					{
@@ -147,10 +152,6 @@ export default class Log extends Component
 
 						return markup
 					})}
-
-					<button style={style.stack_trace_modal.button} onClick={this.hide_stack_trace}>
-						{translate(messages.hide_stack_trace)}
-					</button>
 				</Modal>
 			</div>
 		)
@@ -273,6 +274,7 @@ const style = styler
 
 			title
 				color : #C44100
+				margin-top : 0
 
 			line
 				margin-bottom: 1.2em

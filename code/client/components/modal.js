@@ -162,6 +162,7 @@ export default class Modal extends Component
 	}
 }
 
+// https://material.google.com/components/dialogs.html
 const style = styler
 `
 	top_padding
@@ -235,6 +236,7 @@ const style = styler
 		border-bottom-right-radius : 0.2rem
 
 		text-align : right
+		line-height : 0
 
 		box-sizing: border-box;
 		padding-left   : 1.2rem
@@ -259,6 +261,7 @@ const style = styler
 			min-height : 100%
 
 			text-align : center
+			line-height : 0
 
 			background-color: rgba(0, 0, 0, 0.2)
 
@@ -303,6 +306,7 @@ const style = styler
 			// margin-right : auto
 
 			display: inline-block
+			line-height: normal
 
 		// content_cell
 		// 	// // centering
