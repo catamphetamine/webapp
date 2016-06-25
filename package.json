@@ -115,7 +115,7 @@
     "superagent": "^1.7.2",
     "uid-safe": "^2.1.0",
     "warning": "^2.1.0",
-    "webpack": "^2.1.0-beta.7",
+    "webpack": "^2.1.0-beta.14",
     "webpack-isomorphic-tools": "^2.2.48"
   },
   "devDependencies": {

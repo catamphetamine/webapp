@@ -13,7 +13,7 @@ import application_configuration from '../code/common/configuration'
 
 const configuration = Object.clone(base_configuration)
 
-configuration.devtool = 'source-map'
+configuration.devtool = 'cheap-module-source-map'
 
 configuration.output.filename      = configuration.output.filename.replace('[hash]', '[chunkhash]')
 configuration.output.chunkFilename = configuration.output.chunkFilename.replace('[hash]', '[chunkhash]')
@@ -21,8 +21,10 @@ configuration.output.chunkFilename = configuration.output.chunkFilename.replace(
 configuration.plugins = configuration.plugins.concat
 (
 	// clears the output folder
-	new clean_plugin([path.relative(__dirname, configuration.output.path)]),
-	// new clean_plugin([assets relative path], { root: project root full path }),
+	new clean_plugin([path.relative(configuration.context, configuration.output.path)],
+	{
+		root: configuration.context
+	}),
 
 	// environment variables
 	new webpack.DefinePlugin
