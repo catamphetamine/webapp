@@ -28,7 +28,6 @@ import http_proxy from 'http-proxy'
 
 import body_parser   from 'koa-bodyparser'
 import mount         from 'koa-mount'
-import graphql_http  from 'koa-graphql'
 import koa_router    from 'koa-router'
 import koa_logger    from 'koa-bunyan'
 import compress      from 'koa-compress'
@@ -232,9 +231,10 @@ export default function web_server(options = {})
 		}
 	})
 
+	// Not used
 	if (options.log)
 	{
-		web.use(koa_convert(koa_logger(log,
+		web.use(koa_logger(log,
 		{
 			// which level you want to use for logging.
 			// default is info
@@ -242,7 +242,7 @@ export default function web_server(options = {})
 			// this is optional. Here you can provide request time in ms,
 			// and all requests longer than specified time will have level 'warn'
 			timeLimit: 100
-		})))
+		}))
 	}
 
 	if (options.extract_locale)
@@ -697,9 +697,9 @@ export default function web_server(options = {})
 		}
 		else
 		{
-			web.use(koa_convert(mount(options.routing, koa_convert.back(body_parser({ formLimit: '100mb' })))))
-				.use(koa_convert(mount(options.routing, koa_convert.back(router.routes()))))
-				.use(koa_convert(mount(options.routing, koa_convert.back(router.allowedMethods()))))
+			web.use(mount(options.routing, body_parser({ formLimit: '100mb' })))
+				.use(mount(options.routing, router.routes()))
+				.use(mount(options.routing, (router.allowedMethods())))
 		}
 	}
 
@@ -769,7 +769,7 @@ export default function web_server(options = {})
 			throw new Error(`.file_upload() was enabled but also "parse_body" wasn't set to false, therefore Http POST request bodies are parsed which creates a conflict. Set "parse_body" parameter to false.`)
 		}
 
-		web.use(koa_convert(mount(mount_path, koa_convert.back(async function(ctx)
+		web.use(mount(mount_path, async function(ctx)
 		{
 			if (!ctx.is('multipart/form-data'))
 			{
@@ -847,7 +847,7 @@ export default function web_server(options = {})
 			}
 
 			ctx.body = result
-		}))))
+		}))
 	}
 
 	// if (web.errors)
@@ -872,10 +872,10 @@ export default function web_server(options = {})
 	result.serve_static_files = function(url_path, filesystem_path)
 	{
 		// https://github.com/koajs/static
-		web.use(koa_convert(mount(url_path, statics(filesystem_path,
+		web.use(mount(url_path, statics(filesystem_path,
 		{
 			maxAge  : 365 * 24 * 60 * 60 // 1 year
-		}))))
+		})))
 	}
 
 	// runs http server
@@ -934,7 +934,7 @@ export default function web_server(options = {})
 	// mounts middleware at path
 	result.mount = (path, handler) =>
 	{
-		web.use(koa_convert(mount(path, handler)))
+		web.use(mount(path, handler))
 	}
 
 	// exposes Koa .use() function for custom middleware
@@ -993,7 +993,7 @@ export default function web_server(options = {})
 
 		if (from)
 		{
-			web.use(koa_convert(mount(from, koa_convert.back(proxy_middleware(to)))))
+			web.use(mount(from, proxy_middleware(to)))
 		}
 		else
 		{
