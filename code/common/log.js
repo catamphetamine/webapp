@@ -91,7 +91,7 @@ function preamble(source, level, time)
 	let preamble = `[${source}] ${time} `
 	if (level !== 'Generic')
 	{
-		preamble += `${level} `
+		preamble += `${level}. `
 	}
 
 	return preamble

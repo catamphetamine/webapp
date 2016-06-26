@@ -84,6 +84,7 @@
     "mongodb-migrate": "^2.0.0",
     "mongojs": "^1.4.1",
     "node-sass": "^3.7.0",
+    "nodemailer": "^2.4.2",
     "npm-run-all": "^1.2.13",
     "parseurl": "^1.3.1",
     "pg": "~4.4.0",
@@ -163,6 +164,7 @@
     "development-api-service": "better-npm-run development-api-service",
     "development-page-server": "better-npm-run development-page-server",
     "development-image-service": "better-npm-run development-image-service",
+    "development-mail-service": "better-npm-run development-mail-service",
     "development-web-server": "better-npm-run development-web-server",
     "development-api-service-delayed": "npm-run-all delay development-api-service",
     "development-page-server-delayed": "npm-run-all delay delay development-page-server",
@@ -170,9 +172,10 @@
     "development-password-service-delayed": "npm-run-all delay delay delay delay development-password-service",
     "development-authentication-service-delayed": "npm-run-all delay delay delay delay delay development-authentication-service",
     "development-user-service-delayed": "npm-run-all delay delay delay delay delay delay development-user-service",
-    "development-web-server-delayed": "npm-run-all delay delay delay delay delay delay delay development-web-server",
+    "development-mail-service-delayed": "npm-run-all delay delay delay delay delay delay delay development-mail-service",
+    "development-web-server-delayed": "npm-run-all delay delay delay delay delay delay delay delay development-web-server",
     "delay": "node ./code/sleep 600",
-    "development-server": "npm-run-all --parallel development-log-service development-authentication-service-delayed development-user-service-delayed development-password-service-delayed development-api-service-delayed development-page-server-delayed development-image-service-delayed development-web-server-delayed",
+    "development-server": "npm-run-all --parallel development-log-service development-authentication-service-delayed development-user-service-delayed development-password-service-delayed development-api-service-delayed development-page-server-delayed development-image-service-delayed development-mail-service-delayed development-web-server-delayed",
     "production": "npm-run-all production-build-client production-server",
     "production-build-client": "npm-run-all update-relay-schema react-intl-clean-messages react-intl-babel-run react-intl-default-translation production-build-client-webpack",
     "production-build-client-webpack": "webpack --color --progress --display-error-details --config \"webpack/production build.entry.js\"",
@@ -183,8 +186,9 @@
     "production-api-service": "better-npm-run production-api-service",
     "production-page-server": "better-npm-run production-page-server",
     "production-image-service": "better-npm-run production-image-service",
+    "production-mail-service": "better-npm-run production-mail-service",
     "production-web-server": "better-npm-run production-web-server",
-    "production-server": "npm-run-all --parallel production-log-service production-authentication-service production-user-service production-password-service production-api-service production-page-server production-image-service production-web-server",
+    "production-server": "npm-run-all --parallel production-log-service production-authentication-service production-user-service production-password-service production-api-service production-page-server production-image-service production-mail-service production-web-server",
     "update-relay-schema": "node \"./automation/relay/update schema.entry.js\"",
     "react-intl-default-translation": "node ./automation/international/react-intl-default-translation.entry.js",
     "react-intl-clean-messages": "rimraf ./build/messages",
@@ -256,6 +260,13 @@
         "BABEL_ENV": "server"
       }
     },
+    "development-mail-service": {
+      "command": "nodemon ./code/mail-service/entry.js --watch ./code/mail-service --watch ./code/common",
+      "env": {
+        "NODE_ENV": "development",
+        "BABEL_ENV": "server"
+      }
+    },
     "development-log-service": {
       "command": "nodemon ./code/log-service/entry.js --watch ./code/log-service --watch ./code/common",
       "env": {
@@ -307,6 +318,13 @@
     },
     "production-authentication-service": {
       "command": "node --harmony ./code/authentication-service/entry.js",
+      "env": {
+        "NODE_ENV": "production",
+        "BABEL_ENV": "server"
+      }
+    },
+    "production-mail-service": {
+      "command": "node --harmony ./code/mail-service/entry.js",
       "env": {
         "NODE_ENV": "production",
         "BABEL_ENV": "server"

@@ -86,6 +86,7 @@ The application consists of the following microservices
   * `api-service` provides some generic (uncategorized) Http REST Api
   * `image-server` resizes uploaded images using ImageMagick and serves them
   * `log-service` aggregates logs from all the other services
+  * `email-service` sends emails
 
 <!-- 
 Running in production (to be done)
@@ -381,7 +382,11 @@ Troubleshooting
 To do
 ====================
 
-у лог сервиса и емейл сервиса ограничить входящие IP локальными (127.0.0.1 - флаг типа firewall_stub: true)
+писать в time series базу, что отправился email с таким-то шаблоном, и в мониторинге потом выводить общее количество отправленных email-ов за сутки (с детализацией по шаблону)
+
+сделать смену емейла отправкой ссылки на старый емейл
+
+сделать страницу сброса пароля
 
 
 сделать отправку емейла при "забытии пароля", смене емейла (запрашивать пароль при смене емейла), при смене пароля, при входе и при неудавшемся входе (с IP).

@@ -109,8 +109,33 @@ module.exports =
 		{
 			host: '127.0.0.1',
 			port: 3200,
+			// Allowed IP subnets.
+			// For more security set to local IPs only,
+			// excluding the router IP (exclusions start with an exclamation sign)
 			access_list: ['0.0.0.0/0']
 		}
+	},
+	mail_service:
+	{
+		http: 
+		{
+			host: '127.0.0.1',
+			port: 3009
+		},
+		// Allowed IP subnets.
+		// For more security set to local IPs only,
+		// excluding the router IP (exclusions start with an exclamation sign)
+		access_list: ['0.0.0.0/0'],
+		mail:
+		{
+			from: 'Webapp Robot <robot@webapp.com>'
+		},
+		// smtp:
+		// {
+		// 	username: 'user%40gmail.com',
+		// 	password: 'password',
+		// 	server: 'smtp.gmail.com'
+		// }
 	},
 	session_secret_keys: ['hammertime'],
 	development:
