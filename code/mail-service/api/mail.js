@@ -12,20 +12,23 @@ api.post('/', function({ to, subject, template, parameters }, { user })
 		throw new Errors.Unauthenticated()
 	}
 
-	const from = configuration.mail_service.mail.from
-
-	const text = 'Html should be shown'
-
-	const html = template // .compile(parameters)
-
-	send({ from, to, subject, text, html })
+	send({ to, subject }, template, parameters)
 })
 
-send
-({
-	from: '"Fred Foo 👥" <foo@blurdybloop.com>', // sender address
-	to: 'kuchumovn@gmail.com', // list of receivers
-	subject: 'Hello ✔', // Subject line
-	text: 'Plain text Hello world 🐴', // plaintext body
-	html: '<b>Hello world 🐴</b>' // html body
-})
+// send
+// ({
+// 	from: '"Fred Foo 👥" <foo@blurdybloop.com>', // sender address
+// 	to: 'halt.hammerzeit.at@gmail.com', // list of receivers
+// 	subject: 'Hello ✔', // Subject line
+// 	text: 'Plain text Hello world 🐴', // plaintext body
+// 	html: '<b>Hello world 🐴</b>' // html body
+// })
+
+// send
+// ({
+// 	from: '"Fred Foo 👥" <foo@blurdybloop.com>', // sender address
+// 	to: 'halt.hammerzeit.at@gmail.com', // list of receivers
+// 	subject: 'Hello ✔', // Subject line
+// },
+// 'reset password',
+// { token: 'abc' })

@@ -130,11 +130,14 @@ module.exports =
 		{
 			from: 'Webapp Robot <robot@webapp.com>'
 		},
+		// e.g. SendGrid.com or MailGun.com
 		// smtp:
 		// {
-		// 	username: 'user%40gmail.com',
+		// 	username: 'username',
 		// 	password: 'password',
-		// 	server: 'smtp.gmail.com'
+		// 	host: 'smtp.gmail.com',
+		// 	port: '465',
+		// 	secure: true
 		// }
 	},
 	session_secret_keys: ['hammertime'],
