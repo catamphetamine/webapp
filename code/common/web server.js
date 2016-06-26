@@ -14,6 +14,8 @@ import redis_store   from './koa-redis'
 import redis from 'redis'
 import uid   from 'uid-safe'
 
+import Access_list from './acl'
+
 Promise.promisifyAll(redis)
 
 import file_size_parser from 'filesize-parser'
@@ -138,6 +140,14 @@ export default function web_server(options = {})
 	// instantiate a Koa web application
 	const web = new koa()
 
+	// Trust `X-Forwarded-For` HTTP header
+	// https://en.wikipedia.org/wiki/X-Forwarded-For
+	web.proxy = true
+
+	// If an Access Control List is set,
+	// then allow only IPs from the list of subnets.
+	const ip_access_list = new Access_list(options.access_list)
+
 	if (options.compress)
 	{
 		// хз, нужно ли сжатие в node.js: мб лучше поставить впереди nginx'ы, 
@@ -230,6 +240,26 @@ export default function web_server(options = {})
 			}
 		}
 	})
+
+	// If an Access Control List is set,
+	// then allow only IPs from the list of subnets
+	if (true || options.access_list)
+	{
+		web.use(async function(ctx, next)
+		{
+			// Check the entire `X-Forwarded-For` IP address chain
+			// along with the HTTP request originator IP address.
+			for (let ip_address of ctx.request.ips.concat(ctx.req.connection.remoteAddress))
+			{
+				if (!ip_access_list.test(ip_address))
+				{
+					throw new Error(`Access denied for ip ${ip_address}`)
+				}
+			}
+
+			await next()
+		})
+	}
 
 	// Not used
 	if (options.log)

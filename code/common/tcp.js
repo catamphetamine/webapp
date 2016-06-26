@@ -28,7 +28,7 @@ import net from 'net'
 import stream from 'stream'
 import util from 'util'
 import EventEmitter from 'events'
-import ip from 'ip'
+import Access_list from './acl'
 
 const message_delimiter = '\f' // or '\n'
 
@@ -705,28 +705,22 @@ export function server({ name, host, port, access_list })
 
 	// const message_stream = new Stream()
 
+	// If an Access Control List is set,
+	// then allow only IPs from the list of subnets.
+	const ip_access_list = new Access_list(access_list)
+
 	// set up a TCP server
 
 	const server = net.createServer(socket =>
 	{
 		// If an Access Control List is set,
-		// then allow only IPs from the list of subnets
-		if (access_list)
+		// then allow only IPs from the list of subnets.
+		//
+		// No local TCP proxying is set up 
+		// so `socket.remoteAddress` check should be enough.
+		if (!ip_access_list.test(socket.remoteAddress))
 		{
-			let access_granted = false
-
-			for (let subnet of access_list)
-			{
-				if (ip.cidrSubnet(subnet).contains(socket.remoteAddress))
-				{
-					access_granted = true
-				}
-			}
-
-			if (!access_granted)
-			{
-				throw new Error(`Access denied for ip ${socket.remoteAddress}`)
-			}
+			throw new Error(`Access denied for ip ${socket.remoteAddress}`)
 		}
 
 		// the data will be interpreted as UTF-8 data, and returned as strings
