@@ -72,7 +72,7 @@
     "koa-bunyan": "^1.0.0",
     "koa-compress": "^2.0.0",
     "koa-locale": "^1.0.0",
-    "koa-mount": "^1.3.0",
+    "koa-mount": "^2.0.0",
     "koa-router": "^7.0.1",
     "koa-static": "^3.0.0",
     "log4js": "^0.6.14",
