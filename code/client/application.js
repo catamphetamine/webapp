@@ -6,8 +6,7 @@ import React          from 'react'
 import ReactDOM       from 'react-dom'
 
 import { render }     from 'react-isomorphic-render/redux'
-import create_store   from './redux store'
-import markup_wrapper from './markup wrapper'
+import common         from './react-isomorphic-render'
 
 // include these assets in webpack build (styles, images)
 
@@ -58,21 +57,12 @@ international.load().then(() =>
 		development: _development_,
 
 		// enable/disable Redux dev-tools (true/false)
-		development_tools: _development_tools_,
-
-		// a function to create Redux store
-		create_store,
-
-		// creates React-router routes
-		create_routes,
-
-		// wraps React page component into arbitrary markup (e.g. Redux Provider)
-		markup_wrapper,
-		// markup_wrapper: react_hot_loader_3_markup_wrapper,
+		development_tools: true,
 
 		// internationalization
-		load_localized_messages: international.load_translation
-	})
+		load_translation: international.load_translation
+	},
+	common)
 	.then(({ rerender }) => international.hot_reload(rerender))
 })
 

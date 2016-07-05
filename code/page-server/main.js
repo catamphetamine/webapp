@@ -16,9 +16,7 @@ import webpage_server from 'react-isomorphic-render/page-server'
 import is_intl_locale_supported from 'intl-locales-supported'
 import file_size_parser from 'filesize-parser'
 
-import create_store   from '../client/redux store'
-import create_routes  from '../client/routes'
-import markup_wrapper from '../client/markup wrapper'
+import common         from '../client/react-isomorphic-render'
 import html_assets    from '../client/html assets'
 import on_error       from '../client/helpers/error handler'
 
@@ -41,19 +39,15 @@ const initializing_javascript = `
 `
 
 // starts webpage rendering server
-webpage_server
+const server = webpage_server
 ({
 	// enable/disable development mode (true/false)
 	development: _development_,
 
 	disable_server_side_rendering : _disable_server_side_rendering_,
 
-	// on which Http host and port to start the webpage rendering server
-	// host: optional
-	port: configuration.webpage_server.http.port,
-
 	// Http host and port for executing all client-side ajax requests on server-side
-	web_server:
+	application:
 	{
 		host: configuration.web_server.http.host,
 		port: configuration.web_server.http.port
@@ -65,7 +59,7 @@ webpage_server
 	//
 	// Also a website "favicon".
 	//
-	assets: () =>
+	assets: (url) =>
 	{
 		if (_development_)
 		{
@@ -76,8 +70,10 @@ webpage_server
 
 		const result = 
 		{
+			entry      : 'main',
+
 			javascript : assets.javascript,
-			styles     : assets.styles,
+			style      : assets.styles,
 
 			icon : html_assets.icon()
 		}
@@ -85,19 +81,12 @@ webpage_server
 		return result
 	},
 
-	// wraps React page component into arbitrary markup (e.g. Redux Provider)
-	markup_wrapper,
-
-	// a function to create Redux store
-	create_store,
-
-	// creates React-router routes
-	create_routes,
-
-	// handles errors occuring while rendering pages
-	on_error,
+	// this CSS will be inserted into server rendered webpage <head/> <style/> tag 
+	// (when in development mode only - removes rendering flicker)
+	style: () => html_assets.style().toString(),
 
 	// user info preloading
+	// (will be added to Redux store)
 	preload: async (http) =>
 	{
 		let user = await http.post(`/authentication/authenticate`)
@@ -193,10 +182,21 @@ webpage_server
 	// (use `key`s to prevent React warning when returning an array of React elements)
 	// body_end: () => React element or an array of React elements
 
-	// this CSS will be inserted into server rendered webpage <head/> <style/> tag 
-	// (when in development mode only - removes rendering flicker)
-	style: () => html_assets.style().toString(),
+	// handles errors occuring while rendering pages
+	on_error
+},
+common)
 
-	// bunyan log
-	log
+// Start webpage rendering server
+server.listen(configuration.webpage_server.http.port, function(error)
+{
+	if (error)
+	{
+		console.log('Webpage rendering server shutdown due to an error')
+		return log.error(error)
+	}
+
+	const host = 'localhost'
+
+	log.info(`Webpage server is listening at http://${host ? host : 'localhost'}:${configuration.webpage_server.http.port}`)
 })

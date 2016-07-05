@@ -96,7 +96,7 @@
     "react-dom": "^15.0.2",
     "react-hot-loader": "^3.0.0-alpha.9",
     "react-intl": "^2.1.2",
-    "react-isomorphic-render": "^3.0.0",
+    "react-isomorphic-render": "^4.0.0",
     "react-modal": "^1.1.1",
     "react-redux": "^4.0.0",
     "react-router": "^2.0.1",
