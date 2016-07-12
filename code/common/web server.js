@@ -663,10 +663,14 @@ export default function web_server(options = {})
 					})
 
 					// http://habrahabr.ru/company/yandex/blog/265569/
+					// http://goinbigdata.com/how-to-design-practical-restful-api/
 					switch (method)
 					{
+						case 'put':
+							ctx.status = 204 // No Content - Resource was updated and body is empty
+
 						case 'delete':
-							ctx.status = 204 // nothing to be returned
+							ctx.status = 204 // No Content - Resource deleted and body is empty
 					}
 
 					function postprocess(result)
@@ -803,9 +807,7 @@ export default function web_server(options = {})
 		{
 			if (!ctx.is('multipart/form-data'))
 			{
-				const error = new Error(`This is supposed to be a "multipart/form-data" http request`)
-				error.code = 404
-				throw error
+				throw new result.errors.Unsupported_input_type(`This is supposed to be a "multipart/form-data" http request`)
 			}
 
 			if (requires_authentication !== false && !ctx.user)
@@ -888,14 +890,15 @@ export default function web_server(options = {})
 	// standard Http errors
 	result.errors = 
 	{
-		Input_missing   : custom_error('Missing input',   { additional_properties: { http_status_code: 400 } }),
-		Unauthenticated : custom_error('Unauthenticated', { additional_properties: { http_status_code: 401 } }),
-		Unauthorized    : custom_error('Unauthorized',    { additional_properties: { http_status_code: 403 } }),
-		Access_denied   : custom_error('Access denied',   { additional_properties: { http_status_code: 403 } }),
-		Not_found       : custom_error('Not found',       { additional_properties: { http_status_code: 404 } }),
-		Conflict        : custom_error('Conflict',        { additional_properties: { http_status_code: 409 } }),
-		Input_rejected  : custom_error('Input rejected',  { additional_properties: { http_status_code: 422 } }),
-		Error           : custom_error('Server error',    { additional_properties: { http_status_code: 500 } })
+		Input_missing          : custom_error('Missing input',          { additional_properties: { http_status_code: 400 } }),
+		Unauthenticated        : custom_error('Unauthenticated',        { additional_properties: { http_status_code: 401 } }),
+		Unauthorized           : custom_error('Unauthorized',           { additional_properties: { http_status_code: 403 } }),
+		Access_denied          : custom_error('Access denied',          { additional_properties: { http_status_code: 403 } }),
+		Not_found              : custom_error('Not found',              { additional_properties: { http_status_code: 404 } }),
+		Conflict               : custom_error('Conflict',               { additional_properties: { http_status_code: 409 } }),
+		Unsupported_input_type : custom_error('Unsupported input type', { additional_properties: { http_status_code: 415 } }),
+		Input_rejected         : custom_error('Input rejected',         { additional_properties: { http_status_code: 422 } }),
+		Error                  : custom_error('Server error',           { additional_properties: { http_status_code: 500 } })
 	}
 
 	// can serve static files
@@ -920,6 +923,8 @@ export default function web_server(options = {})
 				ctx.status = 404
 				ctx.message = `The requested resource not found: ${ctx.method} ${ctx.url}`
 				
+				// Reduces noise in the `log` in case of errors
+				// (browsers query '/favicon.ico' automatically)
 				if (!ctx.path.ends_with('/favicon.ico'))
 				{
 					log.error(ctx.message, 'Web server error: Not found')
@@ -1014,6 +1019,9 @@ export default function web_server(options = {})
 
 						console.error('Proxying failed')
 						reject(error)
+
+						// response.writeHead(502)
+						// response.end("There was an error proxying your request")
 					})
 				})
 
