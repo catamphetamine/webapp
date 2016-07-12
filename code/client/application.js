@@ -57,7 +57,7 @@ international.load().then(() =>
 		development: _development_,
 
 		// enable/disable Redux dev-tools (true/false)
-		development_tools: true,
+		development_tools: _development_tools_,
 
 		// internationalization
 		load_translation: international.load_translation
