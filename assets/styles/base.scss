@@ -60,7 +60,7 @@ input[type="radio"]
 	margin-bottom: 0.16em;
 }
 
-input[type="text"], input[type="email"], input[type="password"], textarea, select, .date-picker
+input[type="text"], input[type="tel"], input[type="number"], input[type="email"], input[type="password"], textarea, select, .date-picker
 {
 	display : block;
 	width   : var(--input-width);
@@ -83,7 +83,7 @@ input[type="text"], input[type="email"], input[type="password"], textarea, selec
 	}
 }
 
-input[type="text"], input[type="email"], input[type="password"], textarea
+input[type="text"], input[type="tel"], input[type="number"], input[type="email"], input[type="password"], textarea
 {
 	margin: 0;
 

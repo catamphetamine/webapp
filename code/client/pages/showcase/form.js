@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { title }            from 'react-isomorphic-render'
 import styler               from 'react-styling'
 import { connect }          from 'react-redux'
+import Phone, { formats }   from 'react-phone-number-input'
 
 import Form         from '../../components/form'
 import Text_input   from '../../components/text input'
@@ -18,6 +19,7 @@ export default class Form_showcase extends Component
 {
 	state = 
 	{
+		phone          : '',
 		text_value     : '',
 		select_value   : 'B',
 		textarea_value : '',
@@ -117,6 +119,12 @@ export default class Form_showcase extends Component
 					<h2 style={style.form.label}>Spinner</h2>
 					<Spinner style={style.form.spinner}/>
 
+					<h2 style={style.form.label}>International phone number input (Russian in this case)</h2>
+					<Phone
+						format={ formats.RU }
+						value={ this.state.phone }
+						onChange={ phone => this.setState({ phone }) } />
+
 					<h2 style={style.form.label}>Date picker (part of Material UI)</h2>					
 					<p><i>You may see a "React attempted to reuse markup in a container" warning in the console because of this 3rd party component</i></p>
 					<p><a href="https://github.com/callemall/material-ui/issues/4219">has calendar positioning issue</a></p>
@@ -197,7 +205,6 @@ const style = styler
 				transition: none
 				// transition: all 50ms ease-out
 				// transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms
-
 
 		spinner
 `
