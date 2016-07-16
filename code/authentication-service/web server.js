@@ -2,7 +2,6 @@ import { api } from 'web-service'
 
 api
 ({
-	name           : 'Authentication',
 	api            :
 	[
 		require('./api/authentication'),
@@ -12,4 +11,12 @@ api
 	authentication : configuration.authentication_token_payload.read,
 	log
 })
-.listen(configuration.authentication_service.http)
+.listen(configuration.authentication_service.http).then(() =>
+{
+	const { host, port } = configuration.api_service.http
+	log.info(`Authentication service is listening at http://${host || 'localhost'}:${port}`)
+},
+error =>
+{
+	log.error(error, 'Authentication service failed to start')
+})

@@ -2,7 +2,6 @@ import { api } from 'web-service'
 
 api
 ({
-	name           : 'Users',
 	api            :
 	[
 		require('./api/user'),
@@ -12,4 +11,12 @@ api
 	authentication : configuration.authentication_token_payload.read,
 	log
 })
-.listen(configuration.user_service.http)
+.listen(configuration.user_service.http).then(() =>
+{
+	const { host, port } = configuration.api_service.http
+	log.info(`Users service is listening at http://${host || 'localhost'}:${port}`)
+},
+error =>
+{
+	log.error(error, 'Users service failed to start')
+})
