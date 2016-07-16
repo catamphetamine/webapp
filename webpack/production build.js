@@ -5,7 +5,6 @@ import webpack             from 'webpack'
 import base_configuration  from './webpack.config'
 import clean_plugin        from 'clean-webpack-plugin'
 import extract_text_plugin from 'extract-text-webpack-plugin'
-import strip               from 'strip-loader'
 
 import webpack_isomorphic_tools_plugin from 'webpack-isomorphic-tools/plugin'
 
@@ -48,7 +47,7 @@ configuration.plugins = configuration.plugins.concat
 	// the "allChunks: true" option means that this extracted file will contain 
 	// the styles from all chunks of an entry (each entry can be divided into chunks).
 	// without this option styles would only be extracted from the top-level chunk of an entry.
-	new extract_text_plugin('[name]-[contenthash].css', { allChunks: true }),
+	new extract_text_plugin({ filename: '[name]-[contenthash].css', allChunks: true }),
 
 	// omit duplicate modules
 	new webpack.optimize.DedupePlugin(),
@@ -83,7 +82,7 @@ const scss_loader = configuration.module.loaders.filter(loader =>
 // the first argument to the .extract() function is the name of the loader 
 // ("style-loader" in this case) to be applied to non-top-level-chunks in case of "allChunks: false" option.
 // since in this configuration "allChunks: true" option is used, this first argument is irrelevant.
-scss_loader.loader = extract_text_plugin.extract(scss_loader.loaders.shift(), scss_loader.loaders.join('!'))
+scss_loader.loader = extract_text_plugin.extract({ notExtractLoader: scss_loader.loaders.shift(), loader: scss_loader.loaders.join('!') })
 delete scss_loader.loaders
 
 // done: set extract text plugin as a Css loader
