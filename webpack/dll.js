@@ -9,19 +9,46 @@ import base_configuration  from './webpack.config'
 
 const configuration = Object.clone(base_configuration)
 
+// Only client-side (and universal) libraries go here.
+//
+// If you put a server-side library here,
+// then Webpack will likely throw an exception during DLL compilation.
+//
+// Also if you put here a library which depends on
+// a server-side library (or which depends on a library
+// which depends on a library ... which depends on
+// a server-side library), then Webpack will throw an error too.
+//
+// So, only client-side libraries here
+// (no require('fs'), require('net'), etc).
+//
+// Also it seems that libraries with expressions
+// inside `require()` aren't suitable in this list too.
+// ("Warning: the request of a dependency is an expression")
+//
 const third_party_libraries =
 [
+	'babel-preset-es2015',
+	'babel-preset-node6',
+	'babel-preset-react',
+	'babel-preset-stage-0',
 	'babel-polyfill',
 	'babel-runtime/core-js',
 	'bluebird',
+	'bytes',
 	'classnames',
 	'core-js',
+	'filesize-parser',
 	'history',
+	'hoist-non-react-statics',
 	'intl',
 	'intl-locales-supported',
 	'intl-messageformat',
 	'javascript-time-ago',
+	'knex',
+	'minimist',
 	'moment',
+	'print-error',
 	'react',
 	'react-addons-shallow-compare',
 	'react-dnd',
@@ -29,16 +56,21 @@ const third_party_libraries =
 	'react-dom',
 	'react-intl',
 	'react-isomorphic-render',
+	'react-modal',
+	'react-phone-number-input',
 	'react-redux',
 	'react-router',
+	'react-sticky',
 	'react-styling',
 	'react-tap-event-plugin',
 	'react-time-ago',
 	'react-transform-catch-errors',
 	'react-transform-hmr',
+	'redbox-react',
 	'redux',
+	'redux-logger',
 	'redux-router',
-	'superagent',
+	'uid-safe',
 	'webpack-hot-middleware'
 ]
 

@@ -83,7 +83,13 @@ const server = webpage_server
 
 	// this CSS will be inserted into server rendered webpage <head/> <style/> tag 
 	// (when in development mode only - removes rendering flicker)
-	style: () => html_assets.style().toString(),
+	style: () =>
+	{
+		if (html_assets.style())
+		{
+			return html_assets.style().toString()
+		}
+	},
 
 	// user info preloading
 	// (will be added to Redux store)
