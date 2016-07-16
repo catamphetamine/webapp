@@ -1,5 +1,4 @@
-import jwt      from 'jsonwebtoken'
-import { http, errors } from 'web-service'
+import { http, errors, jwt } from 'web-service'
 
 import { store, online_status_store } from '../store'
 
@@ -39,12 +38,9 @@ export async function sign_in({ email, password }, { ip, set_cookie, keys, http 
 
 	const jwt_id = await store.add_authentication_token(user, ip)
 
-	const token = jwt.sign(configuration.authentication_token_payload.write({ ...user_data, ...user }) || {},
-	keys[0],
-	{
-		subject : user.id,
-		jwtid   : jwt_id
-	})
+	const payload = configuration.authentication_token_payload.write({ ...user_data, ...user })
+
+	const token = jwt(payload, keys, user.id, jwt_id)
 
 	set_cookie('authentication', token, { signed: false })
 

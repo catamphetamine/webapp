@@ -53,7 +53,6 @@
     "intl-messageformat": "^1.3.0",
     "javascript-time-ago": "^0.4.1",
     "json-loader": "^0.5.2",
-    "jsonwebtoken": "^5.5.4",
     "knex": "~0.8.6",
     "material-ui": "^0.15.0",
     "minimist": "^1.1.1",
@@ -90,7 +89,7 @@
     "swig-email-templates": "^3.0.0",
     "uid-safe": "^2.1.0",
     "url-loader": "^0.5.5",
-    "web-service": "^0.1.0",
+    "web-service": "^0.1.1",
     "webpack": "^2.1.0-beta.14",
     "webpack-isomorphic-tools": "^2.2.48"
   },
