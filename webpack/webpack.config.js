@@ -6,6 +6,8 @@ import webpack_isomorphic_tools_configuration from './webpack-isomorphic-tools'
 
 import global_variables from '../code/common/global variables'
 
+import autoprefixer from 'autoprefixer'
+
 var root_folder = path.resolve(__dirname, '..')
 
 var assets_source_folder = path.resolve(root_folder, 'assets')
@@ -71,7 +73,7 @@ var configuration =
 				query:
 				{
 					// currently Relay is not used in this project
-					plugins: [path.resolve(root_folder, 'code/relay/babel_relay_plugin')]
+					// plugins: [path.resolve(root_folder, 'code/relay/babel_relay_plugin')]
 				}
 			},
 			{
@@ -81,7 +83,7 @@ var configuration =
 				[
 					'style-loader',
 					'css-loader?importLoaders=2&sourceMap',
-					'autoprefixer-loader?browsers=last 2 version',
+					'postcss-loader',
 					'sass-loader?outputStyle=expanded&sourceMap=true&sourceMapContents=true'
 				]
 			},
@@ -119,6 +121,8 @@ var configuration =
 
 	// maybe some kind of a progress bar during compilation
 	progress: true,
+
+	postcss: () => [autoprefixer({ browsers: 'last 2 version' })],
 
 	resolve:
 	{

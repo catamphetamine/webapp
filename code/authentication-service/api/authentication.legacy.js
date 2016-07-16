@@ -6,28 +6,31 @@ import { store, online_status_store } from '../store'
 
 import { sign_in, sign_out, register } from './authentication.base'
 
-api.legacy.post('/legacy/sign-in', async function({ request })
+export default function(api)
 {
-	const user = await sign_in.apply(this, arguments)
+	api.legacy.post('/legacy/sign-in', async function({ request })
+	{
+		const user = await sign_in.apply(this, arguments)
 
-	return `${address_book.web_server}${request || '/'}`
-},
-error => `${address_book.web_server}/sign-in`)
+		return `${address_book.web_server}${request || '/'}`
+	},
+	error => `${address_book.web_server}/sign-in`)
 
-api.legacy.post('/legacy/sign-out', async function()
-{
-	await sign_out.apply(this, arguments)
+	api.legacy.post('/legacy/sign-out', async function()
+	{
+		await sign_out.apply(this, arguments)
 
-	return `${address_book.web_server}/`
-},
-error => `${address_book.web_server}/error`)
+		return `${address_book.web_server}/`
+	},
+	error => `${address_book.web_server}/error`)
 
-api.legacy.post('/legacy/register', async function({ request })
-{
-	await register.apply(this, arguments)
+	api.legacy.post('/legacy/register', async function({ request })
+	{
+		await register.apply(this, arguments)
 
-	return new Url(`${address_book.web_server}/sign-in`)
-		.set_parameters({ request })
-		.print()
-},
-error => `${address_book.web_server}/register`)
+		return new Url(`${address_book.web_server}/sign-in`)
+			.set_parameters({ request })
+			.print()
+	},
+	error => `${address_book.web_server}/register`)
+}

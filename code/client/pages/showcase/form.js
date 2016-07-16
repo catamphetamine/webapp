@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { title }            from 'react-isomorphic-render'
 import styler               from 'react-styling'
 import { connect }          from 'react-redux'
-import Phone, { formats }   from 'react-phone-number-input'
+import Phone, { phone_number_format, is_valid_phone_number } from 'react-phone-number-input'
 
 import Form         from '../../components/form'
 import Text_input   from '../../components/text input'
@@ -120,10 +120,21 @@ export default class Form_showcase extends Component
 					<Spinner style={style.form.spinner}/>
 
 					<h2 style={style.form.label}>International phone number input (Russian in this case)</h2>
+
+					+7
 					<Phone
-						format={ formats.RU }
+						style={ style.form.phone }
+						format={ phone_number_format.RU }
 						value={ this.state.phone }
 						onChange={ phone => this.setState({ phone }) } />
+
+					<div style={{ marginTop: '1em' }}>
+						You entered: {this.state.phone}
+					</div>
+
+					<div style={{ marginTop: '1em' }}>
+						Is valid: {is_valid_phone_number(this.state.phone, phone_number_format.RU).toString()}
+					</div>
 
 					<h2 style={style.form.label}>Date picker (part of Material UI)</h2>					
 					<p><i>You may see a "React attempted to reuse markup in a container" warning in the console because of this 3rd party component</i></p>
@@ -207,4 +218,8 @@ const style = styler
 				// transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms
 
 		spinner
+
+		phone
+			display: inline-block
+			margin-left: 0.3em
 `

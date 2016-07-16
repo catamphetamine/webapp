@@ -28,7 +28,7 @@ import net from 'net'
 import stream from 'stream'
 import util from 'util'
 import EventEmitter from 'events'
-import Access_list from './acl'
+import { acl } from 'web-service'
 
 const message_delimiter = '\f' // or '\n'
 
@@ -707,7 +707,7 @@ export function server({ name, host, port, access_list })
 
 	// If an Access Control List is set,
 	// then allow only IPs from the list of subnets.
-	const ip_access_list = new Access_list(access_list)
+	const ip_access_list = new acl(access_list)
 
 	// set up a TCP server
 

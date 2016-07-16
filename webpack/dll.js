@@ -6,13 +6,6 @@ import path     from 'path'
 
 import webpack             from 'webpack'
 import base_configuration  from './webpack.config'
-import clean_plugin        from 'clean-webpack-plugin'
-import extract_text_plugin from 'extract-text-webpack-plugin'
-import strip               from 'strip-loader'
-
-import webpack_isomorphic_tools_plugin from 'webpack-isomorphic-tools/plugin'
-
-import application_configuration from '../code/common/configuration'
 
 const configuration = Object.clone(base_configuration)
 
@@ -23,7 +16,6 @@ const third_party_libraries =
 	'bluebird',
 	'classnames',
 	'core-js',
-	'debug',
 	'history',
 	'intl',
 	'intl-locales-supported',
@@ -63,8 +55,8 @@ configuration.output.filename = '[name].dll.js'
 
 configuration.plugins.unshift(new webpack.DllPlugin
 ({
-	path: path.join(configuration.output.path, '[name]-manifest.json'),
-	name: '[name]_[hash]'
+	path : path.join(configuration.output.path, '[name]-manifest.json'),
+	name : '[name]_[hash]'
 }))
 
 export default configuration

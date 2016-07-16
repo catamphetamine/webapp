@@ -1,11 +1,13 @@
-import web_server    from '../common/web server'
+import web_service   from 'web-service'
 import message_store from './message store'
 
-const web = web_server
+const web = web_service
 ({
-	compress            : true,
-	authentication      : configuration.authentication_token_payload.read || (() => ({})),
-	routing             : true
+	keys           : configuration.web_service_secret_keys,
+	authentication : configuration.authentication_token_payload.read,
+	compress       : true,
+	routing        : true,
+	log
 })
 
 web.get('/', function()

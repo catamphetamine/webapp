@@ -549,9 +549,6 @@ Object.defineProperty(Function.prototype, 'periodical',
 	}
 })
 
-// временная заглушка для переводов на языки
-// global._ = (key) -> key
-
 global.custom_error = function(name, { code, message, lock_message, additional_properties })
 {
 	class Custom_error extends Error

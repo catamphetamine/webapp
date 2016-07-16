@@ -1,9 +1,15 @@
-import api_server from '../common/api server'
+import { api } from 'web-service'
 
-api_server
+api
 ({
-	name: 'Mail',
-	authentication: true,
-	access_list: configuration.mail_service.access_list
+	name           : 'Mail',
+	api            :
+	[
+		require('./api/mail')
+	],
+	keys           : configuration.web_service_secret_keys,
+	authentication : configuration.authentication_token_payload.read,
+	access_list    : configuration.mail_service.access_list,
+	log
 })
-.start(configuration.mail_service.http)
+.listen(configuration.mail_service.http)

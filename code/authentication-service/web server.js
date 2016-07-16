@@ -1,9 +1,15 @@
-import api_server from '../common/api server'
+import { api } from 'web-service'
 
-api_server
+api
 ({
-	name: 'Authentication',
-	authentication: true,
-	secret: true
+	name           : 'Authentication',
+	api            :
+	[
+		require('./api/authentication'),
+		require('./api/authentication.legacy')
+	],
+	keys           : configuration.web_service_secret_keys,
+	authentication : configuration.authentication_token_payload.read,
+	log
 })
-.start(configuration.authentication_service.http)
+.listen(configuration.authentication_service.http)

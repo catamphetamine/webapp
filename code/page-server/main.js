@@ -182,8 +182,13 @@ const server = webpage_server
 	// (use `key`s to prevent React warning when returning an array of React elements)
 	// body_end: () => React element or an array of React elements
 
+	// (optional)
 	// handles errors occuring while rendering pages
-	on_error
+	on_error,
+
+	// (optional)
+	// `print-error` options
+	print_error: { font_size: '20pt' }
 },
 common)
 

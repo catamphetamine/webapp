@@ -16,7 +16,7 @@ import { messages as layout_messages } from './layout'
 
 import international      from '../international/internationalize'
 
-import { parse_stack_trace } from '../../common/html stack trace'
+import { parse as parse_stack_trace } from 'print-error'
 
 import Modal from '../components/modal'
 
@@ -128,19 +128,19 @@ export default class Log extends Component
 						button_style: style.stack_trace_modal.button
 					}]}>
 
-					{!this.state.stack_trace ? null : this.state.stack_trace.map(stack =>
+					{!this.state.stack_trace ? null : this.state.stack_trace.map((stack, stack_index) =>
 					{
 						const markup = 
 						(
-							<div style={style.stack_trace}>
+							<div key={stack_index} style={style.stack_trace}>
 								<h2 style={style.stack_trace.stack.title}>{stack.title}</h2>
 
 								<ul style={style.stack_trace.stack}>
-									{stack.lines.map(line =>
+									{stack.lines.map((line, line_index) =>
 									{
 										const markup = 
 										(
-											<li style={style.stack_trace.stack.line}>
+											<li key={line_index} style={style.stack_trace.stack.line}>
 												{this.render_stack_trace_line(line)}
 											</li>
 										)

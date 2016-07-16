@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import minimist from 'minimist'
 
-// strip_json_comments = require 'strip-json-comments'
+// import strip_json_comments from 'strip-json-comments'
 
 import _ from './language'
 

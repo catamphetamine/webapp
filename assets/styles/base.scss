@@ -60,7 +60,14 @@ input[type="radio"]
 	margin-bottom: 0.16em;
 }
 
-input[type="text"], input[type="tel"], input[type="number"], input[type="email"], input[type="password"], textarea, select, .date-picker
+input[type="text"],
+input[type="tel"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+textarea,
+select,
+.date-picker
 {
 	display : block;
 	width   : var(--input-width);
@@ -73,17 +80,12 @@ input[type="text"], input[type="tel"], input[type="number"], input[type="email"]
 	transition    : border 0.1s;
 }
 
-.date-picker
-{
-	padding-bottom: 0;
-
-	input
-	{
-		padding-bottom: var(--input-padding);
-	}
-}
-
-input[type="text"], input[type="tel"], input[type="number"], input[type="email"], input[type="password"], textarea
+input[type="text"],
+input[type="tel"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+textarea
 {
 	margin: 0;
 
@@ -96,6 +98,16 @@ input[type="text"], input[type="tel"], input[type="number"], input[type="email"]
 		outline: none;
 
 		border-bottom: var(--input-border-width) solid var(--accent-color);
+	}
+}
+
+.date-picker
+{
+	padding-bottom: 0;
+
+	input
+	{
+		padding-bottom: var(--input-padding);
 	}
 }
 

@@ -1,3 +1,5 @@
+import { errors } from 'web-service'
+
 import store from '../store'
 
 export async function get_user({ id }, { user })
@@ -6,7 +8,7 @@ export async function get_user({ id }, { user })
 
 	if (!user_data)
 	{
-		throw new Errors.Not_found(`User not found`)
+		throw new errors.Not_found(`User not found`)
 	}
 
 	return (user && id === user.id) ? own_user(user_data) : public_user(user_data)

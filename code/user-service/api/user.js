@@ -1,134 +1,137 @@
-import store from '../store'
-import http from '../../common/http'
+import { http, errors } from 'web-service'
 
+import store from '../store'
 import { get_user } from './user.base'
 
-api.get('/:id', async function({ id }, { user })
+export default function(api)
 {
-	return await get_user({ id }, { user })
-})
-
-api.post('/', async function(user)
-{
-	if (!exists(user.name))
+	api.get('/:id', async function({ id }, { user })
 	{
-		throw new Errors.Input_missing(`"name" is required`)
-	}
-
-	await store.create_user(user)
-})
-
-// api.patch('/settings', async function({ xxx }, { user })
-// {
-// 	if (!user)
-// 	{
-// 		throw new Errors.Unauthenticated()
-// 	}
-//
-// 	await store.update_user(user.id, { xxx })
-// })
-
-api.patch('/email', async function({ email }, { user, authentication_token })
-{
-	if (!email)
-	{
-		throw new Errors.Input_missing('email')
-	}
-
-	if (!user)
-	{
-		throw new Errors.Unauthenticated()
-	}
-
-	await store.update_user(user.id, { email })
-
-	await http.patch
-	(
-		`${address_book.authentication_service}/email`,
-		{ email },
-		{ headers: { Authorization: `Bearer ${authentication_token}` } }
-	)
-})
-
-api.patch('/', async function(data, { user })
-{
-	if (!user)
-	{
-		throw new Errors.Unauthenticated()
-	}
-	
-	await store.update_user(user.id,
-	{
-		name    : data.name,
-		country : data.country,
-		place   : data.place
+		return await get_user({ id }, { user })
 	})
 
-	return await get_user({ id: user.id }, { user })
-})
-
-api.post('/picture', async function(picture, { user, authentication_token })
-{
-	if (!user)
+	api.post('/', async function(user)
 	{
-		throw new Errors.Unauthenticated()
-	}
+		if (!exists(user.name))
+		{
+			throw new errors.Input_missing(`"name" is required`)
+		}
 
-	const user_data = await get_user(user, { user })
+		await store.create_user(user)
+	})
 
-	picture = await http.post
-	(
-		`${address_book.image_service}/api/save`,
-		{ type: 'user_picture', image: picture },
-		{ headers: { Authorization: `Bearer ${authentication_token}` } }
-	)
+	// api.patch('/settings', async function({ xxx }, { user })
+	// {
+	// 	if (!user)
+	// 	{
+	// 		throw new errors.Unauthenticated()
+	// 	}
+	//
+	// 	await store.update_user(user.id, { xxx })
+	// })
 
-	await store.update_user(user.id, { picture })
-
-	if (user_data.picture)
+	api.patch('/email', async function({ email }, { user, authentication_token })
 	{
-		await http.delete
+		if (!email)
+		{
+			throw new errors.Input_missing('email')
+		}
+
+		if (!user)
+		{
+			throw new errors.Unauthenticated()
+		}
+
+		await store.update_user(user.id, { email })
+
+		await http.patch
 		(
-			`${address_book.image_service}/api`,
-			{ id: user_data.picture.id },
+			`${address_book.authentication_service}/email`,
+			{ email },
 			{ headers: { Authorization: `Bearer ${authentication_token}` } }
 		)
-	}
+	})
 
-	return picture
-})
+	api.patch('/', async function(data, { user })
+	{
+		if (!user)
+		{
+			throw new errors.Unauthenticated()
+		}
+		
+		await store.update_user(user.id,
+		{
+			name    : data.name,
+			country : data.country,
+			place   : data.place
+		})
 
-// api.patch('/locale', async function()
-// {
-// 	await set_locale.apply(this, arguments)
-// })
+		return await get_user({ id: user.id }, { user })
+	})
 
-// api.patch('/:id', async function({ id, name })
-// {
-// 	id = parseInt(id)
+	api.post('/picture', async function(picture, { user, authentication_token })
+	{
+		if (!user)
+		{
+			throw new errors.Unauthenticated()
+		}
 
-// 	const user = await store.find_user_by_id(id)
+		const user_data = await get_user(user, { user })
 
-// 	if (!user)
-// 	{
-// 		throw new Errors.Not_found(`User not found`)
-// 	}
+		picture = await http.post
+		(
+			`${address_book.image_service}/api/save`,
+			{ type: 'user_picture', image: picture },
+			{ headers: { Authorization: `Bearer ${authentication_token}` } }
+		)
 
-// 	user.name = name
+		await store.update_user(user.id, { picture })
 
-// 	await store.update_user(user)
-// })
+		if (user_data.picture)
+		{
+			await http.delete
+			(
+				`${address_book.image_service}/api`,
+				{ id: user_data.picture.id },
+				{ headers: { Authorization: `Bearer ${authentication_token}` } }
+			)
+		}
 
-// api.post('/:id/picture', async function({ id, file_name })
-// {
-// 	const user = await store.find_user_by_id(id)
+		return picture
+	})
 
-// 	if (!user)
-// 	{
-// 		throw new Errors.Not_found(`User not found`)
-// 	}
+	// api.patch('/locale', async function()
+	// {
+	// 	await set_locale.apply(this, arguments)
+	// })
 
-// 	user.picture = file_name
+	// api.patch('/:id', async function({ id, name })
+	// {
+	// 	id = parseInt(id)
 
-// 	await store.update_user(user)
-// })
+	// 	const user = await store.find_user_by_id(id)
+
+	// 	if (!user)
+	// 	{
+	// 		throw new errors.Not_found(`User not found`)
+	// 	}
+
+	// 	user.name = name
+
+	// 	await store.update_user(user)
+	// })
+
+	// api.post('/:id/picture', async function({ id, file_name })
+	// {
+	// 	const user = await store.find_user_by_id(id)
+
+	// 	if (!user)
+	// 	{
+	// 		throw new errors.Not_found(`User not found`)
+	// 	}
+
+	// 	user.picture = file_name
+
+	// 	await store.update_user(user)
+	// })
+}

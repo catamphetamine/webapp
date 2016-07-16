@@ -4,7 +4,7 @@ import bunyan        from 'bunyan'
 import stream        from 'stream'
 import util          from 'util'
 import moment        from 'moment'
-import Error_printer from 'pretty-error'
+import { terminal }  from 'print-error'
 import levels        from './log levels'
 
 import { client as tcp_client } from './tcp'
@@ -17,11 +17,9 @@ import { client as tcp_client } from './tcp'
 // console.log(colors.rainbow('OMG Rainbows!')) // rainbow
 // console.log(colors.trap('Run the trap')) // Drops the bass
 
-const error_printer = new Error_printer()
-
 function print_error(error)
 {
-	console.log(error_printer.render(error))
+	console.log(terminal(error))
 }
 
 const colours =

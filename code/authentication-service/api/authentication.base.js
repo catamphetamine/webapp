@@ -1,31 +1,30 @@
-import jwt    from 'jsonwebtoken'
-
-import http   from '../../common/http'
+import jwt      from 'jsonwebtoken'
+import { http, errors } from 'web-service'
 
 import { store, online_status_store } from '../store'
 
-export async function sign_in({ email, password }, { ip, set_cookie, secret, http })
+export async function sign_in({ email, password }, { ip, set_cookie, keys, http })
 {
 	if (!exists(email))
 	{
-		throw new Errors.Input_missing(`"email" is required`)
+		throw new errors.Input_missing(`"email" is required`)
 	}
 
 	if (!exists(password))
 	{
-		throw new Errors.Input_missing(`"password" is required`)
+		throw new errors.Input_missing(`"password" is required`)
 	}
 
 	const user = await store.find_user_by_email(email)
 
 	if (!user)
 	{
-		throw new Errors.Not_found(`No user with this email`)
+		throw new errors.Not_found(`No user with this email`)
 	}
 
 	if (await is_login_attempts_limit_exceeded(user))
 	{
-		throw new Errors.Access_denied(`Login attempts limit exceeded`)
+		throw new errors.Access_denied(`Login attempts limit exceeded`)
 	}
 
 	const matches = await check_password(password, user.password)
@@ -33,7 +32,7 @@ export async function sign_in({ email, password }, { ip, set_cookie, secret, htt
 	if (!matches)
 	{
 		await login_attempt_failed(user)
-		throw new Errors.Input_rejected(`Wrong password`) 
+		throw new errors.Input_rejected(`Wrong password`) 
 	}
 
 	await login_attempt_succeeded(user)
@@ -41,7 +40,7 @@ export async function sign_in({ email, password }, { ip, set_cookie, secret, htt
 	const jwt_id = await store.add_authentication_token(user, ip)
 
 	const token = jwt.sign(configuration.authentication_token_payload.write({ ...user_data, ...user }) || {},
-	secret,
+	keys[0],
 	{
 		subject : user.id,
 		jwtid   : jwt_id
@@ -53,7 +52,7 @@ export async function sign_in({ email, password }, { ip, set_cookie, secret, htt
 
 	if (!user_data.id)
 	{
-		throw new Errors.Not_found(`No user with this id`)
+		throw new errors.Not_found(`No user with this id`)
 	}
 
 	return own_user(user_data)
@@ -173,27 +172,27 @@ export async function register({ name, email, password, terms_of_service_accepte
 {
 	if (!exists(name))
 	{
-		throw new Errors.Input_missing(`"name" is required`)
+		throw new errors.Input_missing(`"name" is required`)
 	}
 
 	if (!exists(email))
 	{
-		throw new Errors.Input_missing(`"email" is required`)
+		throw new errors.Input_missing(`"email" is required`)
 	}
 
 	if (!exists(password))
 	{
-		throw new Errors.Input_missing(`"password" is required`)
+		throw new errors.Input_missing(`"password" is required`)
 	}
 
 	if (!terms_of_service_accepted)
 	{
-		throw new Errors.Input_missing(`You must accept the terms of service`)
+		throw new errors.Input_missing(`You must accept the terms of service`)
 	}
 
 	if (await store.find_user_by_email(email))
 	{
-		throw new Errors.Error(`User is already registered for this email`)
+		throw new errors.Error(`User is already registered for this email`)
 	}
 
 	// hashing a password is a CPU-intensive lengthy operation.

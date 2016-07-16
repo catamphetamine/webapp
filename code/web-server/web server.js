@@ -1,9 +1,7 @@
-import path          from 'path'
-import socket_io     from 'socket.io'
+import path        from 'path'
+import web_service from 'web-service'
 
-import web_server from '../common/web server'
-
-const web = web_server
+const web = web_service
 ({
 	// // since the following services are local,
 	// // and write errors to the same log,
@@ -16,7 +14,8 @@ const web = web_server
 	// 	[address_book.image_service]          : false,
 	// 	[address_book.log_service]            : false,
 	// 	[address_book.webpage_server]         : false
-	// }
+	// },
+	log
 })
 
 // serve assets
@@ -44,20 +43,6 @@ web.proxy('/log', address_book.log_service)
 
 // Proxy all the rest requests to Webpage rendering server
 web.proxy(address_book.webpage_server)
-
-// // websocket server
-// const websocket = socket_io.listen(http_web_server)
-// // don't serve client scripts
-// websocket.serveClient(false)
-
-// websocket.on('connection', socket =>
-// {
-// 	socket.emit('news', { message: `'Hello World!' from server` })
-// 	socket.on('something', data =>
-// 	{
-// 		log.info(data)
-// 	})
-// })
 
 // поднять http сервер
 web.listen(configuration.web_server.http.port).then(() =>

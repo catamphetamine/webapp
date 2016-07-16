@@ -1,4 +1,4 @@
-import web_server, { fs_exists } from '../common/web server'
+import web_service, { errors } from 'web-service'
 
 import path from 'path'
 import fs   from 'fs-extra'
@@ -11,6 +11,15 @@ import { clean_up }           from './cleaner'
 const upload_folder = path.resolve(Root_folder, configuration.image_service.temporary_files_directory)
 const output_folder = path.resolve(Root_folder, configuration.image_service.files_directory)
 
+// checks if filesystem path exists
+function fs_exists(path)
+{
+	return new Promise((resolve, reject) => 
+	{
+		fs.exists(path, exists => resolve(exists))
+	})
+}
+
 function temporary_path(file_name)
 {
 	return path.resolve(upload_folder, file_name)
@@ -21,7 +30,14 @@ function permanent_path(file_name, type)
 	return path.resolve(output_folder, type.path, file_name)
 }
 
-const web = web_server({ authentication: true, parse_body: false, routing: '/api' })
+const web = web_service
+({
+	keys           : configuration.web_service_secret_keys,
+	authentication : configuration.authentication_token_payload.read,
+	parse_body     : false,
+	routing        : '/api',
+	log
+})
 
 // temporary uploaded images
 web.serve_static_files('/uploaded', upload_folder)
@@ -50,19 +66,19 @@ web.delete('/', async ({ id }, { user }) =>
 {
 	if (!user)
 	{
-		throw new web.errors.Unauthenticated()
+		throw new errors.Unauthenticated()
 	}
 
 	const image = await database.get(id)
 
 	if (!image)
 	{
-		throw new web.errors.Not_found()
+		throw new errors.Not_found()
 	}
 
 	if (image.user !== user.id)
 	{
-		throw new web.errors.Unauthorized()
+		throw new errors.Unauthorized()
 	}
 
 	const image_type = configuration.image_service.type[image.type]
@@ -91,7 +107,7 @@ web.post('/save', async ({ type, image }, { user }) =>
 {
 	if (!user)
 	{
-		throw new web.errors.Unauthenticated()
+		throw new errors.Unauthenticated()
 	}
 
 	const image_type = configuration.image_service.type[type]
@@ -103,7 +119,7 @@ web.post('/save', async ({ type, image }, { user }) =>
 
 	if (!image)
 	{
-		throw new web.errors.Not_found()
+		throw new errors.Not_found()
 	}
 
 	for (let size of image.sizes)

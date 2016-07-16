@@ -17,12 +17,15 @@ async function hash_password(password)
 	return await bcrypt.hashAsync(password, salt)
 }
 
-api.get('/hash', async function({ password })
+export default function(api)
 {
-	return { hash: await hash_password(password) }
-})
+	api.get('/hash', async function({ password })
+	{
+		return { hash: await hash_password(password) }
+	})
 
-api.get('/check', async function({ password, hashed_password })
-{
-	return await check_password(password, hashed_password)
-})
+	api.get('/check', async function({ password, hashed_password })
+	{
+		return await check_password(password, hashed_password)
+	})
+}

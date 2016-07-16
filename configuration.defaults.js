@@ -140,7 +140,7 @@ module.exports =
 		// 	secure: true
 		// }
 	},
-	session_secret_keys: ['hammertime'],
+	web_service_secret_keys: ['hammertime'],
 	development:
 	{
 		webpack:

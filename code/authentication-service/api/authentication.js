@@ -1,140 +1,145 @@
+import { errors } from 'web-service'
+
 import { store, online_status_store } from '../store'
 
 import { sign_in, sign_out, register, get_user, own_user } from './authentication.base'
 
-api.post('/sign-in', sign_in)
-
-api.post('/sign-out', sign_out)
-
-api.post('/register', register)
-
-api.post('/authenticate', async function({}, { user, http, get_cookie, set_cookie })
+export default function(api)
 {
-	if (!user)
+	api.post('/sign-in', sign_in)
+
+	api.post('/sign-out', sign_out)
+
+	api.post('/register', register)
+
+	api.post('/authenticate', async function({}, { user, http, get_cookie, set_cookie })
 	{
-		return
-	}
+		if (!user)
+		{
+			return
+		}
 
-	// get user data
-	user = await get_user(http, user.id)
+		// get user data
+		user = await get_user(http, user.id)
 
-	// shouldn't happen
-	if (!user)
+		// shouldn't happen
+		if (!user)
+		{
+			return
+		}
+
+		// return user data
+		return own_user(user)
+	})
+
+	api.get('/validate-token', async function({ bot }, { ip, authentication_token_id, user })
 	{
-		return
-	}
+		// The user will be populated inside `common/web server`
+		// out of the token data if the token is valid.
+		// (only for `/validate-token` http get requests)
+		//
+		// If the user isn't populated from the token data
+		// then it means that token data is corrupt.
+		// (token data is encrypted and in this case decryption fails)
+		//
+		if (!user)
+		{
+			return { valid: false }
+		}
 
-	// return user data
-	return own_user(user)
-})
+		// Token data is valid.
+		// The next step is to check that the token hasn't been revoked.
 
-api.get('/validate-token', async function({ bot }, { ip, authentication_token_id, user })
-{
-	// The user will be populated inside `common/web server`
-	// out of the token data if the token is valid.
-	// (only for `/validate-token` http get requests)
-	//
-	// If the user isn't populated from the token data
-	// then it means that token data is corrupt.
-	// (token data is encrypted and in this case decryption fails)
-	//
-	if (!user)
+		const token = await store.find_token_by_id(authentication_token_id)
+
+		if (!token || token.revoked)
+		{
+			return { valid: false }
+		}
+
+		// If it's not an automated Http request,
+		// then update this authentication token's last access IP and time
+		if (!bot)
+		{
+			store.record_access(user, authentication_token_id, ip)
+		}
+
+		// The token is considered valid
+		return { valid: true }
+	})
+
+	api.post('/record-access', async function({}, { authentication_token_id, user, ip })
 	{
-		return { valid: false }
-	}
+		if (!user)
+		{
+			return
+		}
 
-	// Token data is valid.
-	// The next step is to check that the token hasn't been revoked.
+		await store.record_access(user, authentication_token_id, ip)
+	})
 
-	const token = await store.find_token_by_id(authentication_token_id)
-
-	if (!token || token.revoked)
+	api.get('/latest-activity/:id', async function({ id })
 	{
-		return { valid: false }
-	}
+		// try to fetch user's latest activity time from the current session
+		// (is faster and more precise)
 
-	// If it's not an automated Http request,
-	// then update this authentication token's last access IP and time
-	if (!bot)
+		const latest_activity_time = await online_status_store.get(id)
+
+		if (latest_activity_time)
+		{
+			return { time: latest_activity_time }
+		}
+
+		// if there's no current session for the user, 
+		// then try to fetch user's latest activity time from the database
+
+		const user = await store.find_user_by_id(id)
+
+		if (!user)
+		{
+			throw new errors.Not_found(`User not found`)
+		}
+
+		return { time: user.latest_activity_time }
+	})
+
+	api.get('/tokens', async function({}, { user })
 	{
-		store.record_access(user, authentication_token_id, ip)
-	}
+		return { tokens: await store.get_tokens(user.id) }
+	})
 
-	// The token is considered valid
-	return { valid: true }
-})
-
-api.post('/record-access', async function({}, { authentication_token_id, user, ip })
-{
-	if (!user)
+	api.post('/revoke-token', async function({ id }, { user })
 	{
-		return
-	}
+		if (!user)
+		{
+			throw new errors.Unauthenticated()
+		}
 
-	await store.record_access(user, authentication_token_id, ip)
-})
+		const token = await store.find_token_by_id(id)
 
-api.get('/latest-activity/:id', async function({ id })
-{
-	// try to fetch user's latest activity time from the current session
-	// (is faster and more precise)
+		if (!token)
+		{
+			return new errors.Not_found()
+		}
 
-	const latest_activity_time = await online_status_store.get(id)
+		if (token.user_id.toString() !== user.id)
+		{
+			return new errors.Unauthorized()
+		}
 
-	if (latest_activity_time)
+		await store.revoke_token(id)
+	})
+
+	api.patch('/email', async function({ email }, { user })
 	{
-		return { time: latest_activity_time }
-	}
+		if (!user)
+		{
+			throw new errors.Unauthenticated()
+		}
 
-	// if there's no current session for the user, 
-	// then try to fetch user's latest activity time from the database
-
-	const user = await store.find_user_by_id(id)
-
-	if (!user)
-	{
-		throw new Errors.Not_found(`User not found`)
-	}
-
-	return { time: user.latest_activity_time }
-})
-
-api.get('/tokens', async function({}, { user })
-{
-	return { tokens: await store.get_tokens(user.id) }
-})
-
-api.post('/revoke-token', async function({ id }, { user })
-{
-	if (!user)
-	{
-		throw new Errors.Unauthenticated()
-	}
-
-	const token = await store.find_token_by_id(id)
-
-	if (!token)
-	{
-		return new Errors.Not_found()
-	}
-
-	if (token.user_id.toString() !== user.id)
-	{
-		return new Errors.Unauthorized()
-	}
-
-	await store.revoke_token(id)
-})
-
-api.patch('/email', async function({ email }, { user })
-{
-	if (!user)
-	{
-		throw new Errors.Unauthenticated()
-	}
-
-	if (!(await store.update_email(user.id, email)))
-	{
-		throw new Errors.Error(`Couldn't update user's email`)
-	}
-})
+		if (!(await store.update_email(user.id, email)))
+		{
+			throw new errors.Error(`Couldn't update user's email`)
+		}
+	})
+}
