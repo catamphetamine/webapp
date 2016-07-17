@@ -87,7 +87,7 @@
     "swig-email-templates": "^3.0.0",
     "uid-safe": "^2.1.0",
     "url-loader": "^0.5.5",
-    "web-service": "^0.1.3",
+    "web-service": "^0.1.4",
     "webpack": "^2.1.0-beta.14",
     "webpack-isomorphic-tools": "^2.2.48"
   },

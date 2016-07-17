@@ -1,4 +1,5 @@
-import web_service, { errors } from 'web-service'
+import { errors } from 'web-service'
+import web_service from '../common/webservice'
 
 import path from 'path'
 import fs   from 'fs-extra'
@@ -32,11 +33,9 @@ function permanent_path(file_name, type)
 
 const web = web_service
 ({
-	keys           : configuration.web_service_secret_keys,
-	authentication : configuration.authentication_token_payload.read,
+	authentication : true,
 	parse_body     : false,
-	routing        : '/api',
-	log
+	routing        : '/api'
 })
 
 // temporary uploaded images

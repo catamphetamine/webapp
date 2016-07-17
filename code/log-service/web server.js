@@ -1,27 +1,19 @@
-import web_service   from 'web-service'
+import { api }       from '../common/webservice'
 import message_store from './message store'
 
-const web = web_service
-({
-	keys           : configuration.web_service_secret_keys,
-	authentication : configuration.authentication_token_payload.read,
-	compress       : true,
-	routing        : true,
-	log
-})
+const service = api
+(
+	'Log service',
+	configuration.log_service.http.port,
+	[
+		function(api)
+		{
+			api.get('/', function()
+			{
+				this.role('administrator')
 
-web.get('/', function()
-{
-	this.role('administrator')
-
-	return message_store.messages.clone().reverse()
-})
-
-web.listen(configuration.log_service.http.port).then(() =>
-{
-	log.info(`Log server is listening at http://${configuration.log_service.http.host}:${configuration.log_service.http.port}`)
-},
-error =>
-{
-	log.error(error, 'Log service web server shutdown')
-})
+				return message_store.messages.clone().reverse()
+			})
+		}
+	]
+)
