@@ -8,7 +8,8 @@ const common_options =
 {
 	development : _development_,
 	log,
-	keys : configuration.web_service_secret_keys
+	keys : configuration.web_service_secret_keys,
+	error_html : { font_size: '20pt' }
 }
 
 const authentication_options =
