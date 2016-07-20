@@ -2,6 +2,15 @@ import web_service, { api as api_service, http } from 'web-service'
 
 const validate_token_url = '/validate-token'
 
+// `log` is a global variable in each Node.js process.
+// `_development_` is too.
+const common_options =
+{
+	development : _development_,
+	log,
+	keys : configuration.web_service_secret_keys
+}
+
 const authentication_options =
 {
 	authentication : configuration.authentication_token_payload.read,
@@ -25,11 +34,10 @@ export function api(name, host_port, api_modules, options = {})
 {
 	return api_service
 	({
+		...common_options,
+		...authentication_options,
 		...options,
-		log,
-		api  : api_modules,
-		keys : configuration.web_service_secret_keys,
-		...authentication_options
+		api : api_modules
 	})
 	.listen(host_port).then(() =>
 	{
@@ -46,9 +54,8 @@ export default function webservice(options)
 {
 	options =
 	{
-		...options,
-		log,
-		keys : configuration.web_service_secret_keys
+		...common_options,
+		...options
 	}
 
 	if (options.authentication)

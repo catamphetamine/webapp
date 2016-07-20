@@ -82,7 +82,7 @@ const scss_loader = configuration.module.loaders.filter(loader =>
 // the first argument to the .extract() function is the name of the loader 
 // ("style-loader" in this case) to be applied to non-top-level-chunks in case of "allChunks: false" option.
 // since in this configuration "allChunks: true" option is used, this first argument is irrelevant.
-scss_loader.loader = extract_text_plugin.extract({ notExtractLoader: scss_loader.loaders.shift(), loader: scss_loader.loaders.join('!') })
+scss_loader.loader = extract_text_plugin.extract({ notExtractLoader: scss_loader.loaders.shift(), loader: scss_loader.loaders })
 delete scss_loader.loaders
 
 // done: set extract text plugin as a Css loader

@@ -93,7 +93,7 @@ const server = webpage_server
 
 	// user info preloading
 	// (will be added to Redux store)
-	preload: async (http) =>
+	preload: async (http, { request }) =>
 	{
 		let user = await http.post(`/authentication/authenticate`)
 
