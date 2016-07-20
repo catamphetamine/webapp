@@ -42,9 +42,6 @@ const initializing_javascript =
 // starts webpage rendering server
 const server = webpage_server
 ({
-	// enable/disable development mode (true/false)
-	development: _development_,
-
 	disable_server_side_rendering : _disable_server_side_rendering_,
 
 	// Http host and port for executing all client-side ajax requests on server-side

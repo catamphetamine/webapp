@@ -6,7 +6,6 @@ const validate_token_url = '/validate-token'
 // `_development_` is too.
 const common_options =
 {
-	development : _development_,
 	log,
 	keys : configuration.web_service_secret_keys,
 	error_html : { font_size: '20pt' }
