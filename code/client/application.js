@@ -1,3 +1,5 @@
+// The polyfill will emulate a full ES6 environment (for old browsers)
+// (including generators, which means async/await)
 import 'babel-polyfill'
 
 import language       from '../common/language'

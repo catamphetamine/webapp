@@ -26,7 +26,8 @@ import load_locale_data from './locale'
 // (`intl-messageformat` will load everything automatically when run in Node.js)
 require('javascript-time-ago/load-all-locales')
 
-const initializing_javascript = `
+const initializing_javascript =
+`
 	document.body.classList.add('javascript-is-enabled')
 
 	window.configuration =

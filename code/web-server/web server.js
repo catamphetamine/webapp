@@ -1,5 +1,5 @@
 import path        from 'path'
-import web_service from 'web-service'
+import web_service from '../common/webservice'
 
 const web = web_service
 ({
@@ -15,7 +15,6 @@ const web = web_service
 	// 	[address_book.log_service]            : false,
 	// 	[address_book.webpage_server]         : false
 	// },
-	log
 })
 
 // serve assets
