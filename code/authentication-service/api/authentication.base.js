@@ -272,7 +272,7 @@ export async function get_user(http, id, token)
 		extra = { headers: { Authorization: `Bearer ${token}` } }
 	}
 
-	return (await http.get(`${address_book.user_service}/${id}`, undefined, extra))
+	return (await http.get(`${address_book.user_service}/${id}`, {}, extra))
 }
 
 async function create_user(user)
