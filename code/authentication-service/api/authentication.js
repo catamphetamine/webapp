@@ -14,21 +14,30 @@ export default function(api)
 
 	api.post('/authenticate', async function({}, { user, http, get_cookie, set_cookie })
 	{
+		// If no valid JWT token present,
+		// then assume this user is not authenticated.
 		if (!user)
 		{
 			return
 		}
 
-		// get user data
-		user = await get_user(http, user.id)
+		// Get extra user info from the database
+		const user_info = await get_user(http, user.id)
 
-		// shouldn't happen
-		if (!user)
+		// If the user wasn't found in the databse
+		// (shouldn't happen in normal circumstances)
+		// then abort
+		if (!user_info)
 		{
 			return
 		}
 
-		// return user data
+		// Full user info
+		// (info from JWT token payload
+		//  merged with the info from the database)
+		user = { ...user_info, ...user }
+
+		// Return user info
 		return own_user(user)
 	})
 
