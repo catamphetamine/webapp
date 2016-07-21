@@ -39,10 +39,10 @@ const web = web_service
 })
 
 // temporary uploaded images
-web.serve_static_files('/uploaded', upload_folder)
+web.files('/uploaded', upload_folder)
 
 // saved uploaded images (user pictures, etc)
-web.serve_static_files('/', output_folder)
+web.files('/', output_folder)
 
 web.get('/', async function({ skip, amount })
 {
@@ -156,13 +156,16 @@ web.post('/save', async ({ type, image }, { user }) =>
 // 	},
 // 	...]
 // }
-web.file_upload
-({
-	path: '/upload',
-	upload_folder,
+
+web.upload('/upload', upload_folder,
+{
 	file_size_limit: configuration.image_service.file_size_limit,
-	on_file_uploaded: async function(name, size, ip)
+	on_file_uploaded: async function({ original_file_name, uploaded_file_name, path, ip })
 	{
+		// const size = (await fs.statAsync(path)).size
+		//
+		// May restrict file uploads for this ip.
+		// `ip` trusts X-Forwarded-For HTTP Header.
 	},
 	postprocess: async function(uploaded)
 	{
