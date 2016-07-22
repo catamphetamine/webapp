@@ -12,7 +12,7 @@
 
 import React from 'react'
 
-import webpage_server from 'react-isomorphic-render/page-server'
+import webpage_server from 'react-isomorphic-render/server'
 import is_intl_locale_supported from 'intl-locales-supported'
 import file_size_parser from 'filesize-parser'
 
@@ -79,16 +79,6 @@ const server = webpage_server
 		return result
 	},
 
-	// this CSS will be inserted into server rendered webpage <head/> <style/> tag 
-	// (when in development mode only - removes rendering flicker)
-	style: () =>
-	{
-		if (html_assets.style())
-		{
-			return html_assets.style().toString()
-		}
-	},
-
 	// user info preloading
 	// (will be added to Redux store)
 	preload: async (http, { request }) =>
@@ -151,43 +141,57 @@ const server = webpage_server
 	},
 
 	// (optional)
-	// returns an array of React elements.
-	// which will be inserted into server rendered webpage's <head/>
-	// (use `key`s to prevent React warning)
-	// head: () => React element or an array of React elements
-
-	// (optional)
-	// returns a React element.
-	// allows for wrapping React page component with arbitrary markup
-	// (or doing whatever else can be done with a React element).
-	// returns either a React element or an array of React elements
-	// which will be inserted into server rendered webpage's <body/>
-	// body: react_page_element => react_page_element
-
-	// returns an array of React elements.
-	// allows adding arbitrary React components to the start of the <body/>
-	// (use `key`s to prevent React warning when returning an array of React elements)
-	body_start: () =>
+	html:
 	{
-		if (_development_)
+		// (optional)
+		// returns an array of React elements.
+		// which will be inserted into server rendered webpage's <head/>
+		// (use `key`s to prevent React warning)
+		// head: () => React element or an array of React elements
+
+		// (optional)
+		// returns a React element.
+		// allows for wrapping React page component with arbitrary markup
+		// (or doing whatever else can be done with a React element).
+		// returns either a React element or an array of React elements
+		// which will be inserted into server rendered webpage's <body/>
+		// body: react_page_element => react_page_element
+
+		// returns an array of React elements.
+		// allows adding arbitrary React components to the start of the <body/>
+		// (use `key`s to prevent React warning when returning an array of React elements)
+		body_start: () =>
 		{
-			return [
-				<script key="1" dangerouslySetInnerHTML={{__html: initializing_javascript}}/>,
-				<script key="2" src="/assets/vendor.dll.js"/>
-			]
+			if (_development_)
+			{
+				return [
+					<script key="1" dangerouslySetInnerHTML={{__html: initializing_javascript}}/>,
+					<script key="2" src="/assets/vendor.dll.js"/>
+				]
+			}
+			
+			return <script dangerouslySetInnerHTML={{__html: initializing_javascript}}/>
+		},
+
+		// (optional)
+		// returns an array of React elements.
+		// allows adding arbitrary React components to the end of the <body/>
+		// (use `key`s to prevent React warning when returning an array of React elements)
+		// body_end: () => React element or an array of React elements
+
+		// this CSS will be inserted into server rendered webpage <head/> <style/> tag 
+		// (when in development mode only - removes rendering flicker)
+		style: () =>
+		{
+			if (html_assets.style())
+			{
+				return html_assets.style().toString()
+			}
 		}
-		
-		return <script dangerouslySetInnerHTML={{__html: initializing_javascript}}/>
 	},
 
 	// (optional)
-	// returns an array of React elements.
-	// allows adding arbitrary React components to the end of the <body/>
-	// (use `key`s to prevent React warning when returning an array of React elements)
-	// body_end: () => React element or an array of React elements
-
-	// (optional)
-	// handles errors occuring while rendering pages
+	// handles miscellaneous errors
 	on_error,
 
 	// (optional)
