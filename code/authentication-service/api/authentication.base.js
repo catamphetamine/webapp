@@ -2,7 +2,7 @@ import { http, errors, jwt } from 'web-service'
 
 import { store, online_status_store } from '../store'
 
-export async function sign_in({ email, password }, { ip, set_cookie, keys, http })
+export async function sign_in({ email, password }, { ip, set_cookie, keys, internal_http })
 {
 	if (!exists(email))
 	{
@@ -14,6 +14,7 @@ export async function sign_in({ email, password }, { ip, set_cookie, keys, http 
 		throw new errors.Input_missing(`"password" is required`)
 	}
 
+	// Get user by email
 	const user = await store.find_user_by_email(email)
 
 	if (!user)
@@ -21,36 +22,55 @@ export async function sign_in({ email, password }, { ip, set_cookie, keys, http 
 		throw new errors.Not_found(`No user with this email`)
 	}
 
+	// If too many login attempts have been made
+	// for this user recently, then impose a short cooldown period.
 	if (await is_login_attempts_limit_exceeded(user))
 	{
 		throw new errors.Access_denied(`Login attempts limit exceeded`)
 	}
 
+	// Check if the password matches
 	const matches = await check_password(password, user.password)
 
+	// If the password is wrong, return an error
 	if (!matches)
 	{
 		await login_attempt_failed(user)
 		throw new errors.Input_rejected(`Wrong password`) 
 	}
 
+	// Reset threshold for login attempt count limiter
 	await login_attempt_succeeded(user)
 
+	// Add a new JWT token to the list of valid tokens for this user
 	const jwt_id = await store.add_authentication_token(user, ip)
 
-	const payload = configuration.authentication_token_payload.write({ ...user_data, ...user })
+	// Use this temporary token just to obtain full user info,
+	// which will be used for populating `payload` of the real JWT token.
+	const temporary_token = jwt({ payload: {}, keys, user_id: user.id, jwt_id })
 
-	const token = jwt({ payload, keys, user_id: user.id, jwt_id })
+	// Get full user info (e.g. `role`)
+	const user_data = await http.get(`${address_book.user_service}/${user.id}`, {},
+	{
+		headers: { Authorization: `Bearer ${temporary_token}` }
+	})
 
-	set_cookie('authentication', token, { signed: false })
-
-	const user_data = await get_user(http, user.id, token)
-
+	// If the user was not found (shouldn't normally happen)
 	if (!user_data.id)
 	{
 		throw new errors.Not_found(`No user with this id`)
 	}
 
+	// Generate real JWT token payload
+	const payload = configuration.authentication_token_payload.write(user_data)
+
+	// Issue JWT token
+	const token = jwt({ payload, keys, user_id: user.id, jwt_id })
+
+	// Write JWT token to a cookie
+	set_cookie('authentication', token, { signed: false })
+
+	// Return full user info
 	return own_user(user_data)
 }
 
@@ -199,6 +219,14 @@ export async function register({ name, email, password, terms_of_service_accepte
 	//
 	password = await hash_password(password)
 
+	const user =
+	{
+		email,
+		password
+	}
+
+	const id = await store.create_user(user)
+
 	const privileges =
 	{
 		role          : 'administrator', // 'moderator', 'senior moderator' (starting from moderator)
@@ -207,15 +235,6 @@ export async function register({ name, email, password, terms_of_service_accepte
 		// grant   : ['moderation', 'switches'] // !== true (starting from senior moderator)
 		// revoke  : ['moderation', 'switches'] // !== true (starting from senior moderator)
 	}
-
-	const user =
-	{
-		email,
-		password,
-		...privileges
-	}
-
-	const id = await store.create_user(user)
 
 	const user_data = 
 	{
@@ -261,18 +280,6 @@ async function check_password(password, hashed_password)
 async function hash_password(password)
 {
 	return (await http.get(`${address_book.password_service}/hash`, { password })).hash
-}
-
-export async function get_user(http, id, token)
-{
-	let extra
-
-	if (token)
-	{
-		extra = { headers: { Authorization: `Bearer ${token}` } }
-	}
-
-	return (await http.get(`${address_book.user_service}/${id}`, {}, extra))
 }
 
 async function create_user(user)

@@ -61,7 +61,7 @@ web.get('/clear_temporary', async function()
 	return await clean_up({ force: true })
 })
 
-web.delete('/', async ({ id }, { user }) =>
+web.delete('/:id', async ({ id }, { user }) =>
 {
 	if (!user)
 	{

@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
-import { title, redirect }             from 'react-isomorphic-render'
+import { title }                       from 'react-isomorphic-render'
+import { redirect }                    from 'react-isomorphic-render/redux'
 import { connect }                     from 'react-redux'
 import styler                          from 'react-styling'
 import { defineMessages }              from 'react-intl'

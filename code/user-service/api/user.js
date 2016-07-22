@@ -30,7 +30,7 @@ export default function(api)
 	// 	await store.update_user(user.id, { xxx })
 	// })
 
-	api.patch('/email', async function({ email }, { user, authentication_token })
+	api.patch('/email', async function({ email }, { user, authentication_token, internal_http })
 	{
 		if (!email)
 		{
@@ -44,12 +44,7 @@ export default function(api)
 
 		await store.update_user(user.id, { email })
 
-		await http.patch
-		(
-			`${address_book.authentication_service}/email`,
-			{ email },
-			{ headers: { Authorization: `Bearer ${authentication_token}` } }
-		)
+		await internal_http.patch(`${address_book.authentication_service}/email`, { email })
 	})
 
 	api.patch('/', async function(data, { user })
@@ -69,7 +64,7 @@ export default function(api)
 		return await get_user({ id: user.id }, { user })
 	})
 
-	api.post('/picture', async function(picture, { user, authentication_token })
+	api.post('/picture', async function(picture, { user, authentication_token, internal_http })
 	{
 		if (!user)
 		{
@@ -78,23 +73,17 @@ export default function(api)
 
 		const user_data = await get_user(user, { user })
 
-		picture = await http.post
+		picture = await internal_http.post
 		(
 			`${address_book.image_service}/api/save`,
-			{ type: 'user_picture', image: picture },
-			{ headers: { Authorization: `Bearer ${authentication_token}` } }
+			{ type: 'user_picture', image: picture }
 		)
 
 		await store.update_user(user.id, { picture })
 
 		if (user_data.picture)
 		{
-			await http.delete
-			(
-				`${address_book.image_service}/api`,
-				{ id: user_data.picture.id },
-				{ headers: { Authorization: `Bearer ${authentication_token}` } }
-			)
+			await internal_http.delete(`${address_book.image_service}/api/${user_data.picture.id}`)
 		}
 
 		return picture

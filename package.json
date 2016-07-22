@@ -70,7 +70,7 @@
     "react-dnd-html5-backend": "^2.1.2",
     "react-dom": "^15.0.2",
     "react-intl": "^2.1.2",
-    "react-isomorphic-render": "^4.0.2",
+    "react-isomorphic-render": "^4.0.14",
     "react-modal": "^1.1.1",
     "react-phone-number-input": "^0.1.16",
     "react-redux": "^4.0.0",
@@ -87,7 +87,7 @@
     "swig-email-templates": "^3.0.0",
     "uid-safe": "^2.1.0",
     "url-loader": "^0.5.5",
-    "web-service": "^0.1.18",
+    "web-service": "^0.1.19",
     "webpack": "^2.1.0-beta.14",
     "webpack-isomorphic-tools": "^2.2.48"
   },

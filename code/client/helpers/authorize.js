@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import hoist_statics  from 'hoist-non-react-statics'
 
 import { connect }      from 'react-redux'
-import { redirect }     from 'react-isomorphic-render'
+import { redirect }     from 'react-isomorphic-render/redux'
 import { Preload_method_name, Preload_blocking_method_name } from 'react-isomorphic-render/redux'
 
 import Unauthenticated from '../pages/errors/unauthenticated'

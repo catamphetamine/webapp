@@ -1,12 +1,13 @@
 import path from 'path'
-// import fs   from 'fs'
+
+import webpack from 'webpack'
+import webpack_isomorphic_tools_plugin from 'webpack-isomorphic-tools/plugin'
+import express from 'express'
+import webpack_dev_middleware from 'webpack-dev-middleware'
+import webpack_hot_middleware from 'webpack-hot-middleware'
 
 import language from '../code/common/language'
 
-import express from 'express'
-
-import webpack                         from 'webpack'
-import webpack_isomorphic_tools_plugin from 'webpack-isomorphic-tools/plugin'
 import base_configuration              from './webpack.config'
 
 import application_configuration from '../code/common/configuration'
@@ -142,8 +143,8 @@ const compiler = webpack(configuration)
 
 const development_server = new express()
 
-development_server.use(require('webpack-dev-middleware')(compiler, development_server_options))
-development_server.use(require('webpack-hot-middleware')(compiler))
+development_server.use(webpack_dev_middleware(compiler, development_server_options))
+development_server.use(webpack_hot_middleware(compiler))
 
 development_server.listen(application_configuration.development.webpack.development_server.port, (error) =>
 {

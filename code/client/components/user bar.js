@@ -273,9 +273,6 @@ export default class Authentication extends Component
 		try
 		{
 			await this.props.sign_out()
-
-			// redirect to the main page (unnecessary)
-			// this.props.dispatch(redirect('/'))
 		}
 		catch (error)
 		{

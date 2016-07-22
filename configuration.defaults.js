@@ -158,15 +158,15 @@ module.exports =
 		write: user =>
 		({
 			role       : user.role,
-			moderation : user.moderation,
-			switches   : user.switches
+			// moderation : user.moderation,
+			// switches   : user.switches
 		}),
 
 		read: payload =>
 		({
 			role       : payload.role,
-			moderation : payload.moderation,
-			switches   : payload.switches
+			// moderation : payload.moderation,
+			// switches   : payload.switches
 		})
 	}
 }

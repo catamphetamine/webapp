@@ -1,7 +1,6 @@
+import moment from 'moment'
 import uid    from 'uid-safe'
-
-import moment         from 'moment'
-import redis          from 'redis'
+import redis  from 'redis'
 
 import MongoDB from '../common/mongodb'
 

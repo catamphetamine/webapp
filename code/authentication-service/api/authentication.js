@@ -12,7 +12,7 @@ export default function(api)
 
 	api.post('/register', register)
 
-	api.post('/authenticate', async function({}, { user, http, get_cookie, set_cookie })
+	api.post('/authenticate', async function({}, { user, internal_http, get_cookie, set_cookie })
 	{
 		// If no valid JWT token present,
 		// then assume this user is not authenticated.
@@ -21,21 +21,16 @@ export default function(api)
 			return
 		}
 
-		// Get extra user info from the database
-		const user_info = await get_user(http, user.id)
+		// Get user info from the database
+		user = await internal_http.get(`${address_book.user_service}/${user.id}`)
 
 		// If the user wasn't found in the databse
 		// (shouldn't happen in normal circumstances)
 		// then abort
-		if (!user_info)
+		if (!user)
 		{
 			return
 		}
-
-		// Full user info
-		// (info from JWT token payload
-		//  merged with the info from the database)
-		user = { ...user_info, ...user }
 
 		// Return user info
 		return own_user(user)

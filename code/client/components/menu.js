@@ -120,7 +120,17 @@ export default class Menu extends Component
 
 	render_menu_items()
 	{
-		return this.props.items.map((item, i) => <li key={i} style={style.menu.item}><Link to={item.link} style={style.menu.item.link} activeClassName="menu-item-selected" className="menu-item">{item.name}</Link></li>)
+		return this.props.items.map((item, i) => (
+			<li key={i} style={style.menu.item}>
+				<Link
+					to={item.link}
+					style={style.menu.item.link}
+					activeClassName="menu-item-selected"
+					className="menu-item">
+					{item.name}
+				</Link>
+			</li>
+		))
 	}
 
 	// calculate_height()
