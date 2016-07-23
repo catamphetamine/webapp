@@ -58,6 +58,7 @@
     "moment": "^2.10.6",
     "mongodb": "^2.1.7",
     "mongodb-migrate": "^2.0.0",
+    "node-geocoder": "^3.13.1",
     "node-sass": "^3.7.0",
     "nodemailer": "^2.4.2",
     "npm-run-all": "^1.2.13",

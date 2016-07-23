@@ -1,6 +1,7 @@
-import moment      from 'moment'
+import moment from 'moment'
 
 import { identify, read_exif } from './image manipulation'
+import local_date from './local date'
 
 // when using this module do `npm install geolib simplesets timezone --save`,
 // or install it from npm `npm install tzwhere --save` if it's fixed.
@@ -63,6 +64,24 @@ export default async function get_image_info(from, options = {})
 		if (exif.GPSLongitudeRef === 'W')
 		{
 			info.location.longitude *= -1
+		}
+
+		// `info.date` holds photo capture date and time in UTC.
+		// `info.local_date` will hold date and time
+		// local to the area where the photo was taken.
+		try
+		{
+			const local_time = await local_date(info.date, info.location)
+
+			if (local_time)
+			{
+				info.local_date = local_time
+			}
+		}
+		catch (error)
+		{
+			// Ignore errors
+			log.error(error)
 		}
 
 		// // http://stackoverflow.com/questions/16086962/how-to-get-a-time-zone-from-a-location-using-latitude-and-longitude-coordinates

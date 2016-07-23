@@ -291,6 +291,11 @@ web.upload('/upload', upload_folder,
 			result.date = image_info.date
 		}
 
+		if (image_info.local_date)
+		{
+			result.local_date = image_info.local_date
+		}
+
 		if (image_info.location)
 		{
 			result.location = image_info.location
