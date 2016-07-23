@@ -1,6 +1,6 @@
 import { add_redirect } from '../helpers/redirection'
 
-export default function(error, { url, redirect, proceed })
+export default function(error, { url, redirect })
 {
 	// not authenticated
 	if (error.status === 401)

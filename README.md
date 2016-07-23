@@ -365,6 +365,62 @@ Or one can alternatively drop the database and create it from scratch initializi
 
 Migrations are stored in the `database/sql/migrations` folder.
 
+InfluxDB
+========
+
+This application can run in demo mode without InfluxDB being installed.
+
+InfluxDB can be used to store different kinds of stats.
+
+(ports used: 8083 (web), 8086, 8090, 8099)
+
+If you want this application make use of InfluxDB then you should first install it.
+
+For OS X:
+
+```
+brew install influxdb
+
+# enable autostart
+ln -sfv /usr/local/opt/influxdb/*.plist ~/Library/LaunchAgents
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.influxdb.plist
+```
+
+<!-- /usr/local/etc/influxdb.conf -->
+
+Then run `influx`.
+
+```
+CREATE DATABASE webapp
+USE webapp
+
+CREATE RETENTION POLICY 7_days ON webapp DURATION 7d REPLICATION 1
+
+CREATE CONTINUOUS QUERY emails_in_a_day ON webapp BEGIN SELECT mean(website) AS mean_website, mean(phone) AS mean_phone INTO webapp."default".downsampled_emails_sent FROM emails_sent GROUP BY time(24h) END
+```
+
+For production the password is set in `/opt/influxdb/current/config.toml`.
+
+StatsD
+======
+
+...
+
+Grafana
+=======
+
+Grafana can be used for displaying data stored in InfluxDB (stats) as graphs.
+
+Installing Grafana:
+
+http://docs.grafana.org/installation/
+
+<!-- /usr/local/Cellar/grafana/3.1.0 -->
+
+Setting up Grafana for InfluxDB:
+
+http://docs.grafana.org/datasources/influxdb/
+
 Online status
 =============
 
@@ -382,9 +438,38 @@ Troubleshooting
 To do
 ====================
 
+при выдаче токена удалять наиболее старые (больше 10, например)
+
+
+
+
+переделать репозиторий так, чтобы в `npm run dev` запускалось всё, при этом каждая папка - отдельный сервис, со своим package.json и со своими node_modules.
+
+соответственно, npm install делаться будет для каждого сервиса, поэтому сделать команду `npm run install-сервис`, мб что-то такое
+
+
+
+перейти на docker в продакшене
+
+
+
+переделать смену почты и пароля - кнопками "изменить" и "изменить пароль" и модальными окошками
+
+
+
+при сохранении настроек мб как-то уведомлять об их сохранении - типа snack bar внизу
+
+
+
+при входе (не первом) слать письмо на почту с указанием IP, страны, времени.
+
+
+
 писать в time series базу, что отправился email с таким-то шаблоном, и в мониторинге потом выводить общее количество отправленных email-ов за сутки (с детализацией по шаблону)
 
 сделать смену емейла отправкой ссылки на старый емейл
+
+сделать страницу смены почты
 
 сделать страницу сброса пароля
 
@@ -430,17 +515,6 @@ xxx_error
 
 Также написать общий случай: сделать какое-то действие типа создать/сохранить/удалить, и потом перезапросить список с сервера.
 
-
-
-
-Вычленить в общий случай:
-
-    await http.patch
-    (
-      `${address_book.authentication_service}`,
-      { id: user_data.picture.id },
-      { headers: { Authorization: `Bearer ${authentication_token}` } }
-    )
 
 
 
