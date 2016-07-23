@@ -26,22 +26,22 @@ web.files('/temporary_storage', path.join(Root_folder, configuration.image_servi
 // if it's not a static file url:
 
 // Proxy /authentication requests to API server
-web.proxy('/authentication', address_book.authentication_service, { to_name: 'Authenication service' })
+web.proxy('/authentication', address_book.authentication_service, { name: 'Authenication service' })
 
 // Proxy /users requests to user-service
-web.proxy('/users', address_book.user_service, { to_name: 'User service' })
+web.proxy('/users', address_book.user_service, { name: 'User service' })
 
 // Proxy /api requests to API server
-web.proxy('/api', address_book.api_service, { to_name: 'API service' })
+web.proxy('/api', address_book.api_service, { name: 'API service' })
 
 // Proxy /images requests to Image server
-web.proxy('/images', address_book.image_service, { to_name: 'Image service' })
+web.proxy('/images', address_book.image_service, { name: 'Image service' })
 
 // Proxy /log requests to Log server
-web.proxy('/log', address_book.log_service, { to_name: 'Log service' })
+web.proxy('/log', address_book.log_service, { name: 'Log service' })
 
 // Proxy all the rest requests to Webpage rendering server
-web.proxy(address_book.webpage_server, { to_name: 'Page rendering service' })
+web.proxy(address_book.webpage_server, { name: 'Page rendering service' })
 
 // поднять http сервер
 web.listen(configuration.web_server.http.port).then(() =>
