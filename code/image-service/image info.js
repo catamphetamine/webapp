@@ -45,7 +45,7 @@ export default async function get_image_info(from, options = {})
 	
 	if (exif.DateTimeOriginal || exif.DateTimeDigitized)
 	{
-		info.date = parse_gps_date(exif.DateTimeOriginal || exif.DateTimeDigitized)
+		info.date_utc0 = parse_gps_date(exif.DateTimeOriginal || exif.DateTimeDigitized)
 	}
 
 	if (exif.GPSLatitude && exif.GPSLongitude)
@@ -66,16 +66,16 @@ export default async function get_image_info(from, options = {})
 			info.location.longitude *= -1
 		}
 
-		// `info.date` holds photo capture date and time in UTC.
-		// `info.local_date` will hold date and time
+		// `info.date_utc0` holds photo capture date and time in UTC.
+		// `info.date` will hold date and time
 		// local to the area where the photo was taken.
 		try
 		{
-			const local_time = await local_date(info.date, info.location)
+			const local_time = await local_date(info.date_utc0, info.location)
 
 			if (local_time)
 			{
-				info.local_date = local_time
+				info.date = local_time
 			}
 		}
 		catch (error)

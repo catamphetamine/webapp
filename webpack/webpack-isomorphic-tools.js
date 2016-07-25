@@ -5,8 +5,8 @@ module.exports =
 {
 	// debug: true,
 
-	// Uncomment to serve `webpack-assets.json` from memory (bypassing disk)
-	// (recommended)
+	// Serves `webpack-assets.json` from memory (bypassing disk)
+	// (it is recommended to turn this setting on)
 	// port: 9999,
 
 	webpack_assets_file_path : './build/webpack-assets.json',

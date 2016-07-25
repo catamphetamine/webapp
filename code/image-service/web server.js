@@ -291,9 +291,9 @@ web.upload('/upload', upload_folder,
 			result.date = image_info.date
 		}
 
-		if (image_info.local_date)
+		if (image_info.date_utc0)
 		{
-			result.local_date = image_info.local_date
+			result.date_utc0 = image_info.date_utc0
 		}
 
 		if (image_info.location)

@@ -50,7 +50,23 @@ export default function get_local_date(utc_date, coordinates)
 						return reject(data.errorMessage || data.status)
 					}
 
-					resolve(new Date(utc_date.getTime() + data.rawOffset * 1000 + data.dstOffset * 1000))
+					const local_time = new Date(utc_date.getTime() + data.dstOffset * 1000 + data.rawOffset * 1000)
+					const ISO_8601 = local_time.toISOString()
+
+					if (!ISO_8601.ends_with('Z'))
+					{
+						throw new Error(`Couldn't inject timezone into ISO 8601 Date string "${ISO_8601}": doesn't end with a "Z"`)
+					}
+				
+					let offset_minutes = data.rawOffset / 60
+					const offset_hours = Math.floor(offset_minutes / 60)
+					offset_minutes = offset_minutes % 60
+
+					const sign = data.rawOffset > 0 ? '+' : '-'
+
+					const local_date = ISO_8601.substring(0, ISO_8601.length - 1) + sign + two_digits(offset_hours) + two_digits(offset_minutes)
+
+					resolve(local_date)
 				}
 				catch (error)
 				{
@@ -60,4 +76,14 @@ export default function get_local_date(utc_date, coordinates)
 		})
 		.on('error', reject)
 	})
+}
+
+function two_digits(integer)
+{
+	integer = Math.floor(integer)
+	if (integer < 0 || integer > 99)
+	{
+		throw new Error(`Non two-digit integer supplied: ${integer}`)
+	}
+	return integer > 9 ? `${integer}` : `0${integer}`
 }
