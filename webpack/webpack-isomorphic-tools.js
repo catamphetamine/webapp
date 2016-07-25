@@ -5,6 +5,10 @@ module.exports =
 {
 	// debug: true,
 
+	// Uncomment to serve `webpack-assets.json` from memory (bypassing disk)
+	// (recommended)
+	// port: 9999,
+
 	webpack_assets_file_path : './build/webpack-assets.json',
 	webpack_stats_file_path  : './build/webpack-stats.json',
 

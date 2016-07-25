@@ -144,19 +144,41 @@ const server = webpage_server
 	html:
 	{
 		// (optional)
-		// returns an array of React elements.
-		// which will be inserted into server rendered webpage's <head/>
-		// (use `key`s to prevent React warning)
-		// head: () => React element or an array of React elements
+		// this CSS will be inserted into server rendered webpage <head/> <style/> tag 
+		// (when in development mode only - removes rendering flicker)
+		head: () =>
+		{
+			if (_development_ && html_assets.style())
+			{
+				const remove_style_javascript =
+				`
+					document.addEventListener('DOMContentLoaded', function(event)
+					{
+						// The style-loader has already added <link/>s 
+						// to its dynamic hot-reloadable styles,
+						// so remove the <style/> with the static CSS bundle
+						// inserted during server side page rendering.
+						
+						var stylesheet = document.getElementById('flash-of-unstyled-content-fix')
 
-		// (optional)
-		// returns a React element.
-		// allows for wrapping React page component with arbitrary markup
-		// (or doing whatever else can be done with a React element).
-		// returns either a React element or an array of React elements
-		// which will be inserted into server rendered webpage's <body/>
-		// body: react_page_element => react_page_element
+						// Waits a "magical" time amount of one second
+						// for the dynamically added stylesheets
+						// to be parsed and applied to the page.
+						setTimeout(function()
+						{
+							stylesheet.parentNode.removeChild(stylesheet)
+						},
+						1000)
+					})
+				`
 
+				return [
+					<style id="flash-of-unstyled-content-fix" dangerouslySetInnerHTML={{ __html: html_assets.style().toString() }} charSet="UTF-8"/>,
+					<script dangerouslySetInnerHTML={{__html: remove_style_javascript}}/>
+				]
+			}
+		},
+		
 		// returns an array of React elements.
 		// allows adding arbitrary React components to the start of the <body/>
 		// (use `key`s to prevent React warning when returning an array of React elements)
@@ -171,22 +193,6 @@ const server = webpage_server
 			}
 			
 			return <script dangerouslySetInnerHTML={{__html: initializing_javascript}}/>
-		},
-
-		// (optional)
-		// returns an array of React elements.
-		// allows adding arbitrary React components to the end of the <body/>
-		// (use `key`s to prevent React warning when returning an array of React elements)
-		// body_end: () => React element or an array of React elements
-
-		// this CSS will be inserted into server rendered webpage <head/> <style/> tag 
-		// (when in development mode only - removes rendering flicker)
-		style: () =>
-		{
-			if (html_assets.style())
-			{
-				return html_assets.style().toString()
-			}
 		}
 	},
 
