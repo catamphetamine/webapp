@@ -55,7 +55,8 @@
     "postgresql-seed": "knex seed:run",
     "mongodb-migrate": "./node_modules/.bin/mongo-migrate --runMongoMigrate --chdir database/mongodb --config mongodb-migrate.config.js --dbPropName database up",
     "mongodb-rollback": "./node_modules/.bin/mongo-migrate --runMongoMigrate --chdir database/mongodb --config mongodb-migrate.config.js --dbPropName database down",
-    "mongodb-checkpoint": "./node_modules/.bin/mongo-migrate --runMongoMigrate --chdir database/mongodb --config mongodb-migrate.config.js --dbPropName database create"
+    "mongodb-checkpoint": "./node_modules/.bin/mongo-migrate --runMongoMigrate --chdir database/mongodb --config mongodb-migrate.config.js --dbPropName database create",
+    "install-recursive": "node ../automation/install"
   },
   "betterScripts": {
     "development-web-server": {

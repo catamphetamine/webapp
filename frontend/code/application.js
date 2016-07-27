@@ -65,7 +65,7 @@ international.load().then(() =>
 		load_translation: international.load_translation
 	},
 	common)
-	.then(({ rerender }) => international.hot_reload(rerender))
+	.then(({ component, store, rerender }) => international.hot_reload(rerender))
 })
 
 // // react-hot-loader 3

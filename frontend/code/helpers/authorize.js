@@ -47,8 +47,8 @@ export default function(authorization)
 				// (for simplicity)
 				if (_server_)
 				{
-					const error = new Error('Unauthorized')
-					error.redirect_to = result.redirect_to
+					const error = new Error(user ? 'Unauthenticated' : 'Unauthorized')
+					error.status = user ? 403 : 401
 					throw error
 				}
 

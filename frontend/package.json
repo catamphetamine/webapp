@@ -78,7 +78,8 @@
     "production-page-server": "better-npm-run production-page-server",
     "react-intl-default-translation": "node ./automation/international/react-intl-default-translation.entry.js",
     "react-intl-clean-messages": "rimraf ./build/messages",
-    "react-intl-babel-run": "better-npm-run react-intl-babel-run"
+    "react-intl-babel-run": "better-npm-run react-intl-babel-run",
+    "install-recursive": "node ../automation/install"
   },
   "betterScripts": {
     "react-intl-babel-run": {

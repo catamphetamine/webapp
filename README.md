@@ -28,7 +28,7 @@ Quick Start
 ===========
 
 * make sure you have [Node.js version >= 6.0.0](https://www.npmjs.com/package/babel-preset-node6) installed
-* `npm install`
+* `npm run install-recursive` (runs `npm install` for all subdirectories recursively)
 * `npm run dev`
 * wait for it to finish the build (green stats will appear in the terminal, and it will say "Now go to http://127.0.0.1:3000")
 * go to `http://127.0.0.1:3000`
