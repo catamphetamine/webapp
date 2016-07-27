@@ -1,5 +1,6 @@
 var path = require('path')
 var webpack_isomorphic_tools_plugin = require('webpack-isomorphic-tools/plugin')
+var configuration = require('../../code/configuration')
 
 module.exports = 
 {
@@ -7,7 +8,7 @@ module.exports =
 
 	// Serves `webpack-assets.json` from memory (bypassing disk)
 	// (it is recommended to turn this setting on)
-	port: 9999,
+	port: configuration.development.webpack.isomorphic_tools.port,
 
 	webpack_assets_file_path : './build/webpack-assets.json',
 	webpack_stats_file_path  : './build/webpack-stats.json',
