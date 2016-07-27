@@ -173,8 +173,8 @@ const server = webpage_server
 				`
 
 				return [
-					<style id="flash-of-unstyled-content-fix" dangerouslySetInnerHTML={{ __html: html_assets.style().toString() }} charSet="UTF-8"/>,
-					<script dangerouslySetInnerHTML={{__html: remove_style_javascript}}/>
+					<style key={1} id="flash-of-unstyled-content-fix" dangerouslySetInnerHTML={{ __html: html_assets.style().toString() }} charSet="UTF-8"/>,
+					<script key={2} dangerouslySetInnerHTML={{__html: remove_style_javascript}}/>
 				]
 			}
 		},

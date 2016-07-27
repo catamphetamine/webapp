@@ -28,7 +28,7 @@ import net from 'net'
 import stream from 'stream'
 import util from 'util'
 import EventEmitter from 'events'
-import { acl } from 'web-service'
+import acl from './acl'
 
 const message_delimiter = '\f' // or '\n'
 
