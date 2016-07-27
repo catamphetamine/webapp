@@ -1,7 +1,7 @@
 {
   "name": "webapp",
   "version": "1.0.0",
-  "description": "a bug tracker for video production",
+  "description": "React + Redux + Webpack example project",
   "main": "code/server/entry.js",
   "repository": {
     "type": "git",
@@ -9,288 +9,42 @@
   },
   "homepage": "https://github.com/halt-hammerzeit/webapp",
   "dependencies": {
-    "autoprefixer": "^6.3.7",
-    "babel-cli": "^6.6.5",
     "babel-core": "^6.7.2",
-    "babel-loader": "^6.2.2",
     "babel-plugin-add-module-exports": "^0.1.2",
-    "babel-plugin-react-intl": "^2.1.1",
-    "babel-plugin-react-transform": "^2.0.0",
-    "babel-plugin-transform-decorators": "^6.6.5",
+    "babel-plugin-transform-bluebird": "^0.1.1",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
-    "babel-plugin-transform-react-display-name": "^6.5.0",
     "babel-plugin-transform-runtime": "^6.6.0",
-    "babel-polyfill": "^6.5.0",
     "babel-preset-es2015": "^6.6.0",
     "babel-preset-node6": "^11.0.0",
-    "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.7.2",
     "babel-runtime": "^6.6.1",
-    "bcrypt": "^0.8.6",
-    "better-npm-run": "0.0.8",
-    "bluebird": "^2.10.0",
-    "bookshelf": "~0.8.1",
+    "bluebird": "^3.4.1",
     "bunyan": "^1.8.1",
-    "bytes": "^2.1.0",
-    "classnames": "^2.2.3",
-    "clean-webpack-plugin": "^0.1.6",
-    "css-loader": "^0.23.1",
     "deep-equal": "~1.0.0",
-    "expose-loader": "^0.7.0",
-    "express": "^4.13.1",
-    "extract-text-webpack-plugin": "^2.0.0-beta.2",
-    "file-loader": "^0.8.1",
-    "filesize-parser": "^1.3.1",
     "fs-extra": "^0.24.0",
-    "glob": "^7.0.0",
-    "hiredis": "^0.5.0",
-    "hoist-non-react-statics": "^1.0.3",
-    "imagemagick": "^0.1.3",
-    "intl": "^1.0.0",
-    "intl-locales-supported": "^1.0.0",
-    "intl-messageformat": "^1.3.0",
-    "javascript-time-ago": "^0.4.1",
-    "json-loader": "^0.5.2",
-    "knex": "~0.8.6",
-    "material-ui": "^0.15.0",
     "minimist": "^1.1.1",
     "moment": "^2.10.6",
-    "mongodb": "^2.1.7",
-    "mongodb-migrate": "^2.0.0",
     "node-geocoder": "^3.13.1",
-    "node-sass": "^3.7.0",
-    "nodemailer": "^2.4.2",
     "npm-run-all": "^1.2.13",
-    "pg": "~4.4.0",
-    "postcss-loader": "^0.9.1",
     "print-error": "^0.1.7",
-    "react": "^15.0.2",
-    "react-addons-shallow-compare": "^15.0.2",
-    "react-dnd": "^2.1.4",
-    "react-dnd-html5-backend": "^2.1.2",
-    "react-dom": "^15.0.2",
-    "react-intl": "^2.1.2",
-    "react-isomorphic-render": "^4.0.16",
-    "react-modal": "^1.1.1",
-    "react-phone-number-input": "^0.1.16",
-    "react-redux": "^4.0.0",
-    "react-router": "^2.0.1",
-    "react-sticky": "^5.0.0",
-    "react-styling": "^1.3.0",
-    "react-tap-event-plugin": "^1.0.0",
-    "react-time-ago": "^0.2.0",
-    "redis": "^2.4.2",
-    "redux": "^3.0.0",
-    "rimraf": "^2.5.2",
-    "sass-loader": "^3.2.0",
-    "style-loader": "^0.12.4",
-    "swig-email-templates": "^3.0.0",
-    "uid-safe": "^2.1.0",
-    "url-loader": "^0.5.5",
-    "web-service": "^0.1.19",
-    "webpack": "^2.1.0-beta.20",
-    "webpack-isomorphic-tools": "^2.2.48"
+    "web-service": "^0.1.23"
   },
   "devDependencies": {
-    "nodemon": "^1.9.2",
-    "react-transform-catch-errors": "^1.0.0",
-    "react-transform-hmr": "^1.0.0",
-    "redbox-react": "^1.2.0",
-    "redux-logger": "^2.5.2",
-    "webpack-dev-middleware": "^1.4.0",
-    "webpack-hot-middleware": "^2.5.1"
+    "nodemon": "^1.9.2"
   },
   "scripts": {
-    "dev": "npm-run-all --parallel development-client development-server",
-    "development-client": "npm-run-all update-relay-schema development-client-webpack-dll development-client-webpack",
-    "development-client-webpack-dll": "webpack --color --display-error-details --config \"webpack/dll.entry.js\"",
-    "development-client-webpack": "node --harmony -- \"webpack/development server.entry.js\"",
-    "development-log-service": "better-npm-run development-log-service",
-    "development-authentication-service": "better-npm-run development-authentication-service",
-    "development-user-service": "better-npm-run development-user-service",
-    "development-password-service": "better-npm-run development-password-service",
-    "development-api-service": "better-npm-run development-api-service",
-    "development-page-server": "better-npm-run development-page-server",
-    "development-image-service": "better-npm-run development-image-service",
-    "development-mail-service": "better-npm-run development-mail-service",
-    "development-web-server": "better-npm-run development-web-server",
-    "development-api-service-delayed": "npm-run-all delay development-api-service",
-    "development-page-server-delayed": "npm-run-all delay delay development-page-server",
-    "development-image-service-delayed": "npm-run-all delay delay delay development-image-service",
-    "development-password-service-delayed": "npm-run-all delay delay delay delay development-password-service",
-    "development-authentication-service-delayed": "npm-run-all delay delay delay delay delay development-authentication-service",
-    "development-user-service-delayed": "npm-run-all delay delay delay delay delay delay development-user-service",
-    "development-mail-service-delayed": "npm-run-all delay delay delay delay delay delay delay development-mail-service",
-    "development-web-server-delayed": "npm-run-all delay delay delay delay delay delay delay delay development-web-server",
-    "delay": "node ./code/sleep 600",
-    "development-server": "npm-run-all --parallel development-log-service development-authentication-service-delayed development-user-service-delayed development-password-service-delayed development-api-service-delayed development-page-server-delayed development-image-service-delayed development-mail-service-delayed development-web-server-delayed",
-    "production": "npm-run-all production-build-client production-server",
-    "production-build-client": "npm-run-all update-relay-schema react-intl-clean-messages react-intl-babel-run react-intl-default-translation production-build-client-webpack",
-    "production-build-client-webpack": "webpack --color --progress --display-error-details --config \"webpack/production build.entry.js\"",
-    "production-log-service": "better-npm-run production-log-service",
-    "production-authentication-service": "better-npm-run production-authentication-service",
-    "production-user-service": "better-npm-run production-user-service",
-    "production-password-service": "better-npm-run production-password-service",
-    "production-api-service": "better-npm-run production-api-service",
-    "production-page-server": "better-npm-run production-page-server",
-    "production-image-service": "better-npm-run production-image-service",
-    "production-mail-service": "better-npm-run production-mail-service",
-    "production-web-server": "better-npm-run production-web-server",
-    "production-server": "npm-run-all --parallel production-log-service production-authentication-service production-user-service production-password-service production-api-service production-page-server production-image-service production-mail-service production-web-server",
-    "update-relay-schema": "node ./code/sleep 0",
-    "update-relay-schema_": "node \"./automation/relay/update schema.entry.js\"",
-    "react-intl-default-translation": "node ./automation/international/react-intl-default-translation.entry.js",
-    "react-intl-clean-messages": "rimraf ./build/messages",
-    "react-intl-babel-run": "better-npm-run react-intl-babel-run",
-    "postgresql-knex-init": "knex init",
-    "postgresql-migrate": "knex migrate:latest",
-    "postgresql-rollback": "knex migrate:rollback",
-    "postgresql-checkpoint": "knex migrate:make",
-    "postgresql-make-seed": "knex seed:make",
-    "postgresql-seed": "knex seed:run",
-    "mongodb-migrate": "./node_modules/.bin/mongo-migrate --runMongoMigrate --chdir database/mongodb --config mongodb-migrate.config.js --dbPropName database up",
-    "mongodb-rollback": "./node_modules/.bin/mongo-migrate --runMongoMigrate --chdir database/mongodb --config mongodb-migrate.config.js --dbPropName database down",
-    "mongodb-checkpoint": "./node_modules/.bin/mongo-migrate --runMongoMigrate --chdir database/mongodb --config mongodb-migrate.config.js --dbPropName database create"
-  },
-  "betterScripts": {
-    "react-intl-babel-run": {
-      "command": "babel --out-file ./build/react-intl-babel-run.js ./code/client",
-      "env": {
-        "NODE_ENV": "production",
-        "BABEL_ENV": "react-intl-extract-default-messages"
-      }
-    },
-    "development-page-server": {
-      "command": "nodemon ./code/page-server/entry.js --watch ./code/page-server --watch ./code/client --watch ./code/common",
-      "env": {
-        "NODE_ENV": "development",
-        "BABEL_ENV": "server"
-      }
-    },
-    "development-web-server": {
-      "command": "nodemon ./code/web-server/entry.js  --watch ./code/web-server --watch ./code/common",
-      "env": {
-        "NODE_ENV": "development",
-        "BABEL_ENV": "server"
-      }
-    },
-    "development-image-service": {
-      "command": "nodemon ./code/image-service/entry.js --watch ./code/image-service --watch ./code/common",
-      "env": {
-        "NODE_ENV": "development",
-        "BABEL_ENV": "server"
-      }
-    },
-    "development-api-service": {
-      "command": "nodemon ./code/api-service/entry.js --watch ./code/api-service --watch ./code/common",
-      "env": {
-        "NODE_ENV": "development",
-        "BABEL_ENV": "server"
-      }
-    },
-    "development-password-service": {
-      "command": "nodemon ./code/password-service/entry.js --watch ./code/password-service --watch ./code/common",
-      "env": {
-        "NODE_ENV": "development",
-        "BABEL_ENV": "server"
-      }
-    },
-    "development-user-service": {
-      "command": "nodemon ./code/user-service/entry.js --watch ./code/user-service --watch ./code/common",
-      "env": {
-        "NODE_ENV": "development",
-        "BABEL_ENV": "server"
-      }
-    },
-    "development-authentication-service": {
-      "command": "nodemon ./code/authentication-service/entry.js --watch ./code/authentication-service --watch ./code/common",
-      "env": {
-        "NODE_ENV": "development",
-        "BABEL_ENV": "server"
-      }
-    },
-    "development-mail-service": {
-      "command": "nodemon ./code/mail-service/entry.js --watch ./code/mail-service --watch ./code/common",
-      "env": {
-        "NODE_ENV": "development",
-        "BABEL_ENV": "server"
-      }
-    },
-    "development-log-service": {
-      "command": "nodemon ./code/log-service/entry.js --watch ./code/log-service --watch ./code/common",
-      "env": {
-        "NODE_ENV": "development",
-        "BABEL_ENV": "server"
-      }
-    },
-    "production-page-server": {
-      "command": "node --harmony ./code/page-server/entry.js",
-      "env": {
-        "NODE_ENV": "production",
-        "BABEL_ENV": "server"
-      }
-    },
-    "production-web-server": {
-      "command": "node --harmony ./code/web-server/entry.js",
-      "env": {
-        "NODE_ENV": "production",
-        "BABEL_ENV": "server"
-      }
-    },
-    "production-image-service": {
-      "command": "node --harmony ./code/image-service/entry.js",
-      "env": {
-        "NODE_ENV": "production",
-        "BABEL_ENV": "server"
-      }
-    },
-    "production-api-service": {
-      "command": "node --harmony ./code/api-service/entry.js",
-      "env": {
-        "NODE_ENV": "production",
-        "BABEL_ENV": "server"
-      }
-    },
-    "production-password-service": {
-      "command": "node --harmony ./code/password-service/entry.js",
-      "env": {
-        "NODE_ENV": "production",
-        "BABEL_ENV": "server"
-      }
-    },
-    "production-user-service": {
-      "command": "node --harmony ./code/user-service/entry.js",
-      "env": {
-        "NODE_ENV": "production",
-        "BABEL_ENV": "server"
-      }
-    },
-    "production-authentication-service": {
-      "command": "node --harmony ./code/authentication-service/entry.js",
-      "env": {
-        "NODE_ENV": "production",
-        "BABEL_ENV": "server"
-      }
-    },
-    "production-mail-service": {
-      "command": "node --harmony ./code/mail-service/entry.js",
-      "env": {
-        "NODE_ENV": "production",
-        "BABEL_ENV": "server"
-      }
-    },
-    "production-log-service": {
-      "command": "node --harmony ./code/log-service/entry.js",
-      "env": {
-        "NODE_ENV": "production",
-        "BABEL_ENV": "server"
-      }
-    }
+    "dev": "npm-run-all --parallel development:client development:server",
+    "development:client": "cd frontend && npm run development",
+    "development:server": "cd backend && npm run development",
+    "production": "npm-run-all --parallel production:client production:server",
+    "production:client": "cd frontend && npm run production",
+    "production:server": "cd backend && npm run production",
+    "preinstall": "node ./automation/install"
   },
   "author": "Halt Hammerzeit",
   "license": "MIT",
   "engines": {
-    "node": "4.1.1"
+    "node": "6.0.0"
   }
 }

@@ -2,14 +2,11 @@
 /log
 
 # webpack build target folder
-/build
+/frontend/build
 
 # npm modules
 # https://docs.npmjs.com/misc/faq#should-i-check-my-node-modules-folder-into-git
-/node_modules
-
-# bower, but nobody uses it since we've got webpack
-bower_components/
+node_modules
 
 # npm errors
 npm-debug.log

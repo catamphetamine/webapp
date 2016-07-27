@@ -1,0 +1,19 @@
+{
+  "name": "webapp-authentication-service",
+  "version": "1.0.0",
+  "description": "Authenticates users (sign in and sign up) and checks if they're authenticated (JWT token validation)",
+  "main": "entry.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/halt-hammerzeit/webapp.git"
+  },
+  "homepage": "https://github.com/halt-hammerzeit/webapp",
+  "dependencies": {
+    "uid-safe": "^2.1.0"
+  },
+  "author": "Halt Hammerzeit",
+  "license": "MIT",
+  "engines": {
+    "node": "6.0.0"
+  }
+}

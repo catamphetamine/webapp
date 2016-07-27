@@ -1,0 +1,16 @@
+{
+  "name": "webapp-log-service",
+  "version": "1.0.0",
+  "description": "Aggregates logs from other services",
+  "main": "entry.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/halt-hammerzeit/webapp.git"
+  },
+  "homepage": "https://github.com/halt-hammerzeit/webapp",
+  "author": "Halt Hammerzeit",
+  "license": "MIT",
+  "engines": {
+    "node": "6.0.0"
+  }
+}

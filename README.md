@@ -1163,5 +1163,5 @@ maxmemory 1gb
 Для того, чтобы git не отслеживал файл с переводом `en.json`, нужно выполнить такую команду:
 
 ```
-git update-index --assume-unchanged code/client/international/translations/messages/en.json
+git update-index --assume-unchanged frontend/code/international/translations/messages/en.json
 ```

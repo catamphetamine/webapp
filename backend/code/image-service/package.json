@@ -1,0 +1,19 @@
+{
+  "name": "webapp-image-service",
+  "version": "1.0.0",
+  "description": "Converts images during upload",
+  "main": "entry.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/halt-hammerzeit/webapp.git"
+  },
+  "homepage": "https://github.com/halt-hammerzeit/webapp",
+  "dependencies": {
+    "imagemagick": "^0.1.3"
+  },
+  "author": "Halt Hammerzeit",
+  "license": "MIT",
+  "engines": {
+    "node": "6.0.0"
+  }
+}

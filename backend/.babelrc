@@ -1,13 +1,14 @@
 {
 	"presets":
 	[
-		"es2015", 
+		"node6", 
 		"stage-0"
 	],
 
 	"plugins":
 	[
 		"transform-bluebird",
+		"transform-runtime",
 		"add-module-exports",
 		"transform-decorators-legacy"
 	]

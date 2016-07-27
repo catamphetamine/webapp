@@ -1,0 +1,19 @@
+{
+  "name": "webapp-password-service",
+  "version": "1.0.0",
+  "description": "Hashes passwords and verifies password hashes",
+  "main": "entry.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/halt-hammerzeit/webapp.git"
+  },
+  "homepage": "https://github.com/halt-hammerzeit/webapp",
+  "dependencies": {
+    "bcrypt": "^0.8.6"
+  },
+  "author": "Halt Hammerzeit",
+  "license": "MIT",
+  "engines": {
+    "node": "6.0.0"
+  }
+}

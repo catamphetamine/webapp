@@ -1,0 +1,111 @@
+{
+  "name": "webapp-frontend",
+  "version": "1.0.0",
+  "description": "What's run in a web browser (React app) + isomorphic rendering",
+  "main": "code/application.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/halt-hammerzeit/webapp.git"
+  },
+  "homepage": "https://github.com/halt-hammerzeit/webapp",
+  "dependencies": {
+    "autoprefixer": "^6.3.7",
+    "babel-cli": "^6.6.5",
+    "babel-loader": "^6.2.2",
+    "babel-plugin-react-intl": "^2.1.1",
+    "babel-plugin-react-transform": "^2.0.0",
+    "babel-plugin-transform-react-display-name": "^6.5.0",
+    "babel-polyfill": "^6.5.0",
+    "babel-preset-react": "^6.5.0",
+    "better-npm-run": "0.0.8",
+    "classnames": "^2.2.3",
+    "clean-webpack-plugin": "^0.1.6",
+    "css-loader": "^0.23.1",
+    "expose-loader": "^0.7.0",
+    "express": "^4.13.1",
+    "extract-text-webpack-plugin": "^2.0.0-beta.2",
+    "file-loader": "^0.8.1",
+    "filesize-parser": "^1.3.1",
+    "glob": "^7.0.0",
+    "hoist-non-react-statics": "^1.0.3",
+    "intl": "^1.0.0",
+    "intl-locales-supported": "^1.0.0",
+    "intl-messageformat": "^1.3.0",
+    "javascript-time-ago": "^0.4.1",
+    "json-loader": "^0.5.2",
+    "material-ui": "^0.15.0",
+    "node-sass": "^3.7.0",
+    "postcss-loader": "^0.9.1",
+    "react": "^15.0.2",
+    "react-addons-shallow-compare": "^15.0.2",
+    "react-dnd": "^2.1.4",
+    "react-dnd-html5-backend": "^2.1.2",
+    "react-dom": "^15.0.2",
+    "react-intl": "^2.1.2",
+    "react-isomorphic-render": "^4.0.16",
+    "react-modal": "^1.1.1",
+    "react-phone-number-input": "^0.1.16",
+    "react-redux": "^4.0.0",
+    "react-router": "^2.0.1",
+    "react-sticky": "^5.0.0",
+    "react-styling": "^1.3.0",
+    "react-tap-event-plugin": "^1.0.0",
+    "react-time-ago": "^0.2.0",
+    "redux": "^3.0.0",
+    "rimraf": "^2.5.2",
+    "sass-loader": "^3.2.0",
+    "style-loader": "^0.12.4",
+    "url-loader": "^0.5.5",
+    "webpack": "^2.1.0-beta.20",
+    "webpack-isomorphic-tools": "^2.5.2"
+  },
+  "devDependencies": {
+    "react-transform-catch-errors": "^1.0.0",
+    "react-transform-hmr": "^1.0.0",
+    "redbox-react": "^1.2.0",
+    "redux-logger": "^2.5.2",
+    "webpack-dev-middleware": "^1.4.0",
+    "webpack-hot-middleware": "^2.5.1"
+  },
+  "scripts": {
+    "development": "npm-run-all --parallel development-client development-page-server",
+    "development-client": "npm-run-all development-client-webpack-dll development-client-webpack development-page-server",
+    "development-client-webpack-dll": "webpack --color --display-error-details --config \"webpack/dll.entry.js\"",
+    "development-client-webpack": "node --harmony -- \"webpack/development server.entry.js\"",
+    "development-page-server": "better-npm-run development-page-server",
+    "production": "npm-run-all react-intl-clean-messages react-intl-babel-run react-intl-default-translation production-build-client-webpack production-page-server",
+    "production-build-client-webpack": "webpack --color --progress --display-error-details --config \"webpack/production build.entry.js\"",
+    "production-page-server": "better-npm-run production-page-server",
+    "react-intl-default-translation": "node ./automation/international/react-intl-default-translation.entry.js",
+    "react-intl-clean-messages": "rimraf ./build/messages",
+    "react-intl-babel-run": "better-npm-run react-intl-babel-run"
+  },
+  "betterScripts": {
+    "react-intl-babel-run": {
+      "command": "babel --out-file ./build/react-intl-babel-run.js ./code",
+      "env": {
+        "NODE_ENV": "production",
+        "BABEL_ENV": "react-intl-extract-default-messages"
+      }
+    },
+    "development-page-server": {
+      "command": "../node_modules/.bin/nodemon ./page-server/entry.js --watch ./page-server --watch ./code --watch ../code",
+      "env": {
+        "NODE_ENV": "development",
+        "BABEL_ENV": "server"
+      }
+    },
+    "production-page-server": {
+      "command": "node --harmony ./page-server/entry.js",
+      "env": {
+        "NODE_ENV": "production",
+        "BABEL_ENV": "server"
+      }
+    }
+  },
+  "author": "Halt Hammerzeit",
+  "license": "MIT",
+  "engines": {
+    "node": "6.0.0"
+  }
+}
