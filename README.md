@@ -39,13 +39,6 @@ Quick Start
 * go to `http://127.0.0.1:3000`
 * interact with the production version of the web application
 
-Installation
-============
-
-```sh
-npm install
-```
-
 Configuration
 =============
 
@@ -430,6 +423,19 @@ If a certain Http request is automated and shouldn't be interpreted as a user be
 
 This works for GET requests, and I suppose it would work for POST requests too.
 
+Docker
+======
+
+In production all services can be containerized using Docker.
+
+To build a Docker image, run this script from the directory of a service: (work in progress)
+
+```
+npm run docker:image
+```
+
+To monitor Docker containers (availability) one can use Consul.
+
 Troubleshooting
 ===============
 
@@ -438,6 +444,30 @@ Troubleshooting
 To do
 ====================
 
+переделать смену почты и пароля - кнопками "изменить" и активируемым полем ввода, а при сохранении - модальными окошками с запросом пароля.
+
+при вводе неправильного пароля - уведомление о неправильности пароля в окошке ввода пароля.
+
+соответственно, внизу кнопка "сохранить" переедет в другую панель.
+
+сделать класс <Panel title={}></Panel>, с busy={true/false}
+
+панель с токенами подгружать по запросу.
+также резолвить там IP в страну и город.
+
+при смене емейла - отправлять i18n шаблон на новую почту со ссылкой на подтверждение ящика, до этого генерируя в authentication service ключ для смены емейла (и с текстом, что "если это не вы, то не обращайте внимания"). при проходе по ссылке - страницу "ваш email изменён".
+
+сделать письмо восстановления (то есть смены) пароля (форма входа + настройки) - то же самое, токен писать в коллекцию (уже другую), и сделать страницу сброса пароля на новый.
+
+
+
+
+справа сделать стек уведомлений.
+
+
+
+
+
 при выдаче токена удалять наиболее старые (больше 10, например)
 
 
@@ -445,8 +475,6 @@ To do
 перейти на docker в продакшене
 
 
-
-переделать смену почты и пароля - кнопками "изменить" и "изменить пароль" и модальными окошками
 
 
 
@@ -544,6 +572,13 @@ upserted []
 
 
 
+лицензионные соглашения сделать маркдауном, и генерить их на лету, наверное.
+для этого придётся сделать отдельный Route для /licence/${language}, и там асинхронно подгружать React компонент, который уже будет делать какой-нибудь file-loader для licence.md.
+
+
+
+
+
 не давать просто так изменить почту: только по гуглаутентикатору мб, или по вводу пароля
 
 при смене почты отправлять письмо на старую почту с подтверждением операции; без подтверждения со старого ящика почту не менять
@@ -551,14 +586,6 @@ upserted []
 сделать двухфакторную аутентикацию
 
 
-
-
-
-
-
-Parse dates in http client в react-isomorphic-render:
-
-https://github.com/visionmedia/superagent/issues/986
 
 
 

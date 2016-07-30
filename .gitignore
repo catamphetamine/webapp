@@ -28,10 +28,6 @@ gh-pages/
 # test coverage folder
 coverage
 
-# webpack-isomorphic-tools
-/webpack-stats.json
-/webpack-assets.json
-
 # uploaded files before processing
 /temporary_storage
 

@@ -97,7 +97,7 @@ export default class Log extends Component
 				{title(this.props.translate(layout_messages.menu_log))}
 
 				<section className="content">
-					<table>
+					<table style={style.log}>
 						<thead>
 							<tr>
 								<th>pid</th>
@@ -253,6 +253,8 @@ export default class Log extends Component
 const style = styler
 `
 	log
+		width : 100%
+
 		entry
 			&error
 				background: #FFC9C9

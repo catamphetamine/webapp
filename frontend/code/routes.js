@@ -56,7 +56,7 @@ import authorization from './helpers/authorize'
 
 const authorize = (component, is_authorized) => authorization(is_authorized)(component)
 
-export default function() // ({ store })
+export default function() // ({ dispatch, getState })
 {
 	const routes =
 	(
