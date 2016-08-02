@@ -181,14 +181,16 @@ export default class Log extends Component
 				</td>
 				<td>
 					{entry.msg}
-					{!entry.err ? null :
-					<span>
-						{' '}
-						<button 
-							onClick={() => this.show_stack_trace(parse_stack_trace(entry.err.stack), entry.msg)}>
-							{this.props.translate(messages.show_stack_trace)}
-						</button>
-					</span>}
+
+					{entry.err &&
+						<span>
+							{' '}
+							<button 
+								onClick={() => this.show_stack_trace(parse_stack_trace(entry.err.stack), entry.msg)}>
+								{this.props.translate(messages.show_stack_trace)}
+							</button>
+						</span>
+					}
 				</td>
 			</tr>
 		)
@@ -207,31 +209,31 @@ export default class Log extends Component
 
 		if (line_info.file_path)
 		{
-			line.push(<span style={style.stack_trace.stack.line.file_name}>{line_info.file_name}</span>)
+			line.push(<span key="file-name" style={style.stack_trace.stack.line.file_name}>{line_info.file_name}</span>)
 		}
 
 		if (line_info.file_line_number)
 		{
-			line.push(<span style={style.stack_trace.stack.line.colon}>:</span>)
-			line.push(<span style={style.stack_trace.stack.line.file_line_number}>{line_info.file_line_number}</span>)
+			line.push(<span key="line-number-colon" style={style.stack_trace.stack.line.colon}>:</span>)
+			line.push(<span key="line-number" style={style.stack_trace.stack.line.file_line_number}>{line_info.file_line_number}</span>)
 		}
 
 		if (line_info.method_path)
 		{
 			if (line.length > 0)
 			{
-				line.push(<span> </span>)
+				line.push(<span key="method-path-spacer"> </span>)
 			}
 
-			line.push(<span style={style.stack_trace.stack.line.method_path}>{line_info.method_path}</span>)
+			line.push(<span key="method-path" style={style.stack_trace.stack.line.method_path}>{line_info.method_path}</span>)
 		}
 
 		if (line_info.file_path)
 		{	
-			line.push(<div style={style.stack_trace.stack.line.file_path}>{line_info.file_path}</div>)
+			line.push(<div key="file-path" style={style.stack_trace.stack.line.file_path}>{line_info.file_path}</div>)
 		}
 
-		return <span>{line}</span>
+		return <div>{line}</div>
 	}
 
 	show_stack_trace(stack_trace, error_message)

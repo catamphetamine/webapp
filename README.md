@@ -373,23 +373,54 @@ For OS X:
 
 ```
 brew install influxdb
+```
 
+```
 # enable autostart
 ln -sfv /usr/local/opt/influxdb/*.plist ~/Library/LaunchAgents
 launchctl load ~/Library/LaunchAgents/homebrew.mxcl.influxdb.plist
 ```
 
-<!-- /usr/local/etc/influxdb.conf -->
+```
+influx
+> CREATE USER admin WITH PASSWORD [administrator password here] WITH ALL PRIVILEGES
+> CREATE USER webapp WITH PASSWORD [webapp password here]
+> exit
+```
+
+```
+nano /usr/local/etc/influxdb.conf
+
+# [http]
+#   auth-enabled = true
+```
+
+```
+launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.influxdb.plist
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.influxdb.plist
+```
 
 Then run `influx`.
 
 ```
 CREATE DATABASE webapp
+GRANT ALL ON webapp TO webapp
 USE webapp
 
 CREATE RETENTION POLICY 7_days ON webapp DURATION 7d REPLICATION 1
 
 CREATE CONTINUOUS QUERY emails_in_a_day ON webapp BEGIN SELECT mean(website) AS mean_website, mean(phone) AS mean_phone INTO webapp."default".downsampled_emails_sent FROM emails_sent GROUP BY time(24h) END
+```
+
+```
+# To do: generate SSL certificate
+# 
+# [http]
+#   https-enabled = true
+#   https-certificate = “/etc/ssl/influxdb.pem”
+#
+# [continuous_queries]
+#   run-interval = “1m”
 ```
 
 For production the password is set in `/opt/influxdb/current/config.toml`.
