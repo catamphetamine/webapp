@@ -1,3 +1,3 @@
 import log from '../../../code/log'
 
-export default log('webapp image server')
+export default log('image service')

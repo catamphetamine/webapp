@@ -11,7 +11,7 @@ direct_logger.write = data =>
 	message_store.add(data)
 }
 
-export default log('webapp log server',
+export default log('log service',
 {
 	use_log_server: false,
 	extra_streams: [direct_logger]

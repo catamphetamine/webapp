@@ -1,3 +1,3 @@
 import log from '../../code/log'
 
-export default log('webapp webpage rendering server')
+export default log('page rendering service')
