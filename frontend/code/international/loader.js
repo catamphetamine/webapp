@@ -55,16 +55,47 @@ const international =
 		{
 			debug(`Intl or locale data for "${locale}" not available, downloading the polyfill...`)
 
-			// When building: create a intl chunk with webpack
-			// When executing: run the callback once the chunk has been download.
-			require.ensure(['intl'], (require) =>
+			// do not remove code duplication (because Webpack won't work as expected)
+			switch (get_language_from_locale(locale))
 			{
-				// apply the polyfill
-				require('intl')
-				debug(`Intl polyfill for "${locale}" has been loaded`)
-				resolve()
-			},
-			'intl')
+				// russian
+				case 'ru':
+					// When building: create a intl chunk with webpack
+					// When executing: run the callback once the chunk has been download.
+					require.ensure
+					([
+						'intl',
+						'intl/locale-data/jsonp/en.js'
+					],
+					(require) =>
+					{
+						// apply the polyfill
+						require('intl')
+						require('intl/locale-data/jsonp/en.js')
+						debug(`Intl polyfill for "${locale}" has been loaded`)
+						resolve()
+					},
+					'intl')
+					break
+
+				default:
+					// When building: create a intl chunk with webpack
+					// When executing: run the callback once the chunk has been download.
+					require.ensure
+					([
+						'intl',
+						'intl/locale-data/jsonp/ru.js'
+					],
+					(require) =>
+					{
+						// apply the polyfill
+						require('intl')
+						require('intl/locale-data/jsonp/ru.js')
+						debug(`Intl polyfill for "${locale}" has been loaded`)
+						resolve()
+					},
+					'intl')
+			}
 		})
 	},
 
@@ -115,22 +146,21 @@ const international =
 
 				// english
 				default:
-					// require.ensure(['react-intl/dist/locale-data/en'], (require) =>
-					// {
-					// 	require('react-intl/dist/locale-data/en')
-					// 	debug(`ReactIntl locale-data for "${locale}" has been downloaded`)
-					// 	resolve()
-					// },
-					// 'locale-en')
-
 					// download intl locale data for this language
 					require.ensure
 					([
+						// (is hardcoded into `react-intl`)
+						// 'react-intl/locale-data/en',
+
 						'intl-messageformat/dist/locale-data/en',
 						'javascript-time-ago/locales/en'
 					],
 					require =>
 					{
+						// (is hardcoded into `react-intl`)
+						// add_locale_data(require('react-intl/locale-data/en'))
+						// debug(`ReactIntl locale-data for "${locale}" has been downloaded`)
+						
 						require('intl-messageformat/dist/locale-data/en')
 						javascript_time_ago.locale(require('javascript-time-ago/locales/en'))
 						
@@ -146,7 +176,7 @@ const international =
 		// makes Webpack HMR work for this locale for now
 		_locale = locale
 
-		switch (locale)
+		switch (get_language_from_locale(locale))
 		{
 			case 'ru':
 				return new Promise(resolve =>
