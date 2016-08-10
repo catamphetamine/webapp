@@ -83,10 +83,7 @@ const server = webpage_server
 	// (will be added to Redux store)
 	preload: async (http, { request }) =>
 	{
-		let user = await http.post(`/authentication/authenticate`)
-
-		// convert empty object `{}` to `undefined`
-		user = user.id ? user : undefined
+		const user = await http.post(`/authentication/authenticate`)
 
 		return { authentication: { user } }
 	},
