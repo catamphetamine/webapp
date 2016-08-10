@@ -145,15 +145,18 @@ const messages = defineMessages
 
 		locale : model.locale.locale
 	}),
-	dispatch => bind_action_creators
+	dispatch =>
 	({
-		update_user,
-		upload_user_picture,
-		save_user_picture,
-		get_users_latest_activity_time,
-		dispatch
-	},
-	dispatch)
+		dispatch,
+		...bind_action_creators
+		({
+			update_user,
+			upload_user_picture,
+			save_user_picture,
+			get_users_latest_activity_time
+		},
+		dispatch)
+	})
 )
 @international()
 export default class User_profile extends Component

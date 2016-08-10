@@ -124,16 +124,17 @@ const messages = defineMessages
 		revoking_authentication_token : model.user_settings.revoking_authentication_token,
 		saving_settings               : model.user_settings.saving_settings
 	}),
-	dispatch => bind_action_creators
+	dispatch =>
 	({
-		// get_user,
-		load_advanced_settings,
-		get_user_authentication_tokens,
-		revoke_authentication_token,
-		change_email,
-		dispatch
-	},
-	dispatch)
+		dispatch,
+		...bind_action_creators
+		({
+			get_user_authentication_tokens,
+			revoke_authentication_token,
+			change_email
+		},
+		dispatch)
+	})
 )
 @international()
 export default class Settings_page extends Component
@@ -401,13 +402,14 @@ export default class Settings_page extends Component
 			await this.props.get_user_authentication_tokens()
 			
 			this.props.dispatch({ type: 'user settings: load advanced settings done' })
-			this.setState({ showing_advanced_settings: true })
 		}
 		catch (error)
 		{
 			console.error(error)
-			this.props.dispatch({ type: 'user settings: load advanced settings failed', error: true })
+			return this.props.dispatch({ type: 'user settings: load advanced settings failed', error: true })
 		}
+		
+		this.setState({ showing_advanced_settings: true })
 	}
 }
 
