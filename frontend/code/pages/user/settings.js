@@ -146,7 +146,6 @@ export default class Settings_page extends Component
 
 		// get_user : PropTypes.func.isRequired,
 
-		load_advanced_settings        : PropTypes.func.isRequired,
 		loading_advanced_settings     : PropTypes.bool,
 		load_advanced_settings_error  : PropTypes.any,
 
@@ -179,7 +178,6 @@ export default class Settings_page extends Component
 			authentication_tokens,
 			translate,
 			saving_settings,
-			// load_advanced_settings,
 			loading_advanced_settings,
 			load_advanced_settings_error,
 			revoking_authentication_token
@@ -408,7 +406,7 @@ export default class Settings_page extends Component
 			console.error(error)
 			return this.props.dispatch({ type: 'user settings: load advanced settings failed', error: true })
 		}
-		
+
 		this.setState({ showing_advanced_settings: true })
 	}
 }

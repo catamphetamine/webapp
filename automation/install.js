@@ -30,7 +30,7 @@ function npm_install_recursive(folder)
 			console.log(`Performing "npm install" inside ${folder === root ? 'root folder' : './' + path.relative(root, folder)}`)
 			console.log('===================================================================')
 		}
-		
+
 		npm_install(folder)
 	}
 

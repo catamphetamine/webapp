@@ -31,20 +31,6 @@ export function change_email(email)
 	return action
 }
 
-export function load_advanced_settings()
-{
-	const action =
-	{
-		promise : http =>
-		{
-			return get_user_authentication_tokens().promise(http)
-		},
-		event	 : 'user settings: load advanced settings'
-	}
-
-	return action
-}
-
 export function get_user_authentication_tokens()
 {
 	const action =
