@@ -18,8 +18,7 @@ import
 	get_user,
 	get_user_authentication_tokens,
 	revoke_authentication_token,
-	change_email,
-	load_advanced_settings
+	change_email
 }
 from '../../actions/user settings'
 
