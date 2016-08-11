@@ -172,5 +172,32 @@ module.exports =
 			// moderation : payload.moderation,
 			// switches   : payload.switches
 		})
-	}
+	},
+	// // https://github.com/nchaulet/node-geocoder
+	// geocoding:
+	// {
+	// 	// Address to GPS coordinates
+	// 	address:
+	// 	{
+	// 		provider: 'google',
+	// 		key: '...'
+	// 	},
+	// 	// GPS coordinates to address
+	// 	reverse:
+	// 	{
+	// 		provider: 'google',
+	// 		key: '...'
+	// 	},
+	// 	// IP address to address
+	// 	reverse_ip:
+	// 	{
+	// 		provider: 'freegeoip'
+	// 	},
+	// 	// Coordinates to timezone offset
+	// 	timezone_by_coordinates:
+	// 	{
+	// 		provider: 'google',
+	// 		key: '...'
+	// 	}
+	// }
 }

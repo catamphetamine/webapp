@@ -323,14 +323,14 @@ export default class Settings_page extends Component
 
 													{/* For each different IP address show latest activity time */}
 													<ul style={style.authentication_token.latest_activity}>
-														{token.history.map((activity, activity_index) =>
+														{token.history.sort((a, b) => b.time.getTime() - a.time.getTime()).map((activity, activity_index) =>
 														{
 															{/* Latest activity time for this IP address */}
 															return <li key={activity_index}>
 																{/* IP address, also resolving city and country */}
 																<code>{activity.ip}</code>{/* (city, country)*/},
 																{' '}
-																{ activity.city && `${activity.city}, ${activity.country}` }
+																{ activity.place && activity.place.city && `${activity.place.city}, ${activity.place.country}, ` }
 																{' '}
 																{/* Latest activity time */}
 																<React_time_ago date={activity.time}/>

@@ -65,7 +65,18 @@ export function lookup_ip(ip)
 		throw new Error(`Reverse IP geocoder not set up in configuration`)
 	}
 
-	return reverse_ip_geocoder.geocode(ip).then(results => results[0])
+	return reverse_ip_geocoder.geocode(ip).then(results =>
+	{
+		const result = results[0]
+
+		delete result.ip
+		delete result.zipcode
+		delete result.metroCode
+		delete result.timeZone
+		delete result.provider
+		
+		return result
+	})
 }
 
 export function can_lookup_coordinates()

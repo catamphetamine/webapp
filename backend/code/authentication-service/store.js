@@ -7,6 +7,8 @@ import redis  from 'redis'
 
 import MongoDB from '../common/mongodb'
 
+import { lookup_ip, can_lookup_ip } from '../../../code/geocoding'
+
 Promise.promisifyAll(redis)
 
 // user's latest activity time accuracy
@@ -295,7 +297,7 @@ class Mongodb_store extends MongoDB
 	{
 		const now = round_user_access_time(new Date())
 
-		// update user's online status
+		// Update user's online status
 		let previous_time = await online_status_store.get_and_set(user.id, new Date())
 
 		if (previous_time)
@@ -303,11 +305,11 @@ class Mongodb_store extends MongoDB
 			previous_time = round_user_access_time(previous_time)
 		}
 
-		// if enough time has passed to update this user's latest activity time,
+		// If enough time has passed to update this user's latest activity time,
 		// then update it
 		if (!previous_time || now.getTime() > previous_time.getTime())
 		{
-			// update user's `latest_activity_time`
+			// Update user's `latest_activity_time`
 			await this.collection('user_authentication').update_by_id(user.id,
 			{
 				$set:
@@ -317,21 +319,87 @@ class Mongodb_store extends MongoDB
 				}
 			})
 
-			// update token access information
-			await this.collection('authentication_tokens').updateOneAsync
+			// Find history entry for this IP
+			const token_with_this_ip_history_entry = await this.collection('authentication_tokens').findOneAsync
 			({
-				_id: this.ObjectId(authentication_token_id),
-				'history.ip': ip
-			},
-			{
-				$set:
-				{
-					// redundant field for faster access token sorting
-					latest_access: now,
-
-					'history.$': { ip, time: now }
-				}
+				_id          : this.ObjectId(authentication_token_id),
+				'history.ip' : ip
 			})
+
+			// If this IP has an entry in the history,
+			// then just update the timestamp
+			if (token_with_this_ip_history_entry)
+			{
+				// History entry for this IP
+				const this_ip_entry = token_with_this_ip_history_entry.history.find_by({ ip })
+
+				// Update latest access time for this IP
+				this_ip_entry.time = now
+
+				// Check that place info is set for this IP
+				if (!this_ip_entry.place)
+				{
+					// Gather info about the place of access
+					const place = await get_place_for_ip(ip)
+
+					// Log the place info
+					if (place && place.city)
+					{
+						this_ip_entry.place = place
+					}
+				}
+
+				// Update token' latest access time,
+				// and also this IP history entry latest access time.
+				await this.collection('authentication_tokens').updateOneAsync
+				({
+					_id          : this.ObjectId(authentication_token_id),
+					'history.ip' : ip
+				},
+				{
+					$set:
+					{
+						// redundant field for faster access token sorting
+						latest_access: now,
+
+						'history.$': this_ip_entry
+					}
+				})
+			}
+			// If this IP has no entry in the history,
+			// then also locate in on the map.
+			else
+			{
+				// Create access history entry for the token for this IP
+				const access_entry = { ip, time: now }
+
+				// Gather info about the place of access
+				const place = await get_place_for_ip(ip)
+
+				// Log the place info
+				if (place && place.city)
+				{
+					access_entry.place = place
+				}
+
+				// Update token's latest access time,
+				// and insert access history entry for the token for this IP
+				await this.collection('authentication_tokens').updateOneAsync
+				({
+					_id: this.ObjectId(authentication_token_id)
+				},
+				{
+					$set:
+					{
+						// Redundant field for faster access token sorting
+						latest_access: now
+					},
+					$addToSet:
+					{
+						history: access_entry
+					}
+				})
+			}
 		}
 	}
 
@@ -455,4 +523,21 @@ export function connect()
 		store.connect(),
 		online_status_store.connect()
 	])
+}
+
+async function get_place_for_ip(ip)
+{
+	if (!can_lookup_ip())
+	{
+		return
+	}
+
+	try
+	{
+		return await lookup_ip('93.80.231.194') // ip)
+	}
+	catch (error)
+	{
+		log.error(error)
+	}
 }

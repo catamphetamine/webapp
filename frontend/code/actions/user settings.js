@@ -1,5 +1,3 @@
-// import { lookup_ip } from '../../../code/geocoding'
-
 export function get_user(user_id)
 {
 	const action =
@@ -37,28 +35,7 @@ export function get_user_authentication_tokens()
 {
 	const action =
 	{
-		promise : async http =>
-		{
-			const { tokens } = await http.get(`/authentication/tokens`)
-
-			// Geocoding currently doesn't work on the client side
-			// https://github.com/nchaulet/node-geocoder/issues/187
-			//
-			// await Promise.all(tokens.map(async token =>
-			// {
-			// 	for (let access of token.history)
-			// 	{
-			// 		const place = await lookup_ip(access.ip)
-			//
-			// 		access.city    = place.city
-			// 		access.country = place.country
-			// 	}
-			//
-			// 	return token
-			// }))
-
-			return { tokens }
-		},
+		promise : http => http.get(`/authentication/tokens`),
 		event   : 'user settings: get user authentication tokens'
 	}
 
