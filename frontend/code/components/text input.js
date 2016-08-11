@@ -259,7 +259,8 @@ function autoresize_measure(element)
 		parseInt(style.borderBottomWidth)
 
 	// Raw `.getBoundingClientRect().height` could be used here
-	// to avoid rounding, but `.scrollHeight` has no non-rounded equivalent.
+	// to avoid rounding (e.g. `em`, `rem`, `pt`, etc),
+	// but `.scrollHeight` has no non-rounded equivalent.
 	const initial_height = Math.ceil(element.getBoundingClientRect().height) // element.offsetHeight
 	// Apply height rounding
 	element.style.height = initial_height + 'px'
