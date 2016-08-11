@@ -58,9 +58,9 @@ class Memory_store
 
 	update_email(user_id, email)
 	{
-		this.users[user_id].email = email
+		this.users.get(user_id).email = email
 
-		return Promise.resolve()
+		return Promise.resolve(true)
 	}
 
 	find_token_by_id(token_id)
