@@ -85,7 +85,14 @@ const server = webpage_server
 	{
 		const user = await http.post(`/authentication/authenticate`)
 
-		return { authentication: { user } }
+		const model =
+		{
+			authentication: { user },
+			// Is used by "material-ui" for CSS autoprefixing
+			navigator: { userAgent: request.headers['user-agent'] }
+		}
+
+		return model
 	},
 
 	// internationalization

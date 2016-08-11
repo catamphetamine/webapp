@@ -15,6 +15,7 @@ import Spinner      from '../../components/spinner'
 import Date_picker from 'material-ui/DatePicker/DatePicker'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
+@connect(model => ({ navigator: model.navigator }))
 export default class Form_showcase extends Component
 {
 	state = 
@@ -36,7 +37,7 @@ export default class Form_showcase extends Component
 	getChildContext()
 	{
 		return {
-			muiTheme: getMuiTheme()
+			muiTheme: getMuiTheme({ userAgent: this.props.navigator.userAgent })
 		}
 	}
 
@@ -140,7 +141,17 @@ export default class Form_showcase extends Component
 					<p><i>You may see a "React attempted to reuse markup in a container" warning in the console because of this 3rd party component</i></p>
 					<p><a href="https://github.com/callemall/material-ui/issues/4219">has calendar positioning issue</a></p>
 					<div className="date-picker">
-						<Date_picker style={style.form.date_picker} hintText="Portrait Dialog" autoOk={true} container="inline" textFieldStyle={style.form.date_picker.input} hintStyle={style.form.date_picker.hint} underlineShow={false}/>
+						{/* `id` is a workaround for a randomly generated UID issue */}
+						{/* https://github.com/callemall/material-ui/issues/3757 */}
+						<Date_picker
+							id="date_picker"
+							style={style.form.date_picker}
+							hintText="Portrait Dialog"
+							autoOk={true}
+							container="inline"
+							textFieldStyle={style.form.date_picker.input}
+							hintStyle={style.form.date_picker.hint}
+							underlineShow={false}/>
 					</div>
 				</Form>
 			</div>
