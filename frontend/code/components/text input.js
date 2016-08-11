@@ -249,11 +249,7 @@ const style = styler
 `
 
 // <textarea/> autoresize (without ghost elements)
-
 // https://github.com/javierjulio/textarea-autosize/blob/master/src/jquery.textarea_autosize.js
-
-// const not_blank = value => value.replace(/\s/g, '').length > 0
-
 function autoresize_measure(element)
 {
 	const style = window.getComputedStyle(element)
@@ -261,11 +257,6 @@ function autoresize_measure(element)
 	const extra_height = 
 		parseInt(style.borderTopWidth) +
 		parseInt(style.borderBottomWidth)
-
-	// if (not_blank(element.value))
-	// {
-	// 	element.style.height = (element.scrollHeight + extra_height) + 'px'
-	// }
 
 	// raw `.getBoundingClientRect().height` could be used here
 	// to avoid rounding, but `.scrollHeight` has no non-rounded equivalent.
