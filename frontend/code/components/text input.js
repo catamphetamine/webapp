@@ -33,7 +33,6 @@ export default class Text_input extends Component
 		this.on_focus         = this.on_focus.bind(this)
 		this.on_change        = this.on_change.bind(this)
 		this.autoresize       = this.autoresize.bind(this)
-		this.measure_textarea = this.measure_textarea.bind(this)
 	}
 
 	// Client side rendering, javascript is enabled
@@ -41,7 +40,7 @@ export default class Text_input extends Component
 	{
 		if (this.props.multiline)
 		{
-			this.setState({ autoresize_extra_height: autoresize_extra_height(ReactDOM.findDOMNode(this.refs.input)) })
+			this.setState({ autoresize: autoresize_measure(ReactDOM.findDOMNode(this.refs.input)) })
 		}
 
 		this.setState({ javascript: true })
@@ -84,7 +83,7 @@ export default class Text_input extends Component
 		return markup
 	}
 
-	render_input({ placeholder })
+	render_input({ placeholder, ref })
 	{
 		const { name, value, label, multiline, email, password, focus } = this.props
 
@@ -114,9 +113,9 @@ export default class Text_input extends Component
 		const properties =
 		{
 			name,
-			ref         : 'input',
+			ref         : ref === false ? undefined : 'input',
 			value       : value === undefined ? '' : value,
-			placeholder : placeholder ? label : undefined,
+			placeholder : placeholder === false ? undefined : label,
 			onFocus     : this.on_focus,
 			onChange    : this.on_change,
 			className   : 'text-input-field',
@@ -131,7 +130,6 @@ export default class Text_input extends Component
 				rows={2}
 				onInput={this.autoresize}
 				onKeyUp={this.autoresize}
-				onKeyDown={this.measure_textarea}
 				{...properties}/>
 		}
 
@@ -155,7 +153,7 @@ export default class Text_input extends Component
 		(
 			<div className="rich-fallback">
 				{/* <input/> */}
-				{this.render_input({ placeholder: true })}
+				{this.render_input({ placeholder: true, ref: false })}
 
 				{/* Error message */}
 				{this.render_error_message()}
@@ -163,17 +161,6 @@ export default class Text_input extends Component
 		)
 
 		return markup
-	}
-
-	measure_textarea(event)
-	{
-		if (this.state.textarea_initial_height === undefined)
-		{
-			const element = event.target
-			// `.getBoundingClientRect().height` could be used here
-			// to avoid rounding, but `.scrollHeight` has no non-rounded equivalent.
-			this.setState({ textarea_initial_height: element.offsetHeight })
-		}
 	}
 
 	// "keyup" is required for IE to properly reset height when deleting text
@@ -185,8 +172,8 @@ export default class Text_input extends Component
 
 		element.style.height = 0
 
-		let height = element.scrollHeight + this.state.autoresize_extra_height
-		height = Math.max(height, this.state.textarea_initial_height)
+		let height = element.scrollHeight + this.state.autoresize.extra_height
+		height = Math.max(height, this.state.autoresize.initial_height)
 
 		element.style.height = height + 'px'
 
@@ -267,7 +254,7 @@ const style = styler
 
 // const not_blank = value => value.replace(/\s/g, '').length > 0
 
-function autoresize_extra_height(element)
+function autoresize_measure(element)
 {
 	const style = window.getComputedStyle(element)
 
@@ -280,5 +267,11 @@ function autoresize_extra_height(element)
 	// 	element.style.height = (element.scrollHeight + extra_height) + 'px'
 	// }
 
-	return extra_height
+	// raw `.getBoundingClientRect().height` could be used here
+	// to avoid rounding, but `.scrollHeight` has no non-rounded equivalent.
+	const initial_height = Math.ceil(element.getBoundingClientRect().height) // element.offsetHeight
+	// Apply height rounding
+	element.style.height = initial_height + 'px'
+
+	return { extra_height, initial_height }
 }
