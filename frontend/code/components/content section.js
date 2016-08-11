@@ -13,15 +13,19 @@ export default class Content_section extends Component
 
 	render()
 	{
-		const { title, padding, className, children } = this.props
+		const { title, padding, busy, className, children } = this.props
 
 		const markup =
 		(
 			<section
 				className={classNames
 				(
+					className,
 					'content-section',
-					{ 'content-section--no-padding': padding === false }
+					{
+						'content-section--busy'       : busy,
+						'content-section--no-padding' : padding === false
+					}
 				)}>
 
 				{ title && <h2 className="content-section-header">{title}</h2> }

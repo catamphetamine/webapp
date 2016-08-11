@@ -200,7 +200,9 @@ export default class Settings_page extends Component
 						{/* User's personal info */}
 
 						{/* "Settings" */}
-						<Content_section title={translate(messages.header)}>
+						<Content_section
+							title={translate(messages.header)}
+							busy={saving_settings}>
 
 							{/* User's email */}
 							<Text_input
