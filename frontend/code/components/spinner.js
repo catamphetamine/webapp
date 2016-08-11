@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 import styler from 'react-styling'
+import classNames from 'classnames'
 
 // http://codepen.io/jczimm/pen/vEBpoL
 // (18.02.2016)
@@ -89,7 +90,7 @@ export default class Spinner extends Component
 
 		const markup = 
 		(
-			<div className="spinner" style={this.props.style}>
+			<div className={classNames('spinner', this.props.className)} style={this.props.style}>
 				<svg viewBox="0 0 50 50">
 					<circle 
 						style={path_style} 

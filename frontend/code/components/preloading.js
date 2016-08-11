@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
 import { connect }          from 'react-redux'
+import classNames           from 'classnames'
 
 import Spinner from './spinner'
 
@@ -16,8 +17,8 @@ export default class Preloading extends React.Component
 	{
 		const markup =
 		(
-			<div className={"preloading " + (this.props.pending ? "preloading-show" : "")}>
-				{ this.props.pending ? <div className="preloading-spinner-container"><Spinner/></div> : null }
+			<div className={classNames('preloading', { 'preloading--shown' : this.props.pending })}>
+				{this.props.pending && <div className="preloading-spinner-container"><Spinner/></div>}
 			</div>
 		)
 

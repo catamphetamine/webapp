@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react'
-// import ReactDOM from 'react-dom'
-import { Link } from 'react-router'
-
+import { Link }    from 'react-router'
+import classNames  from 'classnames'
 import { connect } from 'react-redux'
 import styler      from 'react-styling'
 
 import { defineMessages } from 'react-intl'
+
 import international from '../international/internationalize'
 
 import Text_input          from './text input'
@@ -16,6 +16,7 @@ import Modal               from './modal'
 import Authentication_form from './authentication form'
 import User_picture        from './user picture'
 import Dropdown            from './dropdown'
+import Spinner             from './spinner'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
 
@@ -135,6 +136,10 @@ export default class Authentication extends Component
 		(
 			<div className="user-bar" style={this.props.style}>
 				
+				{/* "Initializing React application" spinner */}
+				<Spinner
+					className={classNames('initializing-react-application', 'initializing-react-application--enabled')}/>
+
 				{/* Sign in action */}
 				{ !user && <Button className="sign-in" link="/sign-in" action={this.show}>{this.translate(messages.sign_in)}</Button> }
 
