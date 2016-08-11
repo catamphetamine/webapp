@@ -34,17 +34,24 @@ export default class Text_input extends Component
 		this.on_change = this.on_change.bind(this)
 	}
 
+	// Client side rendering, javascript is enabled
+	componentDidMount()
+	{
+		this.setState({ javascript: true })
+	}
+
 	render()
 	{
-		const { name, value, label, style, className } = this.props
-		const { valid, error_message } = this.state
+		const { name, value, label, className } = this.props
+		const { valid } = this.state
 
 		const markup = 
 		(
 			<div
-				style={style}
+				style={this.props.style}
 				className={classNames
 				(
+					'rich',
 					'text-input',
 					{
 						'text-input-empty'   : !value,
@@ -54,22 +61,25 @@ export default class Text_input extends Component
 				)}>
 
 				{/* <input/> */}
-				{this.render_input()}
+				{this.render_input({ placeholder: false })}
 
 				{/* input label */}
-				{ label && <label className="text-input-label" htmlFor={name}>{label}</label> }
+				{label && <label htmlFor={name} className="text-input-label" style={style.label}>{label}</label>}
 
 				{/* Error message */}
-				{ valid === false && <div className="text-input-error-message">{error_message}</div> }
+				{this.render_error_message()}
+
+				{/* Fallback in case javascript is disabled (no animated <label/>) */}
+				{!this.state.javascript && this.render_static()}
 			</div>
 		)
 
 		return markup
 	}
 
-	render_input()
+	render_input({ placeholder })
 	{
-		const { name, value, placeholder, multiline, email, password, focus } = this.props
+		const { name, value, label, multiline, email, password, focus } = this.props
 
 		let type
 
@@ -100,12 +110,13 @@ export default class Text_input extends Component
 			return <textarea
 				ref="input"
 				name={name}
+				rows={2}
 				className="text-input-field"
 				style={input_style}
 				value={value === undefined ? '' : value}
 				onFocus={this.on_focus}
 				onChange={this.on_change}
-				placeholder={placeholder}
+				placeholder={placeholder ? label : undefined}
 				autoFocus={focus}/>
 		}
 		else
@@ -119,9 +130,36 @@ export default class Text_input extends Component
 				value={value === undefined ? '' : value}
 				onFocus={this.on_focus}
 				onChange={this.on_change}
-				placeholder={placeholder}
+				placeholder={placeholder ? label : undefined}
 				autoFocus={focus}/>
 		}
+	}
+
+	render_error_message()
+	{
+		const { valid, error_message } = this.state
+
+		if (valid === false)
+		{
+			return <div className="text-input-error-message">{error_message}</div>
+		}
+	}
+
+	// Fallback in case javascript is disabled (no animated <label/>)
+	render_static()
+	{
+		const markup =
+		(
+			<div className="rich-fallback">
+				{/* <input/> */}
+				{this.render_input({ placeholder: true })}
+
+				{/* Error message */}
+				{this.render_error_message()}
+			</div>
+		)
+
+		return markup
 	}
 
 	/*
@@ -184,4 +222,10 @@ const style = styler
 `
 	input
 		width : 100%
+
+	label
+		-webkit-user-select : none
+		-moz-user-select    : none
+		-ms-user-select     : none
+		user-select         : none
 `

@@ -103,6 +103,43 @@ textarea
 
 		border-bottom: var(--input-border-width) solid var(--accent-color);
 	}
+
+	// When changing this placeholder color
+	// also change ".text-input label" color
+
+	&::placeholder
+	{
+		color   : var(--gray-color-dark);
+		opacity : 1 !important;
+	}
+
+	/* Chrome/Opera/Safari */
+	&::-webkit-input-placeholder
+	{
+		color   : var(--gray-color-dark);
+		opacity : 1 !important;
+	}
+
+	/* Firefox 19+ */
+	&::-moz-placeholder
+	{
+		color   : var(--gray-color-dark);
+		opacity : 1 !important;
+	}
+
+	/* Firefox 18- */
+	&:-moz-placeholder
+	{
+		color   : var(--gray-color-dark);
+		opacity : 1 !important;
+	}
+
+	/* IE 10+ */
+	&:-ms-input-placeholder
+	{
+		color   : var(--gray-color-dark);
+		opacity : 1 !important;
+	}
 }
 
 .date-picker

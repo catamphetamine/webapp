@@ -1,3 +1,5 @@
+// Shows all ".rich" children with the exception
+// of ".rich > .rich-fallback" elements
 body.javascript-is-enabled
 {
 	.rich-fallback
@@ -6,6 +8,8 @@ body.javascript-is-enabled
 	}
 }
 
+// Shows only ".rich > .rich-fallback" children
+// of ".rich" elements
 body:not(.javascript-is-enabled)
 {
 	.rich

@@ -90,9 +90,12 @@ export default class Dropdown extends Component
 		}
 	}
 
+	// Client side rendering, javascript is enabled
 	componentDidMount()
 	{
 		document.addEventListener('click', this.document_clicked)
+
+		this.setState({ javascript: true })
 	}
 
 	componentDidUpdate(previous_props, previous_state)
@@ -198,7 +201,7 @@ export default class Dropdown extends Component
 				</div>
 
 				{/* Fallback in case javascript is disabled */}
-				{this.render_static()}
+				{!this.state.javascript && this.render_static()}
 			</div>
 		)
 
@@ -348,7 +351,7 @@ export default class Dropdown extends Component
 	// supports disabled javascript
 	render_static()
 	{
-		let { options, menu, toggler, children } = this.props
+		const { options, menu, toggler, children } = this.props
 
 		if (menu)
 		{

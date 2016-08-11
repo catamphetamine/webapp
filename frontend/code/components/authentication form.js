@@ -290,7 +290,7 @@ export default class Authentication extends Component
 					value={this.state.email}
 					validate={this.validate_email_on_sign_in}
 					on_change={email => this.setState({ email })}
-					placeholder={this.translate(messages.email)}
+					label={this.translate(messages.email)}
 					style={style.input}
 					input_style={style.input.input}/>
 
@@ -302,7 +302,7 @@ export default class Authentication extends Component
 					value={this.state.password}
 					validate={this.validate_password_on_sign_in}
 					on_change={password => this.setState({ password })}
-					placeholder={this.translate(messages.password)}
+					label={this.translate(messages.password)}
 					style={style.input}
 					input_style={style.input.input}/>
 
@@ -355,7 +355,7 @@ export default class Authentication extends Component
 					value={this.state.name}
 					validate={this.validate_name_on_registration}
 					on_change={name => this.setState({ name })}
-					placeholder={this.translate(messages.name)}
+					label={this.translate(messages.name)}
 					style={style.input}
 					input_style={style.input.input}/>
 
@@ -367,7 +367,7 @@ export default class Authentication extends Component
 					value={this.state.email}
 					validate={this.validate_email_on_registration}
 					on_change={email => this.setState({ email })}
-					placeholder={this.translate(messages.email)}
+					label={this.translate(messages.email)}
 					style={style.input}
 					input_style={style.input.input}/>
 
@@ -379,7 +379,7 @@ export default class Authentication extends Component
 					value={this.state.password}
 					validate={this.validate_password_on_registration}
 					on_change={password => this.setState({ password })}
-					placeholder={this.translate(messages.password)}
+					label={this.translate(messages.password)}
 					style={style.input}
 					input_style={style.input.input}/>
 
@@ -648,7 +648,7 @@ const style = styler
 			// font-weight: normal
 
 	terms_of_service
-		margin-top: 0.5em
+		margin-top: 1.5em
 		// margin-bottom: 1.2em
 
 	forgot_password

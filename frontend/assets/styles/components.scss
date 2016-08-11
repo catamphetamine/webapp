@@ -708,6 +708,9 @@ header > .nav-widescreen
 	display: flex;
 	flex-direction: column;
 
+	// When changing this label color
+	// also change "input" and "textarea" placeholder color
+
 	label
 	{
 		order: -2;
@@ -764,7 +767,7 @@ header > .nav-widescreen
 	opacity          : 0;
 	transition       : opacity 100ms ease-out;
 	transition-delay : 0;
-	
+
 	stroke : var(--white-color);
 }
 

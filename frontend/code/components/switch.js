@@ -5,6 +5,8 @@ import styler from 'react-styling'
 
 export default class Switch extends Component
 {
+	state = {}
+	
 	static propTypes =
 	{
 		name      : PropTypes.string,
@@ -12,6 +14,12 @@ export default class Switch extends Component
 		// label     : PropTypes.string.isRequired,
 		on_change : PropTypes.func.isRequired,
 		style     : PropTypes.object
+	}
+
+	// Client side rendering, javascript is enabled
+	componentDidMount()
+	{
+		this.setState({ javascript: true })
 	}
 
 	render()
@@ -31,7 +39,7 @@ export default class Switch extends Component
 				<span className="switch-groove" style={value ? style.groove.when_checked : style.groove}/>
 				<div className="switch-knob" style={value ? style.knob.when_checked : style.knob}/>
 
-				{this.render_static()}
+				{!this.state.javascript && this.render_static()}
 			</label>
 		)
 

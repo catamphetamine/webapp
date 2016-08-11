@@ -3,6 +3,8 @@ import styler from 'react-styling'
 
 export default class Button_group extends Component
 {
+	state = {}
+	
 	static propTypes =
 	{
 		options      : PropTypes.arrayOf
@@ -20,6 +22,12 @@ export default class Button_group extends Component
 		style        : PropTypes.object
 	}
 
+	// Client side rendering, javascript is enabled
+	componentDidMount()
+	{
+		this.setState({ javascript: true })
+	}
+
 	render()
 	{
 		const { options } = this.props
@@ -29,7 +37,7 @@ export default class Button_group extends Component
 			<div className="rich button-group" style={ this.props.style ? merge(style.container, this.props.style) : style.container }>
 				{options.map((option, index) => this.render_button(option, index))}
 
-				{this.render_static()}
+				{!this.state.javascript && this.render_static()}
 			</div>
 		)
 

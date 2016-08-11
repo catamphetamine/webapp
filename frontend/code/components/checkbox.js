@@ -30,12 +30,15 @@ export default class Checkbox extends Component
 		this.toggle = this.toggle.bind(this)
 	}
 
+	// Client side rendering, javascript is enabled
 	componentDidMount()
 	{
 		if (this.props.value)
 		{
 			this.draw_checkmark()
 		}
+
+		this.setState({ javascript: true })
 	}
 
 	componentDidUpdate(previous_props, previous_state)
@@ -80,7 +83,7 @@ export default class Checkbox extends Component
 
 				{ this.state.valid === false ? <div className="checkbox-error-message">{this.state.error_message}</div> : null }
 
-				{this.render_static()}
+				{!this.state.javascript && this.render_static()}
 			</div>
 		)
 
