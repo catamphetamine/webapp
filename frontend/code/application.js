@@ -30,8 +30,6 @@ inject_tap_event_plugin()
 // import ajax from './tools/ajax'
 // global.ajax = ajax
 
-import initializing_react_application_indicator from './initializing react application indicator'
-
 import international from './international/loader'
 
 // // react-hot-loader 3
@@ -70,9 +68,6 @@ international.load().then(() =>
 	.then(({ component, store, rerender }) =>
 	{
 		international.hot_reload(rerender)
-
-		// Hide "Initializing React application" spinner
-		initializing_react_application_indicator.hide()
 	})
 })
 
@@ -90,6 +85,3 @@ international.load().then(() =>
 // 		)
 // 	})
 // }
-
-// Show "Initializing React application" spinner
-initializing_react_application_indicator.show()
