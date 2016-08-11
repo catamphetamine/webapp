@@ -142,7 +142,7 @@ export default class Form_showcase extends Component
 					<p><a href="https://github.com/callemall/material-ui/issues/4219">has calendar positioning issue</a></p>
 					<div className="date-picker">
 						{/* `id` is a workaround for a randomly generated UID issue */}
-						{/* https://github.com/callemall/material-ui/issues/3757 */}
+						{/* https://github.com/callemall/material-ui/issues/3757#issuecomment-239170710 */}
 						<Date_picker
 							id="date_picker"
 							style={style.form.date_picker}
