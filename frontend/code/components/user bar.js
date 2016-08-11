@@ -138,7 +138,12 @@ export default class Authentication extends Component
 				
 				{/* "Initializing React application" spinner */}
 				<Spinner
-					className={classNames('initializing-react-application', 'initializing-react-application--enabled')}/>
+					className={classNames
+					(
+						'initializing-react-application',
+						'initializing-react-application--enabled',
+						{ 'initializing-react-application--shown': _client_ }
+					)}/>
 
 				{/* Sign in action */}
 				{ !user && <Button className="sign-in" link="/sign-in" action={this.show}>{this.translate(messages.sign_in)}</Button> }
