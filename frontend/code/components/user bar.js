@@ -142,6 +142,7 @@ export default class Authentication extends Component
 					(
 						'initializing-react-application',
 						'initializing-react-application--enabled',
+						// Prevents "Warning: React attempted to reuse markup in a container ..."
 						{ 'initializing-react-application--shown': _client_ }
 					)}/>
 
