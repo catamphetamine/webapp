@@ -137,14 +137,7 @@ export default class Authentication extends Component
 			<div className="user-bar" style={this.props.style}>
 				
 				{/* "Initializing React application" spinner */}
-				<Spinner
-					className={classNames
-					(
-						'initializing-react-application',
-						'initializing-react-application--enabled',
-						// Prevents "Warning: React attempted to reuse markup in a container ..."
-						{ 'initializing-react-application--shown': _client_ }
-					)}/>
+				<Spinner className="initializing-react-application"/>
 
 				{/* Sign in action */}
 				{ !user && <Button className="sign-in" link="/sign-in" action={this.show}>{this.translate(messages.sign_in)}</Button> }
