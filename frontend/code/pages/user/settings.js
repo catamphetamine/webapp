@@ -330,6 +330,8 @@ export default class Settings_page extends Component
 																{/* IP address, also resolving city and country */}
 																<code>{activity.ip}</code>{/* (city, country)*/},
 																{' '}
+																{ activity.city && `${activity.city}, ${activity.country}` }
+																{' '}
 																{/* Latest activity time */}
 																<React_time_ago date={activity.time}/>
 															</li>
