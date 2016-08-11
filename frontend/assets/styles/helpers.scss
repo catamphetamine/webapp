@@ -49,3 +49,117 @@
 		}
 	}
 }
+
+// Could be achieved using CSS native variables ("CSS custom properties")
+// if all major browsers supported that CSS feature.
+// http://caniuse.com/#search=css%20var
+@mixin set_css_variable_header_height($value)
+{
+	header, .user-picture--header
+	{
+		min-height: $value;
+		max-height: $value;
+	}
+
+	.user-picture--header
+	{
+		width: $value;
+	}
+
+	body
+	{
+		padding-top: $value;
+	}
+
+	.page
+	{
+		min-height: calc(100vh - #{$value});
+	}
+}
+
+// Could be achieved using CSS native variables ("CSS custom properties")
+// if all major browsers supported that CSS feature.
+// http://caniuse.com/#search=css%20var
+@mixin set_css_variable_font_size($value)
+{
+	html, body, button, input, textarea, select
+	{
+		font-size : $value;
+	}
+}
+
+// Could be achieved using CSS native variables ("CSS custom properties")
+// if all major browsers supported that CSS feature.
+// http://caniuse.com/#search=css%20var
+@mixin set_css_variable_input_width($value)
+{
+	input[type="text"],
+	input[type="tel"],
+	input[type="number"],
+	input[type="email"],
+	input[type="password"],
+	textarea,
+	select,
+	.date-picker
+	{
+		width   : $value;
+	}
+}
+
+// Could be achieved using CSS native variables ("CSS custom properties")
+// if all major browsers supported that CSS feature.
+// http://caniuse.com/#search=css%20var
+@mixin set_css_variable_content_section_margin($value)
+{
+	.content-section, .background-section
+	{
+		margin : $value;
+	}
+
+	.row--content-sections + .row--content-sections
+	{
+		top           : calc(-1 * #{$value});
+		margin-bottom : calc(-1 * #{$value});
+	}
+}
+
+// Could be achieved using CSS native variables ("CSS custom properties")
+// if all major browsers supported that CSS feature.
+// http://caniuse.com/#search=css%20var
+@mixin set_css_variable_content_section_padding($value)
+{
+	.content-section, .content-section-padding
+	{
+		padding : $value;
+	}
+
+	.content-section--no-padding
+	{
+		padding : 0;
+
+		.content-section-header
+		{
+			margin-top    : 0; // $value;
+		}
+	}
+
+	.background-section
+	{
+		padding-left  : $value;
+		padding-right : $value;
+	}
+
+	.content-section-header
+	{
+		margin        : calc(-1 * #{$value});
+		margin-bottom : $value;
+		padding-left  : $value;
+		padding-right : $value;
+	}
+
+	.content-section-divider
+	{
+		left             : $value;
+		right            : $value;
+	}
+}

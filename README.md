@@ -30,7 +30,7 @@ Quick Start
 * make sure you have [Node.js version >= 6.0.0](https://www.npmjs.com/package/babel-preset-node6) installed
 * `npm run install-recursive` (runs `npm install` for all subdirectories recursively)
 * `npm run dev`
-* wait for it to finish the build (green stats will appear in the terminal, and it will say "Now go to http://127.0.0.1:3000")
+* wait for it to finish the build (green stats will appear in the terminal, and it will say "Webpage server is listening at http://localhost:3004")
 * go to `http://127.0.0.1:3000`
 * interact with the development version of the web application
 * `Ctrl + C`
@@ -474,6 +474,17 @@ Troubleshooting
 
 To do
 ====================
+
+на время подгрузки всяких полифиллов, до конца инициализации страницы, показывать крутилку.
+(показывать её яваскриптом, чтобы если wget-ом страницу запросить, то её не было бы показано)
+скрывать крутилку после того, как реакт отрендерился (примерно).
+
+поля на формах входа и регистрации сделать с "летающими" леблами
+
+сделать textarea с двумя строками по умолчанию и авторесайзом
+
+
+
 
 переделать смену почты и пароля - кнопками "изменить" и активируемым полем ввода, а при сохранении - модальными окошками с запросом пароля.
 
@@ -1108,7 +1119,7 @@ https://github.com/babel/babel-sublime
 
 
 Чтобы Sublime Text 3 не искал в ненужных папках во время Find in Files,
-можно использовать такой "Where": <open folders>,-node_modules/*,-build/*
+можно использовать такой "Where": <open folders>,-node_modules/*,-frontend/build/*
 
 
 Для общей сборки и для запуска процесса разработки сейчас используется Gulp, но вообще он мало кому нравится, и мб его можно убрать из цепи разработки.

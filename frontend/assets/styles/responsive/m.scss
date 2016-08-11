@@ -1,9 +1,9 @@
-:root
-{
-	--input-width   : 18em;
-	--header-height : 2.3em;
-	--content-section-padding : 1.1rem;
-}
+// These will be replaced with the corresponding native CSS variables
+// when CSS native variables will be supported in all major browsers.
+// http://caniuse.com/#search=css%20var
+@include set_css_variable_input_width(18em);
+@include set_css_variable_header_height(2.3em);
+@include set_css_variable_content_section_padding(1.1rem);
 
 @include columns(m);
 

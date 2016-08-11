@@ -269,7 +269,11 @@ export default class Settings_page extends Component
 									{
 										const markup =
 										(
-											<li key={token_index} style={token.revoked ? style.authentication_token.revoked : style.authentication_token}>
+											<li
+												key={token_index}
+												className="content-section-padding"
+												style={token.revoked ? style.authentication_token.revoked : style.authentication_token}>
+
 												{/* Divider line */}
 												{ token_index > 0 && <div className="content-section-divider"/> }
 
@@ -416,18 +420,20 @@ const style = styler
 		width: 100%
 
 	show_advanced_settings
-		margin-top: var(--content-section-padding)
+		// margin-top: var(--content-section-padding)
 
 	authentication_tokens
 
 	authentication_token
 		position    : relative
-		padding     : var(--content-section-padding)
+		// padding     : var(--content-section-padding)
 		line-height : 1.6em
 
 		&revoked
 			// color: var(--gray-color-darker)
-			background-color: var(--gray-color-lightest)
+
+			// var(--gray-color-lightest)
+			background-color: #FAF8F6
 
 		issued
 			// display: block

@@ -1,9 +1,9 @@
-:root
-{
-	--font-size     : 18pt;
-	--header-height : 2.2em;
-	--content-section-margin : 0.65rem;
-}
+// These will be replaced with the corresponding native CSS variables
+// when CSS native variables will be supported in all major browsers.
+// http://caniuse.com/#search=css%20var
+@include set_css_variable_font_size(18pt);
+@include set_css_variable_header_height(2.2em);
+@include set_css_variable_content_section_margin(0.65rem);
 
 @include columns(l);
 

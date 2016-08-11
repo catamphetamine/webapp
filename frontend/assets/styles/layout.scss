@@ -6,41 +6,16 @@
 	border-radius    : var(--border-radius);
 }
 
-.content-section, .background-section
-{
-	margin : var(--content-section-margin);
-}
-
-.content-section
-{
-	padding : var(--content-section-padding);
-}
-
 .content-section--no-padding
 {
 	padding : 0;
 
 	.content-section-header
 	{
-		margin-top    : var(--content-section-padding);
 		margin-bottom : 0;
 		margin-left   : 0;
 		margin-right  : 0;
 	}
-}
-
-.background-section
-{
-	padding-left  : var(--content-section-padding);
-	padding-right : var(--content-section-padding);
-}
-
-.content-section-header
-{
-	margin        : calc(-1 * var(--content-section-padding));
-	margin-bottom : var(--content-section-padding);
-	padding-left  : var(--content-section-padding);
-	padding-right : var(--content-section-padding);
 }
 
 .content-section-header
@@ -57,32 +32,14 @@
 {
 	position         : absolute;
 	top              : 0;
-	left             : var(--content-section-padding);
-	right            : var(--content-section-padding);
 	height           : 1pt;
 	background-color : var(--gray-color-light);
 }
 
-header, .user-picture--header
-{
-	min-height: var(--header-height);
-	max-height: var(--header-height);
-}
-
-.user-picture--header
-{
-	width: var(--header-height);
-}
-
-body
-{
-	padding-top: var(--header-height);
-}
-
-.page
-{
-	min-height: calc(100vh - var(--header-height));
-}
+// // This will be replaced with the contents of the mixin
+// // when CSS native variables will be supported in all major browsers.
+// // http://caniuse.com/#search=css%20var
+// @include set_css_variable_header_height(var(--header-height));
 
 .card, .content-section, .dropdown-item-list-expanded
 {
@@ -197,7 +154,5 @@ footer
 
 .row--content-sections + .row--content-sections
 {
-	position      : relative;
-	top           : calc(-1 * var(--content-section-margin));
-	margin-bottom : calc(-1 * var(--content-section-margin));
+	position : relative;
 }

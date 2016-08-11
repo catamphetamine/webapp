@@ -7,6 +7,7 @@ module.exports =
 	// debug: true,
 
 	// Serves `webpack-assets.json` from memory (bypassing disk)
+	// in development mode.
 	// (it is recommended to turn this setting on)
 	port: configuration.development.webpack.isomorphic_tools.port,
 

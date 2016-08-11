@@ -13,10 +13,10 @@ body
 	overflow-y: scroll;
 }
 
-html, body, button, input, textarea, select
-{
-	font-size : var(--font-size);
-}
+// // This will be replaced with the contents of the mixin
+// // when CSS native variables will be supported in all major browsers.
+// // http://caniuse.com/#search=css%20var
+// set_css_variable_font_size(var(--font-size));
 
 // just background on .page is not enough 
 // because it won't stretch to fill all the height
@@ -70,7 +70,6 @@ select,
 .date-picker
 {
 	display : block;
-	width   : var(--input-width);
 	
 	padding-top    : var(--input-padding);
 	padding-bottom : var(--input-padding);
@@ -79,6 +78,11 @@ select,
 	border-bottom : var(--input-border-width) solid var(--gray-color-light);
 	transition    : border 0.1s;
 }
+
+// // This will be replaced with the contents of the mixin
+// // when CSS native variables will be supported in all major browsers.
+// // http://caniuse.com/#search=css%20var
+// set_css_variable_input_width(var(--input-width));
 
 input[type="text"],
 input[type="tel"],
@@ -117,35 +121,6 @@ textarea
 // 	overflow-y: hidden;
 //	resize: none;
 // }
-
-/*
-.select
-{
-	position: relative;
-	width: var(--input-width);
-
-	// down arrow
-	&:after
-	{
-		position: absolute;
-		top: 0.75em;
-		right: 0.3em;
-
-		width: 0;
-		height: 0;
-
-		padding: 0;
-
-		content: '';
-
-		border-left: .25em solid transparent;
-		border-right: .25em solid transparent;
-		border-top: .375em solid black;
-
-		pointer-events: none;
-	}
-}
-*/
 
 select
 {

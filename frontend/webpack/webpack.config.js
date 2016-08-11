@@ -7,27 +7,28 @@ import webpack_isomorphic_tools_configuration from './webpack-isomorphic-tools'
 import global_variables from '../../code/global variables'
 
 import autoprefixer from 'autoprefixer'
+import css_custom_properties from 'postcss-custom-properties'
 
-var root_folder = path.resolve(__dirname, '..', '..')
-var frontend_root_folder = path.resolve(__dirname, '..')
+const root_folder = path.resolve(__dirname, '..', '..')
+const frontend_root_folder = path.resolve(__dirname, '..')
 
-var assets_source_folder = path.resolve(frontend_root_folder, 'assets')
+const assets_source_folder = path.resolve(frontend_root_folder, 'assets')
 
-var webpack_isomorphic_tools_plugin = new Webpack_isomorphic_tools_plugin(webpack_isomorphic_tools_configuration)
+const webpack_isomorphic_tools_plugin = new Webpack_isomorphic_tools_plugin(webpack_isomorphic_tools_configuration)
 
-var define_plugin_global_variables = {}
+const define_plugin_global_variables = {}
 Object.keys(global_variables).forEach(function(key)
 {
 	define_plugin_global_variables[key] = JSON.stringify(global_variables[key])
 })
 
-var regular_expressions =
+const regular_expressions =
 {
 	javascript : /\.js$/,
 	styles     : /\.scss$/
 }
 
-var configuration =
+const configuration =
 {
 	// resolve all relative paths from the project root folder
 	context: frontend_root_folder,
@@ -131,7 +132,7 @@ var configuration =
 	// maybe some kind of a progress bar during compilation
 	progress: true,
 
-	postcss: () => [autoprefixer({ browsers: 'last 2 version' })],
+	postcss: () => [autoprefixer({ browsers: 'last 2 version' }), css_custom_properties()],
 
 	resolve:
 	{
@@ -159,26 +160,3 @@ module.exports = configuration
 
 // will be used in development and production configurations
 configuration.regular_expressions = regular_expressions
-
-// var third_party = 
-// [
-// 	'react/dist/react.min.js',
-// 	'react-router/dist/react-router.min.js',
-// 	'moment/min/moment.min.js',
-// 	'underscore/underscore-min.js'
-// ]
-//
-// configuration.resolve = configuration.resolve || {}
-// configuration.resolve.alias = configuration.resolve.alias || {}
-// configuration.module.noParse = configuration.module.noParse || []
-//
-// // Run through deps and extract the first part of the path, 
-// // as that is what you use to require the actual node modules 
-// // in your code. Then use the complete path to point to the correct
-// // file and make sure webpack does not try to parse it
-// for (let dependency of third_party)
-// {
-// 	const dependency_path = path.resolve(root_folder, 'node_modules', dependency)
-// 	configuration.resolve.alias[dependency.split(path.sep)[0]] = dependency_path
-// 	configuration.module.noParse.push(dependency_path)
-// }
