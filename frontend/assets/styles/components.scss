@@ -755,31 +755,3 @@ header > .nav-widescreen
 		color: var(--gray-color-darker);
 	}
 }
-
-.initializing-react-application
-{
-	display : none;
-
-	width        : 1em;
-	height       : 1em;
-	margin-right : 0.5em;
-
-	opacity          : 0;
-	transition       : opacity 100ms ease-out;
-	transition-delay : 0;
-
-	stroke : var(--white-color);
-}
-
-.initializing-react-application--enabled
-{
-	display: inline-block;
-}
-
-.initializing-react-application--shown
-{
-	opacity : 1;
-
-	transition-duration : 140ms;
-	transition-delay    : 500ms;
-}
