@@ -25,8 +25,9 @@ from '../../actions/user settings'
 import { messages as authentication_form_messages } from '../../components/authentication form'
 import default_messages from '../../components/messages'
 
-import Text_input from '../../components/text input'
-import Button from '../../components/button'
+import Text_input      from '../../components/text input'
+import Button          from '../../components/button'
+import Content_section from '../../components/content section'
 
 const messages = defineMessages
 ({
@@ -197,16 +198,9 @@ export default class Settings_page extends Component
 				<div className="row row--content-sections">
 					<div className="column-l-6-of-12">
 						{/* User's personal info */}
-						<section
-							className={classNames
-							(
-								'content-section'
-							)}>
 
-							{/* "Settings" */}
-							<h2 className="content-section-header">
-								{translate(messages.header)}
-							</h2>
+						{/* "Settings" */}
+						<Content_section title={translate(messages.header)}>
 
 							{/* User's email */}
 							<Text_input
@@ -226,7 +220,7 @@ export default class Settings_page extends Component
 									{translate(default_messages.save)}
 								</Button>
 							</div>
-						</section>
+						</Content_section>
 					</div>
 				</div>
 
@@ -251,17 +245,9 @@ export default class Settings_page extends Component
 
 						{/* Authentication tokens */}
 						{ showing_advanced_settings &&
-							<section
-								className={classNames
-								(
-									'content-section',
-									'content-section--no-padding'
-								)}>
-
-								{/* "Authentication tokens" */}
-								<h2 className="content-section-header">
-									{translate(messages.authentication_tokens)}
-								</h2>
+							<Content_section
+								title={translate(messages.authentication_tokens)}
+								padding={false}>
 
 								{/* Authentication tokens list */}
 								<ul>
@@ -271,7 +257,10 @@ export default class Settings_page extends Component
 										(
 											<li
 												key={token_index}
-												className="content-section-padding"
+												className={classNames('content-section-padding',
+												{
+													'background-color--gray-color-lightest': token.revoked
+												})}
 												style={token.revoked ? style.authentication_token.revoked : style.authentication_token}>
 
 												{/* Divider line */}
@@ -351,7 +340,7 @@ export default class Settings_page extends Component
 										return markup
 									})}
 								</ul>
-							</section>
+							</Content_section>
 						}
 					</div>
 				</div>
@@ -431,9 +420,7 @@ const style = styler
 
 		&revoked
 			// color: var(--gray-color-darker)
-
-			// var(--gray-color-lightest)
-			background-color: #FAF8F6
+			// background-color: var(--gray-color-lightest)
 
 		issued
 			// display: block
