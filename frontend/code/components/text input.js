@@ -30,13 +30,20 @@ export default class Text_input extends Component
 
 		inject(this)
 
-		this.on_focus  = this.on_focus.bind(this)
-		this.on_change = this.on_change.bind(this)
+		this.on_focus         = this.on_focus.bind(this)
+		this.on_change        = this.on_change.bind(this)
+		this.autoresize       = this.autoresize.bind(this)
+		this.measure_textarea = this.measure_textarea.bind(this)
 	}
 
 	// Client side rendering, javascript is enabled
 	componentDidMount()
 	{
+		if (this.props.multiline)
+		{
+			this.setState({ autoresize_extra_height: autoresize_extra_height(ReactDOM.findDOMNode(this.refs.input)) })
+		}
+
 		this.setState({ javascript: true })
 	}
 
@@ -104,35 +111,31 @@ export default class Text_input extends Component
 
 		const input_style = this.props.input_style
 
+		const properties =
+		{
+			name,
+			ref         : 'input',
+			value       : value === undefined ? '' : value,
+			placeholder : placeholder ? label : undefined,
+			onFocus     : this.on_focus,
+			onChange    : this.on_change,
+			className   : 'text-input-field',
+			style       : input_style,
+			autoFocus   : focus
+		}
+
 		if (multiline)
 		{
 			// maybe add autoresize for textarea (smoothly animated)
 			return <textarea
-				ref="input"
-				name={name}
 				rows={2}
-				className="text-input-field"
-				style={input_style}
-				value={value === undefined ? '' : value}
-				onFocus={this.on_focus}
-				onChange={this.on_change}
-				placeholder={placeholder ? label : undefined}
-				autoFocus={focus}/>
+				onInput={this.autoresize}
+				onKeyUp={this.autoresize}
+				onKeyDown={this.measure_textarea}
+				{...properties}/>
 		}
-		else
-		{
-			return <input
-				ref="input"
-				type={type}
-				name={name}
-				className="text-input-field"
-				style={input_style}
-				value={value === undefined ? '' : value}
-				onFocus={this.on_focus}
-				onChange={this.on_change}
-				placeholder={placeholder ? label : undefined}
-				autoFocus={focus}/>
-		}
+
+		return <input type={type} {...properties}/>
 	}
 
 	render_error_message()
@@ -160,6 +163,34 @@ export default class Text_input extends Component
 		)
 
 		return markup
+	}
+
+	measure_textarea(event)
+	{
+		if (this.state.textarea_initial_height === undefined)
+		{
+			const element = event.target
+			// `.getBoundingClientRect().height` could be used here
+			// to avoid rounding, but `.scrollHeight` has no non-rounded equivalent.
+			this.setState({ textarea_initial_height: element.offsetHeight })
+		}
+	}
+
+	// "keyup" is required for IE to properly reset height when deleting text
+	autoresize(event)
+	{
+		const element = event.target
+
+		const current_scroll_position = window.pageYOffset
+
+		element.style.height = 0
+
+		let height = element.scrollHeight + this.state.autoresize_extra_height
+		height = Math.max(height, this.state.textarea_initial_height)
+
+		element.style.height = height + 'px'
+
+		window.scroll(window.pageXOffset, current_scroll_position)
 	}
 
 	/*
@@ -229,3 +260,25 @@ const style = styler
 		-ms-user-select     : none
 		user-select         : none
 `
+
+// <textarea/> autoresize (without ghost elements)
+
+// https://github.com/javierjulio/textarea-autosize/blob/master/src/jquery.textarea_autosize.js
+
+// const not_blank = value => value.replace(/\s/g, '').length > 0
+
+function autoresize_extra_height(element)
+{
+	const style = window.getComputedStyle(element)
+
+	const extra_height = 
+		parseInt(style.borderTopWidth) +
+		parseInt(style.borderBottomWidth)
+
+	// if (not_blank(element.value))
+	// {
+	// 	element.style.height = (element.scrollHeight + extra_height) + 'px'
+	// }
+
+	return extra_height
+}
