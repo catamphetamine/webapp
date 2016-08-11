@@ -10,32 +10,35 @@ let reverse_ip_geocoder
 // For client side support see this issue
 // https://github.com/nchaulet/node-geocoder/issues/187
 
-if (configuration.geocoding.address)
+if (configuration.geocoding)
 {
-	address_geocoder = geocoder
-	({
-		provider : configuration.geocoding.address.provider,
-		apiKey   : configuration.geocoding.address.key
-	})
-}
+	if (configuration.geocoding.address)
+	{
+		address_geocoder = geocoder
+		({
+			provider : configuration.geocoding.address.provider,
+			apiKey   : configuration.geocoding.address.key
+		})
+	}
 
-if (configuration.geocoding.reverse)
-{
-	reverse_geocoder = geocoder
-	({
-		provider : configuration.geocoding.reverse.provider,
-		apiKey   : configuration.geocoding.reverse.key,
-		language : 'ru-UA'
-	})
-}
+	if (configuration.geocoding.reverse)
+	{
+		reverse_geocoder = geocoder
+		({
+			provider : configuration.geocoding.reverse.provider,
+			apiKey   : configuration.geocoding.reverse.key,
+			language : 'ru-UA'
+		})
+	}
 
-if (configuration.geocoding.reverse_ip)
-{
-	reverse_ip_geocoder = geocoder
-	({
-		provider : configuration.geocoding.reverse_ip.provider,
-		apiKey   : configuration.geocoding.reverse_ip.key
-	})
+	if (configuration.geocoding.reverse_ip)
+	{
+		reverse_ip_geocoder = geocoder
+		({
+			provider : configuration.geocoding.reverse_ip.provider,
+			apiKey   : configuration.geocoding.reverse_ip.key
+		})
+	}
 }
 
 export function can_lookup_ip()
@@ -74,7 +77,7 @@ export function lookup_ip(ip)
 		delete result.metroCode
 		delete result.timeZone
 		delete result.provider
-		
+
 		return result
 	})
 }
