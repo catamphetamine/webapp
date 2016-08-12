@@ -113,7 +113,7 @@ export default class Layout extends Component
 		// Slideout menu pushes the page to the right
 		// const page_style_with_menu_expanded = { transform: `translate3d(${this.state.menu_width}px, 0px, 0px)` }
 		//
-		// style={ this.state.show_menu ? merge(style.page, page_style_with_menu_expanded) : style.page }
+		// style={ this.state.show_menu ? { ...style.page, ...page_style_with_menu_expanded } : style.page }
 		//
 		// `translate3d` animation won't work:
 		// http://stackoverflow.com/questions/14732403/position-fixed-not-working-for-header/14732712#14732712

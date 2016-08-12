@@ -162,7 +162,7 @@ export default class Dropdown extends Component
 		const markup = 
 		(
 			<div
-				style={ this.props.style ? merge(wrapper_style, this.props.style) : wrapper_style }
+				style={ this.props.style ? { ...wrapper_style, ...this.props.style } : wrapper_style }
 				className={classNames
 				(
 					"rich dropdown",

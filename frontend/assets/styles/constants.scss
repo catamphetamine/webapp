@@ -39,8 +39,6 @@
 	--dropdown-item-vertical-padding   : 0.2em;
 	--dropdown-item-horizontal-padding : 0.8em;
 
-	--menu-item-compact-vertical-padding: 0.3em;
-
 	--header-vertically-centered-text-margin-top: 0.1em;
 
 	--border-radius : 3pt;
@@ -48,6 +46,8 @@
 	--modular-grid-unit : 0.3rem;
 
 	--card-border-radius : 0.2rem;
+
+	--shadow : 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
 }
 
 $extra-large-screen-min-width : 1260pt;

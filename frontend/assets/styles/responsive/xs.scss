@@ -2,9 +2,9 @@
 // when CSS native variables will be supported in all major browsers.
 // http://caniuse.com/#search=css%20var
 @include set_css_variable_font_size(14pt);
-@include set_css_variable_input_width(8em);
-@include set_css_variable_header_height(2.0em);
-@include set_css_variable_content_section_margin(0.5rem);
+@include set_css_variable_input_width(calc(var(--modular-grid-unit) * 35));
+@include set_css_variable_header_height(calc(var(--modular-grid-unit) * 7));
+@include set_css_variable_content_section_margin(0);
 @include set_css_variable_content_section_padding(0.8rem);
 
 @include columns(xs);
@@ -41,17 +41,18 @@
 
 .authentication-form, .registration-form
 {
-	width : 12em;
+	width : calc(var(--modular-grid-unit) * 40);
 
 	h2
 	{
+		font-size: 1.3em;
 		margin-bottom: 0;
 	}
 
 	.or-register
 	{
 		margin-top: 0;
-		margin-bottom: 1em;
+		margin-bottom: calc(var(--modular-grid-unit) * 2);
 	}
 }
 
@@ -61,36 +62,26 @@
 	{
 		// overwrites inline css
 		display: block !important;
-		margin-bottom: 1em;
+		// margin-bottom: 1em;
 	}
 }
 
 .sign-in
 {
-	margin-right: 0.4em;
-}
-
-.authentication-form, .registration-form
-{
-	width : 12em;
-
-	h2
-	{
-		font-size: 1.3em;
-	}
+	margin-right: calc(var(--modular-grid-unit) * 2);
 }
 
 .button-group-button
 {
-	padding-top    : 0.2em;
-	padding-bottom : 0.2em;
-	padding-left   : 0.5em;
-	padding-right  : 0.5em;
+	padding-top    : var(--modular-grid-unit);
+	padding-bottom : var(--modular-grid-unit);
+	padding-left   : calc(var(--modular-grid-unit) * 1.5);
+	padding-right  : calc(var(--modular-grid-unit) * 1.5);
 }
 
 header
 {
-	text-align: center;
+	text-align      : center;
 	justify-content : center;
 }
 
@@ -107,12 +98,12 @@ header
 	{
 		&:first-child
 		{
-			padding-top    : calc(2 * var(--menu-item-compact-vertical-padding));
+			padding-top    : calc(2 * var(--modular-grid-unit));
 		}
 
 		&:last-child
 		{
-			padding-bottom : calc(2 * var(--menu-item-compact-vertical-padding));
+			padding-bottom : calc(2 * var(--modular-grid-unit));
 		}
 	}
 }
@@ -135,23 +126,23 @@ header
 
 	margin : 0;
 
-	padding-top:    var(--menu-item-compact-vertical-padding);
-	padding-bottom: var(--menu-item-compact-vertical-padding);
+	padding-top    : var(--modular-grid-unit);
+	padding-bottom : var(--modular-grid-unit);
 
-	padding-left  : 0.7em;
-	padding-right : 1.0em;
+	padding-left  : calc(var(--modular-grid-unit) * 2);
+	padding-right : calc(var(--modular-grid-unit) * 3);
 }
 
 .nav-collapsible-shown
 {
-	transform: translate3d(0, 0, 0);
-    box-shadow: 0 0 0.2em rgba(0, 0, 0, 0.4);
+	transform  : translate3d(0, 0, 0);
+	box-shadow : 0 0 0.2em rgba(0, 0, 0, 0.4);
 }
 
 .language
 {
-	margin-top: 0.25em;
-	margin-right: 1em;
+	margin-top   : 0.25em;
+	margin-right : 1em;
 
 	&, .dropdown-item-list li, .dropdown-item, .dropdown-item-selected
 	{
@@ -188,15 +179,15 @@ header
 {
 	display : inline-block;
 
-	padding: 0.4em;
+	padding: calc(var(--modular-grid-unit) * 1.5);
 
 	line-height: 0;
 }
 
 .menu-icon, .menu-close
 {
-	width  : 1.6em;
-	height : 1.6em;
+	width  : calc(var(--modular-grid-unit) * 5);
+	height : calc(var(--modular-grid-unit) * 5);
 }
 
 .menu-close
@@ -317,13 +308,19 @@ header
 
 .user-profile .user-picture
 {
-	width      : 4rem;
-	height     : 4rem;
-	min-width  : 4rem;
-	min-height : 4rem;
+	width      : calc(var(--modular-grid-unit) * 14);
+	height     : calc(var(--modular-grid-unit) * 14);
+	min-width  : calc(var(--modular-grid-unit) * 14);
+	min-height : calc(var(--modular-grid-unit) * 14);
 }
 
 .user-profile__picture__change__label
 {
 	font-size: 0.75rem;
+}
+
+.background-section
+{
+	margin-top    : calc(var(--modular-grid-unit) * 2);
+	margin-bottom : calc(var(--modular-grid-unit) * 2);
 }

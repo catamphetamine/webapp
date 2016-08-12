@@ -755,3 +755,36 @@ header > .nav-widescreen
 		color: var(--gray-color-darker);
 	}
 }
+
+.editable-field
+{
+	margin-bottom: calc(var(--modular-grid-unit) * 4);
+
+	&:last-child
+	{
+		margin-bottom: 0;
+	}
+
+	label
+	{
+		display       : block;
+		margin-bottom : var(--modular-grid-unit);
+		opacity       : 0.6;
+	}
+
+	.editable-field__button--subsequent
+	{
+		margin-left: calc(var(--modular-grid-unit) * 2);
+	}
+
+	.text-input
+	{
+		margin-bottom: var(--modular-grid-unit);
+	}
+
+	.text-input-field
+	{
+		padding-top  : 0;
+		padding-left : 0;
+	}
+}

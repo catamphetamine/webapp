@@ -2,8 +2,9 @@
 // when CSS native variables will be supported in all major browsers.
 // http://caniuse.com/#search=css%20var
 @include set_css_variable_font_size(16pt);
-@include set_css_variable_header_height(2.2em);
-@include set_css_variable_content_section_padding(0.95rem);
+@include set_css_variable_input_width(calc(var(--modular-grid-unit) * 50));
+@include set_css_variable_header_height(calc(var(--modular-grid-unit) * 7));
+@include set_css_variable_content_section_padding(calc(var(--modular-grid-unit) * 3));
 
 @include columns(s);
 
@@ -14,25 +15,20 @@
 	margin-top : var(--header-vertically-centered-text-margin-top);
 }
 
-.menu-button
-{
-	padding: 0.4em;
-}
-
 .language
 {
-	margin-top: 0.25em;
-	margin-right: 0.5em;
+	margin-top   : 0.25em;
+	margin-right : 0.5em;
 }
 
 .sign-in
 {
-	margin-right: 0.5em;
+	margin-right : calc(var(--modular-grid-unit) * 2);
 }
 
 .authentication-form, .registration-form
 {
-	width : 12.5em;
+	width : calc(var(--modular-grid-unit) * 40);
 
 	h2
 	{

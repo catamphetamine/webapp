@@ -28,6 +28,7 @@ import default_messages from '../../components/messages'
 import Text_input      from '../../components/text input'
 import Button          from '../../components/button'
 import Content_section from '../../components/content section'
+import Editable_field  from '../../components/editable field'
 
 const messages = defineMessages
 ({
@@ -163,8 +164,6 @@ export default class Settings_page extends Component
 	{
 		super(props, context)
 
-		this.state.email = props.user.email
-
 		this.revoke_authentication_token = this.revoke_authentication_token.bind(this)
 		this.save_settings               = this.save_settings.bind(this)
 		this.load_advanced_settings      = this.load_advanced_settings.bind(this)
@@ -205,23 +204,20 @@ export default class Settings_page extends Component
 							busy={saving_settings}>
 
 							{/* User's email */}
-							<Text_input
-								value={this.state.email}
+							<Editable_field
 								name="email"
+								email={true}
 								label={translate(authentication_form_messages.email)}
-								input_style={style.email}
-								validate={this.validate_email_on_sign_in}
-								on_change={email => this.setState({ email })}/>
+								value={user.email}
+								validate={this.validate_email}
+								on_save={value => alert('work in progress: save ' + value)}/>
 
-							{/* Form actions */}
-							<div className="form-actions">
-								{/* "Save changes" */}
-								<Button
-									busy={saving_settings}
-									action={this.save_settings}>
-									{translate(default_messages.save)}
-								</Button>
-							</div>
+							{/* User's password */}
+							<Editable_field
+								name="password"
+								password={true}
+								label={translate(authentication_form_messages.password)}
+								on_edit={() => alert('work in progress: enter new password and reenter it second time')}/>
 						</Content_section>
 					</div>
 				</div>
@@ -405,6 +401,22 @@ export default class Settings_page extends Component
 
 		this.setState({ showing_advanced_settings: true })
 	}
+
+	validate_email(value)
+	{
+		if (!value)
+		{
+			return this.translate(authentication_form_messages.registration_email_is_required)
+		}
+	}
+
+	validate_password(value)
+	{
+		if (!value)
+		{
+			return this.translate(authentication_form_messages.registration_password_is_required)
+		}
+	}
 }
 
 const style = styler
@@ -430,4 +442,14 @@ const style = styler
 			// display: block
 
 		latest_activity
+
+	change_button
+		margin-left: 1em
+
+	row
+		display : flex
+		margin-bottom : 1em
+
+		&last
+			margin-bottom : 0em
 `

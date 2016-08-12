@@ -3,7 +3,7 @@
 .content-section
 {
 	background-color : var(--white-color);
-	border-radius    : var(--border-radius);
+	border-bottom    : 1px solid var(--gray-color);
 }
 
 .content-section--no-padding
@@ -46,9 +46,9 @@
 // // http://caniuse.com/#search=css%20var
 // @include set_css_variable_header_height(var(--header-height));
 
-.card, .content-section, .dropdown-item-list-expanded
+.card, .dropdown-item-list-expanded
 {
-	box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+	box-shadow: var(--shadow);
 }
 
 header

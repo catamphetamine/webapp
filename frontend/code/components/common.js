@@ -49,17 +49,9 @@ export function on_change(value)
 	this.props.on_change(value)
 }
 
-// validate input value
-export function validate()
+// validates input value (core)
+export function validate(value, validate)
 {
-	const { value, validate } = this.props
-
-	// if no validation specifed then just exit
-	if (!validate)
-	{
-		return true
-	}
-
 	// if (this.validation)
 	// {
 	// 	if (this.validation.cancel)
@@ -110,8 +102,17 @@ export function validate()
 		error_message = result
 	}
 
+	return { valid, error_message }
+}
+
+// validates input value (React wrapper)
+function validate_self()
+{
+	const { valid, error_message } = validate(this.props.value, this.props.validate)
+
 	// set validation status and re-render the component
 	this.setState({ valid, error_message })
+
 	return valid
 }
 
@@ -143,6 +144,6 @@ export function inject(component)
 	component.on_blur          =          on_blur.bind(component)
 	component.on_change        =        on_change.bind(component)
 	component.focus            =            focus.bind(component)
-	component.validate         =         validate.bind(component)
+	component.validate         =    validate_self.bind(component)
 	component.reset_validation = reset_validation.bind(component)
 }

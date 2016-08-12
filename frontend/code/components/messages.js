@@ -14,6 +14,12 @@ export default defineMessages
 		description    : 'Cancel action title',
 		defaultMessage : 'Cancel'
 	},
+	change:
+	{
+		id             : 'action.change',
+		description    : 'Change action title',
+		defaultMessage : 'Change'
+	},
 	error:
 	{
 		id             : 'error.generic',

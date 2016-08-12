@@ -6,7 +6,7 @@ import styler from 'react-styling'
 export default class Switch extends Component
 {
 	state = {}
-	
+
 	static propTypes =
 	{
 		name      : PropTypes.string,
@@ -28,7 +28,7 @@ export default class Switch extends Component
 
 		const markup =
 		(
-			<label className="rich switch" style={ this.props.style ? merge(style.switch, this.props.style) : style.switch}>
+			<label className="rich switch" style={ this.props.style ? { ...style.switch, ...this.props.style } : style.switch}>
 				<input
 					type="checkbox" 
 					name={this.props.name} 

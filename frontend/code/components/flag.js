@@ -19,7 +19,7 @@ export default class Flag extends Component
 			return null
 		}
 
-		const styling = this.props.style ? merge(style.image, this.props.style) : style.image
+		const styling = this.props.style ? { ...style.image, ...this.props.style } : style.image
 
 		const markup = 
 		(

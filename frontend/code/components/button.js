@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import styler from 'react-styling'
+import classNames from 'classnames'
 
 import Spinner from './spinner'
 
@@ -24,7 +25,14 @@ export default class Button extends Component
 
 		const markup = 
 		(
-			<div className={'button' + ' ' + (submit ? 'button-primary' : '') + ' ' + (busy ? 'button-busy' : '') + ' ' + (className ? className : '')} style={merge(style.container, this.props.style)}>
+			<div
+				className={classNames('button', className,
+				{
+					'button-primary' : submit,
+					'button-busy'    : busy
+				})}
+				style={merge(style.container, this.props.style)}>
+
 				<Spinner style={ busy ? style.spinner.show : style.spinner.hide }></Spinner>
 
 				{this.render_button()}

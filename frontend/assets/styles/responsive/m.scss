@@ -1,9 +1,9 @@
 // These will be replaced with the corresponding native CSS variables
 // when CSS native variables will be supported in all major browsers.
 // http://caniuse.com/#search=css%20var
-@include set_css_variable_input_width(18em);
-@include set_css_variable_header_height(2.3em);
-@include set_css_variable_content_section_padding(1.1rem);
+@include set_css_variable_input_width(calc(var(--modular-grid-unit) * 60));
+@include set_css_variable_header_height(calc(var(--modular-grid-unit) * 7));
+@include set_css_variable_content_section_padding(calc(var(--modular-grid-unit) * 4));
 
 @include columns(m);
 
@@ -12,23 +12,17 @@
 	font-size : 20pt
 }
 
-.menu-button
-{
-	padding: 0.4em;
-	margin-left: 0.2em;
-}
-
 .sign-in
 {
-	margin-right: 0.6em;
+	margin-right: calc(var(--modular-grid-unit) * 2);
 }
 
 .user-profile .user-picture
 {
-	width      : 5rem;
-	height     : 5rem;
-	min-width  : 5rem;
-	min-height : 5rem;
+	width      : calc(var(--modular-grid-unit) * 18);
+	height     : calc(var(--modular-grid-unit) * 18);
+	min-width  : calc(var(--modular-grid-unit) * 18);
+	min-height : calc(var(--modular-grid-unit) * 18);
 }
 
 .user-bar
@@ -76,6 +70,6 @@
 
 .button-group-button
 {
-	padding-left   : 0.6em;
-	padding-right  : 0.6em;
+	padding-left  : calc(var(--modular-grid-unit) * 2);
+	padding-right : calc(var(--modular-grid-unit) * 2);
 }

@@ -82,7 +82,7 @@ export default class Menu extends Component
 	{
 		let markup
 
-		const menu_style = this.props.style ? merge(style.menu, this.props.style) : style.menu
+		const menu_style = this.props.style ? { ...style.menu, ...this.props.style } : style.menu
 
 		if (exists(this.props.show))
 		{

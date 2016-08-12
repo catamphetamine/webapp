@@ -2,14 +2,14 @@
 // when CSS native variables will be supported in all major browsers.
 // http://caniuse.com/#search=css%20var
 @include set_css_variable_font_size(18pt);
-@include set_css_variable_header_height(2.2em);
-@include set_css_variable_content_section_margin(0.65rem);
+@include set_css_variable_header_height(calc(var(--modular-grid-unit) * 7));
+@include set_css_variable_content_section_margin(calc(var(--modular-grid-unit) * 2));
 
 @include columns(l);
 
 .language button
 {
-	font-size   : 18pt;
+	font-size : 18pt;
 }
 
 header
@@ -19,11 +19,11 @@ header
 
 .logo
 {
-	display: inline-block;
+	display        : inline-block;
 	vertical-align : bottom;
 
-	margin-left: 0;
-	margin-right: 2em;
+	margin-left  : 0;
+	margin-right : 2em;
 
 	// in firefox there is a bug when it goes invisible for 26pt
 	font-size   : 22pt;
@@ -46,14 +46,11 @@ header
 
 .menu-item
 {
-	// padding-left    : 0.4em;
-	// padding-right   : 0.4em;
+	padding-left    : calc(var(--modular-grid-unit) * 2);
+	padding-right   : calc(var(--modular-grid-unit) * 2);
 
-	padding-left    : 0.6em;
-	padding-right   : 0.6em;
-
-	padding-top    : 0.3em;
-	padding-bottom : 0.3em;
+	padding-top    : var(--modular-grid-unit);
+	padding-bottom : var(--modular-grid-unit);
 
 	// padding-top : var(--header-vertically-centered-text-margin-top);
 
@@ -72,18 +69,18 @@ header
 {
 	right : 0.5em;
 
-    margin-top: 0.25em;
-    margin-right: 0.5em;
+	margin-top   : 0.25em;
+	margin-right : 0.5em;
 
 	.dropdown-item-selected
 	{
-		text-align: right;
-		border: none;
+		text-align : right;
+		border     : none;
 	}
 
 	&, .dropdown-item-list li, .dropdown-item, .dropdown-item-selected
 	{
-		line-height: normal;
+		line-height : normal;
 	}
 
 	.dropdown-arrow
@@ -94,14 +91,14 @@ header
 
 	.dropdown-item
 	{
-	    padding-top: 0.2em;
-	    padding-bottom: 0.2em;
+		padding-top    : 0.2em;
+		padding-bottom : 0.2em;
 	}
 }
 
 .authentication-form, .registration-form
 {
-	width : 25em;
+	width : calc(var(--modular-grid-unit) * 84);
 }
 
 header > .nav-widescreen
@@ -144,7 +141,7 @@ header
 {
 	input[type="text"]
 	{
-		width: 14rem;
+		width: calc(var(--modular-grid-unit) * 50);
 	}
 }
 
@@ -157,7 +154,18 @@ header
 
 		&:not(:first-child)
 		{
-			margin-left: 1em;
+			margin-left: calc(var(--modular-grid-unit) * 3);
 		}
 	}
+}
+
+.content-section
+{
+	border-radius : var(--border-radius);
+	box-shadow    : var(--shadow);
+}
+
+.card, .content-section, .dropdown-item-list-expanded
+{
+	box-shadow: var(--shadow);
 }

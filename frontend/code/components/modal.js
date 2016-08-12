@@ -95,7 +95,7 @@ export default class Modal extends Component
 							'modal-content--no-bars': !title
 						})}
 						onClick={event => event.stopPropagation()}
-						style={this.props.style ? merge(style.content, this.props.style) : style.content}>
+						style={this.props.style ? { ...style.content, ...this.props.style } : style.content}>
 						{this.props.children}
 					</div>
 

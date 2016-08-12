@@ -15,6 +15,7 @@ export default class Text_input extends Component
 		name        : PropTypes.string,
 		value       : PropTypes.any,
 		on_change   : PropTypes.func.isRequired,
+		valid       : PropTypes.bool,
 		validate    : PropTypes.func,
 		placeholder : PropTypes.string,
 		multiline   : PropTypes.bool,
@@ -54,20 +55,20 @@ export default class Text_input extends Component
 		const markup = 
 		(
 			<div
-				style={this.props.style}
+				style={this.props.style ? { ...style.text_input, ...this.props.style } : style.text_input}
 				className={classNames
 				(
 					'rich',
 					'text-input',
 					{
 						'text-input-empty'   : !value,
-						'text-input-invalid' : valid === false
+						'text-input-invalid' : valid === false || this.props.valid === false
 					},
 					className
 				)}>
 
 				{/* <input/> */}
-				{this.render_input({ placeholder: false })}
+				{this.render_input()}
 
 				{/* input label */}
 				{label && <label htmlFor={name} className="text-input-label" style={style.label}>{label}</label>}
@@ -83,9 +84,10 @@ export default class Text_input extends Component
 		return markup
 	}
 
-	render_input({ placeholder, ref })
+	render_input(options = {})
 	{
-		const { name, value, label, multiline, email, password, focus } = this.props
+		const { placeholder, ref } = options
+		const { name, value, multiline, email, password, focus } = this.props
 
 		let type
 
@@ -115,7 +117,7 @@ export default class Text_input extends Component
 			name,
 			ref         : ref === false ? undefined : 'input',
 			value       : value === undefined ? '' : value,
-			placeholder : placeholder === false ? undefined : label,
+			placeholder : placeholder || this.props.placeholder,
 			onFocus     : this.on_focus,
 			onChange    : this.on_change,
 			className   : 'text-input-field',
@@ -153,7 +155,7 @@ export default class Text_input extends Component
 		(
 			<div className="rich-fallback">
 				{/* <input/> */}
-				{this.render_input({ placeholder: true, ref: false })}
+				{this.render_input({ placeholder: this.props.label, ref: false })}
 
 				{/* Error message */}
 				{this.render_error_message()}
@@ -238,6 +240,9 @@ export default class Text_input extends Component
 
 const style = styler
 `
+	text_input
+		overflow : hidden
+
 	input
 		width : 100%
 

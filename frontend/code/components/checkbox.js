@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
-import styler from 'react-styling'
 import ReactDOM from 'react-dom'
+import styler from 'react-styling'
+import classNames from 'classnames'
 
 import { inject } from './common'
 
@@ -63,7 +64,13 @@ export default class Checkbox extends Component
 
 		const markup = 
 		(
-			<div className={"rich checkbox" + " " + (this.state.valid === false ? 'checkbox-invalid' : '')} style={ this.props.style ? merge(style.container, this.props.style) : style.container}>
+			<div
+				className={classNames('rich', 'checkbox',
+				{
+					'checkbox-invalid': this.state.valid === false
+				})}
+				style={ this.props.style ? { ...style.container, ...this.props.style } : style.container}>
+
 				<input 
 					ref="input" 
 					type="checkbox" 

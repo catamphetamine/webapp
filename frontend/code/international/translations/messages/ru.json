@@ -9,6 +9,7 @@
 
 	"action.save"   : "Сохранить",
 	"action.cancel" : "Отменить",
+	"action.change" : "Изменить",
 
 	"authentication.sign_in"             : "Войти",
 	"authentication.sign_out"            : "Выйти",

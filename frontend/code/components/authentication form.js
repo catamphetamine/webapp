@@ -261,7 +261,7 @@ export default class Authentication extends Component
 			<Form 
 				ref="form" 
 				className="authentication-form" 
-				style={this.props.style ? merge(style.form, this.props.style) : style.form} 
+				style={this.props.style ? { ...style.form, ...this.props.style } : style.form} 
 				action={this.sign_in}
 				inputs={() => [this.refs.email, this.refs.password]} 
 				error={this.props.sign_in_error && this.sign_in_error(this.props.sign_in_error)}
@@ -327,7 +327,7 @@ export default class Authentication extends Component
 			<Form 
 				ref="form" 
 				className="registration-form" 
-				style={this.props.style ? merge(style.form, this.props.style) : style.form} 
+				style={this.props.style ? { ...style.form, ...this.props.style } : style.form} 
 				action={this.register} 
 				inputs={() => [this.refs.name, this.refs.email, this.refs.password, this.refs.accept_terms_of_service]} 
 				error={this.props.registration_error && this.registration_error(this.props.registration_error)}
