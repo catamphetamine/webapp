@@ -123,9 +123,9 @@ export default class Log extends Component
 					title={this.state.error_message}
 					actions=
 					{[{
-						action: this.hide_stack_trace,
-						text: translate(messages.hide_stack_trace),
-						button_style: style.stack_trace_modal.button
+						action       : this.hide_stack_trace,
+						text         : translate(messages.hide_stack_trace),
+						button_style : style.stack_trace_modal.button
 					}]}>
 
 					{!this.state.stack_trace ? null : this.state.stack_trace.map((stack, stack_index) =>

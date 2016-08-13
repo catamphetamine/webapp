@@ -29,6 +29,8 @@ import Text_input      from '../../components/text input'
 import Button          from '../../components/button'
 import Content_section from '../../components/content section'
 import Editable_field  from '../../components/editable field'
+import Modal           from '../../components/modal'
+import Steps           from '../../components/steps'
 
 const messages = defineMessages
 ({
@@ -103,6 +105,44 @@ const messages = defineMessages
 		id             : 'user.settings.could_not_save',
 		description    : `Couldn't save new user's settings`,
 		defaultMessage : `Couldn't save your settings`
+	},
+
+	// Change password popup
+	change_password:
+	{
+		id             : 'user.settings.password.change',
+		description    : `Change user's own password popup title`,
+		defaultMessage : `Change password`
+	},
+	current_password:
+	{
+		id             : 'user.settings.password.current',
+		description    : `User's current password`,
+		defaultMessage : `Change password`
+	},
+	new_password:
+	{
+		id             : 'user.settings.password.new',
+		description    : `User's new password`,
+		defaultMessage : `New password`
+	},
+	enter_current_password:
+	{
+		id             : 'user.settings.password.enter_current',
+		description    : `An invitation for a user to enter his current password`,
+		defaultMessage : `Enter you current password`
+	},
+	enter_new_password:
+	{
+		id             : 'user.settings.password.enter_new',
+		description    : `An invitation for a user to enter a new password`,
+		defaultMessage : `Enter new password`
+	},
+	enter_new_password_again:
+	{
+		id             : 'user.settings.password.enter_new_again',
+		description    : `An invitation for a user to enter a new password again`,
+		defaultMessage : `Enter new password again`
 	}
 })
 
@@ -167,6 +207,9 @@ export default class Settings_page extends Component
 		this.revoke_authentication_token = this.revoke_authentication_token.bind(this)
 		this.save_settings               = this.save_settings.bind(this)
 		this.load_advanced_settings      = this.load_advanced_settings.bind(this)
+		this.change_password             = this.change_password.bind(this)
+		this.cancel_change_password      = this.cancel_change_password.bind(this)
+		this.change_password_steps_next  = this.change_password_steps_next.bind(this)
 	}
 
 	render()
@@ -217,10 +260,34 @@ export default class Settings_page extends Component
 								name="password"
 								password={true}
 								label={translate(authentication_form_messages.password)}
-								on_edit={() => alert('work in progress: enter new password and reenter it second time')}/>
+								on_edit={this.change_password}/>
 						</Content_section>
 					</div>
 				</div>
+
+				{/* Change password popup */}
+				<Modal
+					title={translate(messages.change_password)}
+					isOpen={this.state.change_password}
+					onRequestClose={this.cancel_change_password}
+					actions=
+					{[{
+						action : this.change_password_steps_next,
+						text   : translate(default_messages.next)
+					}]}>
+
+					{/* Change password steps */}
+					<Steps ref="change_password_steps">
+						{/* Enter current password */}
+						<Change_password_step_1 step={1}/>
+
+						{/* Enter new password */}
+						<Change_password_step_2 step={2}/>
+
+						{/* Enter new password again */}
+						<Change_password_step_3 step={3}/>
+					</Steps>
+				</Modal>
 
 				<div className="row row--content-sections">
 					<div className="column-l-6-of-12">
@@ -417,6 +484,21 @@ export default class Settings_page extends Component
 			return this.translate(authentication_form_messages.registration_password_is_required)
 		}
 	}
+
+	change_password()
+	{
+		this.setState({ change_password: true })
+	}
+
+	cancel_change_password()
+	{
+		this.setState({ change_password: false })
+	}
+
+	change_password_steps_next()
+	{
+		this.refs.change_password_steps.next()
+	}
 }
 
 const style = styler
@@ -453,3 +535,73 @@ const style = styler
 		&last
 			margin-bottom : 0em
 `
+
+// Enter current password
+@international()
+class Change_password_step_1 extends Component
+{
+	render()
+	{
+		const { translate } = this.props
+
+		const markup =
+		(
+			<div>
+				<Text_input
+					name="password"
+					description={translate(messages.enter_current_password)}
+					placeholder={translate(messages.current_password)}
+					on_change={value => value}/>
+			</div>
+		)
+
+		return markup
+	}
+}
+
+// Enter new password
+@international()
+class Change_password_step_2 extends Component
+{
+	render()
+	{
+		const { translate } = this.props
+
+		const markup =
+		(
+			<div>
+				<Text_input
+					name="password"
+					description={translate(messages.enter_new_password)}
+					placeholder={translate(messages.new_password)}
+					on_change={value => value}/>
+			</div>
+		)
+
+		return markup
+	}
+}
+
+
+// Enter new password again
+@international()
+class Change_password_step_3 extends Component
+{
+	render()
+	{
+		const { translate } = this.props
+
+		const markup =
+		(
+			<div>
+				<Text_input
+					name="password"
+					description={translate(messages.enter_new_password_again)}
+					placeholder={translate(messages.new_password)}
+					on_change={value => value}/>
+			</div>
+		)
+
+		return markup
+	}
+}

@@ -14,6 +14,7 @@ export default class Text_input extends Component
 		label       : PropTypes.string,
 		name        : PropTypes.string,
 		value       : PropTypes.any,
+		description : PropTypes.string,
 		on_change   : PropTypes.func.isRequired,
 		valid       : PropTypes.bool,
 		validate    : PropTypes.func,
@@ -49,10 +50,10 @@ export default class Text_input extends Component
 
 	render()
 	{
-		const { name, value, label, className } = this.props
+		const { name, value, label, description, className } = this.props
 		const { valid } = this.state
 
-		const markup = 
+		const markup =
 		(
 			<div
 				style={this.props.style ? { ...style.text_input, ...this.props.style } : style.text_input}
@@ -67,11 +68,14 @@ export default class Text_input extends Component
 					className
 				)}>
 
+				{/* Description */}
+				{this.render_description()}
+
 				{/* <input/> */}
 				{this.render_input()}
 
 				{/* input label */}
-				{label && <label htmlFor={name} className="text-input-label" style={style.label}>{label}</label>}
+				{!description && label && <label htmlFor={name} className="text-input-label" style={style.label}>{label}</label>}
 
 				{/* Error message */}
 				{this.render_error_message()}
@@ -82,6 +86,18 @@ export default class Text_input extends Component
 		)
 
 		return markup
+	}
+
+	render_description()
+	{
+		const { description } = this.props
+
+		if (!description)
+		{
+			return
+		}
+
+		return <p className="text-input__description">{description}</p>
 	}
 
 	render_input(options = {})
@@ -154,6 +170,9 @@ export default class Text_input extends Component
 		const markup =
 		(
 			<div className="rich-fallback">
+				{/* Description */}
+				{this.render_description()}
+
 				{/* <input/> */}
 				{this.render_input({ placeholder: this.props.label, ref: false })}
 

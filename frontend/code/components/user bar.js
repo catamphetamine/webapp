@@ -142,6 +142,7 @@ export default class Authentication extends Component
 				{/* User info if authenticated */}
 				{ user && this.render_user_info(user) }
 
+				{/* Sign in / Register popup */}
 				<Modal
 					isOpen={exists(this.state.password) || (!user && this.state.show)}
 					onRequestClose={this.hide}>

@@ -10,7 +10,6 @@ import Text_input from './text input'
 import Checkbox   from './checkbox'
 import Button     from './button'
 import Form       from './form'
-import Modal      from './modal'
 
 import http_status_codes from '../tools/http status codes'
 

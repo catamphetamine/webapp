@@ -20,7 +20,7 @@ export default class Editable_field extends Component
 		name        : PropTypes.string,
 		value       : PropTypes.any,
 		on_edit     : PropTypes.func,
-		on_save     : PropTypes.func.isRequired,
+		on_save     : PropTypes.func,
 		validate    : PropTypes.func,
 		multiline   : PropTypes.bool,
 		email       : PropTypes.bool,

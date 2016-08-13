@@ -46,7 +46,10 @@ export function on_change(value)
 
 	// input value changed, call the method
 	// which was passed as a property (on_change={...})
-	this.props.on_change(value)
+	if (this.props.on_change)
+	{
+		this.props.on_change(value)
+	}
 }
 
 // validates input value (core)

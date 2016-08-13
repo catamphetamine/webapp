@@ -7,9 +7,12 @@
 
 	"error.generic" : "Ошибка",
 
-	"action.save"   : "Сохранить",
-	"action.cancel" : "Отменить",
-	"action.change" : "Изменить",
+	"action.save"       : "Сохранить",
+	"action.cancel"     : "Отменить",
+	"action.next"       : "Далее",
+	"action.done"       : "Готово",
+	"action.understood" : "Понятно",
+	"action.change"     : "Изменить",
 
 	"authentication.sign_in"             : "Войти",
 	"authentication.sign_out"            : "Выйти",
@@ -91,6 +94,13 @@
 	"user.settings.authentication_token_status"          : "Состояние",
 	"user.settings.authentication_token_latest_activity" : "Использован",
 	"user.settings.could_not_save"                       : "Не удалось сохранить ваши настройки",
+
+	"user.settings.password.change"                      : "Смена пароля",
+	"user.settings.password.current"                     : "Текущий пароль",
+	"user.settings.password.new"                         : "Новый пароль",
+	"user.settings.password.enter_current"               : "Введите ваш текущий пароль",
+	"user.settings.password.enter_new"                   : "Введите новый пароль",
+	"user.settings.password.enter_new_again"             : "Введите новый пароль ещё раз",
 
 	"unauthenticated.header" : "Войдите, чтобы посмотреть эту страницу",
 	"unauthorized.header"    : "У вас нет доступа к странице",

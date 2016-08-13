@@ -369,7 +369,9 @@ header > .nav-widescreen
 .ReactModal__Overlay
 {
 	opacity: 0;
-	overflow: auto;
+	// "auto" introduces a vertical scrollbar when "bouncing" (animation)
+	// overflow: auto;
+	overflow: hidden;
 }
 
 .ReactModal__Overlay--after-open
@@ -444,8 +446,8 @@ header > .nav-widescreen
 {
 	padding-left   : calc(4 * var(--modular-grid-unit));
 	padding-right  : calc(4 * var(--modular-grid-unit));
-	padding-top    : calc(4 * var(--modular-grid-unit));
-	padding-bottom : calc(3.5 * var(--modular-grid-unit));
+	padding-top    : calc(3 * var(--modular-grid-unit)); // 4
+	padding-bottom : calc(3 * var(--modular-grid-unit)); // 3.5
 
 	border-top-left-radius  : var(--card-border-radius);
 	border-top-right-radius : var(--card-border-radius);
@@ -466,6 +468,61 @@ header > .nav-widescreen
 {
 	padding-top   : calc(4 * var(--modular-grid-unit));
 	border-radius : var(--card-border-radius);
+}
+
+.modal--could-not-close-because-busy
+{
+	animation: bounce_z 0.8s;
+	transform: translate3d(0, 0, 0);
+}
+
+// https://github.com/daneden/animate.css/blob/master/source/bouncing_entrances/bounceIn.css
+@keyframes bounce_z
+{
+	from, 15%, 30%, 45%, 65%, 85%, to
+	{
+		animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+	}
+
+	0%
+	{
+		// opacity: 0;
+		// transform: scale3d(.3, .3, .3);
+		transform: scale3d(1, 1, 1);
+	}
+
+	15%
+	{
+		// opacity: 0;
+		transform: scale3d(.92, .92, .92);
+	}
+
+	30%
+	{
+		transform: scale3d(1.07, 1.07, 1.07);
+	}
+
+	45%
+	{
+		transform: scale3d(.95, .95, .95);
+	}
+
+	63%
+	{
+		// opacity: 1;
+		transform: scale3d(1.02, 1.02, 1.02);
+	}
+
+	80%
+	{
+		transform: scale3d(.98, .98, .98);
+	}
+
+	to
+	{
+		// opacity: 1;
+		transform: scale3d(1, 1, 1);
+	}
 }
 
 .button-group
@@ -705,11 +762,18 @@ header > .nav-widescreen
 
 .text-input
 {
-	display: flex;
-	flex-direction: column;
+	// "flex" is for the <label/> which goes after the <input/> in markup
+	// but is then placed before the <input/> using "order".
+	//
+	// The reason for this is "input:focus + label" selector,
+	// which highlights the <label/> when the input is focused.
+	// (there's no CSS selector for "label [before] input:focus")
+
+	display        : flex;
+	flex-direction : column;
 
 	// When changing this label color
-	// also change "input" and "textarea" placeholder color
+	// also change "input" and "textarea" placeholder color.
 
 	label
 	{
@@ -717,10 +781,19 @@ header > .nav-widescreen
 
 		color: var(--gray-color-dark);
 
-		transform: scale(0.85) translateY(0.3em);
-		transform-origin: left top;
-		transition : color 0.1s ease-out, transform 0.1s ease-out;
-		pointer-events : none;
+		transform        : scale(0.85) translateY(0.3em);
+		transform-origin : left top;
+		transition       : color 0.1s ease-out, transform 0.1s ease-out;
+		pointer-events   : none;
+	}
+
+	// Either label or description
+	p
+	{
+		order: -2;
+
+		margin-top    : 0;
+		margin-bottom : 0;
 	}
 
 	input, textarea

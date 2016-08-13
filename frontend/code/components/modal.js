@@ -12,15 +12,34 @@ import Button from './button'
 // css transition times accordingly
 const default_close_timeout = 150 // ms
 
+// when changing this also change 
+// your .modal--could-not-close-because-busy
+// css transition times accordingly
+const could_not_close_because_busy_animation_duration = 1500 // ms
+
 export default class Modal extends Component
 {
+	state = {}
+
 	static propTypes =
 	{
-		isOpen         : PropTypes.bool.isRequired,
+		isOpen         : PropTypes.bool,
 		onRequestClose : PropTypes.func.isRequired,
 		onAfterOpen    : PropTypes.func,
 		closeTimeoutMS : PropTypes.number,
-		style          : PropTypes.object
+		title          : PropTypes.string,
+		children       : PropTypes.node,
+		actions        : PropTypes.arrayOf
+		(
+			PropTypes.shape
+			({
+				action : PropTypes.func,
+				text   : PropTypes.string
+			})
+		),
+		scroll         : PropTypes.bool,
+		style          : PropTypes.object,
+		className      : PropTypes.string
 	}
 
 	constructor(props, context)
@@ -32,6 +51,9 @@ export default class Modal extends Component
 
 		this.on_window_resize        = this.on_window_resize.bind(this)
 		this.restore_document_scroll = this.restore_document_scroll.bind(this)
+
+		this.busy = this.busy.bind(this)
+		this.idle = this.idle.bind(this)
 	}
 
 	componentDidMount()
@@ -59,6 +81,7 @@ export default class Modal extends Component
 	render()
 	{
 		const { isOpen, closeTimeoutMS, title, actions, scroll } = this.props
+		const { busy, could_not_close_because_busy } = this.state
 
 		const markup = 
 		(
@@ -68,17 +91,20 @@ export default class Modal extends Component
 				onAfterOpen={this.onAfterOpen}
 				onRequestClose={this.onRequestClose}
 				closeTimeoutMS={closeTimeoutMS || default_close_timeout}
-				className="modal"
-				style={style.modal}>
+				className={classNames('modal',
+				{
+					'modal--could-not-close-because-busy': could_not_close_because_busy
+				})}
+				style={busy ? style.modal_busy : style.modal}>
 
 				<div style={style.content_wrapper} onClick={this.onRequestClose}>
-					{/* top padding grows less than bottom padding */}
+					{/* top padding, grows less than bottom padding */}
 					<div style={style.top_padding} onClick={this.onRequestClose}></div>
 
 					{/* dialog window title */}
 					{title &&
 						<h1
-							onClick={event => event.stopPropagation()}
+							onClick={this.block_event}
 							className={classNames('modal-header',
 							{
 								'modal-header--separated': scroll
@@ -94,9 +120,10 @@ export default class Modal extends Component
 						{
 							'modal-content--no-bars': !title
 						})}
-						onClick={event => event.stopPropagation()}
+						onClick={this.block_event}
 						style={this.props.style ? { ...style.content, ...this.props.style } : style.content}>
-						{this.props.children}
+						
+						{this.content()}
 					</div>
 
 					{/* dialog window actions */}
@@ -106,14 +133,14 @@ export default class Modal extends Component
 							{
 								'modal-actions--separated': scroll
 							})}
-							onClick={event => event.stopPropagation()}
+							onClick={this.block_event}
 							style={style.actions}>
 
 							{actions.map((action, i) => <Button key={i} {...action}>{action.text}</Button>)}
 						</div>
 					}
 
-					{/* bottom padding grows more than top padding */}
+					{/* bottom padding, grows more than top padding */}
 					<div style={style.bottom_padding} onClick={this.onRequestClose}></div>
 				</div>
 			</React_modal>
@@ -122,8 +149,47 @@ export default class Modal extends Component
 		return markup
 	}
 
+	content()
+	{
+		return React.Children.map(this.props.children, (child) =>
+		{
+			return React.cloneElement(child,
+			{
+				busy : this.busy,
+				idle : this.idle
+			})
+		})
+	}
+
+	busy()
+	{
+		this.setState({ busy: true })
+	}
+
+	idle()
+	{
+		this.setState({ busy: false })
+	}
+
 	onRequestClose()
 	{
+		if (this.state.busy)
+		{
+			if (!this.state.could_not_close_because_busy)
+			{
+				setTimeout(() =>
+				{
+					this.setState({ could_not_close_because_busy: false })
+				},
+				// Give it a bit of extra time to finish the CSS animation
+				could_not_close_because_busy_animation_duration * 1.1)
+
+				this.setState({ could_not_close_because_busy: true })
+			}
+
+			return
+		}
+
 		this.restore_document_scroll()
 
 		if (this.props.onRequestClose)
@@ -167,6 +233,11 @@ export default class Modal extends Component
 	on_window_resize()
 	{
 		this.max_width = window.innerWidth
+	}
+
+	block_event(event)
+	{
+		event.stopPropagation()
 	}
 }
 
@@ -294,3 +365,9 @@ const style = styler
 		// 	// display : table-cell
 		// 	height  : 100%
 `
+
+style.modal_busy =
+{
+	overlay: { ...style.modal.overlay, cursor: 'wait' },
+	content: style.modal.content
+}
