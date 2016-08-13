@@ -3,13 +3,10 @@ import { title }                       from 'react-isomorphic-render'
 import { preload }                     from 'react-isomorphic-render/redux'
 import { connect }                     from 'react-redux'
 import styler                          from 'react-styling'
-import { defineMessages }              from 'react-intl'
-import React_time_ago                  from 'react-time-ago'
 import classNames                      from 'classnames'
+import { defineMessages }              from 'react-intl'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
-
-import { FormattedDate } from 'react-intl'
 
 import international from '../../international/internationalize'
 
@@ -17,7 +14,6 @@ import
 {
 	get_user,
 	get_user_authentication_tokens,
-	revoke_authentication_token,
 	change_email
 }
 from '../../actions/user settings'
@@ -29,8 +25,9 @@ import Text_input      from '../../components/text input'
 import Button          from '../../components/button'
 import Content_section from '../../components/content section'
 import Editable_field  from '../../components/editable field'
-import Modal           from '../../components/modal'
-import Steps           from '../../components/steps'
+
+import Change_password_popup from './settings change password'
+import Authentication_tokens from './settings authentication tokens'
 
 const messages = defineMessages
 ({
@@ -39,60 +36,6 @@ const messages = defineMessages
 		id             : 'user.settings.header',
 		description    : 'User account settings page header',
 		defaultMessage : 'Settings'
-	},
-	authentication_tokens:
-	{
-		id             : 'user.settings.authentication_tokens',
-		description    : 'User account authentication tokens',
-		defaultMessage : 'Authentication tokens'
-	},
-	revoke_authentication_token:
-	{
-		id             : 'user.settings.revoke_authentication_token',
-		description    : 'User account authentication token revocation action',
-		defaultMessage : 'Revoke'
-	},
-	revoke_authentication_token_failed:
-	{
-		id             : 'user.settings.revoke_authentication_token_failed',
-		description    : 'User account authentication token revocation action failed',
-		defaultMessage : `Couldn't revoke authentication token`
-	},
-	authentication_token_valid:
-	{
-		id             : 'user.settings.authentication_token_valid',
-		description    : 'User account authentication token valid status',
-		defaultMessage : 'Valid'
-	},
-	authentication_token_revoked:
-	{
-		id             : 'user.settings.authentication_token_revoked',
-		description    : 'User account authentication token revoked status',
-		defaultMessage : 'Revoked'
-	},
-	authentication_token_id:
-	{
-		id             : 'user.settings.authentication_token_id',
-		description    : 'User account authentication tokens table id column header',
-		defaultMessage : 'Token'
-	},
-	authentication_token_issued:
-	{
-		id             : 'user.settings.authentication_token_issued',
-		description    : 'User account authentication tokens table issue date column header',
-		defaultMessage : 'Issued'
-	},
-	authentication_token_status:
-	{
-		id             : 'user.settings.authentication_token_status',
-		description    : 'User account authentication tokens table status column header',
-		defaultMessage : 'Status'
-	},
-	authentication_token_latest_activity:
-	{
-		id             : 'user.settings.authentication_token_latest_activity',
-		description    : 'User account authentication tokens table latest activity column header',
-		defaultMessage : 'Activity'
 	},
 	show_advanced_settings:
 	{
@@ -105,44 +48,6 @@ const messages = defineMessages
 		id             : 'user.settings.could_not_save',
 		description    : `Couldn't save new user's settings`,
 		defaultMessage : `Couldn't save your settings`
-	},
-
-	// Change password popup
-	change_password:
-	{
-		id             : 'user.settings.password.change',
-		description    : `Change user's own password popup title`,
-		defaultMessage : `Change password`
-	},
-	current_password:
-	{
-		id             : 'user.settings.password.current',
-		description    : `User's current password`,
-		defaultMessage : `Change password`
-	},
-	new_password:
-	{
-		id             : 'user.settings.password.new',
-		description    : `User's new password`,
-		defaultMessage : `New password`
-	},
-	enter_current_password:
-	{
-		id             : 'user.settings.password.enter_current',
-		description    : `An invitation for a user to enter his current password`,
-		defaultMessage : `Enter you current password`
-	},
-	enter_new_password:
-	{
-		id             : 'user.settings.password.enter_new',
-		description    : `An invitation for a user to enter a new password`,
-		defaultMessage : `Enter new password`
-	},
-	enter_new_password_again:
-	{
-		id             : 'user.settings.password.enter_new_again',
-		description    : `An invitation for a user to enter a new password again`,
-		defaultMessage : `Enter new password again`
 	}
 })
 
@@ -157,12 +62,10 @@ const messages = defineMessages
 (
 	model =>
 	({
-		user                  : model.user_settings.user,
-		authentication_tokens : model.user_settings.authentication_tokens,
+		user : model.user_settings.user,
 
 		load_advanced_settings_error  : model.user_settings.load_advanced_settings_error,
 		loading_advanced_settings     : model.user_settings.loading_advanced_settings,
-		revoking_authentication_token : model.user_settings.revoking_authentication_token,
 		saving_settings               : model.user_settings.saving_settings
 	}),
 	dispatch =>
@@ -171,7 +74,6 @@ const messages = defineMessages
 		...bind_action_creators
 		({
 			get_user_authentication_tokens,
-			revoke_authentication_token,
 			change_email
 		},
 		dispatch)
@@ -192,8 +94,6 @@ export default class Settings_page extends Component
 
 		get_user_authentication_tokens : PropTypes.func.isRequired,
 
-		revoke_authentication_token   : PropTypes.func.isRequired,
-		revoking_authentication_token : PropTypes.bool,
 		change_email                  : PropTypes.func.isRequired,
 		saving_settings               : PropTypes.bool
 	}
@@ -204,12 +104,10 @@ export default class Settings_page extends Component
 	{
 		super(props, context)
 
-		this.revoke_authentication_token = this.revoke_authentication_token.bind(this)
 		this.save_settings               = this.save_settings.bind(this)
 		this.load_advanced_settings      = this.load_advanced_settings.bind(this)
 		this.change_password             = this.change_password.bind(this)
 		this.cancel_change_password      = this.cancel_change_password.bind(this)
-		this.change_password_steps_next  = this.change_password_steps_next.bind(this)
 	}
 
 	render()
@@ -234,7 +132,8 @@ export default class Settings_page extends Component
 
 		const markup = 
 		(
-			<div className="content  user-settings">
+			<div className="content user-settings">
+				{/* "Settings" */}
 				{title(translate(messages.header))}
 
 				<div className="row row--content-sections">
@@ -266,33 +165,16 @@ export default class Settings_page extends Component
 				</div>
 
 				{/* Change password popup */}
-				<Modal
-					title={translate(messages.change_password)}
+				<Change_password_popup
 					isOpen={this.state.change_password}
-					onRequestClose={this.cancel_change_password}
-					actions=
-					{[{
-						action : this.change_password_steps_next,
-						text   : translate(default_messages.next)
-					}]}>
+					onRequestClose={this.cancel_change_password}/>
 
-					{/* Change password steps */}
-					<Steps ref="change_password_steps">
-						{/* Enter current password */}
-						<Change_password_step_1 step={1}/>
-
-						{/* Enter new password */}
-						<Change_password_step_2 step={2}/>
-
-						{/* Enter new password again */}
-						<Change_password_step_3 step={3}/>
-					</Steps>
-				</Modal>
-
+				{/* Aadvanced settings */}
 				<div className="row row--content-sections">
 					<div className="column-l-6-of-12">
+						{/* "Show advanced settings" */}
 						<div className="background-section">
-							{/* "Show advanced settings" */}
+							{/* "Show advanced settings" button */}
 							{ !showing_advanced_settings && 
 								<Button
 									busy={loading_advanced_settings}
@@ -310,104 +192,7 @@ export default class Settings_page extends Component
 
 						{/* Authentication tokens */}
 						{ showing_advanced_settings &&
-							<Content_section
-								title={translate(messages.authentication_tokens)}
-								padding={false}>
-
-								{/* Authentication tokens list */}
-								<ul>
-									{authentication_tokens.map((token, token_index) =>
-									{
-										const markup =
-										(
-											<li
-												key={token_index}
-												className={classNames('content-section-padding',
-												{
-													'background-color--gray-color-lightest': token.revoked
-												})}
-												style={token.revoked ? style.authentication_token.revoked : style.authentication_token}>
-
-												{/* Divider line */}
-												{ token_index > 0 && <div className="content-section-divider"/> }
-
-												{/* Token id */}
-												<div>
-													{/* "Token" */}
-													{translate(messages.authentication_token_id)}
-													{' '}
-													<code>{token.id}</code>
-												</div>
-
-												{/* Token issued on */}
-												<div>
-													{/* "Issued" */}
-													{translate(messages.authentication_token_issued)}
-													{' '}
-													{/* when */}
-													<React_time_ago
-														date={token.created}
-														style={style.authentication_token.issued}/>
-												</div>
-
-												{/* Token status (valid, revoked) */}
-												<div style={style.authentication_token.status}>
-													{/* If the token was revoked, show revocation date */}
-													{token.revoked &&
-														<span>
-															{/* "Revoked" */}
-															{translate(messages.authentication_token_revoked)}
-															{' '}
-															{/* when */}
-															<React_time_ago date={token.revoked}/>
-														</span>
-													}
-
-													{/* If the token wasn't revoked then it's valid */}
-													{!token.revoked &&
-														<span>
-															{/* "Valid" */}
-															{translate(messages.authentication_token_valid)}
-															{' '}
-															{/* "Revoke" */}
-															<Button
-																busy={revoking_authentication_token}
-																action={() => this.revoke_authentication_token(token.id)}>
-																{translate(messages.revoke_authentication_token)}
-															</Button>
-														</span>
-													}
-												</div>
-
-												{/* Latest activity */}
-												<div>
-													{/* "Latest activity" */}
-													{translate(messages.authentication_token_latest_activity)}:
-
-													{/* For each different IP address show latest activity time */}
-													<ul style={style.authentication_token.latest_activity}>
-														{token.history.sort((a, b) => b.time.getTime() - a.time.getTime()).map((activity, activity_index) =>
-														{
-															{/* Latest activity time for this IP address */}
-															return <li key={activity_index}>
-																{/* IP address, also resolving city and country */}
-																<code>{activity.ip}</code>{/* (city, country)*/},
-																{' '}
-																{ activity.place && activity.place.city && `${activity.place.city}, ${activity.place.country}, ` }
-																{' '}
-																{/* Latest activity time */}
-																<React_time_ago date={activity.time}/>
-															</li>
-														})}
-													</ul>
-												</div>
-											</li>
-										)
-
-										return markup
-									})}
-								</ul>
-							</Content_section>
+							<Authentication_tokens/>
 						}
 					</div>
 				</div>
@@ -417,28 +202,10 @@ export default class Settings_page extends Component
 		return markup
 	}
 
-	async revoke_authentication_token(id)
-	{
-		try
-		{
-			await this.props.revoke_authentication_token(id)
-		}
-		catch (error)
-		{
-			return alert(this.props.translate(messages.revoke_authentication_token_failed))
-		}
-
-		this.props.get_user_authentication_tokens()
-	}
-
 	async save_settings()
 	{
 		try
 		{
-			// const settings =
-			// {
-			// }
-
 			await this.props.change_email(this.state.email)
 		}
 		catch (error)
@@ -446,8 +213,6 @@ export default class Settings_page extends Component
 			console.error(error)
 			return alert(this.props.translate(messages.save_settings_failed))
 		}
-
-		// this.props.get_user(this.props.user.id)
 	}
 
 	async load_advanced_settings()
@@ -487,17 +252,12 @@ export default class Settings_page extends Component
 
 	change_password()
 	{
-		this.setState({ change_password: true })
+		this.setState({ change_password: true, step: 1 })
 	}
 
 	cancel_change_password()
 	{
 		this.setState({ change_password: false })
-	}
-
-	change_password_steps_next()
-	{
-		this.refs.change_password_steps.next()
 	}
 }
 
@@ -509,99 +269,6 @@ const style = styler
 	show_advanced_settings
 		// margin-top: var(--content-section-padding)
 
-	authentication_tokens
-
-	authentication_token
-		position    : relative
-		// padding     : var(--content-section-padding)
-		line-height : 1.6em
-
-		&revoked
-			// color: var(--gray-color-darker)
-			// background-color: var(--gray-color-lightest)
-
-		issued
-			// display: block
-
-		latest_activity
-
 	change_button
 		margin-left: 1em
-
-	row
-		display : flex
-		margin-bottom : 1em
-
-		&last
-			margin-bottom : 0em
 `
-
-// Enter current password
-@international()
-class Change_password_step_1 extends Component
-{
-	render()
-	{
-		const { translate } = this.props
-
-		const markup =
-		(
-			<div>
-				<Text_input
-					name="password"
-					description={translate(messages.enter_current_password)}
-					placeholder={translate(messages.current_password)}
-					on_change={value => value}/>
-			</div>
-		)
-
-		return markup
-	}
-}
-
-// Enter new password
-@international()
-class Change_password_step_2 extends Component
-{
-	render()
-	{
-		const { translate } = this.props
-
-		const markup =
-		(
-			<div>
-				<Text_input
-					name="password"
-					description={translate(messages.enter_new_password)}
-					placeholder={translate(messages.new_password)}
-					on_change={value => value}/>
-			</div>
-		)
-
-		return markup
-	}
-}
-
-
-// Enter new password again
-@international()
-class Change_password_step_3 extends Component
-{
-	render()
-	{
-		const { translate } = this.props
-
-		const markup =
-		(
-			<div>
-				<Text_input
-					name="password"
-					description={translate(messages.enter_new_password_again)}
-					placeholder={translate(messages.new_password)}
-					on_change={value => value}/>
-			</div>
-		)
-
-		return markup
-	}
-}

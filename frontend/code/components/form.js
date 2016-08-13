@@ -18,7 +18,8 @@ export default class Form extends Component
 	{
 		super(props, context)
 		
-		this.submit = this.submit.bind(this)
+		this.on_submit = this.on_submit.bind(this)
+		this.submit    = this.submit.bind(this)
 	}
 
 	render()
@@ -27,20 +28,30 @@ export default class Form extends Component
 
 		const markup = 
 		(
-			<form className={className} style={this.props.style} onSubmit={this.submit} action={post} method="POST">
+			<form
+				onSubmit={this.on_submit}
+				action={post}
+				method="POST"
+				className={className}
+				style={this.props.style}>
+
 				{this.props.children}
 
-				{ error ? <div className="form-error-message">{error.message ? error.message : error}</div> : null }
+				{error && <div className="form-error-message">{error.message ? error.message : error}</div>}
 			</form>
 		)
 
 		return markup
 	}
 
-	async submit(event)
+	on_submit(event)
 	{
 		event.preventDefault()
+		this.submit()
+	}
 
+	async submit()
+	{
 		// this.reset_error()
 
 		const { inputs } = this.props
@@ -62,7 +73,8 @@ export default class Form extends Component
 
 			if (focus_on)
 			{
-				return focus_on.focus({ preserve_validation: true })
+				focus_on.focus({ preserve_validation: true })
+				return false
 			}
 		}
 
@@ -71,7 +83,7 @@ export default class Form extends Component
 			return
 		}
 
-		this.props.action()
+		return this.props.action()
 
 		// try
 		// {

@@ -38,53 +38,61 @@ export default class Steps extends Component
 		return markup
 	}
 
+	step()
+	{
+		return this.state.step
+	}
+
+	step_count()
+	{
+		return React.Children.count(this.props.children)
+	}
+
+	current_step()
+	{
+		return React.Children.toArray(this.props.children).filter((child, index) =>
+		{
+			// child.props.step
+			return index + 1 === this.state.step
+		})
+		[0]
+	}
+
 	content()
 	{
-		const the_step = React.Children.map(this.props.children, (child) =>
-		{
-			if (child.props.step !== this.state.step)
-			{
-				return
-			}
+		const the_step = this.current_step()
 
-			return React.cloneElement(child,
-			{
-				previous : this.previous,
-				next     : this.next,
-				goto     : this.goto
-			})
-		})
-
-		if (the_step.length !== 1)
+		if (!the_step)
 		{
 			throw new Error(`No step #${this.state.step} found`)
 		}
 
-		return the_step[0]
+		return the_step
 	}
 
 	previous()
 	{
-		if (this.state.step === 0)
+		if (this.state.step === 1)
 		{
 			return
 		}
 
-		this.goto(this.state.step - 1)
+		return this.goto(this.state.step - 1)
 	}
 
 	next()
 	{
-		if (this.state.step === 0)
-		{
-			return
-		}
-		
-		this.goto(this.state.step + 1)
+		return this.goto(this.state.step + 1)
+	}
+
+	done()
+	{
+		return this.state.step
 	}
 
 	goto(step)
 	{
 		this.setState({ step })
+		return step
 	}
 }
