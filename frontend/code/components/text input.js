@@ -90,14 +90,23 @@ export default class Text_input extends Component
 
 	render_description()
 	{
-		const { description } = this.props
+		const { description, value } = this.props
 
 		if (!description)
 		{
 			return
 		}
 
-		return <p className="text-input__description">{description}</p>
+		const markup =
+		(
+			<p
+				className="text-input__description"
+				style={value && !value.is_blank() ? style.description.tame : style.description}>
+				{description}
+			</p>
+		)
+
+		return markup
 	}
 
 	render_input(options = {})
@@ -267,6 +276,12 @@ const style = styler
 		-moz-user-select    : none
 		-ms-user-select     : none
 		user-select         : none
+
+	description
+		transition : opacity 160ms ease-out
+
+		&tame
+			opacity : 0.6
 `
 
 // <textarea/> autoresize (without ghost elements)
