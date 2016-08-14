@@ -56,6 +56,12 @@ const messages = defineMessages
 		id             : 'user.settings.password.is_required',
 		description    : `An error message for user stating that a password is required`,
 		defaultMessage : `Enter the password`
+	},
+	new_password_misspelled:
+	{
+		id             : 'user.settings.password.new_misspelled',
+		description    : `An error message for user stating that the new password entered the second time didn't match the new password enetered the first time`,
+		defaultMessage : `You misspelled the new password. Try again`
 	}
 })
 
@@ -139,6 +145,8 @@ export default class Change_password_popup extends Component
 // Change password steps
 class Change_password extends Component
 {
+	state = {}
+
 	static propTypes =
 	{
 		set_next_step : PropTypes.func.isRequired,
@@ -166,10 +174,10 @@ class Change_password extends Component
 				<Change_password_step_1 ref="1" submit={this.next}/>
 
 				{/* Enter new password */}
-				<Change_password_step_2 ref="2" submit={this.next}/>
+				<Change_password_step_2 ref="2" submit={this.next} state={this.state}/>
 
 				{/* Enter new password again */}
-				<Change_password_step_3 ref="3" submit={this.done}/>
+				<Change_password_step_3 ref="3" submit={this.done} state={this.state}/>
 			</Steps>
 		)
 
@@ -178,9 +186,10 @@ class Change_password extends Component
 
 	async change_password_steps_next()
 	{
-		const next_step = await this.submit()
+		const { next_step, ...rest } = await this.submit()
 
-		// Updates <Modal/> actions
+		this.setState(rest)
+
 		if (next_step)
 		{
 			this.props.set_next_step(next_step)
@@ -189,7 +198,7 @@ class Change_password extends Component
 
 	async change_password_steps_done()
 	{
-		const next_step = await this.submit()
+		const { next_step, ...rest } = await this.submit()
 
 		if (next_step)
 		{
@@ -206,7 +215,7 @@ class Change_password extends Component
 		// 	await step.submit()
 		// }
 
-		return await step.submit()
+		return await step.submit(this.state)
 	}
 
 	next()
@@ -278,9 +287,16 @@ class Change_password_step_1 extends Component
 		return [this.refs.password]
 	}
 
-	async submit()
+	async submit(state)
 	{
-		return await this.refs.form.submit()
+		const next_step = await this.refs.form.submit()
+
+		if (next_step)
+		{
+			return { ...state, next_step, old_password: this.state.value }
+		}
+
+		return state
 	}
 
 	submit_form()
@@ -359,9 +375,16 @@ class Change_password_step_2 extends Component
 		return [this.refs.password]
 	}
 
-	async submit()
+	async submit(state)
 	{
-		return await this.refs.form.submit()
+		const next_step = await this.refs.form.submit()
+		
+		if (next_step)
+		{
+			return { ...state, next_step, new_password: this.state.value }
+		}
+
+		return state
 	}
 
 	submit_form()
@@ -440,9 +463,16 @@ class Change_password_step_3 extends Component
 		return [this.refs.password]
 	}
 
-	async submit()
+	async submit(state)
 	{
-		return await this.refs.form.submit()
+		const next_step = await this.refs.form.submit()
+
+		if (next_step)
+		{
+			return { ...state, next_step }
+		}
+
+		return state
 	}
 
 	submit_form()
@@ -461,11 +491,14 @@ class Change_password_step_3 extends Component
 	{
 		const translate = this.context.intl.formatMessage
 
-		alert('compare with the previously entered new password')
-
 		if (!value)
 		{
 			return translate(messages.password_is_required)
+		}
+
+		if (value !== this.props.state.new_password)
+		{
+			return translate(messages.new_password_misspelled)
 		}
 	}
 }

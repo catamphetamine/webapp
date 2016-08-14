@@ -102,6 +102,7 @@
 	"user.settings.password.enter_new"                   : "Введите новый пароль",
 	"user.settings.password.enter_new_again"             : "Введите новый пароль ещё раз",
 	"user.settings.password.is_required"                 : "Введите пароль",
+	"user.settings.password.new_misspelled"              : "Вы опечатались. Попробуйте ещё раз",
 
 	"unauthenticated.header" : "Войдите, чтобы посмотреть эту страницу",
 	"unauthorized.header"    : "У вас нет доступа к странице",
