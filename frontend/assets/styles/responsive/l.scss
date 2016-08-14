@@ -162,10 +162,12 @@ header
 .content-section
 {
 	border-radius : var(--border-radius);
-	box-shadow    : var(--shadow);
-}
+	// box-shadow    : var(--shadow);
+	box-shadow: 0 1px 0 0 var(--gray-color-lighter-), 0 0 0 1px var(--gray-color-light);
 
-.card, .content-section, .dropdown-item-list-expanded
-{
-	box-shadow: var(--shadow);
+	.content-section-header
+	{
+		border-top-left-radius  : var(--border-radius);
+		border-top-right-radius : var(--border-radius);
+	}
 }

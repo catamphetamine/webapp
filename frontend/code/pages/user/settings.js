@@ -136,6 +136,12 @@ export default class Settings_page extends Component
 				{/* "Settings" */}
 				{title(translate(messages.header))}
 
+				{/* Change password popup */}
+				<Change_password_popup
+					isOpen={this.state.change_password}
+					onRequestClose={this.cancel_change_password}/>
+
+				{/* General settings */}
 				<div className="row row--content-sections">
 					<div className="column-l-6-of-12">
 						{/* User's personal info */}
@@ -164,31 +170,28 @@ export default class Settings_page extends Component
 					</div>
 				</div>
 
-				{/* Change password popup */}
-				<Change_password_popup
-					isOpen={this.state.change_password}
-					onRequestClose={this.cancel_change_password}/>
-
 				{/* Aadvanced settings */}
 				<div className="row row--content-sections">
 					<div className="column-l-6-of-12">
 						{/* "Show advanced settings" */}
-						<div className="background-section">
-							{/* "Show advanced settings" button */}
-							{ !showing_advanced_settings && 
-								<Button
-									busy={loading_advanced_settings}
-									action={this.load_advanced_settings}
-									style={style.show_advanced_settings}>
-									{translate(messages.show_advanced_settings)}
-								</Button>
-							}
+						{ !showing_advanced_settings &&
+							<div className="background-section">
+								{/* "Show advanced settings" button */}
+								{ !showing_advanced_settings && 
+									<Button
+										busy={loading_advanced_settings}
+										action={this.load_advanced_settings}
+										style={style.show_advanced_settings}>
+										{translate(messages.show_advanced_settings)}
+									</Button>
+								}
 
-							{/* Error while loading advanced settings */}
-							{ load_advanced_settings_error &&
-								<div className="error">{translate(default_messages.error)}</div>
-							}
-						</div>
+								{/* Error while loading advanced settings */}
+								{ load_advanced_settings_error &&
+									<div className="error">{translate(default_messages.error)}</div>
+								}
+							</div>
+						}
 
 						{/* Authentication tokens */}
 						{ showing_advanced_settings &&

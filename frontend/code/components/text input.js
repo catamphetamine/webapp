@@ -120,13 +120,11 @@ export default class Text_input extends Component
 			type = 'text'
 		}
 
-		// let input_style = style.input
-		// if (this.props.input_style)
-		// {
-		// 	input_style = merge(input_style, this.props.input_style)
-		// }
-
-		const input_style = this.props.input_style
+		let input_style = style.input
+		if (this.props.input_style)
+		{
+			input_style = { ...input_style, ...this.props.input_style }
+		}
 
 		const properties =
 		{
@@ -260,10 +258,9 @@ export default class Text_input extends Component
 const style = styler
 `
 	text_input
-		overflow : hidden
 
 	input
-		width : 100%
+		max-width : 100%
 
 	label
 		-webkit-user-select : none
