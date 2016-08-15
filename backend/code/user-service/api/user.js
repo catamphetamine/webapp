@@ -53,6 +53,11 @@ export default function(api)
 		{
 			throw new errors.Unauthenticated()
 		}
+
+		if (!data.name)
+		{
+			throw new errors.Input_missing(`"name" is required`)
+		}
 		
 		await store.update_user(user.id,
 		{

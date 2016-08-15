@@ -24,7 +24,9 @@ export default class Text_input extends Component
 		email            : PropTypes.bool,
 		password         : PropTypes.bool,
 		focus            : PropTypes.bool,
-		style            : PropTypes.object
+		style            : PropTypes.object,
+		input_style      : PropTypes.object,
+		label_style      : PropTypes.object
 	}
 
 	constructor(props, context)
@@ -47,7 +49,7 @@ export default class Text_input extends Component
 
 	render()
 	{
-		const { name, value, label, description, invalid, indicate_invalid, className } = this.props
+		const { name, value, label, label_style, description, invalid, indicate_invalid, className } = this.props
 
 		const markup =
 		(
@@ -72,7 +74,13 @@ export default class Text_input extends Component
 
 				{/* input label */}
 				{/* htmlFor={name} */}
-				{!description && label && <label className="text-input-label" style={style.label}>{label}</label>}
+				{!description && label &&
+					<label
+						className="text-input-label"
+						style={label_style ? { ...style.label, ...label_style } : style.label}>
+						{label}
+					</label>
+				}
 
 				{/* Error message */}
 				{this.render_error_message()}

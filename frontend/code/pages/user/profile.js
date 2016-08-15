@@ -14,6 +14,7 @@ import { bindActionCreators as bind_action_creators } from 'redux'
 
 import { get_users_latest_activity_time, get_user, update_user, upload_user_picture, save_user_picture } from '../../actions/user profile'
 
+import Form         from '../../components/form'
 import Text_input   from '../../components/text input'
 import Button       from '../../components/button'
 import Dropdown     from '../../components/dropdown'
@@ -113,6 +114,12 @@ const messages = defineMessages
 		id             : `user.profile.unsupported_uploaded_user_picture_file_error`,
 		description    : `The image user tried to upload is of an unsupported file format`,
 		defaultMessage : `The file you tried to upload is not supported for user pictures. Only JPG, PNG and SVG images are supported.`
+	},
+	name_is_required:
+	{
+		id             : `user.profile.name_is_required`,
+		description    : `The user tried to save his profile with a blank "name" field`,
+		defaultMessage : `Enter your name`
 	}
 })
 
@@ -201,6 +208,9 @@ export default class User_profile extends Component
 		this.edit_profile         = this.edit_profile.bind(this)
 		this.cancel_profile_edits = this.cancel_profile_edits.bind(this)
 		this.save_profile_edits   = this.save_profile_edits.bind(this)
+
+		this.focus                = this.focus.bind(this)
+		this.validate_name        = this.validate_name.bind(this)
 
 		this.send_message = this.send_message.bind(this)
 		this.subscribe    = this.subscribe.bind(this)
@@ -299,100 +309,114 @@ export default class User_profile extends Component
 							</ul>
 						}
 
-						{/* Edit/Save own profile */}
-						{ is_own_profile &&
-							<div style={style.own_profile_actions} className="user-profile__actions">
+						<Form
+							fields={['name', 'place', 'country']}
+							focus={this.focus}
+							action={this.save_profile_edits}>
 
-								{/* "Edit profile" */}
-								{ !edit && 
-									<Button
-										style={style.own_profile_actions.action}
-										button_style={style.own_profile_actions.action.button}
-										action={this.edit_profile}>
-										{translate(messages.edit_profile)}
-									</Button>
-								}
+							{/* Edit/Save own profile */}
+							{ is_own_profile &&
+								<div style={style.own_profile_actions} className="user-profile__actions">
 
-								{/* "Cancel changes" */}
-								{  edit && 
-									<Button 
-										style={style.own_profile_actions.action}
-										button_style={style.own_profile_actions.action.button}
-										action={this.cancel_profile_edits}
-										disabled={updating_user || uploading_picture}>
-										{translate(messages.cancel_profile_edits)}
-									</Button>
-								}
+									{/* "Edit profile" */}
+									{ !edit && 
+										<Button
+											style={style.own_profile_actions.action}
+											button_style={style.own_profile_actions.action.button}
+											action={this.edit_profile}>
+											{translate(messages.edit_profile)}
+										</Button>
+									}
 
-								{/* "Save changes" */}
-								{  edit && 
-									<Button 
-										style={style.own_profile_actions.action}
-										buttonClassName="primary"
-										button_style={style.own_profile_actions.action.button}
-										action={this.save_profile_edits}
-										disabled={uploading_picture}
-										busy={updating_user}>
-										{translate(messages.save_profile_edits)}
-									</Button>
-								}
-							</div>
-						}
+									{/* "Cancel changes" */}
+									{  edit && 
+										<Button 
+											style={style.own_profile_actions.action}
+											button_style={style.own_profile_actions.action.button}
+											action={this.cancel_profile_edits}
+											disabled={updating_user || uploading_picture}>
+											{translate(messages.cancel_profile_edits)}
+										</Button>
+									}
 
-						{/* User picture */}
-						<Uploadable_user_picture
-							ref="user_picture"
-							edit={edit}
-							user={user}
-							uploaded_picture={uploaded_picture}
-							uploading_picture={uploading_picture}
-							upload_user_picture={this.upload_user_picture}
-							choosing_user_picture={this.choosing_user_picture}
-							translate={translate}
-							style={style}/>
-
-						{/* Name: "John Brown" */}
-						{ edit ?
-							<Text_input
-								label={translate(messages.name)}
-								style={style.user_name.edit}
-								input_style={style.user_name}
-								value={this.state.name}
-								on_change={name => this.setState({ name })}/>
-							:
-							<h1 style={style.user_name.idle}>{user.name}</h1>
-						}
-
-						{/* Place: "Moscow" */}
-						{ edit &&
-							// City, town, etc
-							<Text_input
-								label={translate(messages.place)}
-								style={style.user_location.edit}
-								value={this.state.place}
-								on_change={place => this.setState({ place })}/>
-						}
-
-						{/* Country: "Russia" */}
-						{ edit &&
-							// Country
-							<Dropdown
-								label={translate(messages.country)}
-								options={this.countries}
-								value={this.state.country}
-								on_change={country => this.setState({ country })}/>
-						}
-
-						{/* User's place and country */}
-						{ !edit &&
-							((user.place || user.country) &&
-								<div
-									style={style.user_location}
-									className="user-profile__location">
-									{this.whereabouts().join(', ')}
+									{/* "Save changes" */}
+									{  edit && 
+										<Button
+											submit={true}
+											style={style.own_profile_actions.action}
+											buttonClassName="primary"
+											button_style={style.own_profile_actions.action.button}
+											disabled={uploading_picture}
+											busy={updating_user}>
+											{translate(messages.save_profile_edits)}
+										</Button>
+									}
 								</div>
-							)
-						}
+							}
+
+							{/* User picture */}
+							<Uploadable_user_picture
+								ref="user_picture"
+								edit={edit}
+								user={user}
+								uploaded_picture={uploaded_picture}
+								uploading_picture={uploading_picture}
+								upload_user_picture={this.upload_user_picture}
+								choosing_user_picture={this.choosing_user_picture}
+								translate={translate}
+								style={style}/>
+
+							{/* Name: "John Brown" */}
+							{ edit ?
+								<Text_input
+									ref="name"
+									name="name"
+									label={translate(messages.name)}
+									style={style.user_name_field}
+									input_style={style.user_name}
+									label_style={style.user_name}
+									value={this.state.name}
+									invalid={this.validate_name(this.state.name)}
+									on_change={name => this.setState({ name })}/>
+								:
+								<h1 style={style.user_name.idle}>{user.name}</h1>
+							}
+
+							{/* Place: "Moscow" */}
+							{ edit &&
+								// City, town, etc
+								<Text_input
+									ref="place"
+									name="place"
+									label={translate(messages.place)}
+									style={style.user_location.edit}
+									value={this.state.place}
+									on_change={place => this.setState({ place })}/>
+							}
+
+							{/* Country: "Russia" */}
+							{ edit &&
+								// Country
+								<Dropdown
+									ref="country"
+									name="country"
+									label={translate(messages.country)}
+									options={this.countries}
+									value={this.state.country}
+									on_change={country => this.setState({ country })}/>
+							}
+
+							{/* User's place and country */}
+							{ !edit &&
+								((user.place || user.country) &&
+									<div
+										style={style.user_location}
+										className="user-profile__location">
+										{this.whereabouts().join(', ')}
+									</div>
+								)
+							}
+						</Form>
 
 						{/* "Send message", "Subscribe" */}
 						{ !is_own_profile &&
@@ -541,7 +565,7 @@ export default class User_profile extends Component
 	whereabouts()
 	{
 		const { user, translate } = this.props
-		
+
 		const whereabouts = []
 
 		if (user.place)
@@ -555,6 +579,19 @@ export default class User_profile extends Component
 		}
 
 		return whereabouts
+	}
+
+	focus(name)
+	{
+		this.refs[name].focus()
+	}
+
+	validate_name(value)
+	{
+		if (!value)
+		{
+			return this.props.translate(messages.name_is_required)
+		}
 	}
 }
 
@@ -703,6 +740,9 @@ const style = styler
 
 	header
 		text-align : center
+
+	user_name_field
+		margin-top: 1rem
 
 	user_name
 		font-size     : 1.5rem

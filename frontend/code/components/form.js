@@ -60,7 +60,7 @@ export default class Form extends Component
 
 		return React.Children.map(children, (child) =>
 		{
-			if (!child.props)
+			if (!child || !child.props)
 			{
 				return child
 			}

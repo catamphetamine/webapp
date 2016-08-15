@@ -39,6 +39,11 @@ export default function()
 					value = value.target.value
 				}
 
+				if (typeof value === 'string')
+				{
+					value = value.trim()
+				}
+
 				// // Check if the input value has actually changed
 				// if (this.props.value === value)
 				// {
