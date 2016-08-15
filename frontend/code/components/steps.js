@@ -14,7 +14,7 @@ export default class Steps extends Component
 	{
 		on_busy       : PropTypes.func,
 		on_idle       : PropTypes.func,
-		set_last_step : PropTypes.func.isRequired,
+		set_last_step : PropTypes.func,
 		on_finished   : PropTypes.func.isRequired,
 		children      : PropTypes.node.isRequired,
 		style         : PropTypes.object,
@@ -85,7 +85,6 @@ export default class Steps extends Component
 
 	submit()
 	{
-		this.setState({ busy: true })
 		this.current_step.submit()
 	}
 
@@ -111,6 +110,9 @@ export default class Steps extends Component
 		this.setState({ store, step: this.state.step + 1 })
 
 		// Check if the new step is gonna be the last one
-		this.props.set_last_step(this.state.step + 1 === this.step_count())
+		if (this.props.set_last_step)
+		{
+			this.props.set_last_step(this.state.step + 1 === this.step_count())
+		}
 	}
 }
