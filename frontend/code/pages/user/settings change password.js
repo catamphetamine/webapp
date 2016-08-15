@@ -98,7 +98,10 @@ export default class Change_password_popup extends Component
 				actions={this.change_password_steps_actions()}>
 
 				{/* Change password steps */}
-				<Change_password ref="change_password_steps" set_next_step={this.set_next_step} on_finished={this.props.onRequestClose}/>
+				<Change_password
+					ref="change_password_steps"
+					set_next_step={this.set_next_step}
+					on_finished={this.props.onRequestClose}/>
 			</Modal>
 		)
 
@@ -121,7 +124,7 @@ export default class Change_password_popup extends Component
 			const result =
 			[{
 				text   : translate(default_messages.next),
-				action : () => this.refs.change_password_steps.change_password_steps_next()
+				action : () => this.refs.change_password_steps.submit()
 			}]
 
 			return result
@@ -130,7 +133,7 @@ export default class Change_password_popup extends Component
 		const result =
 		[{
 			text   : translate(default_messages.done),
-			action : this.refs.change_password_steps.change_password_steps_done
+			action : this.refs.change_password_steps.submit
 		}]
 
 		return result
@@ -145,10 +148,16 @@ export default class Change_password_popup extends Component
 // Change password steps
 class Change_password extends Component
 {
-	state = {}
+	state =
+	{
+		step  : 1,
+		store : {}
+	}
 
 	static propTypes =
 	{
+		on_busy       : PropTypes.func,
+		on_idle       : PropTypes.func,
 		set_next_step : PropTypes.func.isRequired,
 		on_finished   : PropTypes.func.isRequired
 	}
@@ -157,11 +166,9 @@ class Change_password extends Component
 	{
 		super(props, context)
 
-		this.change_password_steps_next = this.change_password_steps_next.bind(this)
-		this.change_password_steps_done = this.change_password_steps_done.bind(this)
-
-		this.next = this.next.bind(this)
-		this.done = this.done.bind(this)
+		this.step   = this.step.bind(this)
+		this.submit = this.submit.bind(this)
+		this.next   = this.next.bind(this)
 	}
 
 	render()
@@ -169,68 +176,69 @@ class Change_password extends Component
 		{/* Change password steps */}
 		const markup =
 		(
-			<Steps {...this.props} ref="steps">
+			<Steps ref="steps" step={this.state.step}>
 				{/* Enter current password */}
-				<Change_password_step_1 ref="1" submit={this.next}/>
+				<Change_password_step_1 ref={this.step} submit={this.next} state={this.state.store}/>
 
 				{/* Enter new password */}
-				<Change_password_step_2 ref="2" submit={this.next} state={this.state}/>
+				<Change_password_step_2 ref={this.step} submit={this.next} state={this.state.store}/>
 
 				{/* Enter new password again */}
-				<Change_password_step_3 ref="3" submit={this.done} state={this.state}/>
+				<Change_password_step_3 ref={this.step} submit={this.next} state={this.state.store}/>
 			</Steps>
 		)
 
 		return markup
 	}
 
-	async change_password_steps_next()
+	step(component)
 	{
-		const { next_step, ...rest } = await this.submit()
-
-		this.setState(rest)
-
-		if (next_step)
-		{
-			this.props.set_next_step(next_step)
-		}
-	}
-
-	async change_password_steps_done()
-	{
-		const { next_step, ...rest } = await this.submit()
-
-		if (next_step)
-		{
-			this.props.on_finished()
-		}
-	}
-
-	async submit()
-	{
-		const step = this.refs[this.refs.steps.step()]
-
-		// if (step.submit)
-		// {
-		// 	await step.submit()
-		// }
-
-		return await step.submit(this.state)
-	}
-
-	next()
-	{
-		return this.refs.steps.next()
+		this.current_step = component
 	}
 
 	step_count()
 	{
-		return this.refs.steps.step_count()
+		return this.refs.steps.count()
 	}
 
-	done()
+	submit()
 	{
-		return this.refs.steps.done()
+		const { on_busy } = this.props
+
+		if (on_busy)
+		{
+			on_busy()
+		}
+
+		this.setState({ busy: true })
+
+		this.current_step.submit()
+		// this.refs[this.state.step].submit()
+	}
+
+	next(store)
+	{
+		const { on_idle } = this.props
+
+		if (on_idle)
+		{
+			on_idle()
+		}
+		
+		// If current step submission succeeded, then move on to the next step
+
+		// If there are no more steps left, then finished
+		if (this.state.step === this.step_count())
+		{
+			this.setState({ store: {} })
+			this.props.on_finished(store)
+			return
+		}
+
+		// Else, if there are more steps left, go to the next one
+		// updating the obtained `store` data.
+		this.setState({ store, step: this.state.step + 1 })
+		this.props.set_next_step(this.state.step + 1)
 	}
 }
 
@@ -287,23 +295,17 @@ class Change_password_step_1 extends Component
 		return [this.refs.password]
 	}
 
-	async submit(state)
+	submit()
 	{
-		const next_step = await this.refs.form.submit()
-
-		if (next_step)
-		{
-			return { ...state, next_step, old_password: this.state.value }
-		}
-
-		return state
+		this.refs.form.submit()
 	}
 
 	submit_form()
 	{
 		alert('check password ' + this.state.value)
+		// await check_password(this.state.value)
 
-		return this.props.submit()
+		this.props.submit({ ...this.props.state, old_password: this.state.value })
 	}
 
 	set_password(value)
@@ -375,23 +377,14 @@ class Change_password_step_2 extends Component
 		return [this.refs.password]
 	}
 
-	async submit(state)
+	submit(state)
 	{
-		const next_step = await this.refs.form.submit()
-		
-		if (next_step)
-		{
-			return { ...state, next_step, new_password: this.state.value }
-		}
-
-		return state
+		this.refs.form.submit()
 	}
 
 	submit_form()
 	{
-		alert('entered new password ' + this.state.value)
-
-		return this.props.submit()
+		this.props.submit({ ...this.props.state, new_password: this.state.value })
 	}
 
 	set_password(value)
@@ -463,23 +456,17 @@ class Change_password_step_3 extends Component
 		return [this.refs.password]
 	}
 
-	async submit(state)
+	submit(state)
 	{
-		const next_step = await this.refs.form.submit()
-
-		if (next_step)
-		{
-			return { ...state, next_step }
-		}
-
-		return state
+		this.refs.form.submit()
 	}
 
 	submit_form()
 	{
-		alert('entered new password again ' + this.state.value)
+		alert('change password to ' + this.state.value)
+		// await change_password(this.props.state.old_password, this.props.state.new_password)
 
-		return this.props.submit()
+		this.props.submit(this.props.state)
 	}
 
 	set_password(value)

@@ -155,8 +155,8 @@ export default class Modal extends Component
 		{
 			return React.cloneElement(child,
 			{
-				busy : this.busy,
-				idle : this.idle
+				on_busy : this.busy,
+				on_idle : this.idle
 			})
 		})
 	}
