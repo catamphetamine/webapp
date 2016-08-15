@@ -133,6 +133,11 @@ export default class Uri
 		{
 			return
 		}
+
+		if (Array.isArray(value))
+		{
+			throw new Error(`URL parameter "${parameter}" was attempted to be set as an array: [${value}]`)
+		}
 		
 		this.parameters[parameter] = value
 
