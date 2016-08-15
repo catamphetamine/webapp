@@ -4,96 +4,113 @@ import classNames from 'classnames'
 
 export default class Steps extends Component
 {
-	state = {}
+	state =
+	{
+		step  : 1, // start with step No 1
+		store : {} // cumulative steps data
+	}
 
 	static propTypes =
 	{
-		step           : PropTypes.number.isRequired,
-		children       : PropTypes.node,
-		style          : PropTypes.object,
-		className      : PropTypes.string
+		on_busy       : PropTypes.func,
+		on_idle       : PropTypes.func,
+		set_last_step : PropTypes.func.isRequired,
+		on_finished   : PropTypes.func.isRequired,
+		children      : PropTypes.node.isRequired,
+		style         : PropTypes.object,
+		className     : PropTypes.string
 	}
 
 	constructor(props, context)
 	{
 		super(props, context)
 
-		// this.previous = this.previous.bind(this)
-		// this.next     = this.next.bind(this)
-		// this.goto     = this.goto.bind(this)
-
-		// this.state.step = props.initial_step !== undefined ? props.initial_step : 1
+		this.step   = this.step.bind(this)
+		this.submit = this.submit.bind(this)
+		this.next   = this.next.bind(this)
 	}
 
 	render()
 	{
-		const { className } = this.props
+		const { className, style } = this.props
 
 		const markup =
 		(
-			<div>
-				{this.content()}
+			<div className={className} style={style}>
+				{this.enhance_step(this.current_step_element())}
 			</div>
 		)
 
 		return markup
 	}
 
-	// step()
-	// {
-	// 	return this.state.step
-	// }
+	enhance_step(step)
+	{
+		return React.cloneElement(step,
+		{
+			ref     : this.step,
+			submit  : this.next,
+			on_busy : this.props.on_busy,
+			state   : this.state.store
+		})
+	}
 
-	count()
+	current_step_element()
+	{
+		const step = React.Children.toArray(this.props.children).filter((child, index) =>
+		{
+			return index + 1 === this.state.step
+		})
+		[0]
+
+		if (!step)
+		{
+			throw new Error(`No step #${this.state.step} found`)
+		}
+
+		return step
+	}
+
+	step_count()
 	{
 		return React.Children.count(this.props.children)
 	}
 
-	current_step()
+	// ref={this.step}
+	step(component)
 	{
-		return React.Children.toArray(this.props.children).filter((child, index) =>
-		{
-			// child.props.step
-			return index + 1 === this.props.step // this.state.step
-		})
-		[0]
+		// Will be .submit()-ted
+		this.current_step = component
 	}
 
-	content()
+	submit()
 	{
-		const the_step = this.current_step()
+		this.setState({ busy: true })
+		this.current_step.submit()
+	}
 
-		if (!the_step)
+	next(store)
+	{
+		if (this.props.on_idle)
 		{
-			throw new Error(`No step #${this.props.step} found`) // this.state.step
+			this.props.on_idle()
+		}
+		
+		// If current step submission succeeded, then move on to the next step
+
+		// If there are no more steps left, then finished
+		if (this.state.step === this.step_count())
+		{
+			this.setState({ store: {} })
+			this.props.on_finished(store)
+			return
 		}
 
-		return the_step
+		// Else, if there are more steps left, go to the next one
+		// updating the obtained `store` data.
+		this.setState({ store, step: this.state.step + 1 })
+
+		// Check if the new step is gonna be the last one
+		this.props.set_last_step(this.state.step + 1 === this.step_count())
 	}
-
-	// previous()
-	// {
-	// 	if (this.state.step === 1)
-	// 	{
-	// 		return
-	// 	}
-
-	// 	return this.goto(this.state.step - 1)
-	// }
-
-	// next()
-	// {
-	// 	return this.goto(this.state.step + 1)
-	// }
-
-	// done()
-	// {
-	// 	return this.state.step
-	// }
-
-	// goto(step)
-	// {
-	// 	this.setState({ step })
-	// 	return step
-	// }
 }

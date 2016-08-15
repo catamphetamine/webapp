@@ -82,7 +82,8 @@ export default class Change_password_popup extends Component
 		super(props, context)
 
 		this.change_password_steps_actions = this.change_password_steps_actions.bind(this)
-		this.set_next_step                 = this.set_next_step.bind(this)
+
+		this.set_last_step = this.set_last_step.bind(this)
 	}
 
 	render()
@@ -98,10 +99,20 @@ export default class Change_password_popup extends Component
 				actions={this.change_password_steps_actions()}>
 
 				{/* Change password steps */}
-				<Change_password
+				<Steps
 					ref="change_password_steps"
-					set_next_step={this.set_next_step}
-					on_finished={this.props.onRequestClose}/>
+					set_last_step={this.set_last_step}
+					on_finished={this.props.onRequestClose}>
+
+					{/* Enter current password */}
+					<Change_password_step_1/>
+
+					{/* Enter new password */}
+					<Change_password_step_2/>
+
+					{/* Enter new password again */}
+					<Change_password_step_3/>
+				</Steps>
 			</Modal>
 		)
 
@@ -112,133 +123,18 @@ export default class Change_password_popup extends Component
 	{
 		const { translate } = this.props
 
-		let has_next = true
-
-		if (this.refs.change_password_steps)
-		{
-			has_next = this.state.step < this.refs.change_password_steps.step_count()
-		}
-
-		if (has_next)
-		{
-			const result =
-			[{
-				text   : translate(default_messages.next),
-				action : () => this.refs.change_password_steps.submit()
-			}]
-
-			return result
-		}
-
 		const result =
 		[{
-			text   : translate(default_messages.done),
-			action : this.refs.change_password_steps.submit
+			text   : this.state.is_last_step ? translate(default_messages.done) : translate(default_messages.next),
+			action : () => this.refs.change_password_steps.submit()
 		}]
 
 		return result
 	}
 
-	set_next_step(step)
+	set_last_step(is_last_step)
 	{
-		this.setState({ step })
-	}
-}
-
-// Change password steps
-class Change_password extends Component
-{
-	state =
-	{
-		step  : 1,
-		store : {}
-	}
-
-	static propTypes =
-	{
-		on_busy       : PropTypes.func,
-		on_idle       : PropTypes.func,
-		set_next_step : PropTypes.func.isRequired,
-		on_finished   : PropTypes.func.isRequired
-	}
-
-	constructor(props, context)
-	{
-		super(props, context)
-
-		this.step   = this.step.bind(this)
-		this.submit = this.submit.bind(this)
-		this.next   = this.next.bind(this)
-	}
-
-	render()
-	{
-		{/* Change password steps */}
-		const markup =
-		(
-			<Steps ref="steps" step={this.state.step}>
-				{/* Enter current password */}
-				<Change_password_step_1 ref={this.step} submit={this.next} state={this.state.store}/>
-
-				{/* Enter new password */}
-				<Change_password_step_2 ref={this.step} submit={this.next} state={this.state.store}/>
-
-				{/* Enter new password again */}
-				<Change_password_step_3 ref={this.step} submit={this.next} state={this.state.store}/>
-			</Steps>
-		)
-
-		return markup
-	}
-
-	step(component)
-	{
-		this.current_step = component
-	}
-
-	step_count()
-	{
-		return this.refs.steps.count()
-	}
-
-	submit()
-	{
-		const { on_busy } = this.props
-
-		if (on_busy)
-		{
-			on_busy()
-		}
-
-		this.setState({ busy: true })
-
-		this.current_step.submit()
-		// this.refs[this.state.step].submit()
-	}
-
-	next(store)
-	{
-		const { on_idle } = this.props
-
-		if (on_idle)
-		{
-			on_idle()
-		}
-		
-		// If current step submission succeeded, then move on to the next step
-
-		// If there are no more steps left, then finished
-		if (this.state.step === this.step_count())
-		{
-			this.setState({ store: {} })
-			this.props.on_finished(store)
-			return
-		}
-
-		// Else, if there are more steps left, go to the next one
-		// updating the obtained `store` data.
-		this.setState({ store, step: this.state.step + 1 })
-		this.props.set_next_step(this.state.step + 1)
+		this.setState({ is_last_step })
 	}
 }
 
@@ -303,6 +199,12 @@ class Change_password_step_1 extends Component
 	submit_form()
 	{
 		alert('check password ' + this.state.value)
+		
+		// if (this.props.on_busy)
+		// {
+		// 	this.props.on_busy()
+		// }
+		//
 		// await check_password(this.state.value)
 
 		this.props.submit({ ...this.props.state, old_password: this.state.value })
@@ -464,6 +366,12 @@ class Change_password_step_3 extends Component
 	submit_form()
 	{
 		alert('change password to ' + this.state.value)
+
+		// if (this.props.on_busy)
+		// {
+		// 	this.props.on_busy()
+		// }
+		//
 		// await change_password(this.props.state.old_password, this.props.state.new_password)
 
 		this.props.submit(this.props.state)
