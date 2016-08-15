@@ -9,10 +9,10 @@ export default class Form extends Component
 
 	static propTypes =
 	{
-		fields     : PropTypes.array.isRequired,
 		action     : PropTypes.func,
 		focus      : PropTypes.func,
-		// `error` can be passed for non-javascript web 1.0 forms error rendering support
+		// `error` can be passed for non-javascript
+		// web 1.0 forms error rendering support
 		error      : PropTypes.any,
 		post       : PropTypes.string,
 		className  : PropTypes.string,
@@ -56,7 +56,7 @@ export default class Form extends Component
 	// Adds extra properties to form field elements
 	children()
 	{
-		const { fields, children } = this.props
+		const { children } = this.props
 
 		return React.Children.map(children, (child) =>
 		{
@@ -65,11 +65,11 @@ export default class Form extends Component
 				return child
 			}
 
-			// Form field name
-			const name = child.props.name
+			const { name, on_change } = child.props
 
-			// If it's not a form field, don't enhance the element
-			if (!fields.has(name))
+			// If it has a `name` and `on_change` handler
+			// then it's likely an input field
+			if (!name || !on_change)
 			{
 				return child
 			}
@@ -80,7 +80,7 @@ export default class Form extends Component
 				indicate_invalid : this.state.indicate_invalid[name],
 				on_change : (value) =>
 				{
-					child.props.on_change(value)
+					on_change(value)
 
 					// Since the field value changed,
 					// it's likely that user is in the process of editing it,
@@ -91,12 +91,6 @@ export default class Form extends Component
 			})
 		})
 	}
-
-	// // Sets "indicate_invalid" of a `name` field to `value`
-	// set_field_validity_indication(name, value)
-	// {
-	// 	this.setState({ indicate_invalid: { ...this.state.indicate_invalid, [name]: value } })
-	// }
 
 	// "Enter" key handler
 	on_submit(event)
@@ -110,34 +104,36 @@ export default class Form extends Component
 	{
 		// this.reset_error()
 
-		const { fields, children, indicate_invalid, set_indicate_invalid } = this.props
+		const { children, indicate_invalid, set_indicate_invalid } = this.props
 
 		// Will focus on the first invalid field
 		let first_invalid_field
 
 		// Check validity state for each form field
-		for (let field_name of fields)
+		for (let child of React.Children.toArray(children))
 		{
-			// Find field by name
-			const field = React.Children.toArray(children).filter((child) =>
+			if (!child || !child.props)
 			{
-				return child.props.name === field_name
-			})
-			[0]
+				continue
+			}
 
-			if (!field)
+			const { name, on_change, invalid } = child.props
+
+			// If it has a `name` and `on_change` handler
+			// then it's likely an input field
+			if (!name || !on_change)
 			{
-				throw new Error(`Field "${field_name}" not found`)
+				continue
 			}
 
 			// If the field is invalid, then the form won't be submitted
-			if (exists(field.props.invalid))
+			if (exists(invalid))
 			{
-				console.log(`[debug] "${field_name}" field is invalid`)
+				console.log(`[debug] "${name}" field is invalid`)
 
-				first_invalid_field = first_invalid_field || field_name
+				first_invalid_field = first_invalid_field || name
 
-				this.state.indicate_invalid[field_name] = true
+				this.state.indicate_invalid[name] = true
 			}
 		}
 

@@ -573,8 +573,9 @@ body.javascript-is-enabled .sign-out--fallback
 
 .form-error-message
 {
-	margin-top: 1em;
-	color: var(--error-color-darker);
+	margin-top    : calc(var(--modular-grid-unit) * 4);
+	margin-bottom : calc(var(--modular-grid-unit) * 4);
+	color         : var(--error-color-darker);
 }
 
 .file-upload

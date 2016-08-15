@@ -72,7 +72,6 @@ export default class Editable_field extends Component
 				{/* Text input */}
 				{ edit &&
 					<Form
-						fields={[name]}
 						focus={this.focus}
 						action={this.save}>
 

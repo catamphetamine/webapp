@@ -166,7 +166,6 @@ export default class Authentication extends Component
 		const markup =
 		(
 			<Form
-				fields={[]}
 				className="sign-out-form"
 				style={style.user_menu_toggler.element}
 				post="/authentication/legacy/sign-out">

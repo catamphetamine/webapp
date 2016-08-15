@@ -260,7 +260,6 @@ export default class Authentication extends Component
 		(
 			<Form
 				ref="form"
-				fields={['email', 'password']}
 				className="authentication-form" 
 				style={this.props.style ? { ...style.form, ...this.props.style } : style.form} 
 				action={this.sign_in}
@@ -347,7 +346,6 @@ export default class Authentication extends Component
 		(
 			<Form 
 				ref="form"
-				fields={['name', 'email', 'password', 'terms_of_service_accepted']}
 				className="registration-form" 
 				style={this.props.style ? { ...style.form, ...this.props.style } : style.form} 
 				action={this.register} 

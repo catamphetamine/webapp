@@ -56,7 +56,6 @@ export default class Form_showcase extends Component
 				{title("Form UI Showcase")}
 
 				<Form
-					fields={[]}
 					style={style.form}>
 					
 					<h2 style={style.form.label}>{'Text input field'}</h2>

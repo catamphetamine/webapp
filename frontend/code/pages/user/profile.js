@@ -310,7 +310,6 @@ export default class User_profile extends Component
 						}
 
 						<Form
-							fields={['name', 'place', 'country']}
 							focus={this.focus}
 							action={this.save_profile_edits}>
 

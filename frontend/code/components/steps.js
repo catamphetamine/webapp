@@ -153,7 +153,6 @@ export class Text_input_step extends Component
 		(
 			<Form
 				ref="form"
-				fields={['input']}
 				focus={this.focus}
 				action={this.submit_form}>
 
