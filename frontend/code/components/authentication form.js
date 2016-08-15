@@ -212,16 +212,15 @@ export default class Authentication extends Component
 	{
 		super(properties)
 
+		this.focus                             = this.focus.bind(this)
+		this.set_name                          = this.set_name.bind(this)
+		this.set_email                         = this.set_email.bind(this)
+		this.set_password                      = this.set_password.bind(this)
 		this.sign_in                           = this.sign_in.bind(this)
 		this.start_registration                = this.start_registration.bind(this)
-		this.validate_email_on_sign_in         = this.validate_email_on_sign_in.bind(this)
-		this.validate_password_on_sign_in      = this.validate_password_on_sign_in.bind(this)
 		this.forgot_password                   = this.forgot_password.bind(this)
 		this.register                          = this.register.bind(this)
 		this.cancel_registration               = this.cancel_registration.bind(this)
-		this.validate_name_on_registration     = this.validate_name_on_registration.bind(this)
-		this.validate_email_on_registration    = this.validate_email_on_registration.bind(this)
-		this.validate_password_on_registration = this.validate_password_on_registration.bind(this)
 		this.accept_terms_of_service           = this.accept_terms_of_service.bind(this)
 		this.validate_terms_of_service         = this.validate_terms_of_service.bind(this)
 
@@ -255,53 +254,60 @@ export default class Authentication extends Component
 
 	render_sign_in_form()
 	{
+		const { translate } = this.props
+
 		const markup = 
 		(
-			<Form 
-				ref="form" 
+			<Form
+				ref="form"
+				fields={['email', 'password']}
 				className="authentication-form" 
 				style={this.props.style ? { ...style.form, ...this.props.style } : style.form} 
 				action={this.sign_in}
-				inputs={() => [this.refs.email, this.refs.password]} 
+				focus={this.focus}
 				error={this.props.sign_in_error && this.sign_in_error(this.props.sign_in_error)}
 				post="/authentication/legacy/sign-in">
 
-				<h2 style={style.form_title}>{this.translate(user_bar_messages.sign_in)}</h2>
+				{/* "Sign in" */}
+				<h2 style={style.form_title}>{translate(user_bar_messages.sign_in)}</h2>
 
+				{/* "or register" */}
 				<div style={style.or_register} className="or-register">
-					<span>{this.translate(messages.or)}&nbsp;</span>
+					<span>{translate(messages.or)}&nbsp;</span>
 					<Button
 						link={add_redirect('/register', this.props.location)} 
 						button_style={style.or_register.register} 
 						action={this.start_registration}>
 
-						{this.translate(user_bar_messages.register)}
+						{translate(user_bar_messages.register)}
 					</Button>
 				</div>
 
 				<div style={style.clearfix}></div>
 
+				{/* "Name" */}
 				<Text_input
 					ref="email"
 					name="email"
-					email={false}
+					email={true}
 					focus={this.props.focus_on === 'email'}
 					value={this.state.email}
-					validate={this.validate_email_on_sign_in}
-					on_change={email => this.setState({ email })}
-					label={this.translate(messages.email)}
+					invalid={this.validate_email_on_sign_in(this.state.email)}
+					on_change={this.set_email}
+					label={translate(messages.email)}
 					style={style.input}
 					input_style={style.input.input}/>
 
+				{/* "Password" */}
 				<Text_input
 					ref="password"
 					name="password"
 					password={true}
 					focus={this.props.focus_on === 'password'}
 					value={this.state.password}
-					validate={this.validate_password_on_sign_in}
-					on_change={password => this.setState({ password })}
-					label={this.translate(messages.password)}
+					invalid={this.validate_password_on_sign_in(this.state.password)}
+					on_change={this.set_password}
+					label={translate(messages.password)}
 					style={style.input}
 					input_style={style.input.input}/>
 
@@ -309,9 +315,23 @@ export default class Authentication extends Component
 				<input type="hidden" name="request" value={should_redirect_to(this.props.location)}/>
 
 				<div style={style.sign_in_buttons}>
-					<Button style={style.forgot_password} action={this.forgot_password}>{this.translate(messages.forgot_password)}</Button>
+					{/* "Forgot password" */}
+					<Button
+						style={style.forgot_password}
+						action={this.forgot_password}>
 
-					<Button buttonClassName="primary" style={style.form_action} submit={true} busy={this.props.signing_in}>{this.translate(user_bar_messages.sign_in)}</Button>
+						{translate(messages.forgot_password)}
+					</Button>
+
+					{/* "Sign in" */}
+					<Button
+						buttonClassName="primary"
+						style={style.form_action}
+						submit={true}
+						busy={this.props.signing_in}>
+
+						{translate(user_bar_messages.sign_in)}
+					</Button>
 				</div>
 			</Form>
 		)
@@ -321,100 +341,119 @@ export default class Authentication extends Component
 
 	render_registration_form()
 	{
+		const { translate } = this.props
+
 		const markup = 
 		(
 			<Form 
-				ref="form" 
+				ref="form"
+				fields={['name', 'email', 'password', 'terms_of_service_accepted']}
 				className="registration-form" 
 				style={this.props.style ? { ...style.form, ...this.props.style } : style.form} 
 				action={this.register} 
-				inputs={() => [this.refs.name, this.refs.email, this.refs.password, this.refs.accept_terms_of_service]} 
+				focus={this.focus}
 				error={this.props.registration_error && this.registration_error(this.props.registration_error)}
 				post="/authentication/legacy/register">
 
-				<h2 style={style.form_title}>{this.translate(user_bar_messages.register)}</h2>
+				{/* "Register" */}
+				<h2 style={style.form_title}>{translate(user_bar_messages.register)}</h2>
 
+				{/* "or sign in" */}
 				<div style={style.or_register} className="or-register">
-					<span>{this.translate(messages.or)}&nbsp;</span>
+					<span>{translate(messages.or)}&nbsp;</span>
 					<Button
 						link={add_redirect('/sign-in', this.props.location)} 
 						button_style={style.or_register.register} 
 						action={this.cancel_registration}>
 
-						{this.translate(user_bar_messages.sign_in)}
+						{translate(user_bar_messages.sign_in)}
 					</Button>
 				</div>
 
 				<div style={style.clearfix}></div>
 
+				{/* "Name" */}
 				<Text_input
 					ref="name"
 					name="name"
 					focus={this.props.focus_on === 'name'}
 					value={this.state.name}
-					validate={this.validate_name_on_registration}
-					on_change={name => this.setState({ name })}
-					label={this.translate(messages.name)}
+					invalid={this.validate_name_on_registration(this.state.name)}
+					on_change={this.set_name}
+					label={translate(messages.name)}
 					style={style.input}
 					input_style={style.input.input}/>
 
+				{/* "Email" */}
 				<Text_input
 					ref="email"
 					name="email"
-					email={false}
+					email={true}
 					focus={this.props.focus_on === 'email'}
 					value={this.state.email}
-					validate={this.validate_email_on_registration}
-					on_change={email => this.setState({ email })}
-					label={this.translate(messages.email)}
+					invalid={this.validate_email_on_registration(this.state.email)}
+					on_change={this.set_email}
+					label={translate(messages.email)}
 					style={style.input}
 					input_style={style.input.input}/>
 
+				{/* "Password" */}
 				<Text_input
 					ref="password"
 					name="password"
 					password={true}
 					focus={this.props.focus_on === 'password'}
 					value={this.state.password}
-					validate={this.validate_password_on_registration}
-					on_change={password => this.setState({ password })}
-					label={this.translate(messages.password)}
+					invalid={this.validate_password_on_registration(this.state.password)}
+					on_change={this.set_password}
+					label={translate(messages.password)}
 					style={style.input}
 					input_style={style.input.input}/>
 
-				<div>
-					<Checkbox
-						ref="accept_terms_of_service"
-						name="terms_of_service_accepted"
-						focus={this.props.focus_on === 'terms_of_service_accepted'}
-						style={style.terms_of_service}
-						value={this.state.terms_of_service_accepted}
-						on_change={this.accept_terms_of_service}
-						validate={this.validate_terms_of_service}>
+				{/* "Accept terms of service" */}
+				<Checkbox
+					ref="terms_of_service_accepted"
+					name="terms_of_service_accepted"
+					focus={this.props.focus_on === 'terms_of_service_accepted'}
+					style={style.terms_of_service}
+					value={this.state.terms_of_service_accepted}
+					on_change={this.accept_terms_of_service}
+					invalid={this.validate_terms_of_service(this.state.terms_of_service_accepted)}>
 
-						{this.translate(messages.i_accept)}
+					{/* "Accept" */}
+					{translate(messages.i_accept)}
 
-						&nbsp;<a target="_blank" href={require('../../assets/license-agreement/' + get_language_from_locale(this.props.locale) + '.html')}>{this.translate(messages.the_terms_of_service)}</a>
-					</Checkbox>
-				</div>
+					{/* Terms of service link */}
+					&nbsp;<a target="_blank" href={require('../../assets/license-agreement/' + get_language_from_locale(this.props.locale) + '.html')}>{translate(messages.the_terms_of_service)}</a>
+				</Checkbox>
 
 				{/* Support redirecting to the initial page when javascript is disabled */}
-				<input type="hidden" name="request" value={should_redirect_to(this.props.location)}/>
+				<input
+					type="hidden"
+					name="request"
+					value={should_redirect_to(this.props.location)}/>
 
-				<Button submit={true} style={style.form_action.register} busy={this.props.signing_in || this.props.registering}>{this.translate(user_bar_messages.register)}</Button>
+				{/* "Register" */}
+				<Button
+					submit={true}
+					style={style.form_action.register}
+					busy={this.props.signing_in || this.props.registering}>
+
+					{translate(user_bar_messages.register)}
+				</Button>
 			</Form>
 		)
 
 		return markup
 	}
 
-	translate(message)
+	focus(name)
 	{
-		return this.props.translate(message)
-	}
+		if (name)
+		{
+			return this.refs[name].focus()
+		}
 
-	focus()
-	{
 		if (this.state.register)
 		{
 			this.refs.name.focus()
@@ -425,11 +464,27 @@ export default class Authentication extends Component
 		}
 	}
 
+	set_name(name)
+	{
+		this.setState({ name })
+	}
+
+	set_email(email)
+	{
+		this.setState({ email })
+	}
+
+	set_password(password)
+	{
+		console.log('@@@@@@@@@@@ set_password', password)
+		this.setState({ password })
+	}
+
 	validate_email_on_sign_in(value)
 	{
 		if (!value)
 		{
-			return this.translate(messages.authentication_email_is_required)
+			return this.props.translate(messages.authentication_email_is_required)
 		}
 	}
 
@@ -437,7 +492,7 @@ export default class Authentication extends Component
 	{
 		if (!value)
 		{
-			return this.translate(messages.authentication_password_is_required)
+			return this.props.translate(messages.authentication_password_is_required)
 		}
 	}
 
@@ -445,7 +500,7 @@ export default class Authentication extends Component
 	{
 		if (!value)
 		{
-			return this.translate(messages.registration_name_is_required)
+			return this.props.translate(messages.registration_name_is_required)
 		}
 	}
 
@@ -453,7 +508,7 @@ export default class Authentication extends Component
 	{
 		if (!value)
 		{
-			return this.translate(messages.registration_email_is_required)
+			return this.props.translate(messages.registration_email_is_required)
 		}
 	}
 
@@ -461,7 +516,7 @@ export default class Authentication extends Component
 	{
 		if (!value)
 		{
-			return this.translate(messages.registration_password_is_required)
+			return this.props.translate(messages.registration_password_is_required)
 		}
 	}
 
@@ -469,7 +524,7 @@ export default class Authentication extends Component
 	{
 		if (!value)
 		{
-			return this.translate(messages.registration_terms_of_service_acceptance_is_required)
+			return this.props.translate(messages.registration_terms_of_service_acceptance_is_required)
 		}
 	}
 
@@ -556,48 +611,41 @@ export default class Authentication extends Component
 
 	sign_in_error(error)
 	{
+		const { translate } = this.props
+
 		if (error.status === http_status_codes.Not_found)
 		{
-			return this.translate(messages.user_not_found)
+			return translate(messages.user_not_found)
 		}
 		
 		if (error.status === http_status_codes.Input_rejected)
 		{
-			return this.translate(messages.wrong_password)
+			return translate(messages.wrong_password)
 		}
 
 		if (error.message === `Login attempts limit exceeded`)
 		{
-			return this.translate(messages.login_attempts_limit_exceeded_error)
+			return translate(messages.login_attempts_limit_exceeded_error)
 		}
 
-		return this.translate(messages.sign_in_error)
+		return translate(messages.sign_in_error)
 	}
 
 	registration_error(error)
 	{
+		const { translate } = this.props
+
 		if (error.message === 'User is already registered for this email')
 		{
-			return this.translate(messages.email_already_registered)
+			return translate(messages.email_already_registered)
 		}
 
-		return this.translate(messages.registration_error)
+		return translate(messages.registration_error)
 	}
 
 	reset_validation()
 	{
-		if (this.refs.name)
-		{
-			this.refs.name.reset_validation()
-		}
-
-		this.refs.email.reset_validation()
-		this.refs.password.reset_validation()
-
-		if (this.refs.accept_terms_of_service)
-		{
-			this.refs.accept_terms_of_service.reset_validation()
-		}
+		this.refs.form.reset_validation_indication()
 	}
 
 	start_registration()

@@ -55,7 +55,10 @@ export default class Form_showcase extends Component
 			<div>
 				{title("Form UI Showcase")}
 
-				<Form style={style.form}>
+				<Form
+					fields={[]}
+					style={style.form}>
+					
 					<h2 style={style.form.label}>{'Text input field'}</h2>
 					<Text_input style={style.form.input} name="text_input" value={this.state.text_value} on_change={value => this.setState({ text_value: value })} label="Enter text"/>
 					You entered: {this.state.text_value}

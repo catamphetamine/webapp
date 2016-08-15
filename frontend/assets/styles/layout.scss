@@ -71,7 +71,7 @@ header
 	// border-bottom : 1px solid $header-border-color;
 	// box-sizing    : border-box;
 
-	a.button, a, .dropdown-item-selected
+	.sign-out--fallback, a.button, a, .dropdown-item-selected
 	{
 		color: var(--white-color);
 

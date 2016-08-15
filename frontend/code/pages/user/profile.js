@@ -383,12 +383,13 @@ export default class User_profile extends Component
 								on_change={country => this.setState({ country })}/>
 						}
 
+						{/* User's place and country */}
 						{ !edit &&
-							(user.place && user.country &&
+							((user.place || user.country) &&
 								<div
 									style={style.user_location}
 									className="user-profile__location">
-									{user.place + ', ' + translate({ id: `country.${user.country}` })}
+									{this.whereabouts().join(', ')}
 								</div>
 							)
 						}
@@ -534,6 +535,26 @@ export default class User_profile extends Component
 		}
 
 		image.src = url(get_preferred_size(uploaded_picture.sizes, this.refs.user_picture.decoratedComponentInstance.width()))
+	}
+
+	// User's [place, country]
+	whereabouts()
+	{
+		const { user, translate } = this.props
+		
+		const whereabouts = []
+
+		if (user.place)
+		{
+			whereabouts.push(user.place)
+		}
+
+		if (user.country)
+		{
+			whereabouts.push(translate({ id: `country.${user.country}` }))
+		}
+
+		return whereabouts
 	}
 }
 

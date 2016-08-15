@@ -3,12 +3,13 @@ import ReactDOM from 'react-dom'
 import styler from 'react-styling'
 import classNames from 'classnames'
 
-import { inject } from './common'
+import input from './input'
 
 const scrollbar_width = '17px'
 const add_padding_for_scrollbar = true
 const show_selected_item_in_list = true
 
+@input()
 export default class Dropdown extends Component
 {
 	static propTypes =
@@ -57,8 +58,6 @@ export default class Dropdown extends Component
 	constructor(props, context)
 	{
 		super(props, context)
-
-		inject(this)
 
 		this.toggle           = this.toggle.bind(this)
 		this.document_clicked = this.document_clicked.bind(this)
@@ -411,7 +410,7 @@ export default class Dropdown extends Component
 	{
 		event.preventDefault()
 
-		this.on_change(value)
+		this.props.on_change(value)
 	}
 
 	document_clicked(event)

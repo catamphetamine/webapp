@@ -168,5 +168,5 @@ const style = styler
 		margin-bottom : 3rem
 
 	errors
-		margin-top : 2em
+		// margin-top : 2em
 `

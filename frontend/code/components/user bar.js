@@ -137,7 +137,10 @@ export default class Authentication extends Component
 			<div className="user-bar" style={this.props.style}>
 				
 				{/* Sign in action */}
-				{ !user && <Button className="sign-in" link="/sign-in" action={this.show}>{this.translate(messages.sign_in)}</Button> }
+				{ !user && <Button className="sign-in" link="/sign-in" action={this.show}>{translate(messages.sign_in)}</Button> }
+
+				{/* "Sign out" button for javascriptless users */}
+				{ user && this.render_sign_out_fallback() }
 
 				{/* User info if authenticated */}
 				{ user && this.render_user_info(user) }
@@ -150,6 +153,33 @@ export default class Authentication extends Component
 					<Authentication_form/>
 				</Modal>
 			</div>
+		)
+
+		return markup
+	}
+
+	// "Sign out" button for javascriptless users
+	render_sign_out_fallback()
+	{
+		const { translate } = this.props
+
+		const markup =
+		(
+			<Form
+				fields={[]}
+				className="sign-out-form"
+				style={style.user_menu_toggler.element}
+				post="/authentication/legacy/sign-out">
+
+				<Button
+					style={style.sign_out}
+					className="sign-out sign-out--fallback"
+					submit={true}
+					action={this.sign_out}>
+
+					{translate(messages.sign_out)}
+				</Button>
+			</Form>
 		)
 
 		return markup
@@ -228,28 +258,29 @@ export default class Authentication extends Component
 					{/* Sign out */}
 					<div key="log_out" onClick={event =>
 					{
-						if (event.target.type !== 'submit')
-						{
-							this.sign_out()
-						}
+						this.sign_out()
+
+						// if (event.target.type !== 'submit')
+						// {
+						// 	this.sign_out()
+						// }
 					}}>
-						<Form className="sign-out-form" post="/authentication/legacy/sign-out">
-							{/* Icon */}
-							<i className="material-icons material-icons--empty"></i>
-							{/* Text */}
-							<Button style={style.sign_out} className="sign-out" submit={true} action={this.sign_out}>{this.translate(messages.sign_out)}</Button>
-						</Form>
+						{/* Icon */}
+						<i className="material-icons material-icons--empty"></i>
+						{/* Text */}
+						<Button style={style.sign_out}
+							className="sign-out"
+							submit={true}
+							action={this.sign_out}>
+
+							{translate(messages.sign_out)}
+						</Button>
 					</div>
 				</Dropdown>
 			</div>
 		)
 
 		return markup
-	}
-
-	translate(message)
-	{
-		return this.props.translate(message)
 	}
 
 	change_user_picture()

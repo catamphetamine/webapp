@@ -2,6 +2,9 @@ import React, { Component, PropTypes } from 'react'
 import styler from 'react-styling'
 import classNames from 'classnames'
 
+import Form       from './form'
+import Text_input from './text input'
+
 export default class Steps extends Component
 {
 	state =
@@ -114,5 +117,92 @@ export default class Steps extends Component
 		{
 			this.props.set_last_step(this.state.step + 1 === this.step_count())
 		}
+	}
+}
+
+export class Text_input_step extends Component
+{
+	state = {}
+
+	static propTypes =
+	{
+		submit      : PropTypes.func.isRequired,
+		validate    : PropTypes.func,
+		description : PropTypes.string,
+		placeholder : PropTypes.string,
+		password    : PropTypes.bool,
+		email       : PropTypes.bool,
+		submit      : PropTypes.func.isRequired,
+		className   : PropTypes.string,
+		style       : PropTypes.object
+	}
+	
+	constructor(props, context)
+	{
+		super(props, context)
+
+		this.set_value    = this.set_value.bind(this)
+		this.submit       = this.submit.bind(this)
+		this.submit_form  = this.submit_form.bind(this)
+		this.focus        = this.focus.bind(this)
+	}
+
+	render()
+	{
+		const markup =
+		(
+			<Form
+				ref="form"
+				fields={['input']}
+				focus={this.focus}
+				action={this.submit_form}>
+
+				<Text_input
+					ref="input"
+					name="input"
+					email={this.props.email}
+					password={this.props.password}
+					description={this.props.description}
+					placeholder={this.props.placeholder}
+					value={this.state.value}
+					invalid={this.props.validate(this.state.value)}
+					on_change={this.set_value}/>
+			</Form>
+		)
+
+		return markup
+	}
+
+	// Public API
+	focus(name = 'input')
+	{
+		this.refs[name].focus()
+	}
+
+	// Public API
+	submit()
+	{
+		this.refs.form.submit()
+	}
+
+	// // Public API
+	// submit()
+	// {
+	// 	if (!this.refs.input.validate())
+	// 	{
+	// 		return this.refs.input.focus({ preserve_validation: true })
+	// 	}
+	//
+	// 	this.props.submit(this.state.value)
+	// }
+
+	submit_form()
+	{
+		this.props.submit(this.state.value)
+	}
+
+	set_value(value)
+	{
+		this.setState({ value })
 	}
 }

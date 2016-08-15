@@ -3,38 +3,35 @@ import ReactDOM from 'react-dom'
 import styler from 'react-styling'
 import classNames from 'classnames'
 
-import { inject } from './common'
+import input from './input'
 
+@input()
 export default class Text_input extends Component
 {
 	state = {}
 
 	static propTypes =
 	{
-		label       : PropTypes.string,
-		name        : PropTypes.string,
-		value       : PropTypes.any,
-		description : PropTypes.string,
-		on_change   : PropTypes.func.isRequired,
-		valid       : PropTypes.bool,
-		validate    : PropTypes.func,
-		placeholder : PropTypes.string,
-		multiline   : PropTypes.bool,
-		email       : PropTypes.bool,
-		password    : PropTypes.bool,
-		focus       : PropTypes.bool,
-		style       : PropTypes.object
+		label            : PropTypes.string,
+		name             : PropTypes.string,
+		value            : PropTypes.any,
+		description      : PropTypes.string,
+		on_change        : PropTypes.func.isRequired,
+		invalid          : PropTypes.string,
+		indicate_invalid : PropTypes.bool,
+		placeholder      : PropTypes.string,
+		multiline        : PropTypes.bool,
+		email            : PropTypes.bool,
+		password         : PropTypes.bool,
+		focus            : PropTypes.bool,
+		style            : PropTypes.object
 	}
 
 	constructor(props, context)
 	{
 		super(props, context)
 
-		inject(this)
-
-		this.on_focus         = this.on_focus.bind(this)
-		this.on_change        = this.on_change.bind(this)
-		this.autoresize       = this.autoresize.bind(this)
+		this.autoresize = this.autoresize.bind(this)
 	}
 
 	// Client side rendering, javascript is enabled
@@ -50,8 +47,7 @@ export default class Text_input extends Component
 
 	render()
 	{
-		const { name, value, label, description, className } = this.props
-		const { valid } = this.state
+		const { name, value, label, description, invalid, indicate_invalid, className } = this.props
 
 		const markup =
 		(
@@ -63,7 +59,7 @@ export default class Text_input extends Component
 					'text-input',
 					{
 						'text-input-empty'   : !value,
-						'text-input-invalid' : valid === false || this.props.valid === false
+						'text-input-invalid' : indicate_invalid && invalid
 					},
 					className
 				)}>
@@ -72,10 +68,11 @@ export default class Text_input extends Component
 				{this.render_description()}
 
 				{/* <input/> */}
-				{this.render_input()}
+				{this.render_input({ name: false })}
 
 				{/* input label */}
-				{!description && label && <label htmlFor={name} className="text-input-label" style={style.label}>{label}</label>}
+				{/* htmlFor={name} */}
+				{!description && label && <label className="text-input-label" style={style.label}>{label}</label>}
 
 				{/* Error message */}
 				{this.render_error_message()}
@@ -111,8 +108,8 @@ export default class Text_input extends Component
 
 	render_input(options = {})
 	{
-		const { placeholder, ref } = options
-		const { name, value, multiline, email, password, focus } = this.props
+		const { placeholder, ref, name } = options
+		const { value, multiline, email, password, focus, on_change } = this.props
 
 		let type
 
@@ -137,12 +134,13 @@ export default class Text_input extends Component
 
 		const properties =
 		{
-			name,
+			name        : name === false ? undefined : this.props.name,
 			ref         : ref === false ? undefined : 'input',
-			value       : value === undefined ? '' : value,
+			value       : (value === undefined || value === null) ? '' : value,
 			placeholder : placeholder || this.props.placeholder,
-			onFocus     : this.on_focus,
-			onChange    : this.on_change,
+			onChange    : on_change,
+			// onFocus     : this.props.on_focus,
+			// onBlur      : this.props.on_blur,
 			className   : 'text-input-field',
 			style       : input_style,
 			autoFocus   : focus
@@ -163,11 +161,11 @@ export default class Text_input extends Component
 
 	render_error_message()
 	{
-		const { valid, error_message } = this.state
+		const { invalid, indicate_invalid } = this.props
 
-		if (valid === false)
+		if (indicate_invalid && invalid)
 		{
-			return <div className="text-input-error-message">{error_message}</div>
+			return <div className="text-input-error-message">{invalid}</div>
 		}
 	}
 

@@ -106,6 +106,7 @@ export default class Settings_page extends Component
 
 		this.save_settings               = this.save_settings.bind(this)
 		this.load_advanced_settings      = this.load_advanced_settings.bind(this)
+		this.validate_email              = this.validate_email.bind(this)
 		this.change_password             = this.change_password.bind(this)
 		this.cancel_change_password      = this.cancel_change_password.bind(this)
 	}
@@ -241,7 +242,7 @@ export default class Settings_page extends Component
 	{
 		if (!value)
 		{
-			return this.translate(authentication_form_messages.registration_email_is_required)
+			return this.props.translate(authentication_form_messages.registration_email_is_required)
 		}
 	}
 
@@ -249,7 +250,7 @@ export default class Settings_page extends Component
 	{
 		if (!value)
 		{
-			return this.translate(authentication_form_messages.registration_password_is_required)
+			return this.props.translate(authentication_form_messages.registration_password_is_required)
 		}
 	}
 

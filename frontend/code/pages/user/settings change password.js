@@ -3,10 +3,8 @@ import styler                          from 'react-styling'
 import classNames                      from 'classnames'
 import { defineMessages }              from 'react-intl'
 
-import Text_input      from '../../components/text input'
 import Modal           from '../../components/modal'
-import Steps           from '../../components/steps'
-import Form            from '../../components/form'
+import Steps, { Text_input_step } from '../../components/steps'
 
 import default_messages from '../../components/messages'
 
@@ -141,8 +139,6 @@ export default class Change_password_popup extends Component
 // Enter current password
 class Change_password_step_1 extends Component
 {
-	state = {}
-
 	static contextTypes =
 	{
 		intl : PropTypes.object
@@ -152,12 +148,17 @@ class Change_password_step_1 extends Component
 	{
 		super(props, context)
 
-		this.inputs       = this.inputs.bind(this)
-		this.set_password = this.set_password.bind(this)
-		this.submit       = this.submit.bind(this)
-		this.submit_form  = this.submit_form.bind(this)
-
 		this.validate_password = this.validate_password.bind(this)
+		this.submit            = this.submit.bind(this)
+		this.submit_step       = this.submit_step.bind(this)
+	}
+
+	componentDidMount()
+	{
+		// Because the first step is mounted before
+		// the react-modal contents are mounted,
+		// focus after the modal has been mounted.
+		setTimeout(this.refs.step.focus, 0)
 	}
 
 	render()
@@ -166,53 +167,36 @@ class Change_password_step_1 extends Component
 
 		const markup =
 		(
-			<Form
-				ref="form"
-				inputs={this.inputs}
-				action={this.submit_form}>
-
-				<Text_input
-					ref="password"
-					name="password"
-					password={true}
-					description={translate(messages.enter_current_password)}
-					value={this.state.value}
-					validate={this.validate_password}
-					placeholder={translate(messages.current_password)}
-					on_change={this.set_password}/>
-			</Form>
+			<Text_input_step
+				ref="step"
+				password={true}
+				description={translate(messages.enter_current_password)}
+				validate={this.validate_password}
+				placeholder={translate(messages.current_password)}
+				submit={this.submit_step}/>
 		)
 
 		return markup
 	}
 
-	inputs()
-	{
-		return [this.refs.password]
-	}
-
+	// Public API
 	submit()
 	{
-		this.refs.form.submit()
+		this.refs.step.submit()
 	}
 
-	submit_form()
+	submit_step(old_password)
 	{
-		alert('check password ' + this.state.value)
-		
+		alert('check password ' + old_password)
+
 		// if (this.props.on_busy)
 		// {
 		// 	this.props.on_busy()
 		// }
 		//
-		// await check_password(this.state.value)
+		// await check_password(old_password)
 
-		this.props.submit({ ...this.props.state, old_password: this.state.value })
-	}
-
-	set_password(value)
-	{
-		this.setState({ value })
+		this.props.submit({ ...this.props.state, old_password })
 	}
 
 	validate_password(value)
@@ -229,8 +213,6 @@ class Change_password_step_1 extends Component
 // Enter new password
 class Change_password_step_2 extends Component
 {
-	state = {}
-
 	static contextTypes =
 	{
 		intl : PropTypes.object
@@ -240,12 +222,14 @@ class Change_password_step_2 extends Component
 	{
 		super(props, context)
 
-		this.inputs       = this.inputs.bind(this)
-		this.set_password = this.set_password.bind(this)
-		this.submit       = this.submit.bind(this)
-		this.submit_form  = this.submit_form.bind(this)
-
 		this.validate_password = this.validate_password.bind(this)
+		this.submit            = this.submit.bind(this)
+		this.submit_step       = this.submit_step.bind(this)
+	}
+
+	componentDidMount()
+	{
+		this.refs.step.focus()
 	}
 
 	render()
@@ -254,44 +238,27 @@ class Change_password_step_2 extends Component
 
 		const markup =
 		(
-			<Form
-				ref="form"
-				inputs={this.inputs}
-				action={this.submit_form}>
-
-				<Text_input
-					ref="password"
-					name="password"
-					password={true}
-					description={translate(messages.enter_new_password)}
-					value={this.state.value}
-					validate={this.validate_password}
-					placeholder={translate(messages.new_password)}
-					on_change={this.set_password}/>
-			</Form>
+			<Text_input_step
+				ref="step"
+				password={true}
+				description={translate(messages.enter_new_password)}
+				validate={this.validate_password}
+				placeholder={translate(messages.new_password)}
+				submit={this.submit_step}/>
 		)
 
 		return markup
 	}
 
-	inputs()
+	// Public API
+	submit()
 	{
-		return [this.refs.password]
+		this.refs.step.submit()
 	}
 
-	submit(state)
+	submit_step(new_password)
 	{
-		this.refs.form.submit()
-	}
-
-	submit_form()
-	{
-		this.props.submit({ ...this.props.state, new_password: this.state.value })
-	}
-
-	set_password(value)
-	{
-		this.setState({ value })
+		this.props.submit({ ...this.props.state, new_password })
 	}
 
 	validate_password(value)
@@ -308,8 +275,6 @@ class Change_password_step_2 extends Component
 // Enter new password again
 class Change_password_step_3 extends Component
 {
-	state = {}
-
 	static contextTypes =
 	{
 		intl : PropTypes.object
@@ -319,12 +284,14 @@ class Change_password_step_3 extends Component
 	{
 		super(props, context)
 
-		this.inputs       = this.inputs.bind(this)
-		this.set_password = this.set_password.bind(this)
-		this.submit       = this.submit.bind(this)
-		this.submit_form  = this.submit_form.bind(this)
-
 		this.validate_password = this.validate_password.bind(this)
+		this.submit            = this.submit.bind(this)
+		this.submit_step       = this.submit_step.bind(this)
+	}
+
+	componentDidMount()
+	{
+		this.refs.step.focus()
 	}
 
 	render()
@@ -333,39 +300,27 @@ class Change_password_step_3 extends Component
 
 		const markup =
 		(
-			<Form
-				ref="form"
-				inputs={this.inputs}
-				action={this.submit_form}>
-
-				<Text_input
-					ref="password"
-					name="password"
-					password={true}
-					description={translate(messages.enter_new_password_again)}
-					value={this.state.value}
-					validate={this.validate_password}
-					placeholder={translate(messages.new_password)}
-					on_change={this.set_password}/>
-			</Form>
+			<Text_input_step
+				ref="step"
+				password={true}
+				description={translate(messages.enter_new_password_again)}
+				validate={this.validate_password}
+				placeholder={translate(messages.new_password)}
+				submit={this.submit_step}/>
 		)
 
 		return markup
 	}
 
-	inputs()
+	// Public API
+	submit()
 	{
-		return [this.refs.password]
+		this.refs.step.submit()
 	}
 
-	submit(state)
+	submit_step(value)
 	{
-		this.refs.form.submit()
-	}
-
-	submit_form()
-	{
-		alert('change password to ' + this.state.value)
+		alert('change password to ' + value)
 
 		// if (this.props.on_busy)
 		// {
@@ -375,11 +330,6 @@ class Change_password_step_3 extends Component
 		// await change_password(this.props.state.old_password, this.props.state.new_password)
 
 		this.props.submit(this.props.state)
-	}
-
-	set_password(value)
-	{
-		this.setState({ value })
 	}
 
 	validate_password(value)

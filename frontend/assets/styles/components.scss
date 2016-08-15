@@ -335,6 +335,11 @@ header > .nav-widescreen
 	margin-right: 0.8em;
 }
 
+body.javascript-is-enabled .sign-out--fallback
+{
+	display: none !important;
+}
+
 .sign-out-form
 {
 	// // centers children vertically
@@ -692,8 +697,8 @@ header > .nav-widescreen
 // e.g. <ul/> with errors in `pages/register.js`
 .errors
 {
-	margin-top    : 0;
-	margin-bottom : 0;
+	margin-top    : calc(var(--modular-grid-unit) * 6);
+	margin-bottom : calc(var(--modular-grid-unit) * 6);
 
 	color      : var(--error-color-darker);
 	text-align : center;

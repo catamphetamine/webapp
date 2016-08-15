@@ -3,10 +3,11 @@ import ReactDOM from 'react-dom'
 import styler from 'react-styling'
 import classNames from 'classnames'
 
-import { inject } from './common'
+import input from './input'
 
 // http://tympanus.net/codrops/2013/10/15/animated-checkboxes-and-radio-buttons-with-svg/
 
+@input()
 export default class Checkbox extends Component
 {
 	state = {}
@@ -25,8 +26,6 @@ export default class Checkbox extends Component
 	constructor(props, context)
 	{
 		super(props, context)
-
-		inject(this)
 
 		this.toggle = this.toggle.bind(this)
 	}
@@ -57,26 +56,25 @@ export default class Checkbox extends Component
 
 	render()
 	{
-		const { value } = this.props
-
-		// onFocus={this.on_focus} 
-		// onBlur={this.on_blur} 
+		const { value, invalid, indicate_invalid } = this.props
 
 		const markup = 
 		(
 			<div
 				className={classNames('rich', 'checkbox',
 				{
-					'checkbox-invalid': this.state.valid === false
+					'checkbox-invalid': indicate_invalid && invalid
 				})}
 				style={ this.props.style ? { ...style.container, ...this.props.style } : style.container}>
 
 				<input 
-					ref="input" 
-					type="checkbox" 
-					onChange={this.toggle} 
-					style={style.checkbox.input} 
-					value={value === undefined ? false : value}/>
+					ref="input"
+					type="checkbox"
+					onChange={this.toggle}
+					onFocus={this.on_focus}
+					onBlur={this.on_blur}
+					style={style.checkbox.input}
+					value={(value === undefined || value === null) ? false : value}/>
 
 				<div className="checkbox-border" style={ !value ? style.checkbox.label_before : style.checkbox.label_before.when_checked }/>
 
@@ -88,7 +86,7 @@ export default class Checkbox extends Component
 					{this.props.children}
 				</label>
 
-				{ this.state.valid === false ? <div className="checkbox-error-message">{this.state.error_message}</div> : null }
+				{ indicate_invalid && invalid && <div className="checkbox-error-message">{invalid}</div> }
 
 				{!this.state.javascript && this.render_static()}
 			</div>
@@ -185,23 +183,23 @@ export default class Checkbox extends Component
 
 	toggle(event)
 	{
-		// if a link was clicked - don't treat it as a checkbox label click
+		// If a link was clicked - don't treat it as a checkbox label click
 		if (event.target.tagName.toLowerCase() === 'a')
 		{
 			return
 		}
 
-		this.reset_validation()
+		const { value } = this.props
 
-		// (allows checkmark animation from now on)
+		// Allows checkmark animation from now on
 		this.was_toggled = true
 
-		if (this.props.value)
+		if (value)
 		{
 			this.setState({ path_style: undefined })
 		}
 
-		this.props.on_change(!this.props.value)
+		this.props.on_change(!value)
 	}
 }
 

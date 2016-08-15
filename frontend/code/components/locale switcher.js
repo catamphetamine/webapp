@@ -82,7 +82,12 @@ export default class Locale_switcher extends Component
 				<Spinner style={ this.state.setting_locale ? style.spinner.show : style.spinner.hide }/>
 
 				{/* Apply button for javascriptless users */}
-				<Form className="set-language-form" style={style.locale.form} post="/users/legacy/locale">
+				<Form
+					fields={['locale']}
+					className="set-language-form"
+					style={style.locale.form}
+					post="/users/legacy/locale">
+
 					{/* language list */}
 					<Dropdown 
 						name="locale"

@@ -31,7 +31,6 @@ export default class Switch extends Component
 			<label className="rich switch" style={ this.props.style ? { ...style.switch, ...this.props.style } : style.switch}>
 				<input
 					type="checkbox" 
-					name={this.props.name} 
 					style={style.input} 
 					value={value} 
 					onChange={event => on_change(!value)}/>

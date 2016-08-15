@@ -151,7 +151,14 @@ export default class Modal extends Component
 
 	content()
 	{
-		return React.Children.map(this.props.children, (child) =>
+		const { children } = this.props
+
+		if (React.Children.count(children) > 1)
+		{
+			return children
+		}
+
+		return React.Children.map(children, (child) =>
 		{
 			return React.cloneElement(child,
 			{
