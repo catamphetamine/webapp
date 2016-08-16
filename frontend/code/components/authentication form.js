@@ -474,7 +474,6 @@ export default class Authentication extends Component
 
 	set_password(password)
 	{
-		console.log('@@@@@@@@@@@ set_password', password)
 		this.setState({ password })
 	}
 
@@ -530,6 +529,11 @@ export default class Authentication extends Component
 	{
 		try
 		{
+			if (this.props.on_busy)
+			{
+				this.props.on_busy()
+			}
+
 			await this.props.sign_in
 			({
 				email    : this.state.email,
@@ -562,6 +566,13 @@ export default class Authentication extends Component
 				this.refs.password.focus()
 			}
 		}
+		finally
+		{
+			if (this.props.on_busy)
+			{
+				this.props.on_idle()
+			}
+		}
 	}
 
 	forgot_password()
@@ -573,6 +584,11 @@ export default class Authentication extends Component
 	{
 		try
 		{
+			if (this.props.on_busy)
+			{
+				this.props.on_busy()
+			}
+			
 			const result = await this.props.register
 			({
 				name                      : this.state.name,
@@ -603,6 +619,13 @@ export default class Authentication extends Component
 			if (error.message === 'User is already registered for this email')
 			{
 				this.refs.email.focus()
+			}
+		}
+		finally
+		{
+			if (this.props.on_busy)
+			{
+				this.props.on_idle()
 			}
 		}
 	}
