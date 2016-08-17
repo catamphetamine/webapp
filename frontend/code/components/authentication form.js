@@ -153,18 +153,15 @@ export const messages = defineMessages
 		location : model.router.location
 	}),
 	dispatch =>
-	{
-		const props = bind_action_creators
+	({
+		dispatch,
+		...bind_action_creators
 		({
 			sign_in,
 			register
 		},
 		dispatch)
-
-		props.dispatch = dispatch
-
-		return props
-	}
+	})
 )
 @international()
 export default class Authentication extends Component
@@ -245,6 +242,12 @@ export default class Authentication extends Component
 			}
 		}, 
 		0)
+	}
+
+	componentWillUnmount()
+	{
+		this.props.dispatch({ type: 'reset user sign in error' })
+		this.props.dispatch({ type: 'reset user registration error' })
 	}
 
 	render()
@@ -588,7 +591,7 @@ export default class Authentication extends Component
 			{
 				this.props.on_busy()
 			}
-			
+
 			const result = await this.props.register
 			({
 				name                      : this.state.name,
@@ -671,6 +674,7 @@ export default class Authentication extends Component
 
 	start_registration()
 	{
+		this.props.dispatch({ type: 'reset user sign in error' })
 		this.props.dispatch({ type: 'reset user registration error' })
 
 		this.reset_validation()
@@ -684,6 +688,7 @@ export default class Authentication extends Component
 	cancel_registration()
 	{
 		this.props.dispatch({ type: 'reset user sign in error' })
+		this.props.dispatch({ type: 'reset user registration error' })
 
 		this.reset_validation()
 

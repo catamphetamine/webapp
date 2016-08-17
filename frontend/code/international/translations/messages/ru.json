@@ -20,7 +20,7 @@
 
 	"authentication.sign_in_or_register" : "или",
 	"authentication.name"                : "Имя пользователя",
-	"authentication.email"               : "Электропочта",
+	"authentication.email"               : "Почта",
 	"authentication.password"            : "Пароль",
 	"authentication.forgot_password"     : "Забыли пароль?",
 

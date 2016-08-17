@@ -150,6 +150,18 @@ export default class Uri
 
 		return this
 	}
+
+	path(path)
+	{
+		if (!path.starts_with('/'))
+		{
+			path = '/' + path
+		}
+
+		this.path = path
+		
+		return this
+	}
 	
 	print(options)
 	{

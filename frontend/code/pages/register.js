@@ -22,8 +22,8 @@ const messages = defineMessages
 	({
 		user : model.authentication.user,
 
-		error      : model.router.location.query.error,
-		error_code : model.router.location.query.error_code,
+		error        : model.router.location.query.error,
+		// error_status : model.router.location.query.error_status,
 
 		name                      : model.router.location.query.name,
 		email                     : model.router.location.query.email,
@@ -90,7 +90,7 @@ export default class Sign_in extends Component
 
 	error_message()
 	{
-		const { error, error_code, translate } = this.props
+		const { error, translate } = this.props
 
 		if (error === '"name" is required')
 		{
@@ -122,7 +122,7 @@ export default class Sign_in extends Component
 
 	get_focused_element()
 	{
-		const { error, error_code, translate } = this.props
+		const { error, translate } = this.props
 
 		if (error === '"name" is required')
 		{

@@ -30,8 +30,8 @@ const messages = defineMessages
 	({
 		user : model.authentication.user,
 
-		error      : model.router.location.query.error,
-		error_code : model.router.location.query.error_code,
+		error        : model.router.location.query.error,
+		error_status : parseInt(model.router.location.query.error_status),
 
 		email      : model.router.location.query.email
 	})
@@ -94,7 +94,7 @@ export default class Sign_in extends Component
 
 	error_message()
 	{
-		const { error, error_code, translate } = this.props
+		const { error, error_status, translate } = this.props
 
 		if (error === '"email" is required')
 		{
@@ -106,12 +106,12 @@ export default class Sign_in extends Component
 			return translate(authentication_form_messages.authentication_password_is_required)
 		}
 
-		if (error_code === http_status_codes.Not_found)
+		if (error_status === http_status_codes.Not_found)
 		{
 			return translate(messages.user_with_email_not_found, { email: this.props.email })
 		}
 
-		if (error_code === http_status_codes.Input_rejected)
+		if (error_status === http_status_codes.Input_rejected)
 		{
 			return translate(authentication_form_messages.wrong_password)
 		}
@@ -126,7 +126,7 @@ export default class Sign_in extends Component
 
 	get_focused_element()
 	{
-		const { error, error_code, translate } = this.props
+		const { error, error_status, translate } = this.props
 
 		if (error === '"email" is required')
 		{
@@ -138,12 +138,12 @@ export default class Sign_in extends Component
 			return 'password'
 		}
 
-		if (error_code === http_status_codes.Not_found)
+		if (error_status === http_status_codes.Not_found)
 		{
 			return 'email'
 		}
 
-		if (error_code === http_status_codes.Input_rejected)
+		if (error_status === http_status_codes.Input_rejected)
 		{
 			return 'password'
 		}

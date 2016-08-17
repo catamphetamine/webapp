@@ -17,13 +17,16 @@ const web = web_service
 	// },
 })
 
-// serve assets
+// // Web browsers query "favicon.ico" automatically (301 Moved Permanently)
+// web.redirect('/favicon.ico', { to: '/assets/images/icon/cat_64x64.png', exact: true })
+
+// Serve assets
 web.files('/assets', path.join(Root_folder, 'frontend/build/assets'))
 
-// remove this after fixing the "simple example" page
+// Remove this after fixing the "simple example" page
 web.files('/temporary_storage', path.join(Root_folder, configuration.image_service.temporary_files_directory))
 
-// if it's not a static file url:
+// If it's not a static file url:
 
 // Proxy /authentication requests to API server
 web.proxy('/authentication', address_book.authentication_service, { name: 'Authenication service' })

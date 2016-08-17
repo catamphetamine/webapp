@@ -19,7 +19,7 @@ export async function sign_in({ email, password }, { ip, set_cookie, keys, inter
 
 	if (!user)
 	{
-		throw new errors.Not_found(`No user with this email`)
+		throw new errors.Not_found(`No user with this email`, { field: 'email' })
 	}
 
 	// If too many login attempts have been made
@@ -36,7 +36,7 @@ export async function sign_in({ email, password }, { ip, set_cookie, keys, inter
 	if (!matches)
 	{
 		await login_attempt_failed(user)
-		throw new errors.Input_rejected(`Wrong password`) 
+		throw new errors.Input_rejected(`Wrong password`, { field: 'password' }) 
 	}
 
 	// Reset threshold for login attempt count limiter
@@ -64,7 +64,7 @@ async function sign_in_as(user, { ip, set_cookie, keys, internal_http })
 	// If the user was not found (shouldn't normally happen)
 	if (!user_data.id)
 	{
-		throw new errors.Not_found(`No user with this id`)
+		throw new errors.Not_found(`No user with this id`, { field: 'email' })
 	}
 
 	// Generate real JWT token payload
@@ -214,7 +214,7 @@ export async function register({ name, email, password, terms_of_service_accepte
 
 	if (await store.find_user_by_email(email))
 	{
-		throw new errors.Error(`User is already registered for this email`)
+		throw new errors.Error(`User is already registered for this email`, { field: 'email' })
 	}
 
 	// hashing a password is a CPU-intensive lengthy operation.
