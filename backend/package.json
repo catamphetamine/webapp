@@ -17,7 +17,7 @@
     "mongodb-migrate": "^2.0.0",
     "pg": "~4.4.0",
     "redis": "^2.4.2",
-    "web-service": "^0.2.0"
+    "web-service": "^0.2.1"
   },
   "scripts": {
     "development": "npm-run-all --parallel development-log-service-delayed development-authentication-service-delayed development-user-service-delayed development-password-service-delayed development-api-service-delayed development-image-service-delayed development-mail-service-delayed development-web-server-delayed",

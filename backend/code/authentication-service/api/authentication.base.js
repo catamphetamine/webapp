@@ -6,12 +6,12 @@ export async function sign_in({ email, password }, { ip, set_cookie, keys, inter
 {
 	if (!exists(email))
 	{
-		throw new errors.Input_missing(`"email" is required`)
+		throw new errors.Input_rejected(`"email" is required`)
 	}
 
 	if (!exists(password))
 	{
-		throw new errors.Input_missing(`"password" is required`)
+		throw new errors.Input_rejected(`"password" is required`)
 	}
 
 	// Get user by email
@@ -194,22 +194,22 @@ export async function register({ name, email, password, terms_of_service_accepte
 {
 	if (!exists(name))
 	{
-		throw new errors.Input_missing(`"name" is required`)
+		throw new errors.Input_rejected(`"name" is required`)
 	}
 
 	if (!exists(email))
 	{
-		throw new errors.Input_missing(`"email" is required`)
+		throw new errors.Input_rejected(`"email" is required`)
 	}
 
 	if (!exists(password))
 	{
-		throw new errors.Input_missing(`"password" is required`)
+		throw new errors.Input_rejected(`"password" is required`)
 	}
 
 	if (!terms_of_service_accepted)
 	{
-		throw new errors.Input_missing(`You must accept the terms of service`)
+		throw new errors.Input_rejected(`You must accept the terms of service`)
 	}
 
 	if (await store.find_user_by_email(email))

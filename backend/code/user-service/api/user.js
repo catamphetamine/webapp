@@ -14,7 +14,7 @@ export default function(api)
 	{
 		if (!exists(user.name))
 		{
-			throw new errors.Input_missing(`"name" is required`)
+			throw new errors.Input_rejected(`"name" is required`)
 		}
 
 		await store.create_user(user)
@@ -34,7 +34,7 @@ export default function(api)
 	{
 		if (!email)
 		{
-			throw new errors.Input_missing('email')
+			throw new errors.Input_rejected('email')
 		}
 
 		if (!user)
@@ -56,7 +56,7 @@ export default function(api)
 
 		if (!data.name)
 		{
-			throw new errors.Input_missing(`"name" is required`)
+			throw new errors.Input_rejected(`"name" is required`)
 		}
 		
 		await store.update_user(user.id,

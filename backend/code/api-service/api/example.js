@@ -29,7 +29,7 @@ export default function(api)
 	{
 		if (!exists(name))
 		{
-			throw new errors.Input_missing(`"name" not specified`)
+			throw new errors.Input_rejected(`"name" not specified`)
 		}
 
 		id_counter++

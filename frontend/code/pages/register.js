@@ -23,7 +23,7 @@ const messages = defineMessages
 		user : model.authentication.user,
 
 		error        : model.router.location.query.error,
-		// error_status : model.router.location.query.error_status,
+		// error_status : parseInt(model.router.location.query.error_status),
 
 		name                      : model.router.location.query.name,
 		email                     : model.router.location.query.email,

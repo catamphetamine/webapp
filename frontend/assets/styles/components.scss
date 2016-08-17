@@ -578,6 +578,14 @@ body.javascript-is-enabled .sign-out--fallback
 	color         : var(--error-color-darker);
 }
 
+.modal-content
+{
+	.form-error-message
+	{
+		margin-bottom : 0;
+	}
+}
+
 .file-upload
 {
 	position: relative;

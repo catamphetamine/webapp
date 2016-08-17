@@ -1,6 +1,6 @@
 export default
 {
-	Input_missing   : 400,
+	Malformed_input : 400,
 	Unauthenticated : 401,
 	Unauthorized    : 403,
 	Access_denied   : 403,
