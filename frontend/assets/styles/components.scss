@@ -629,18 +629,6 @@ body.javascript-is-enabled .sign-out--fallback
 	}
 }
 
-.text-input-invalid .text-input-field
-{
-	border-bottom-color: var(--error-color);
-}
-
-.text-input-error-message
-{
-	padding-top: calc(2 * var(--input-padding));
-
-	color: var(--error-color-darker);
-}
-
 .checkbox-error-message
 {
 	padding-top: var(--input-padding);
@@ -792,11 +780,16 @@ body.javascript-is-enabled .sign-out--fallback
 
 	label
 	{
-		order: -2;
+		order : -2;
 
-		color: var(--gray-color-dark);
+		margin-top : -0.65em;
 
-		transform        : scale(0.85) translateY(0.3em);
+		padding-top    : var(--input-padding);
+		// padding-bottom : var(--input-padding);
+
+		color : var(--gray-color-dark);
+
+		transform        : scale(0.8) translateY(0.65em);
 		transform-origin : left top;
 		transition       : color 0.1s ease-out, transform 0.1s ease-out;
 		pointer-events   : none;
@@ -822,26 +815,38 @@ body.javascript-is-enabled .sign-out--fallback
 	}
 }
 
-.text-input-invalid
+.text-input--invalid
 {
 	label
 	{
 		color: var(--error-color-darker);
 	}
+	
+	.text-input-field
+	{
+		border-bottom-color: var(--error-color) !important;
+	}
 }
 
-.text-input-empty
+.text-input--empty
 {
 	label
 	{
-		color: var(--gray-color-darker);
-		transform: translateY(1.45em) scale(1);
+		color     : var(--gray-color-darker);
+		transform : translateY(1.4em) scale(1);
 	}
 
 	input:focus + label, textarea:focus + label
 	{
 		color: var(--gray-color-darker);
 	}
+}
+
+.text-input-error-message
+{
+	padding-top: calc(2 * var(--input-padding));
+
+	color: var(--error-color-darker);
 }
 
 .editable-field

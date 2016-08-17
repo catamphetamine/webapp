@@ -60,8 +60,8 @@ export default class Text_input extends Component
 					'rich',
 					'text-input',
 					{
-						'text-input-empty'   : !value,
-						'text-input-invalid' : indicate_invalid && invalid
+						'text-input--empty'   : !value,
+						'text-input--invalid' : indicate_invalid && invalid
 					},
 					className
 				)}>

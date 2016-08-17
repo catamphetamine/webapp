@@ -36,12 +36,8 @@ export default function()
 				// If it's an event then extract the input value from it
 				if (typeof value.preventDefault === 'function')
 				{
+					// the `value` is trimmed by now which is handy
 					value = value.target.value
-				}
-
-				if (typeof value === 'string')
-				{
-					value = value.trim()
 				}
 
 				// // Check if the input value has actually changed
