@@ -41,12 +41,10 @@ export default class Form extends Component
 				style={style}
 				noValidate>
 
-				{this.children()}
+				{this.children(error && <div key="form-errors" className="form-error-message">{error.message ? error.message : error}</div>)}
 
 				{/* Debug */}
 				{/* JSON.stringify(this.state.indicate_invalid) */}
-
-				{error && <div className="form-error-message">{error.message ? error.message : error}</div>}
 			</form>
 		)
 
@@ -54,11 +52,11 @@ export default class Form extends Component
 	}
 
 	// Adds extra properties to form field elements
-	children()
+	children(errors)
 	{
 		const { children } = this.props
 
-		return React.Children.map(children, (child) =>
+		const form_elements = React.Children.toArray(children).map((child) =>
 		{
 			if (!child || !child.props)
 			{
@@ -90,6 +88,22 @@ export default class Form extends Component
 				}
 			})
 		})
+
+		// Show form errors above form actions,
+		// so that the errors will be visible and won't be overlooked.
+		let index = 0
+		for (let child of form_elements)
+		{
+			if (child.type === Form_actions)
+			{
+				form_elements.insert_at(index, errors)
+				return form_elements
+			}
+			index++
+		}
+
+		form_elements.push(errors)
+		return form_elements
 	}
 
 	// "Enter" key handler
@@ -180,4 +194,11 @@ export default class Form extends Component
 	{
 		this.setState({ indicate_invalid: {} })
 	}
+}
+
+export function Form_actions(props, context)
+{
+	const { children, className, style } = props
+
+	return <div className={className} style={style}>{children}</div>
 }

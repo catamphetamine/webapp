@@ -19,7 +19,7 @@
 	"authentication.register"            : "Зарегистрироваться",
 
 	"authentication.sign_in_or_register" : "или",
-	"authentication.name"                : "Имя пользователя",
+	"authentication.name"                : "Имя",
 	"authentication.email"               : "Почта",
 	"authentication.password"            : "Пароль",
 	"authentication.forgot_password"     : "Забыли пароль?",
@@ -27,7 +27,7 @@
 	"registration.i_accept"             : "Я принимаю",
 	"registration.the_terms_of_service" : "условия обслуживания",
 
-	"registration.name_is_required"                        : "Придумайте себе имя пользователя",
+	"registration.name_is_required"                        : "Введите ваше имя",
 	"registration.email_is_required"                       : "Для регистрации требуется ваша почта",
 	"registration.password_is_required"                    : "Придумайте себе пароль",
 	"registration.terms_of_service_acceptance_is_required" : "Для регистрации вам необоходимо принять наши условия обслуживания",

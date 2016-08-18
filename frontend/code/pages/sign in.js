@@ -60,33 +60,20 @@ export default class Sign_in extends Component
 
 	render()
 	{
-		const { email } = this.props
+		const { email, translate } = this.props
 
 		const markup = 
 		(
 			<section className="content">
-				{title(this.props.translate(user_bar_messages.sign_in))}
+				{title(translate(user_bar_messages.sign_in))}
 
 				<Authentication_form 
 					fields={{ email }}
 					focus_on={this.get_focused_element()}
 					style={style.form} 
-					on_sign_in={this.refresh_page}/>
-
-				{ this.props.error ? this.render_error() : null }
+					on_sign_in={this.refresh_page}
+					error={this.error_message()}/>
 			</section>
-		)
-
-		return markup
-	}
-
-	render_error()
-	{
-		const markup =
-		(
-			<ul className="errors" style={style.errors}>
-				<li>{this.error_message()}</li>
-			</ul>
 		)
 
 		return markup
@@ -95,6 +82,11 @@ export default class Sign_in extends Component
 	error_message()
 	{
 		const { error, error_status, translate } = this.props
+
+		if (!error)
+		{
+			return
+		}
 
 		if (error === '"email" is required')
 		{
@@ -166,7 +158,4 @@ const style = styler
 	form
 		margin-top    : 3rem
 		margin-bottom : 3rem
-
-	errors
-		// margin-top : 2em
 `

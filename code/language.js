@@ -161,57 +161,16 @@ Object.set_value_at_path = (where, paths, value) =>
 	return set_value_at_path(where, paths, value)
 }
 
-// работает только для примитивов типа integer и string
-// Object.defineProperty Array.prototype, "intersect", {
-// 	enumerable: false
-// 	value: (array) ->
-// 		a = this
-// 		b = array
+Object.defineProperty(Array.prototype, 'insert_at',
+{
+	enumerable: false,
+	value: function(index, value)
+	{
+		this.splice(index, 0, value)
+		return this
+	}
+})
 
-// 		result = []
-
-// 		ai = 0
-// 		bi = 0
-
-// 		while ai < a.length && bi < b.length
-// 			if a[ai] < b[bi]
-// 				ai++
-// 			else if a[ai] > b[bi]
-// 				bi++
-// 			else 
-// 				# they're equal
-// 				result.push(a[ai])
-// 				ai++
-// 				bi++
-
-// 		return result
-// }
-
-// Object.defineProperty Array.prototype, "substract", {
-// 	enumerable: false
-// 	value: (array) ->
-// 		@filter (item) -> array.indexOf(item) < 0
-// 		# @filter (item) -> not array.some (same) -> item == same
-// }
-
-// Object.defineProperty Array.prototype, "remove", {
-// 	enumerable: false
-// 	value: (element) ->
-// 		array = @
-
-// 		test = (i) ->
-// 			if typeof element == 'function'
-// 				return element.bind(array[i])(array[i])
-// 			else
-// 				return array[i] == element
-
-// 		i = 0
-// 		while i < this.length
-// 			if test(i)
-// 				this.splice(i, 1)
-// 				continue
-// 			i++
-// }
 
 Object.defineProperty(Array.prototype, 'remove_at',
 {

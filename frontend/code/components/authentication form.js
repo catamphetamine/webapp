@@ -6,10 +6,10 @@ import styler      from 'react-styling'
 import { defineMessages } from 'react-intl'
 import international from '../international/internationalize'
 
-import Text_input from './text input'
-import Checkbox   from './checkbox'
-import Button     from './button'
-import Form       from './form'
+import Text_input             from './text input'
+import Checkbox               from './checkbox'
+import Button                 from './button'
+import Form, { Form_actions } from './form'
 
 import http_status_codes from '../tools/http status codes'
 
@@ -257,7 +257,7 @@ export default class Authentication extends Component
 
 	render_sign_in_form()
 	{
-		const { translate, sign_in_error } = this.props
+		const { translate, sign_in_error, error } = this.props
 
 		const markup = 
 		(
@@ -267,7 +267,7 @@ export default class Authentication extends Component
 				style={this.props.style ? { ...style.form, ...this.props.style } : style.form} 
 				action={this.sign_in}
 				focus={this.focus}
-				error={this.sign_in_error(sign_in_error)}
+				error={error || this.sign_in_error(sign_in_error)}
 				post="/authentication/legacy/sign-in">
 
 				{/* "Sign in" */}
@@ -316,7 +316,7 @@ export default class Authentication extends Component
 				{/* Support redirecting to the initial page when javascript is disabled */}
 				<input type="hidden" name="request" value={should_redirect_to(this.props.location)}/>
 
-				<div style={style.sign_in_buttons}>
+				<Form_actions style={style.sign_in_buttons}>
 					{/* "Forgot password" */}
 					<Button
 						style={style.forgot_password}
@@ -333,7 +333,7 @@ export default class Authentication extends Component
 
 						{translate(user_bar_messages.sign_in)}
 					</Button>
-				</div>
+				</Form_actions>
 			</Form>
 		)
 
@@ -342,7 +342,7 @@ export default class Authentication extends Component
 
 	render_registration_form()
 	{
-		const { translate, registration_error } = this.props
+		const { translate, registration_error, error } = this.props
 
 		const markup = 
 		(
@@ -352,7 +352,7 @@ export default class Authentication extends Component
 				style={this.props.style ? { ...style.form, ...this.props.style } : style.form} 
 				action={this.register} 
 				focus={this.focus}
-				error={this.registration_error(registration_error)}
+				error={error || this.registration_error(registration_error)}
 				post="/authentication/legacy/register">
 
 				{/* "Register" */}
@@ -434,13 +434,15 @@ export default class Authentication extends Component
 					value={should_redirect_to(this.props.location)}/>
 
 				{/* "Register" button */}
-				<Button
-					submit={true}
-					style={style.form_action.register}
-					busy={this.props.signing_in || this.props.registering}>
+				<Form_actions>
+					<Button
+						submit={true}
+						style={style.form_action.register}
+						busy={this.props.signing_in || this.props.registering}>
 
-					{translate(user_bar_messages.register)}
-				</Button>
+						{translate(user_bar_messages.register)}
+					</Button>
+				</Form_actions>
 			</Form>
 		)
 

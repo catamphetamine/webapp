@@ -55,34 +55,21 @@ export default class Sign_in extends Component
 
 	render()
 	{
-		const { name, email, password, accept, terms_of_service_accepted } = this.props
+		const { name, email, password, accept, terms_of_service_accepted, translate } = this.props
 
 		const markup = 
 		(
 			<section className="content">
-				{title(this.props.translate(user_bar_messages.register))}
+				{title(translate(user_bar_messages.register))}
 
 				<Authentication_form 
 					registration={true}
 					fields={{ name, email, password, accept, terms_of_service_accepted }}
 					focus_on={this.get_focused_element()}
 					style={style.form} 
-					on_sign_in={this.redirect}/>
-
-				{ this.props.error ? this.render_error() : null }
+					on_sign_in={this.redirect}
+					error={this.error_message()}/>
 			</section>
-		)
-
-		return markup
-	}
-
-	render_error()
-	{
-		const markup =
-		(
-			<ul className="errors" style={style.errors}>
-				<li>{this.error_message()}</li>
-			</ul>
 		)
 
 		return markup
@@ -91,6 +78,11 @@ export default class Sign_in extends Component
 	error_message()
 	{
 		const { error, translate } = this.props
+
+		if (!error)
+		{
+			return
+		}
 
 		if (error === '"name" is required')
 		{
@@ -166,7 +158,4 @@ const style = styler
 	form
 		margin-top    : 3rem
 		margin-bottom : 3rem
-
-	errors
-		// margin-top : 2em
 `
