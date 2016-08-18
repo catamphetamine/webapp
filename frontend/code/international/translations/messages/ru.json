@@ -94,7 +94,6 @@
 	"user.settings.authentication_token.issued"          : "Выдан",
 	"user.settings.authentication_token.status"          : "Состояние",
 	"user.settings.authentication_token.latest_activity" : "Использован",
-	"user.settings.authentication_token.currently_used"  : "Текущий",
 	"user.settings.authentication_token.currently_used_hint" : "Вы сейчас используете этот ключ доступа",
 	"user.settings.revoke_authentication_token_failed"   : "Не удалось отозвать ключ доступа",
 	"user.settings.could_not_save"                       : "Не удалось сохранить ваши настройки",

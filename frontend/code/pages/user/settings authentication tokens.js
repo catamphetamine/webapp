@@ -75,12 +75,6 @@ const messages = defineMessages
 		description    : 'User account authentication tokens table latest activity column header',
 		defaultMessage : 'Activity'
 	},
-	currently_used:
-	{
-		id             : 'user.settings.authentication_token.currently_used',
-		description    : 'This authentication token is currently being used by the user',
-		defaultMessage : `The one you're using`
-	},
 	currently_used_hint:
 	{
 		id             : 'user.settings.authentication_token.currently_used_hint',
@@ -148,11 +142,19 @@ export default class Authentication_tokens extends Component
 								{ token_index > 0 && <div className="content-section-divider"/> }
 
 								{/* Token id */}
-								<div>
+								<div style={style.authentication_token.id}>
 									{/* "Token" */}
 									{translate(messages.authentication_token_id)}
 									{' '}
 									<code>{token.id}</code>
+
+									{/* Indicate if the token is being currently used (graphical) */}
+									{token.currently_used &&
+										<div
+											title={translate(messages.currently_used_hint)}
+											className="background-color--base-color"
+											style={style.authentication_token.currently_used}/>
+									}
 								</div>
 
 								{/* Token issued on */}
@@ -167,37 +169,37 @@ export default class Authentication_tokens extends Component
 								</div>
 
 								{/* Token status (valid, revoked) */}
-								<div style={style.authentication_token.status}>
-									{/* If the token was revoked, show revocation date */}
-									{token.revoked &&
-										<span>
-											{/* "Revoked" */}
-											{translate(messages.authentication_token_revoked)}
-											{' '}
-											{/* when */}
-											<React_time_ago date={token.revoked}/>
-										</span>
-									}
+								{!token.currently_used &&
+									<div style={style.authentication_token.status}>
+										{/* If the token was revoked, show revocation date */}
+										{token.revoked &&
+											<span>
+												{/* "Revoked" */}
+												{translate(messages.authentication_token_revoked)}
+												{' '}
+												{/* when */}
+												<React_time_ago date={token.revoked}/>
+											</span>
+										}
 
-									{/* If the token wasn't revoked then it's valid */}
-									{!token.revoked &&
-										<span>
-											{/* "Valid" */}
-											{translate(messages.authentication_token_valid)}
-											{' '}
-											{/* "Revoke" */}
-											<Button
-												busy={revoking_authentication_token}
-												action={() => this.revoke_authentication_token(token.id)}>
-												{translate(messages.revoke_authentication_token)}
-											</Button>
-										</span>
-									}
-								</div>
-
-								{/* Is the token being currently used */}
-								{token.currently_used &&
-									<div title={translate(messages.currently_used_hint)}>{translate(messages.currently_used)}</div>
+										{/* If the token wasn't revoked then it's valid */}
+										{!token.revoked &&
+											<span>
+												{/* "Valid" */}
+												{translate(messages.authentication_token_valid)}
+												{' '}
+												{/* "Revoke" */}
+												{/* (if this token is not being currently used) */}
+												{!token.currently_used &&
+													<Button
+														busy={revoking_authentication_token}
+														action={() => this.revoke_authentication_token(token.id)}>
+														{translate(messages.revoke_authentication_token)}
+													</Button>
+												}
+											</span>
+										}
+									</div>
 								}
 
 								{/* Latest activity */}
@@ -266,4 +268,17 @@ const style = styler
 			// display: block
 
 		latest_activity
+
+		id
+			position : relative
+
+		currently_used
+			position : absolute
+			top : 0.5em
+			right : 0
+
+			display : block
+			width  : 0.5em
+			height : 0.5em
+			border-radius : 50%
 `

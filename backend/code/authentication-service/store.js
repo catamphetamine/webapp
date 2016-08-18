@@ -534,7 +534,7 @@ async function get_place_for_ip(ip)
 
 	try
 	{
-		return await lookup_ip('93.80.231.194') // ip)
+		return await lookup_ip(ip)
 	}
 	catch (error)
 	{
