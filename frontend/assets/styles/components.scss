@@ -461,9 +461,9 @@ body.javascript-is-enabled .sign-out--fallback
 .modal-actions
 {
 	padding-left   : calc(4 * var(--modular-grid-unit));
-	padding-right  : calc(1 * var(--modular-grid-unit));
-	padding-top    : calc(1 * var(--modular-grid-unit));
-	padding-bottom : calc(1 * var(--modular-grid-unit));
+	padding-right  : calc(2 * var(--modular-grid-unit));
+	padding-top    : calc(1.5 * var(--modular-grid-unit));
+	padding-bottom : calc(1.5 * var(--modular-grid-unit));
 
 	border-bottom-left-radius  : var(--card-border-radius);
 	border-bottom-right-radius : var(--card-border-radius);
