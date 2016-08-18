@@ -11,25 +11,25 @@ export default class Button extends Component
 		action          : PropTypes.func,
 		busy            : PropTypes.bool,
 		disabled        : PropTypes.bool,
+		primary         : PropTypes.bool,
 		submit          : PropTypes.bool,
 		link            : PropTypes.string,
 		className       : PropTypes.string,
-		buttonClassName : PropTypes.string,
 		style           : PropTypes.object,
 		button_style    : PropTypes.object
 	}
 
 	render()
 	{
-		const { busy, submit, className } = this.props
+		const { busy, primary, submit, className } = this.props
 
 		const markup = 
 		(
 			<div
 				className={classNames('button', className,
 				{
-					'button-primary' : submit,
-					'button-busy'    : busy
+					'button--primary' : primary || submit,
+					'button--busy'    : busy
 				})}
 				style={merge(style.container, this.props.style)}>
 
@@ -44,7 +44,7 @@ export default class Button extends Component
 
 	render_button()
 	{
-		const { link, busy, disabled, action, submit, className, buttonClassName } = this.props
+		const { link, busy, primary, disabled, action, submit, className } = this.props
 
 		let button_style = busy ? style.button.hide : style.button.show 
 
@@ -81,7 +81,7 @@ export default class Button extends Component
 
 						action(event)
 					}}
-					className={'button' + (buttonClassName ? ' ' + buttonClassName : '')}
+					className={classNames('button__link')}
 					style={button_style}>
 
 					{this.props.children}
@@ -97,7 +97,6 @@ export default class Button extends Component
 				type={submit ? 'submit' : 'button'}
 				disabled={busy || disabled}
 				onClick={action}
-				className={buttonClassName}
 				style={button_style}>
 
 				{this.props.children}

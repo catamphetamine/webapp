@@ -343,7 +343,6 @@ export default class User_profile extends Component
 										<Button
 											submit={true}
 											style={style.own_profile_actions.action}
-											buttonClassName="primary"
 											button_style={style.own_profile_actions.action.button}
 											disabled={uploading_picture}
 											busy={updating_user}>

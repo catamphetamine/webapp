@@ -194,7 +194,7 @@ a
 	}
 }
 
-button, a.button
+button, .button__link
 {
 	background : none;
 	border     : none;
@@ -212,8 +212,11 @@ button, a.button
 	{
 		color: var(--base-color);
 	}
+}
 
-	&.primary
+.button--primary
+{
+	button, .button__link
 	{
 		color : var(--accent-color);
 

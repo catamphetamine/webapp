@@ -123,8 +123,13 @@ export default class Change_password_popup extends Component
 
 		const result =
 		[{
+			text   : translate(default_messages.cancel),
+			action : this.props.onRequestClose
+		},
+		{
 			text   : this.state.is_last_step ? translate(default_messages.done) : translate(default_messages.next),
-			action : () => this.refs.change_password_steps.submit()
+			action : () => this.refs.change_password_steps.submit(),
+			primary : true
 		}]
 
 		return result

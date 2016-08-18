@@ -325,9 +325,8 @@ export default class Authentication extends Component
 						{translate(messages.forgot_password)}
 					</Button>
 
-					{/* "Sign in" */}
+					{/* "Sign in" button */}
 					<Button
-						buttonClassName="primary"
 						style={style.form_action}
 						submit={true}
 						busy={this.props.signing_in}>
@@ -434,7 +433,7 @@ export default class Authentication extends Component
 					name="request"
 					value={should_redirect_to(this.props.location)}/>
 
-				{/* "Register" */}
+				{/* "Register" button */}
 				<Button
 					submit={true}
 					style={style.form_action.register}
