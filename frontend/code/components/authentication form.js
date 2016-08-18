@@ -257,7 +257,7 @@ export default class Authentication extends Component
 
 	render_sign_in_form()
 	{
-		const { translate } = this.props
+		const { translate, sign_in_error } = this.props
 
 		const markup = 
 		(
@@ -267,7 +267,7 @@ export default class Authentication extends Component
 				style={this.props.style ? { ...style.form, ...this.props.style } : style.form} 
 				action={this.sign_in}
 				focus={this.focus}
-				error={this.props.sign_in_error && this.sign_in_error(this.props.sign_in_error)}
+				error={this.sign_in_error(sign_in_error)}
 				post="/authentication/legacy/sign-in">
 
 				{/* "Sign in" */}
@@ -287,14 +287,14 @@ export default class Authentication extends Component
 
 				<div style={style.clearfix}></div>
 
-				{/* "Name" */}
+				{/* "Email" */}
 				<Text_input
 					ref="email"
 					name="email"
 					email={true}
 					focus={this.props.focus_on === 'email'}
 					value={this.state.email}
-					invalid={this.validate_email_on_sign_in(this.state.email)}
+					invalid={this.sign_in_email_error(sign_in_error) || this.validate_email(this.state.email)}
 					on_change={this.set_email}
 					label={translate(messages.email)}
 					style={style.input}
@@ -307,7 +307,7 @@ export default class Authentication extends Component
 					password={true}
 					focus={this.props.focus_on === 'password'}
 					value={this.state.password}
-					invalid={this.validate_password_on_sign_in(this.state.password)}
+					invalid={this.sign_in_password_error(sign_in_error) || this.validate_password_on_sign_in(this.state.password)}
 					on_change={this.set_password}
 					label={translate(messages.password)}
 					style={style.input}
@@ -343,7 +343,7 @@ export default class Authentication extends Component
 
 	render_registration_form()
 	{
-		const { translate } = this.props
+		const { translate, registration_error } = this.props
 
 		const markup = 
 		(
@@ -353,7 +353,7 @@ export default class Authentication extends Component
 				style={this.props.style ? { ...style.form, ...this.props.style } : style.form} 
 				action={this.register} 
 				focus={this.focus}
-				error={this.props.registration_error && this.registration_error(this.props.registration_error)}
+				error={this.registration_error(registration_error)}
 				post="/authentication/legacy/register">
 
 				{/* "Register" */}
@@ -379,7 +379,7 @@ export default class Authentication extends Component
 					name="name"
 					focus={this.props.focus_on === 'name'}
 					value={this.state.name}
-					invalid={this.validate_name_on_registration(this.state.name)}
+					invalid={this.validate_name(this.state.name)}
 					on_change={this.set_name}
 					label={translate(messages.name)}
 					style={style.input}
@@ -392,7 +392,7 @@ export default class Authentication extends Component
 					email={true}
 					focus={this.props.focus_on === 'email'}
 					value={this.state.email}
-					invalid={this.validate_email_on_registration(this.state.email)}
+					invalid={this.registration_email_error(registration_error) || this.validate_email(this.state.email)}
 					on_change={this.set_email}
 					label={translate(messages.email)}
 					style={style.input}
@@ -467,20 +467,73 @@ export default class Authentication extends Component
 
 	set_name(name)
 	{
+		this.props.dispatch({ type: 'reset user registration error' })
+
 		this.setState({ name })
 	}
 
 	set_email(email)
 	{
+		this.props.dispatch({ type: 'reset user sign in error' })
+		this.props.dispatch({ type: 'reset user registration error' })
+
 		this.setState({ email })
 	}
 
 	set_password(password)
 	{
+		this.props.dispatch({ type: 'reset user sign in error' })
+		this.props.dispatch({ type: 'reset user registration error' })
+
 		this.setState({ password })
 	}
 
-	validate_email_on_sign_in(value)
+	sign_in_email_error(error)
+	{
+		const { translate } = this.props
+
+		if (error && error.field === 'email')
+		{
+			if (error.status === http_status_codes.Not_found)
+			{
+				return translate(messages.user_not_found)
+			}
+
+			return translate(messages.sign_in_error)
+		}
+	}
+
+	sign_in_password_error(error)
+	{
+		const { translate } = this.props
+
+		if (error && error.field === 'password')
+		{
+			if (error.status === http_status_codes.Input_rejected)
+			{
+				return translate(messages.wrong_password)
+			}
+
+			return translate(messages.sign_in_error)
+		}
+	}
+
+	registration_email_error(error)
+	{
+		const { translate } = this.props
+
+		if (error && error.field === 'email')
+		{
+			if (error.message === 'User is already registered for this email')
+			{
+				return translate(messages.email_already_registered)
+			}
+
+			return translate(messages.registration_error)
+		}
+	}
+
+	validate_email(value)
 	{
 		if (!value)
 		{
@@ -496,27 +549,19 @@ export default class Authentication extends Component
 		}
 	}
 
-	validate_name_on_registration(value)
-	{
-		if (!value)
-		{
-			return this.props.translate(messages.registration_name_is_required)
-		}
-	}
-
-	validate_email_on_registration(value)
-	{
-		if (!value)
-		{
-			return this.props.translate(messages.registration_email_is_required)
-		}
-	}
-
 	validate_password_on_registration(value)
 	{
 		if (!value)
 		{
 			return this.props.translate(messages.registration_password_is_required)
+		}
+	}
+
+	validate_name(value)
+	{
+		if (!value)
+		{
+			return this.props.translate(messages.registration_name_is_required)
 		}
 	}
 
@@ -637,14 +682,14 @@ export default class Authentication extends Component
 	{
 		const { translate } = this.props
 
-		if (error.status === http_status_codes.Not_found)
+		if (!error)
 		{
-			return translate(messages.user_not_found)
+			return
 		}
-		
-		if (error.status === http_status_codes.Input_rejected)
+
+		if (error.field === 'email' || error.field === 'password')
 		{
-			return translate(messages.wrong_password)
+			return
 		}
 
 		if (error.message === `Login attempts limit exceeded`)
@@ -659,9 +704,14 @@ export default class Authentication extends Component
 	{
 		const { translate } = this.props
 
-		if (error.message === 'User is already registered for this email')
+		if (!error)
 		{
-			return translate(messages.email_already_registered)
+			return
+		}
+
+		if (error.field === 'email')
+		{
+			return
 		}
 
 		return translate(messages.registration_error)

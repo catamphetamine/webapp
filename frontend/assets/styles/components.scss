@@ -782,14 +782,14 @@ body.javascript-is-enabled .sign-out--fallback
 	{
 		order : -2;
 
-		margin-top : -0.65em;
+		margin-top : -0.6em;
 
 		padding-top    : var(--input-padding);
 		// padding-bottom : var(--input-padding);
 
 		color : var(--gray-color-dark);
 
-		transform        : scale(0.8) translateY(0.65em);
+		transform        : scale(0.8) translateY(0.6em);
 		transform-origin : left top;
 		transition       : color 0.1s ease-out, transform 0.1s ease-out;
 		pointer-events   : none;

@@ -132,9 +132,11 @@ export default class Form extends Component
 				console.log(`[debug] "${name}" field is invalid`)
 
 				first_invalid_field = first_invalid_field || name
-
-				this.state.indicate_invalid[name] = true
 			}
+
+			// Indicate invalid, if the field is invalid
+			// (if the field is valid then there will be nothing to indicate)
+			this.state.indicate_invalid[name] = true
 		}
 
 		// Apply field validity indication
