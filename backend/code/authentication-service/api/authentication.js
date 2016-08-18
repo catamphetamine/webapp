@@ -107,9 +107,20 @@ export default function(api)
 		return { time: user.latest_activity_time }
 	})
 
-	api.get('/tokens', async function({}, { user })
+	api.get('/tokens', async function({}, { user, authentication_token_id })
 	{
-		return { tokens: await store.get_tokens(user.id) }
+		const tokens = await store.get_tokens(user.id)
+
+		// Mark the currently used token
+		for (let token of tokens)
+		{
+			if (token.id === authentication_token_id)
+			{
+				token.currently_used = true
+			}
+		}
+
+		return { tokens }
 	})
 
 	api.post('/revoke-token', async function({ id }, { user })

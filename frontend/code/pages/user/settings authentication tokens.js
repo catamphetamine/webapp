@@ -29,7 +29,7 @@ const messages = defineMessages
 	},
 	revoke_authentication_token:
 	{
-		id             : 'user.settings.revoke_authentication_token',
+		id             : 'user.settings.authentication_token.revoke',
 		description    : 'User account authentication token revocation action',
 		defaultMessage : 'Revoke'
 	},
@@ -41,39 +41,51 @@ const messages = defineMessages
 	},
 	authentication_token_valid:
 	{
-		id             : 'user.settings.authentication_token_valid',
+		id             : 'user.settings.authentication_token.valid',
 		description    : 'User account authentication token valid status',
 		defaultMessage : 'Valid'
 	},
 	authentication_token_revoked:
 	{
-		id             : 'user.settings.authentication_token_revoked',
+		id             : 'user.settings.authentication_token.revoked',
 		description    : 'User account authentication token revoked status',
 		defaultMessage : 'Revoked'
 	},
 	authentication_token_id:
 	{
-		id             : 'user.settings.authentication_token_id',
+		id             : 'user.settings.authentication_token.id',
 		description    : 'User account authentication tokens table id column header',
 		defaultMessage : 'Token'
 	},
 	authentication_token_issued:
 	{
-		id             : 'user.settings.authentication_token_issued',
+		id             : 'user.settings.authentication_token.issued',
 		description    : 'User account authentication tokens table issue date column header',
 		defaultMessage : 'Issued'
 	},
 	authentication_token_status:
 	{
-		id             : 'user.settings.authentication_token_status',
+		id             : 'user.settings.authentication_token.status',
 		description    : 'User account authentication tokens table status column header',
 		defaultMessage : 'Status'
 	},
 	authentication_token_latest_activity:
 	{
-		id             : 'user.settings.authentication_token_latest_activity',
+		id             : 'user.settings.authentication_token.latest_activity',
 		description    : 'User account authentication tokens table latest activity column header',
 		defaultMessage : 'Activity'
+	},
+	currently_used:
+	{
+		id             : 'user.settings.authentication_token.currently_used',
+		description    : 'This authentication token is currently being used by the user',
+		defaultMessage : `The one you're using`
+	},
+	currently_used_hint:
+	{
+		id             : 'user.settings.authentication_token.currently_used_hint',
+		description    : 'Describes the user what does "currently_used" token mean',
+		defaultMessage : `You're currently using this authentication token`
 	}
 })
 
@@ -127,7 +139,8 @@ export default class Authentication_tokens extends Component
 								key={token_index}
 								className={classNames('content-section-padding',
 								{
-									'background-color--gray-color-lightest': token.revoked
+									'background-color--gray-color-lightest' : token.revoked,
+									// 'background-color--base-color-lightest' : token.currently_used
 								})}
 								style={token.revoked ? style.authentication_token.revoked : style.authentication_token}>
 
@@ -181,6 +194,11 @@ export default class Authentication_tokens extends Component
 										</span>
 									}
 								</div>
+
+								{/* Is the token being currently used */}
+								{token.currently_used &&
+									<div title={translate(messages.currently_used_hint)}>{translate(messages.currently_used)}</div>
+								}
 
 								{/* Latest activity */}
 								<div>
