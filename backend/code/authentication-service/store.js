@@ -137,11 +137,11 @@ class Memory_store
 		user = await store.find_user_by_id(user.id)
 
 		// update user's online status
-		const previous_time = await online_status_store.get_and_set(user.id, authentication_token_id, ip, new Date())
+		const previous_timestamp = await online_status_store.get_and_set(user.id, authentication_token_id, ip, Date.now())
 
 		// if enough time has passed to update this user's latest activity time,
 		// then update it
-		if (!previous_time || new Date().getTime() - previous_time.getTime() >= 60 * 1000)
+		if (!previous_timestamp || Date.now() - previous_timestamp >= 60 * 1000)
 		{
 			const now = round_user_access_time(new Date())
 
@@ -356,14 +356,14 @@ class Mongodb_store extends MongoDB
 	{
 		const latest_activity_time_refresh_interval = 60 * 1000 // one minute
 
-		const now = new Date()
+		const now = Date.now()
 
 		// Update user's online status
-		const previous_time = await online_status_store.get_and_set(user.id, authentication_token_id, ip, now)
+		const previous_timestamp = await online_status_store.get_and_set(user.id, authentication_token_id, ip, now)
 
 		// If enough time has passed to update this user's latest activity time,
 		// then update it
-		if (!previous_time || now.getTime() - previous_time.getTime() >= latest_activity_time_refresh_interval)
+		if (!previous_timestamp || now - previous_timestamp >= latest_activity_time_refresh_interval)
 		{
 			const time = round_user_access_time(now)
 
@@ -499,12 +499,21 @@ class Memory_online_status_store
 		return Promise.resolve()
 	}
 
+	// Returns the user's latest activity date
 	get(user_id)
 	{
-		return Promise.resolve(this.user_sessions[user_id])
+		if (!this.user_sessions[user_id])
+		{
+			return Promise.resolve()
+		}
+
+		return Promise.resolve(new Date(this.user_sessions[user_id]))
 	}
 
-	// `access_token_id` and `ip` are ignored here, because it's just a demo mode.
+	// Stores latest access `time` for [authentication token, IP address] pair for this user.
+	// `access_token_id` and `ip` are ignored here, because it's just a demo mode RAM store.
+	// `time` is a number (timestamp).
+	// Returns the previously stored `time`.
 	get_and_set(user_id, access_token_id, ip, time)
 	{
 		const previous_time = this.user_sessions[user_id]
@@ -532,6 +541,7 @@ class Redis_online_status_store
 		return Promise.resolve()
 	}
 
+	// Returns the user's latest activity date
 	get(user_id)
 	{
 		return this.client
@@ -539,10 +549,13 @@ class Redis_online_status_store
 			.then(result => result ? new Date(result) : null)
 	}
 
+	// Stores latest access `time` for [authentication token, IP address] pair for this user.
+	// `time` is a number (timestamp).
+	// Returns the previously stored `time`.
 	async get_and_set(user_id, access_token_id, ip, time)
 	{
-		// Convert Javascript Date to long Unix timestamp
-		time = Math.floor(time.getTime() / 1000)
+		// Convert Javascript timestamp to long Unix timestamp
+		time = Math.floor(time / 1000)
 
 		// Set user's latest activity time
 		await this.client.multi()
@@ -559,7 +572,8 @@ class Redis_online_status_store
 		// Return this access token and IP address latest activity time
 		if (token_ip_latest_activity_time[0])
 		{
-			return new Date(token_ip_latest_activity_time[0] * 1000)
+			// Convert from Unix timestamp back to Javascript timestamp
+			return parseInt(token_ip_latest_activity_time[0]) * 1000
 		}
 	}
 }
