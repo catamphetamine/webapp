@@ -24,6 +24,7 @@ export default class Dropdown extends Component
 		),
 		name       : PropTypes.string,
 		label      : PropTypes.string,
+		disabled   : PropTypes.bool,
 		value      : PropTypes.any,
 		on_change  : PropTypes.func,
 		validate   : PropTypes.func,
@@ -350,7 +351,7 @@ export default class Dropdown extends Component
 	// supports disabled javascript
 	render_static()
 	{
-		const { options, menu, toggler, children } = this.props
+		const { name, value, label, disabled, options, menu, toggler, children } = this.props
 
 		if (menu)
 		{
@@ -360,17 +361,34 @@ export default class Dropdown extends Component
 		const markup =
 		(
 			<div className="rich-fallback">
-				<select 
-					name={this.props.name} 
-					value={this.props.value} 
-					onChange={event => {}} 
+				<select
+					name={name}
+					value={value}
+					disabled={disabled}
+					onChange={event => {}}
 					style={{ width: 'auto' }}>
 					{
 						options
 						?
-						options.map(item => <option className="dropdown-item" key={item.value} value={item.value}>{item.label}</option>)
+						options.map(item =>
+						{
+							return <option
+								className="dropdown-item"
+								key={item.value}
+								value={item.value}>
+								{item.label}
+							</option>
+						})
 						:
-						React.Children.map(children, child => <option className="dropdown-item" key={child.props.value} value={child.props.value}>{child.props.label}</option>)
+						React.Children.map(children, child =>
+						{
+							return <option
+								className="dropdown-item"
+								key={child.props.value}
+								value={value}>
+								{label}
+							</option>
+						})
 					}
 				</select>
 			</div>
@@ -400,6 +418,13 @@ export default class Dropdown extends Component
 	{
 		event.preventDefault()
 
+		const { disabled } = this.props
+
+		if (disabled)
+		{
+			return
+		}
+
 		// event.stopPropagation() // doesn't work
 		event.nativeEvent.stopImmediatePropagation()
 
@@ -410,7 +435,14 @@ export default class Dropdown extends Component
 	{
 		event.preventDefault()
 
-		this.props.on_change(value)
+		const { disabled, on_change } = this.props
+
+		if (disabled)
+		{
+			return
+		}
+
+		on_change(value)
 	}
 
 	document_clicked(event)

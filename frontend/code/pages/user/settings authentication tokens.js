@@ -17,7 +17,7 @@ import
 	get_user_authentication_tokens,
 	revoke_authentication_token
 }
-from '../../actions/user settings'
+from '../../actions/user settings/main'
 
 const messages = defineMessages
 ({
@@ -87,8 +87,8 @@ const messages = defineMessages
 (
 	model =>
 	({
-		authentication_tokens         : model.user_settings.authentication_tokens,
-		revoking_authentication_token : model.user_settings.revoking_authentication_token
+		authentication_tokens         : model.user_settings.main.authentication_tokens,
+		revoking_authentication_token : model.user_settings.main.revoking_authentication_token
 	}),
 	dispatch => bind_action_creators
 	({

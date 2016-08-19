@@ -59,9 +59,6 @@ export default class Modal extends Component
 		this.on_window_resize        = this.on_window_resize.bind(this)
 		this.restore_document_scroll = this.restore_document_scroll.bind(this)
 
-		this.busy = this.busy.bind(this)
-		this.idle = this.idle.bind(this)
-
 		this.close_if_not_busy = this.close_if_not_busy.bind(this)
 	}
 
@@ -89,8 +86,8 @@ export default class Modal extends Component
 
 	render()
 	{
-		const { isOpen, closeTimeoutMS, title, cancel, actions, scroll } = this.props
-		const { busy, could_not_close_because_busy } = this.state
+		const { busy, isOpen, closeTimeoutMS, title, cancel, actions, scroll, children } = this.props
+		const { could_not_close_because_busy } = this.state
 
 		const translate = this.context.intl.formatMessage
 
@@ -134,7 +131,7 @@ export default class Modal extends Component
 						onClick={this.block_event}
 						style={this.props.style ? { ...style.content, ...this.props.style } : style.content}>
 						
-						{this.content()}
+						{children}
 					</div>
 
 					{/* dialog window actions */}
@@ -151,13 +148,14 @@ export default class Modal extends Component
 							{cancel &&
 								<Button
 									key="-1"
+									disabled={busy}
 									action={cancel === true ? this.close_if_not_busy : cancel}>
 									{translate(default_messages.cancel)}
 								</Button>
 							}
 
 							{/* Other buttons ("Next", "OK", ...) */}
-							{actions.map((action, i) => <Button key={i} {...action}>{action.text}</Button>)}
+							{actions.map((action, i) => <Button key={i} disabled={busy} {...action}>{action.text}</Button>)}
 						</div>
 					}
 
@@ -168,35 +166,6 @@ export default class Modal extends Component
 		)
 
 		return markup
-	}
-
-	content()
-	{
-		const { children } = this.props
-
-		if (React.Children.count(children) > 1)
-		{
-			return children
-		}
-
-		return React.Children.map(children, (child) =>
-		{
-			return React.cloneElement(child,
-			{
-				on_busy : this.busy,
-				on_idle : this.idle
-			})
-		})
-	}
-
-	busy()
-	{
-		this.setState({ busy: true })
-	}
-
-	idle()
-	{
-		this.setState({ busy: false })
 	}
 
 	// Play "cannot close" animation on the modal
@@ -229,8 +198,10 @@ export default class Modal extends Component
 
 	close_if_not_busy()
 	{
+		const { busy } = this.props
+
 		// Don't close the modal if it's busy
-		if (this.state.busy)
+		if (busy)
 		{
 			return this.indicate_cannot_close()
 		}

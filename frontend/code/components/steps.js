@@ -15,8 +15,6 @@ export default class Steps extends Component
 
 	static propTypes =
 	{
-		on_busy       : PropTypes.func,
-		on_idle       : PropTypes.func,
 		set_last_step : PropTypes.func,
 		on_finished   : PropTypes.func.isRequired,
 		children      : PropTypes.node.isRequired,
@@ -53,7 +51,6 @@ export default class Steps extends Component
 		{
 			ref     : this.step,
 			submit  : this.next,
-			on_busy : this.props.on_busy,
 			state   : this.state.store
 		})
 	}
@@ -93,11 +90,6 @@ export default class Steps extends Component
 
 	next(store)
 	{
-		if (this.props.on_idle)
-		{
-			this.props.on_idle()
-		}
-		
 		// If current step submission succeeded, then move on to the next step
 
 		// If there are no more steps left, then finished
@@ -133,6 +125,8 @@ export class Text_input_step extends Component
 		password    : PropTypes.bool,
 		email       : PropTypes.bool,
 		submit      : PropTypes.func.isRequired,
+		busy        : PropTypes.bool,
+		error       : PropTypes.object,
 		className   : PropTypes.string,
 		style       : PropTypes.object
 	}
@@ -149,22 +143,28 @@ export class Text_input_step extends Component
 
 	render()
 	{
+		const { email, password, description, placeholder, validate, error, busy } = this.props
+		const { value } = this.state
+
 		const markup =
 		(
 			<Form
 				ref="form"
+				busy={busy}
 				focus={this.focus}
-				action={this.submit_form}>
+				action={this.submit_form}
+				error={error}>
 
 				<Text_input
 					ref="input"
 					name="input"
-					email={this.props.email}
-					password={this.props.password}
-					description={this.props.description}
-					placeholder={this.props.placeholder}
-					value={this.state.value}
-					invalid={this.props.validate(this.state.value)}
+					email={email}
+					password={password}
+					description={description}
+					placeholder={placeholder}
+					value={value}
+					disabled={busy}
+					invalid={validate(value)}
 					on_change={this.set_value}/>
 			</Form>
 		)

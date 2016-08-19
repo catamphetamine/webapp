@@ -1,8 +1,18 @@
+import { combineReducers } from 'redux'
+
+import user_settings_main            from './user settings/main'
+import user_settings_change_password from './user settings/change password'
+
 export { default as preload }        from './preload'
 export { default as authentication } from './authentication'
 export { default as navigator }      from './navigator'
 export { default as locale }         from './locale'
 export { default as example_users }  from './example users'
 export { default as user_profile }   from './user profile'
-export { default as user_settings }  from './user settings'
 export { default as log }            from './log'
+
+export const user_settings = combineReducers
+({
+	main            : user_settings_main,
+	change_password : user_settings_change_password
+})

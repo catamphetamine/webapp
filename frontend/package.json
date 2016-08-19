@@ -45,7 +45,7 @@
     "react-intl": "^2.1.2",
     "react-isomorphic-render": "^4.1.1",
     "react-modal": "^1.1.1",
-    "react-phone-number-input": "^0.1.16",
+    "react-phone-number-input": "^0.1.20",
     "react-redux": "^4.0.0",
     "react-router": "^2.0.1",
     "react-sticky": "^5.0.0",

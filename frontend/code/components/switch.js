@@ -11,9 +11,17 @@ export default class Switch extends Component
 	{
 		name      : PropTypes.string,
 		value     : PropTypes.bool,
+		disabled  : PropTypes.bool,
 		// label     : PropTypes.string.isRequired,
 		on_change : PropTypes.func.isRequired,
 		style     : PropTypes.object
+	}
+
+	constructor(props, context)
+	{
+		super(props, context)
+		
+		this.toggle = this.toggle.bind(this)
 	}
 
 	// Client side rendering, javascript is enabled
@@ -24,7 +32,7 @@ export default class Switch extends Component
 
 	render()
 	{
-		const { value, on_change } = this.props
+		const { value } = this.props
 
 		const markup =
 		(
@@ -33,7 +41,7 @@ export default class Switch extends Component
 					type="checkbox" 
 					style={style.input} 
 					value={value} 
-					onChange={event => on_change(!value)}/>
+					onChange={this.toggle}/>
 
 				<span className="switch-groove" style={value ? style.groove.when_checked : style.groove}/>
 				<div className="switch-knob" style={value ? style.knob.when_checked : style.knob}/>
@@ -48,17 +56,32 @@ export default class Switch extends Component
 	// supports disabled javascript
 	render_static()
 	{
+		const { name, disabled } = this.props
+
 		const markup =
 		(
 			<div className="rich-fallback">
 				<input
-					type="checkbox" 
-					name={this.props.name} 
+					type="checkbox"
+					name={name}
+					disabled={disabled}
 					value={this.props.value}/>
 			</div>
 		)
 
 		return markup
+	}
+
+	toggle(event)
+	{
+		const { on_change, disabled, value } = this.props
+
+		if (disabled)
+		{
+			return
+		}
+
+		on_change(!value)
 	}
 }
 

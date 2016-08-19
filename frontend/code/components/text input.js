@@ -15,6 +15,7 @@ export default class Text_input extends Component
 		label            : PropTypes.string,
 		name             : PropTypes.string,
 		value            : PropTypes.any,
+		disabled         : PropTypes.bool,
 		description      : PropTypes.string,
 		on_change        : PropTypes.func.isRequired,
 		invalid          : PropTypes.string,
@@ -117,7 +118,7 @@ export default class Text_input extends Component
 	render_input(options = {})
 	{
 		const { placeholder, ref, name } = options
-		const { value, multiline, email, password, focus, on_change } = this.props
+		const { value, multiline, email, password, focus, on_change, disabled } = this.props
 
 		let type
 
@@ -147,6 +148,7 @@ export default class Text_input extends Component
 			value       : (value === undefined || value === null) ? '' : value,
 			placeholder : placeholder || this.props.placeholder,
 			onChange    : on_change,
+			disabled,
 			// onFocus     : this.props.on_focus,
 			// onBlur      : this.props.on_blur,
 			className   : 'text-input-field',

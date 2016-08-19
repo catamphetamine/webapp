@@ -16,6 +16,7 @@ export default class Checkbox extends Component
 	{
 		name      : PropTypes.string,
 		value     : PropTypes.bool,
+		disabled  : PropTypes.bool,
 		// label     : PropTypes.string.isRequired,
 		on_change : PropTypes.func.isRequired,
 		validate  : PropTypes.func,
@@ -56,7 +57,7 @@ export default class Checkbox extends Component
 
 	render()
 	{
-		const { value, invalid, indicate_invalid } = this.props
+		const { value, invalid, indicate_invalid, disabled } = this.props
 
 		const markup = 
 		(
@@ -70,6 +71,7 @@ export default class Checkbox extends Component
 				<input 
 					ref="input"
 					type="checkbox"
+					disabled={disabled}
 					onChange={this.toggle}
 					onFocus={this.on_focus}
 					onBlur={this.on_blur}
@@ -119,17 +121,20 @@ export default class Checkbox extends Component
 	// supports disabled javascript
 	render_static()
 	{
+		const { name, value, focus, disabled, children } = this.props
+
 		const markup =
 		(
 			<div className="rich-fallback">
-				<input 
-					type="checkbox" 
-					name={this.props.name}
-					defaultChecked={this.props.value}
-					autoFocus={this.props.focus}/>
+				<input
+					type="checkbox"
+					name={name}
+					disabled={disabled}
+					defaultChecked={value}
+					autoFocus={focus}/>
 
 				<label className="checkbox-label" style={style.label.static}>
-					{this.props.children}
+					{children}
 				</label>
 			</div>
 		)
@@ -189,7 +194,12 @@ export default class Checkbox extends Component
 			return
 		}
 
-		const { value } = this.props
+		const { disabled, on_change, value } = this.props
+
+		if (disabled)
+		{
+			return
+		}
 
 		// Allows checkmark animation from now on
 		this.was_toggled = true
@@ -199,7 +209,7 @@ export default class Checkbox extends Component
 			this.setState({ path_style: undefined })
 		}
 
-		this.props.on_change(!value)
+		on_change(!value)
 	}
 }
 

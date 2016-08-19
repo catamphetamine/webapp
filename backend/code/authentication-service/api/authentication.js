@@ -2,7 +2,7 @@ import { errors } from 'web-service'
 
 import { store, online_status_store } from '../store'
 
-import { sign_in, sign_out, register, get_user, own_user } from './authentication.base'
+import { sign_in, sign_out, register, get_user, own_user, check_password } from './authentication.base'
 
 export default function(api)
 {
@@ -72,6 +72,32 @@ export default function(api)
 		return { valid: true }
 	})
 
+	api.post('/check-password', async function({ password }, { user })
+	{
+		if (!user)
+		{
+			throw new errors.Unauthenticated()
+		}
+
+		// Get user by email
+		user = await store.find_user_by_id(user.id)
+
+		// Shouldn't happen, but just in case
+		if (!user)
+		{
+			throw new errors.Not_found()
+		}
+
+		// Check if the password matches
+		const matches = await check_password(password, user.password)
+
+		// If the password is wrong, return an error
+		if (!matches)
+		{
+			throw new errors.Input_rejected(`Wrong password`, { field: 'password' }) 
+		}
+	})
+
 	api.post('/record-access', async function({}, { authentication_token_id, user, ip })
 	{
 		if (!user)
@@ -109,6 +135,11 @@ export default function(api)
 
 	api.get('/tokens', async function({}, { user, authentication_token_id })
 	{
+		if (!user)
+		{
+			throw new errors.Unauthenticated()
+		}
+
 		const tokens = await store.get_tokens(user.id)
 
 		// Mark the currently used token

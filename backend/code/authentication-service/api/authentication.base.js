@@ -278,7 +278,7 @@ export function own_user(user)
 	return result
 }
 
-async function check_password(password, hashed_password)
+export async function check_password(password, hashed_password)
 {
 	return (await http.get(`${address_book.password_service}/check`, { password, hashed_password })).result
 }

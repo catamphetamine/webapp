@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import styler from 'react-styling'
+import classNames from 'classnames'
 
 export default class Button_group extends Component
 {
@@ -18,6 +19,7 @@ export default class Button_group extends Component
 		.isRequired,
 		name         : PropTypes.string,
 		value        : PropTypes.any,
+		disabled     : PropTypes.bool,
 		on_change    : PropTypes.func.isRequired,
 		style        : PropTypes.object
 	}
@@ -46,15 +48,20 @@ export default class Button_group extends Component
 
 	render_button(option, index)
 	{
-		const selected = this.props.value === option.value
+		const { value } = this.props
+
+		const selected = value === option.value
 
 		const markup = 
 		(
 			<button
 				key={option.value}
 				type="button"
-				onClick={event => this.props.on_change(option.value)}
-				className={'button-group-button' + ' ' + (selected ? 'button-group-selected' : '')}
+				onClick={this.chooser(option.value)}
+				className={classNames('button-group-button',
+				{
+					'button-group-selected' : selected
+				})}
 				style={this.option_style(option, index)}>
 
 				{option.label}
@@ -124,6 +131,21 @@ export default class Button_group extends Component
 		// }
 
 		return option_style
+	}
+
+	chooser(value)
+	{
+		return event =>
+		{
+			const { disabled, on_change } = this.props
+
+			if (disabled)
+			{
+				return
+			}
+
+			on_change(value)
+		}
 	}
 }
 

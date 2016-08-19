@@ -73,7 +73,9 @@ export const messages = defineMessages
 	model => 
 	({
 		user           : model.authentication.user,
-		sign_out_error : model.authentication.sign_out_error
+		sign_out_error : model.authentication.sign_out_error,
+		signing_in     : model.authentication.signing_in,
+		registering    : model.authentication.registering
 	}),
 	dispatch =>
 	{
@@ -130,7 +132,7 @@ export default class Authentication extends Component
 
 	render()
 	{
-		const { user, translate } = this.props
+		const { user, registering, signing_in, translate } = this.props
 
 		const markup =
 		(
@@ -147,6 +149,7 @@ export default class Authentication extends Component
 
 				{/* Sign in / Register popup */}
 				<Modal
+					busy={registering || signing_in}
 					isOpen={exists(this.state.password) || (!user && this.state.show)}
 					onRequestClose={this.hide}>
 

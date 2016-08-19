@@ -148,8 +148,8 @@ export const messages = defineMessages
 		sign_in_error      : model.authentication.sign_in_error,
 		registration_error : model.authentication.registration_error,
 
-		registering   : model.authentication.registering,
-		siging_in     : model.authentication.siging_in,
+		registering : model.authentication.registering,
+		signing_in  : model.authentication.signing_in,
 
 		locale   : model.locale.locale,
 		location : model.router.location
@@ -259,7 +259,7 @@ export default class Authentication extends Component
 
 	render_sign_in_form()
 	{
-		const { translate, sign_in_error, error } = this.props
+		const { translate, sign_in_error, signing_in, error } = this.props
 
 		const markup = 
 		(
@@ -268,6 +268,7 @@ export default class Authentication extends Component
 				className="authentication-form" 
 				style={this.props.style ? { ...style.form, ...this.props.style } : style.form} 
 				action={this.sign_in}
+				busy={signing_in}
 				focus={this.focus}
 				error={error || this.sign_in_error(sign_in_error)}
 				post="/authentication/legacy/sign-in">
@@ -281,7 +282,8 @@ export default class Authentication extends Component
 					<Button
 						link={add_redirect('/register', this.props.location)} 
 						button_style={style.or_register.register} 
-						action={this.start_registration}>
+						action={this.start_registration}
+						disabled={signing_in}>
 
 						{translate(user_bar_messages.register)}
 					</Button>
@@ -294,6 +296,7 @@ export default class Authentication extends Component
 					ref="email"
 					name="email"
 					email={true}
+					disabled={signing_in}
 					focus={this.props.focus_on === 'email'}
 					value={this.state.email}
 					invalid={this.sign_in_email_error(sign_in_error) || this.validate_email(this.state.email)}
@@ -307,6 +310,7 @@ export default class Authentication extends Component
 					ref="password"
 					name="password"
 					password={true}
+					disabled={signing_in}
 					focus={this.props.focus_on === 'password'}
 					value={this.state.password}
 					invalid={this.sign_in_password_error(sign_in_error) || this.validate_password_on_sign_in(this.state.password)}
@@ -322,19 +326,22 @@ export default class Authentication extends Component
 					{/* "Forgot password" */}
 					<Button
 						style={style.forgot_password}
-						action={this.forgot_password}>
+						action={this.forgot_password}
+						disabled={signing_in}>
 
 						{translate(messages.forgot_password)}
 					</Button>
 
 					{/* "Sign in" button */}
-					<Button
-						style={style.form_action}
-						submit={true}
-						busy={this.props.signing_in}>
+					<div style={style.to_the_right}>
+						<Button
+							style={style.form_action}
+							submit={true}
+							busy={signing_in}>
 
-						{translate(user_bar_messages.sign_in)}
-					</Button>
+							{translate(user_bar_messages.sign_in)}
+						</Button>
+					</div>
 				</Form_actions>
 			</Form>
 		)
@@ -344,7 +351,7 @@ export default class Authentication extends Component
 
 	render_registration_form()
 	{
-		const { translate, registration_error, error } = this.props
+		const { translate, registration_error, error, signing_in, registering } = this.props
 
 		const markup = 
 		(
@@ -353,6 +360,7 @@ export default class Authentication extends Component
 				className="registration-form" 
 				style={this.props.style ? { ...style.form, ...this.props.style } : style.form} 
 				action={this.register} 
+				busy={signing_in || registering}
 				focus={this.focus}
 				error={error || this.registration_error(registration_error)}
 				post="/authentication/legacy/register">
@@ -366,7 +374,8 @@ export default class Authentication extends Component
 					<Button
 						link={add_redirect('/sign-in', this.props.location)} 
 						button_style={style.or_register.register} 
-						action={this.cancel_registration}>
+						action={this.cancel_registration}
+						disabled={signing_in || registering}>
 
 						{translate(user_bar_messages.sign_in)}
 					</Button>
@@ -378,6 +387,7 @@ export default class Authentication extends Component
 				<Text_input
 					ref="name"
 					name="name"
+					disabled={signing_in || registering}
 					focus={this.props.focus_on === 'name'}
 					value={this.state.name}
 					invalid={this.validate_name(this.state.name)}
@@ -391,6 +401,7 @@ export default class Authentication extends Component
 					ref="email"
 					name="email"
 					email={true}
+					disabled={signing_in || registering}
 					focus={this.props.focus_on === 'email'}
 					value={this.state.email}
 					invalid={this.registration_email_error(registration_error) || this.validate_email(this.state.email)}
@@ -404,6 +415,7 @@ export default class Authentication extends Component
 					ref="password"
 					name="password"
 					password={true}
+					disabled={signing_in || registering}
 					focus={this.props.focus_on === 'password'}
 					value={this.state.password}
 					invalid={this.validate_password_on_registration(this.state.password)}
@@ -416,6 +428,7 @@ export default class Authentication extends Component
 				<Checkbox
 					ref="terms_of_service_accepted"
 					name="terms_of_service_accepted"
+					disabled={signing_in || registering}
 					focus={this.props.focus_on === 'terms_of_service_accepted'}
 					style={style.terms_of_service}
 					value={this.state.terms_of_service_accepted}
@@ -436,11 +449,11 @@ export default class Authentication extends Component
 					value={should_redirect_to(this.props.location)}/>
 
 				{/* "Register" button */}
-				<Form_actions>
+				<Form_actions style={style.to_the_right}>
 					<Button
 						submit={true}
 						style={style.form_action.register}
-						busy={this.props.signing_in || this.props.registering}>
+						busy={signing_in || registering}>
 
 						{translate(user_bar_messages.register)}
 					</Button>
@@ -580,11 +593,6 @@ export default class Authentication extends Component
 	{
 		try
 		{
-			if (this.props.on_busy)
-			{
-				this.props.on_busy()
-			}
-
 			await this.props.sign_in
 			({
 				email    : this.state.email,
@@ -621,13 +629,6 @@ export default class Authentication extends Component
 				this.refs.password.focus()
 			}
 		}
-		finally
-		{
-			if (this.props.on_busy)
-			{
-				this.props.on_idle()
-			}
-		}
 	}
 
 	forgot_password()
@@ -639,11 +640,6 @@ export default class Authentication extends Component
 	{
 		try
 		{
-			if (this.props.on_busy)
-			{
-				this.props.on_busy()
-			}
-
 			const result = await this.props.register
 			({
 				name                      : this.state.name,
@@ -674,13 +670,6 @@ export default class Authentication extends Component
 			if (error.message === 'User is already registered for this email')
 			{
 				this.refs.email.focus()
-			}
-		}
-		finally
-		{
-			if (this.props.on_busy)
-			{
-				this.props.on_idle()
 			}
 		}
 	}
@@ -788,10 +777,6 @@ const style = styler
 		z-index : 1
 
 	form_action
-
-		text-align: right
-		display: block
-
 		&register
 			margin-top: 1em
 			// margin-bottom: 1em
@@ -806,5 +791,8 @@ const style = styler
 			width : 100%
 
 	sign_in_buttons
-		margin-top: 1.5em
+		margin-top : 1.5em
+
+	to_the_right
+		float : right
 `

@@ -16,7 +16,7 @@ import
 	get_user_authentication_tokens,
 	change_email
 }
-from '../../actions/user settings'
+from '../../actions/user settings/main'
 
 import { messages as authentication_form_messages } from '../../components/authentication form'
 import default_messages from '../../components/messages'
@@ -62,11 +62,11 @@ const messages = defineMessages
 (
 	model =>
 	({
-		user : model.user_settings.user,
+		user : model.user_settings.main.user,
 
-		load_advanced_settings_error  : model.user_settings.load_advanced_settings_error,
-		loading_advanced_settings     : model.user_settings.loading_advanced_settings,
-		saving_settings               : model.user_settings.saving_settings
+		load_advanced_settings_error  : model.user_settings.main.load_advanced_settings_error,
+		loading_advanced_settings     : model.user_settings.main.loading_advanced_settings,
+		saving_settings               : model.user_settings.main.saving_settings
 	}),
 	dispatch =>
 	({

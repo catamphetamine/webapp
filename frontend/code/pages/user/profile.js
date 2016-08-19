@@ -281,7 +281,7 @@ export default class User_profile extends Component
 
 		const markup = 
 		(
-			<div className="content  user-profile">
+			<div className="content user-profile">
 				{title(user.name)}
 
 				{/* Left column */}
@@ -311,6 +311,7 @@ export default class User_profile extends Component
 
 						<Form
 							focus={this.focus}
+							busy={updating_user || uploading_picture}
 							action={this.save_profile_edits}>
 
 							{/* Edit/Save own profile */}
@@ -370,6 +371,7 @@ export default class User_profile extends Component
 									ref="name"
 									name="name"
 									label={translate(messages.name)}
+									disabled={updating_user}
 									style={style.user_name_field}
 									input_style={style.user_name}
 									label_style={style.user_name}
@@ -387,6 +389,7 @@ export default class User_profile extends Component
 									ref="place"
 									name="place"
 									label={translate(messages.place)}
+									disabled={updating_user}
 									style={style.user_location.edit}
 									value={this.state.place}
 									on_change={place => this.setState({ place })}/>
@@ -399,6 +402,7 @@ export default class User_profile extends Component
 									ref="country"
 									name="country"
 									label={translate(messages.country)}
+									disabled={updating_user}
 									options={this.countries}
 									value={this.state.country}
 									on_change={country => this.setState({ country })}/>
