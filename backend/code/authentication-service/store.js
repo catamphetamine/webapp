@@ -253,7 +253,7 @@ class Mongodb_store extends MongoDB
 	{
 		const now = new Date()
 
-		// add the token to the database
+		// Add the token to the database
 		const authentication_token_id = (await this.collection('authentication_tokens').insertAsync
 		({
 			user_id : this.ObjectId(user.id),
@@ -270,7 +270,10 @@ class Mongodb_store extends MongoDB
 		}))
 		.insertedIds[0]
 
-		// add the token to user data
+		// If there's too much tokens, then remove excessive revoked ones
+		await this.remove_excessive_tokens(user.id)
+
+		// Add the token to user data
 		await this.collection('user_authentication').update_by_id(user.id,
 		{
 			$set:
@@ -286,6 +289,67 @@ class Mongodb_store extends MongoDB
 		})
 
 		return authentication_token_id.toString()
+	}
+
+	async remove_excessive_tokens(user_id)
+	{
+		// Allow max 10 tokens per user
+		const user_token_limit = 10
+
+		// Get a list of all authentication tokens for this user
+		const tokens = await this.collection('authentication_tokens').query
+		({
+			user_id : this.ObjectId(user_id)
+		},
+		{
+			sort:
+			{
+				latest_access: 1
+			}
+		})
+
+		// Sort tokens in the following order:
+		//
+		// not revoked tokens used recently,
+		// not revoked tokens used a long time ago,
+		// tokens revoked recently,
+		// tokens revoked a long time ago.
+		//
+		tokens.sort((a, b) =>
+		{
+			if (!a.revoked && !b.revoked)
+			{
+				return b.latest_access - a.latest_access
+			}
+
+			if (a.revoked && !b.revoked)
+			{
+				return 1
+			}
+
+			if (!a.revoked && b.revoked)
+			{
+				return -1
+			}
+
+			return b.revoked.getTime() - a.revoked.getTime()
+		})
+
+		// If the token limit hasn't been exceeded, then remove no tokens
+		if (tokens.length <= user_token_limit)
+		{
+			return
+		}
+
+		// The token limit has been exceeded, so remove excessive tokens
+		// (the ones in the end are less relevant, the first ones are most relevant)
+		const excessive_tokens = tokens.slice(user_token_limit)
+
+		// Remove excessive tokens one-by-one
+		for (let token of excessive_tokens)
+		{
+			await this.collection('authentication_tokens').remove_by_id(token._id)
+		}
 	}
 
 	async record_access(user, authentication_token_id, ip)
