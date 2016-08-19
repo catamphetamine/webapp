@@ -3,6 +3,8 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import styler      from 'react-styling'
 
+import { redirect } from 'react-isomorphic-render/redux'
+
 import { defineMessages } from 'react-intl'
 import international from '../international/internationalize'
 
@@ -15,7 +17,7 @@ import http_status_codes from '../tools/http status codes'
 
 import { messages as user_bar_messages } from './user bar'
 
-import { add_redirect, should_redirect_to } from '../helpers/redirection'
+import { add_redirect, should_redirect_to, redirection_target } from '../helpers/redirection'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
 
@@ -589,12 +591,16 @@ export default class Authentication extends Component
 				password : this.state.password
 			})
 
-			// a sane security measure
+			// Scramble the password (just in case)
 			this.setState({ password: undefined, show: false })
 
-			if (this.props.on_sign_in)
+			// Redirect to a page
+			if (redirection_target(this.props.location)
+				|| this.props.location.pathname === '/sign-in'
+				|| this.props.location.pathname === '/register')
 			{
-				this.props.on_sign_in()
+				// Revisit current URL now being logged in
+				this.props.dispatch(redirect(should_redirect_to(this.props.location)))
 			}
 		}
 		catch (error)

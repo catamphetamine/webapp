@@ -43,7 +43,7 @@ export default class Sign_in extends Component
 	{
 		super(props, context)
 
-		this.refresh_page = this.refresh_page.bind(this)
+		this.redirect = this.redirect.bind(this)
 	}
 
 	componentWillMount()
@@ -54,7 +54,7 @@ export default class Sign_in extends Component
 		//
 		if (this.props.user)
 		{
-			this.refresh_page()
+			this.redirect()
 		}
 	}
 
@@ -71,7 +71,6 @@ export default class Sign_in extends Component
 					fields={{ email }}
 					focus_on={this.get_focused_element()}
 					style={style.form} 
-					on_sign_in={this.refresh_page}
 					error={this.error_message()}/>
 			</section>
 		)
@@ -143,7 +142,7 @@ export default class Sign_in extends Component
 		return 'email'
 	}
 
-	refresh_page()
+	redirect()
 	{
 		// Revisit current URL now being logged in
 		this.props.dispatch(redirect(should_redirect_to(this.props.location)))

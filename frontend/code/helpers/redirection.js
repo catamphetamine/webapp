@@ -1,7 +1,7 @@
 import Url from '../../../code/url'
 
-// user is supposed to be redirected to this url 
-// after calling this function
+// The `url` to which the user is supposed to be redirected
+// (e.g. a "redirect_to_original_url_after_sign_in=..." parameter in the URL)
 export function should_redirect_to(location)
 {
 	return redirection_target(location) || '/'

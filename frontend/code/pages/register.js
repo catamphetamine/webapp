@@ -67,7 +67,6 @@ export default class Sign_in extends Component
 					fields={{ name, email, password, accept, terms_of_service_accepted }}
 					focus_on={this.get_focused_element()}
 					style={style.form} 
-					on_sign_in={this.redirect}
 					error={this.error_message()}/>
 			</section>
 		)
