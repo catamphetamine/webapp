@@ -136,20 +136,15 @@ class Memory_store
 	{
 		user = await store.find_user_by_id(user.id)
 
-		const now = round_user_access_time(new Date())
-
 		// update user's online status
-		let previous_time = await online_status_store.get_and_set(user.id, new Date())
-
-		if (previous_time)
-		{
-			previous_time = round_user_access_time(previous_time)
-		}
+		const previous_time = await online_status_store.get_and_set(user.id, authentication_token_id, ip, new Date())
 
 		// if enough time has passed to update this user's latest activity time,
 		// then update it
-		if (!previous_time || now.getTime() > previous_time.getTime())
+		if (!previous_time || new Date().getTime() - previous_time.getTime() >= 60 * 1000)
 		{
+			const now = round_user_access_time(new Date())
+
 			// update access time for this authentication token
 			const token = user.authentication_tokens.find_by({ id: authentication_token_id })
 
@@ -295,111 +290,88 @@ class Mongodb_store extends MongoDB
 
 	async record_access(user, authentication_token_id, ip)
 	{
-		const now = round_user_access_time(new Date())
+		const latest_activity_time_refresh_interval = 60 * 1000 // one minute
+
+		const now = new Date()
 
 		// Update user's online status
-		let previous_time = await online_status_store.get_and_set(user.id, new Date())
-
-		if (previous_time)
-		{
-			previous_time = round_user_access_time(previous_time)
-		}
+		const previous_time = await online_status_store.get_and_set(user.id, authentication_token_id, ip, now)
 
 		// If enough time has passed to update this user's latest activity time,
 		// then update it
-		if (!previous_time || now.getTime() > previous_time.getTime())
+		if (!previous_time || now.getTime() - previous_time.getTime() >= latest_activity_time_refresh_interval)
 		{
+			const time = round_user_access_time(now)
+
 			// Update user's `latest_activity_time`
 			await this.collection('user_authentication').update_by_id(user.id,
 			{
 				$set:
 				{
 					// redundant field for faster latest activity time querying
-					latest_activity_time: now
+					latest_activity_time: time
 				}
 			})
 
-			// Find history entry for this IP
-			const token_with_this_ip_history_entry = await this.collection('authentication_tokens').findOneAsync
-			({
-				_id          : this.ObjectId(authentication_token_id),
-				'history.ip' : ip
-			})
+			// Create access history entry for the token for this IP
+			const access_entry = { ip, time }
 
-			// If this IP has an entry in the history,
-			// then just update the timestamp
-			if (token_with_this_ip_history_entry)
-			{
-				// History entry for this IP
-				const this_ip_entry = token_with_this_ip_history_entry.history.find_by({ ip })
-
-				// Update latest access time for this IP
-				this_ip_entry.time = now
-
-				// Check that place info is set for this IP
-				if (!this_ip_entry.place)
+			// If there's no access history entry for the token for this IP,
+			// then insert it to the history.
+			const history_entry_added = await this.collection('authentication_tokens').findAndModifyAsync
+			(
 				{
-					// Gather info about the place of access
-					const place = await get_place_for_ip(ip)
-
-					// Log the place info
-					if (place && place.city)
-					{
-						this_ip_entry.place = place
-					}
-				}
-
-				// Update token' latest access time,
-				// and also this IP history entry latest access time.
-				await this.collection('authentication_tokens').updateOneAsync
-				({
 					_id          : this.ObjectId(authentication_token_id),
-					'history.ip' : ip
+					'history.ip' : { $ne: ip }
 				},
+				undefined,
 				{
-					$set:
+					$push:
 					{
-						// redundant field for faster access token sorting
-						latest_access: now,
-
-						'history.$': this_ip_entry
+						history: access_entry
 					}
-				})
-			}
-			// If this IP has no entry in the history,
-			// then also locate in on the map.
-			else
-			{
-				// Create access history entry for the token for this IP
-				const access_entry = { ip, time: now }
+				}
+			)
 
+			// The update that will be performed on the token
+			let update =
+			{
+				$set:
+				{
+					// Redundant field for faster access token sorting
+					latest_access: time
+				}
+			}
+
+			// If there previously was no access history entry for the token for this IP,
+			// then also set the place on this history entry.
+			if (history_entry_added.value !== null)
+			{
 				// Gather info about the place of access
 				const place = await get_place_for_ip(ip)
 
 				// Log the place info
 				if (place && place.city)
 				{
-					access_entry.place = place
+					update.$set['history.$.place'] = place
 				}
-
-				// Update token's latest access time,
-				// and insert access history entry for the token for this IP
-				await this.collection('authentication_tokens').updateOneAsync
-				({
-					_id: this.ObjectId(authentication_token_id)
-				},
-				{
-					$set:
-					{
-						// Redundant field for faster access token sorting
-						latest_access: now
-					},
-					$addToSet:
-					{
-						history: access_entry
-					}
-				})
 			}
+			// Else, if there already was an access history entry for the token for this IP,
+			// then just update its `time`.
+			else
+			{
+				update.$set['history.$.time'] = time
+			}
+
+			// Perform the update on the token
+			await this.collection('authentication_tokens').updateOneAsync
+			(
+				{
+					_id          : this.ObjectId(authentication_token_id),
+					'history.ip' : ip
+				},
+				update
+			)
 		}
 	}
 
@@ -468,7 +440,8 @@ class Memory_online_status_store
 		return Promise.resolve(this.user_sessions[user_id])
 	}
 
-	get_and_set(user_id, time)
+	// `access_token_id` and `ip` are ignored here, because it's just a demo mode.
+	get_and_set(user_id, access_token_id, ip, time)
 	{
 		const previous_time = this.user_sessions[user_id]
 		this.user_sessions[user_id] = time
@@ -479,7 +452,7 @@ class Memory_online_status_store
 // if Redis is installed and configured, use it
 class Redis_online_status_store
 {
-	prefix = 'user:session:'
+	prefix = 'user:access_time:'
 	ttl = 10 * 60 // 10 minutes
 
 	connect()
@@ -498,17 +471,32 @@ class Redis_online_status_store
 	get(user_id)
 	{
 		return this.client
-			.getAsync(this.prefix + user_id)
+			.getAsync(`${this.prefix}${user_id}`)
 			.then(result => result ? new Date(result) : null)
 	}
 
-	get_and_set(user_id, time)
+	async get_and_set(user_id, access_token_id, ip, time)
 	{
-		return this.client.multi()
-			.getset(this.prefix + user_id, time.toISOString())
-			.expire(this.prefix + user_id, this.ttl)
+		// Convert Javascript Date to long Unix timestamp
+		time = Math.floor(time.getTime() / 1000)
+
+		// Set user's latest activity time
+		await this.client.multi()
+			.set(`${this.prefix}${user_id}`, time)
+			.expire(`${this.prefix}${user_id}`, this.ttl)
 			.execAsync()
-			.then(result => result[0] ? new Date(result[0]) : null)
+
+		// Get and set this access token and IP address latest activity time
+		const token_ip_latest_activity_time = await this.client.multi()
+			.getset(`${this.prefix}${user_id}:${access_token_id}:${ip}`, time)
+			.expire(`${this.prefix}${user_id}:${access_token_id}:${ip}`, this.ttl)
+			.execAsync()
+
+		// Return this access token and IP address latest activity time
+		if (token_ip_latest_activity_time[0])
+		{
+			return new Date(token_ip_latest_activity_time[0] * 1000)
+		}
 	}
 }
 

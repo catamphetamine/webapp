@@ -72,13 +72,25 @@ export function lookup_ip(ip)
 	{
 		const result = results[0]
 
-		delete result.ip
-		delete result.zipcode
-		delete result.metroCode
-		delete result.timeZone
-		delete result.provider
+		const fields =
+		[
+			'countryCode',
+			'country',
+			'regionCode',
+			'regionName',
+			'city',
+			'latitude',
+			'longitude'
+		]
 
-		return result
+		const reduced_result = {}
+
+		for (let field of fields)
+		{
+			reduced_result[field] = result[field]
+		}
+
+		return reduced_result
 	})
 }
 
