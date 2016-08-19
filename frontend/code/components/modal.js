@@ -6,6 +6,7 @@ import classNames from 'classnames'
 import React_modal from 'react-modal'
 
 import Button from './button'
+import default_messages from './messages'
 
 // when changing this also change 
 // your .ReactModal__Overlay and .ReactModal__Content 
@@ -29,6 +30,7 @@ export default class Modal extends Component
 		closeTimeoutMS : PropTypes.number,
 		title          : PropTypes.string,
 		children       : PropTypes.node,
+		cancel         : PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
 		actions        : PropTypes.arrayOf
 		(
 			PropTypes.shape
@@ -40,6 +42,11 @@ export default class Modal extends Component
 		scroll         : PropTypes.bool,
 		style          : PropTypes.object,
 		className      : PropTypes.string
+	}
+
+	static contextTypes =
+	{
+		intl : PropTypes.object
 	}
 
 	constructor(props, context)
@@ -54,6 +61,8 @@ export default class Modal extends Component
 
 		this.busy = this.busy.bind(this)
 		this.idle = this.idle.bind(this)
+
+		this.close_if_not_busy = this.close_if_not_busy.bind(this)
 	}
 
 	componentDidMount()
@@ -80,8 +89,10 @@ export default class Modal extends Component
 
 	render()
 	{
-		const { isOpen, closeTimeoutMS, title, actions, scroll } = this.props
+		const { isOpen, closeTimeoutMS, title, cancel, actions, scroll } = this.props
 		const { busy, could_not_close_because_busy } = this.state
+
+		const translate = this.context.intl.formatMessage
 
 		const markup = 
 		(
@@ -136,6 +147,16 @@ export default class Modal extends Component
 							onClick={this.block_event}
 							style={style.actions}>
 
+							{/* Cancel button */}
+							{cancel &&
+								<Button
+									key="-1"
+									action={cancel === true ? this.close_if_not_busy : cancel}>
+									{translate(default_messages.cancel)}
+								</Button>
+							}
+
+							{/* Other buttons ("Next", "OK", ...) */}
 							{actions.map((action, i) => <Button key={i} {...action}>{action.text}</Button>)}
 						</div>
 					}
@@ -178,27 +199,49 @@ export default class Modal extends Component
 		this.setState({ busy: false })
 	}
 
+	// Play "cannot close" animation on the modal
+	indicate_cannot_close()
+	{
+		if (!this.state.could_not_close_because_busy)
+		{
+			setTimeout(() =>
+			{
+				this.setState({ could_not_close_because_busy: false })
+			},
+			// Give it a bit of extra time to finish the CSS animation
+			could_not_close_because_busy_animation_duration * 1.1)
+
+			this.setState({ could_not_close_because_busy: true })
+		}
+	}
+
 	onRequestClose()
 	{
-		if (this.state.busy)
+		// If the modal has an explicit "Cancel" button,
+		// then don't close the modal on Escape or a click outside.
+		if (this.props.cancel)
 		{
-			if (!this.state.could_not_close_because_busy)
-			{
-				setTimeout(() =>
-				{
-					this.setState({ could_not_close_because_busy: false })
-				},
-				// Give it a bit of extra time to finish the CSS animation
-				could_not_close_because_busy_animation_duration * 1.1)
-
-				this.setState({ could_not_close_because_busy: true })
-			}
-
-			return
+			return this.indicate_cannot_close()
 		}
 
+		this.close_if_not_busy()
+	}
+
+	close_if_not_busy()
+	{
+		// Don't close the modal if it's busy
+		if (this.state.busy)
+		{
+			return this.indicate_cannot_close()
+		}
+
+		// Restore original `document` scrollbar
 		this.restore_document_scroll()
 
+		// Abruptly end "couldn't close" animation to make room for closing animation
+		this.setState({ could_not_close_because_busy: false })
+
+		// Close the modal
 		if (this.props.onRequestClose)
 		{
 			this.props.onRequestClose()

@@ -492,7 +492,7 @@ body.javascript-is-enabled .sign-out--fallback
 
 .modal--could-not-close-because-busy
 {
-	animation: bounce_z 0.8s;
+	animation: bounce_z 0.6s;
 	transform: translate3d(0, 0, 0);
 }
 
@@ -500,48 +500,33 @@ body.javascript-is-enabled .sign-out--fallback
 // https://github.com/daneden/animate.css/blob/master/source/bouncing_entrances/bounceIn.css
 @keyframes bounce_z
 {
-	from, 15%, 30%, 45%, 65%, 85%, to
+	from, 25%, 47%, 72%, to
 	{
 		animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
 	}
 
 	0%
 	{
-		// opacity: 0;
-		// transform: scale3d(.3, .3, .3);
 		transform: scale3d(1, 1, 1);
 	}
 
-	15%
+	25%
 	{
-		// opacity: 0;
-		transform: scale3d(.92, .92, .92);
+		transform: scale3d(.97, .97, .97);
 	}
 
-	30%
+	47%
 	{
-		transform: scale3d(1.07, 1.07, 1.07);
+		transform: scale3d(1.025, 1.025, 1.025);
 	}
 
-	45%
+	72%
 	{
-		transform: scale3d(.95, .95, .95);
-	}
-
-	63%
-	{
-		// opacity: 1;
-		transform: scale3d(1.02, 1.02, 1.02);
-	}
-
-	80%
-	{
-		transform: scale3d(.98, .98, .98);
+		transform: scale3d(0.99, 0.99, 0.99);
 	}
 
 	to
 	{
-		// opacity: 1;
 		transform: scale3d(1, 1, 1);
 	}
 }
