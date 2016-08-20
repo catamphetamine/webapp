@@ -1,6 +1,6 @@
 import { http, errors, jwt } from 'web-service'
 
-import { store, online_status_store } from '../store'
+import store from '../store/store'
 
 export async function sign_in({ email, password }, { ip, set_cookie, keys, internal_http })
 {

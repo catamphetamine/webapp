@@ -1,6 +1,7 @@
 import { errors } from 'web-service'
 
-import { store, online_status_store } from '../store'
+import store               from '../store/store'
+import online_status_store from '../store/online/online store'
 
 import { sign_in, sign_out, register, get_user, own_user, check_password, hash_password } from './authentication.base'
 

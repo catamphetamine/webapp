@@ -601,8 +601,8 @@ export default class Authentication extends Component
 				password : this.state.password
 			})
 
-			// Scramble the password (just in case)
-			this.setState({ password: undefined, show: false })
+			// Hide the modal
+			this.setState({ show: false })
 
 			// Redirect to a page
 			if (redirection_target(this.props.location)

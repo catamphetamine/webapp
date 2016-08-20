@@ -1,6 +1,6 @@
 import { errors } from 'web-service'
 
-import store from '../store'
+import store from '../store/store'
 
 export async function get_user({ id }, { user })
 {

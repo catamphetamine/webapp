@@ -1,6 +1,6 @@
 import { http } from 'web-service'
 
-import store from '../store'
+import store from '../store/store'
 
 export default function(api)
 {

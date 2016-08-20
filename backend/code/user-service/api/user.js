@@ -1,6 +1,6 @@
 import { http, errors } from 'web-service'
 
-import store from '../store'
+import store from '../store/store'
 import { get_user } from './user.base'
 
 export default function(api)

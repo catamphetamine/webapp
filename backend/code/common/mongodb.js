@@ -58,7 +58,7 @@ export default class MongoDB
 				// https://docs.mongodb.com/manual/reference/command/update/#update-command-output
 				const succeeded = result.result.ok === 1
 					&& result.result.n === 1
-					&& result.result.nModified === 1
+					// && result.result.nModified === 1 (can be `0` if the document hasn't changed)
 
 				if (!succeeded)
 				{

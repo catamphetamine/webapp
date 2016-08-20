@@ -1,7 +1,5 @@
 import Url from '../../../../code/url'
 
-import { store, online_status_store } from '../store'
-
 import { sign_in, sign_out, register } from './authentication.base'
 
 export default function(api)
