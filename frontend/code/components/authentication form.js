@@ -626,6 +626,7 @@ export default class Authentication extends Component
 			}
 			else if (error.status === http_status_codes.Input_rejected)
 			{
+				this.setState({ password: '' })
 				this.refs.password.focus()
 			}
 		}
@@ -746,6 +747,8 @@ export default class Authentication extends Component
 
 	accept_terms_of_service(value)
 	{
+		this.props.dispatch({ type: 'reset user registration error' })
+
 		this.setState({ terms_of_service_accepted: value })
 	}
 }
