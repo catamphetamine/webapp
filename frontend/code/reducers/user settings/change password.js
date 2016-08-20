@@ -1,54 +1,13 @@
+import { add_reducers } from '../../reducer tools'
+
 const initial_state = {}
 
 const handlers =
 {
-	'user settings: change password: check current password pending': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			checking_current_password : true,
-			check_current_password_error : undefined
-		}
-
-		return new_state
-	},
-
-	'user settings: change password: check current password done': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			checking_current_password : false,
-			user : result
-		}
-
-		return new_state
-	},
-
-	'user settings: change password: check current password failed': (error, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			checking_current_password : false,
-			check_current_password_error : error
-		}
-
-		return new_state
-	},
-
-	'user settings: change password: check current password reset error': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			check_current_password_error : undefined
-		}
-
-		return new_state
-	}
 }
+
+add_reducers(handlers, 'user settings: change password', 'check current password')
+add_reducers(handlers, 'user settings: change password', 'change password')
 
 // applies a handler based on the action type
 // (is copy & paste'd for all action response handlers)

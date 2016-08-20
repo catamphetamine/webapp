@@ -139,8 +139,8 @@ export default class Settings_page extends Component
 
 				{/* Change password popup */}
 				<Change_password_popup
-					isOpen={this.state.change_password}
-					onRequestClose={this.cancel_change_password}/>
+					is_open={this.state.change_password}
+					close={this.cancel_change_password}/>
 
 				{/* General settings */}
 				<div className="row row--content-sections">

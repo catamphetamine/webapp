@@ -24,14 +24,15 @@ export default class Modal extends Component
 
 	static propTypes =
 	{
-		isOpen         : PropTypes.bool,
-		onRequestClose : PropTypes.func.isRequired,
-		onAfterOpen    : PropTypes.func,
-		closeTimeoutMS : PropTypes.number,
-		title          : PropTypes.string,
-		children       : PropTypes.node,
-		cancel         : PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
-		actions        : PropTypes.arrayOf
+		is_open          : PropTypes.bool,
+		close            : PropTypes.func.isRequired,
+		after_open       : PropTypes.func,
+		close_timeout    : PropTypes.number,
+		title            : PropTypes.string,
+		children         : PropTypes.node,
+		reset            : PropTypes.func,
+		cancel           : PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+		actions          : PropTypes.arrayOf
 		(
 			PropTypes.shape
 			({
@@ -39,9 +40,9 @@ export default class Modal extends Component
 				text   : PropTypes.string
 			})
 		),
-		scroll         : PropTypes.bool,
-		style          : PropTypes.object,
-		className      : PropTypes.string
+		scroll           : PropTypes.bool,
+		style            : PropTypes.object,
+		className        : PropTypes.string
 	}
 
 	static contextTypes =
@@ -53,8 +54,8 @@ export default class Modal extends Component
 	{
 		super(props, context)
 
-		this.onRequestClose = this.onRequestClose.bind(this)
-		this.onAfterOpen    = this.onAfterOpen.bind(this)
+		this.on_request_close = this.on_request_close.bind(this)
+		this.on_after_open    = this.on_after_open.bind(this)
 
 		this.on_window_resize        = this.on_window_resize.bind(this)
 		this.restore_document_scroll = this.restore_document_scroll.bind(this)
@@ -78,7 +79,7 @@ export default class Modal extends Component
 
 	componentWillUpdate(next_props)
 	{
-		if (next_props.isOpen === false && this.props.isOpen === true)
+		if (next_props.is_open === false && this.props.is_open === true)
 		{
 			this.restore_document_scroll()
 		}
@@ -86,7 +87,7 @@ export default class Modal extends Component
 
 	render()
 	{
-		const { busy, isOpen, closeTimeoutMS, title, cancel, actions, scroll, children } = this.props
+		const { busy, is_open, close_timeout, title, cancel, actions, scroll, children } = this.props
 		const { could_not_close_because_busy } = this.state
 
 		const translate = this.context.intl.formatMessage
@@ -95,19 +96,19 @@ export default class Modal extends Component
 		(
 			<React_modal
 				ref="modal"
-				isOpen={isOpen}
-				onAfterOpen={this.onAfterOpen}
-				onRequestClose={this.onRequestClose}
-				closeTimeoutMS={closeTimeoutMS || default_close_timeout}
+				isOpen={is_open}
+				onAfterOpen={this.on_after_open}
+				onRequestClose={this.on_request_close}
+				closeTimeoutMS={close_timeout || default_close_timeout}
 				className={classNames('modal',
 				{
 					'modal--could-not-close-because-busy': could_not_close_because_busy
 				})}
 				style={busy ? style.modal_busy : style.modal}>
 
-				<div style={style.content_wrapper} onClick={this.onRequestClose}>
+				<div style={style.content_wrapper} onClick={this.on_request_close}>
 					{/* top padding, grows less than bottom padding */}
-					<div style={style.top_padding} onClick={this.onRequestClose}></div>
+					<div style={style.top_padding} onClick={this.on_request_close}></div>
 
 					{/* dialog window title */}
 					{title &&
@@ -160,7 +161,7 @@ export default class Modal extends Component
 					}
 
 					{/* bottom padding, grows more than top padding */}
-					<div style={style.bottom_padding} onClick={this.onRequestClose}></div>
+					<div style={style.bottom_padding} onClick={this.on_request_close}></div>
 				</div>
 			</React_modal>
 		)
@@ -184,11 +185,14 @@ export default class Modal extends Component
 		}
 	}
 
-	onRequestClose()
+	on_request_close(event)
 	{
+		const { cancel } = this.props
+		
 		// If the modal has an explicit "Cancel" button,
-		// then don't close the modal on Escape or a click outside.
-		if (this.props.cancel)
+		// allow closing it by hitting "Escape" key,
+		// then don't close it on a click outside.
+		if (cancel && event.type !== 'keydown')
 		{
 			return this.indicate_cannot_close()
 		}
@@ -198,7 +202,7 @@ export default class Modal extends Component
 
 	close_if_not_busy()
 	{
-		const { busy } = this.props
+		const { busy, close } = this.props
 
 		// Don't close the modal if it's busy
 		if (busy)
@@ -213,15 +217,17 @@ export default class Modal extends Component
 		this.setState({ could_not_close_because_busy: false })
 
 		// Close the modal
-		if (this.props.onRequestClose)
+		if (close)
 		{
-			this.props.onRequestClose()
+			close()
 		}
 	}
 
 	// This solution may break a bit when a user resizes the browser window
-	onAfterOpen()
+	on_after_open()
 	{
+		const { after_open } = this.props
+
 		const margin_right = this.max_width - document.body.clientWidth
 
 		this.header.style.right = margin_right + 'px'
@@ -233,9 +239,9 @@ export default class Modal extends Component
 		// then reset that previously scrolled position.
 		document.querySelector('.ReactModal__Overlay').scrollTop = 0
 
-		if (this.props.onAfterOpen)
+		if (after_open)
 		{
-			this.props.onAfterOpen()
+			after_open()
 		}
 	}
 

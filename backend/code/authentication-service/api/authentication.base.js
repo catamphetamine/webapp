@@ -283,7 +283,7 @@ export async function check_password(password, hashed_password)
 	return (await http.get(`${address_book.password_service}/check`, { password, hashed_password })).result
 }
 
-async function hash_password(password)
+export async function hash_password(password)
 {
 	return (await http.get(`${address_book.password_service}/hash`, { password })).hash
 }

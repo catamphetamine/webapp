@@ -2,7 +2,7 @@ import { errors } from 'web-service'
 
 import { store, online_status_store } from '../store'
 
-import { sign_in, sign_out, register, get_user, own_user, check_password } from './authentication.base'
+import { sign_in, sign_out, register, get_user, own_user, check_password, hash_password } from './authentication.base'
 
 export default function(api)
 {
@@ -72,11 +72,16 @@ export default function(api)
 		return { valid: true }
 	})
 
-	api.post('/check-password', async function({ password }, { user })
+	api.get('/password/check', async function({ password }, { user })
 	{
 		if (!user)
 		{
 			throw new errors.Unauthenticated()
+		}
+
+		if (!password)
+		{
+			throw new errors.Input_rejected(`"password" is required`)
 		}
 
 		// Get user by email
@@ -96,6 +101,50 @@ export default function(api)
 		{
 			throw new errors.Input_rejected(`Wrong password`, { field: 'password' }) 
 		}
+	})
+
+	api.patch('/password', async function({ old_password, new_password }, { user })
+	{
+		if (!user)
+		{
+			throw new errors.Unauthenticated()
+		}
+
+		if (!old_password)
+		{
+			throw new errors.Input_rejected(`"old_password" is required`)
+		}
+
+		if (!new_password)
+		{
+			throw new errors.Input_rejected(`"new_password" is required`)
+		}
+
+		// Get user by email
+		user = await store.find_user_by_id(user.id)
+
+		// Shouldn't happen, but just in case
+		if (!user)
+		{
+			throw new errors.Not_found()
+		}
+
+		// Check if the old password matches
+		const matches = await check_password(old_password, user.password)
+
+		// If the old password is wrong, return an error
+		if (!matches)
+		{
+			throw new errors.Input_rejected(`Wrong password`) 
+		}
+
+		// Hashing a password is a CPU-intensive lengthy operation.
+		// takes about 60 milliseconds on my machine.
+		//
+		new_password = await hash_password(new_password)
+
+		// Change password to the new one
+		await store.update_password(user.id, new_password)
 	})
 
 	api.post('/record-access', async function({}, { authentication_token_id, user, ip })
@@ -183,9 +232,6 @@ export default function(api)
 			throw new errors.Unauthenticated()
 		}
 
-		if (!(await store.update_email(user.id, email)))
-		{
-			throw new errors.Error(`Couldn't update user's email`)
-		}
+		await store.update_email(user.id, email)
 	})
 }

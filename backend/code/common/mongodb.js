@@ -41,9 +41,32 @@ export default class MongoDB
 				return collection.findOneAsync({ _id: ObjectId(id) })
 			}
 			
-			collection.update_by_id = function(id, actions)
+			collection.update_by_id = async function(id, actions)
 			{
-				return collection.updateOneAsync({ _id: ObjectId(id) }, actions)
+				const result = await collection.updateOneAsync({ _id: ObjectId(id) }, actions)
+
+				// {
+				// 	result: { ok: 1, nModified: 1, n: 1 },
+				// 	connection: ...,
+				// 	message: ...,
+				// 	matchedCount: 1,
+				// 	modifiedCount: 1,
+				// 	upsertedId: null,
+				// 	upsertedCount: 0
+				// }
+
+				// https://docs.mongodb.com/manual/reference/command/update/#update-command-output
+				const succeeded = result.result.ok === 1
+					&& result.result.n === 1
+					&& result.result.nModified === 1
+
+				if (!succeeded)
+				{
+					delete result.connection
+					delete result.message
+
+					throw new Error(`Failed to update document with id "${id}" in collection "${name}" (${JSON.stringify(actions)}): ${JSON.stringify(result)}`)
+				}
 			}
 			
 			collection.remove_by_id = function(id)

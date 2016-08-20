@@ -90,10 +90,13 @@ export default class Steps extends Component
 
 	next(store)
 	{
+		const { set_last_step } = this.props
+		const { step } = this.state
+
 		// If current step submission succeeded, then move on to the next step
 
 		// If there are no more steps left, then finished
-		if (this.state.step === this.step_count())
+		if (step === this.step_count())
 		{
 			this.setState({ store: {} })
 			this.props.on_finished(store)
@@ -102,12 +105,12 @@ export default class Steps extends Component
 
 		// Else, if there are more steps left, go to the next one
 		// updating the obtained `store` data.
-		this.setState({ store, step: this.state.step + 1 })
+		this.setState({ store, step: step + 1 })
 
 		// Check if the new step is gonna be the last one
-		if (this.props.set_last_step)
+		if (set_last_step)
 		{
-			this.props.set_last_step(this.state.step + 1 === this.step_count())
+			set_last_step(step + 1 === this.step_count())
 		}
 	}
 }
@@ -119,14 +122,17 @@ export class Text_input_step extends Component
 	static propTypes =
 	{
 		submit      : PropTypes.func.isRequired,
-		validate    : PropTypes.func,
+		value       : PropTypes.string,
+		on_change   : PropTypes.func.isRequired,
+		invalid     : PropTypes.string,
 		description : PropTypes.string,
 		placeholder : PropTypes.string,
 		password    : PropTypes.bool,
 		email       : PropTypes.bool,
 		submit      : PropTypes.func.isRequired,
+		on_submit   : PropTypes.func,
 		busy        : PropTypes.bool,
-		error       : PropTypes.object,
+		error       : PropTypes.string,
 		className   : PropTypes.string,
 		style       : PropTypes.object
 	}
@@ -135,16 +141,27 @@ export class Text_input_step extends Component
 	{
 		super(props, context)
 
-		this.set_value    = this.set_value.bind(this)
-		this.submit       = this.submit.bind(this)
-		this.submit_form  = this.submit_form.bind(this)
-		this.focus        = this.focus.bind(this)
+		this.submit = this.submit.bind(this)
+		this.focus  = this.focus.bind(this)
 	}
 
 	render()
 	{
-		const { email, password, description, placeholder, validate, error, busy } = this.props
-		const { value } = this.state
+		const
+		{
+			value,
+			on_change,
+			email,
+			password,
+			description,
+			placeholder,
+			invalid,
+			error,
+			busy,
+			submit,
+			on_submit
+		}
+		= this.props
 
 		const markup =
 		(
@@ -152,7 +169,8 @@ export class Text_input_step extends Component
 				ref="form"
 				busy={busy}
 				focus={this.focus}
-				action={this.submit_form}
+				action={submit}
+				on_submit={on_submit}
 				error={error}>
 
 				<Text_input
@@ -164,8 +182,8 @@ export class Text_input_step extends Component
 					placeholder={placeholder}
 					value={value}
 					disabled={busy}
-					invalid={validate(value)}
-					on_change={this.set_value}/>
+					invalid={invalid}
+					on_change={on_change}/>
 			</Form>
 		)
 
@@ -194,14 +212,4 @@ export class Text_input_step extends Component
 	//
 	// 	this.props.submit(this.state.value)
 	// }
-
-	submit_form()
-	{
-		this.props.submit(this.state.value)
-	}
-
-	set_value(value)
-	{
-		this.setState({ value })
-	}
 }

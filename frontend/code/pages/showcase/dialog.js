@@ -35,9 +35,8 @@ export default class Dialog extends Component
 					<button style={style.button} onClick={this.toggle_dialog}>Show</button>
 
 					<Modal
-						isOpen={this.state.show_dialog}
-						onRequestClose={this.toggle_dialog}
-						// closeTimeoutMS={1000}
+						is_open={this.state.show_dialog}
+						close={this.toggle_dialog}
 						style={style.modal}
 						title="Dialog"
 						actions={[{ button_style: style.button, action: this.toggle_dialog, text: "Hide" }]}>

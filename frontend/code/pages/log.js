@@ -116,8 +116,8 @@ export default class Log extends Component
 
 				{/* Error stack trace */}
 				<Modal
-					isOpen={this.state.show_stack_trace}
-					onRequestClose={this.hide_stack_trace}
+					is_open={this.state.show_stack_trace}
+					close={this.hide_stack_trace}
 					style={style.stack_trace_modal}
 					scroll={true}
 					title={this.state.error_message}

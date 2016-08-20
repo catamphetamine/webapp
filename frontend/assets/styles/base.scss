@@ -104,6 +104,11 @@ textarea
 		border-bottom: var(--input-border-width) solid var(--accent-color);
 	}
 
+	&[disabled]
+	{
+		background-color : white;
+	}
+
 	// When changing this placeholder color
 	// also change ".text-input label" color
 

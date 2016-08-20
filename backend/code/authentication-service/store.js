@@ -65,6 +65,13 @@ class Memory_store
 		return Promise.resolve(true)
 	}
 
+	update_password(user_id, password)
+	{
+		this.users.get(user_id).password = password
+
+		return Promise.resolve(true)
+	}
+
 	find_token_by_id(token_id)
 	{
 		for (let [user_id, user] of this.users)
@@ -218,8 +225,12 @@ class Mongodb_store extends MongoDB
 
 	async update_email(user_id, email)
 	{
-		const result = await this.collection('user_authentication').update_by_id(user_id, { $set: { email } })
-		return result.result.n === 1
+		await this.collection('user_authentication').update_by_id(user_id, { $set: { email } })
+	}
+
+	async update_password(user_id, password)
+	{
+		await this.collection('user_authentication').update_by_id(user_id, { $set: { password } })
 	}
 
 	async revoke_token(token_id)
