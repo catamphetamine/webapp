@@ -21,7 +21,8 @@ export default class Dropdown extends Component
 				value: React.PropTypes.string.isRequired,
 				label: React.PropTypes.string.isRequired
 			})
-		),
+		)
+		.isRequired,
 		name       : PropTypes.string,
 		label      : PropTypes.string,
 		disabled   : PropTypes.bool,
@@ -62,6 +63,8 @@ export default class Dropdown extends Component
 
 		this.toggle           = this.toggle.bind(this)
 		this.document_clicked = this.document_clicked.bind(this)
+
+		this.selected_item_key_down = this.selected_item_key_down.bind(this)
 
 		if (props.children && !props.menu)
 		{
@@ -325,7 +328,9 @@ export default class Dropdown extends Component
 		const markup =
 		(
 			<button
+				ref="selected"
 				onClick={this.toggle}
+				onKeyDown={this.selected_item_key_down}
 				style={style.selected_item_label}
 				className={classNames
 				(
@@ -416,7 +421,13 @@ export default class Dropdown extends Component
 
 	toggle(event)
 	{
-		event.preventDefault()
+		if (event)
+		{
+			event.preventDefault()
+
+			// event.stopPropagation() // doesn't work
+			event.nativeEvent.stopImmediatePropagation()
+		}
 
 		const { disabled } = this.props
 
@@ -424,9 +435,6 @@ export default class Dropdown extends Component
 		{
 			return
 		}
-
-		// event.stopPropagation() // doesn't work
-		event.nativeEvent.stopImmediatePropagation()
 
 		this.setState({ expanded: !this.state.expanded })
 	}
@@ -442,12 +450,73 @@ export default class Dropdown extends Component
 			return
 		}
 
+		this.refs.selected.focus()
+
 		on_change(value)
 	}
 
 	document_clicked(event)
 	{
 		this.setState({ expanded: false })
+	}
+
+	selected_item_key_down(event)
+	{
+		if (event.ctrlKey || event.altKey || event.shiftKey || event.metaKey)
+		{
+			return
+		}
+
+		const { on_change } = this.props
+
+		switch (event.keyCode)
+		{
+			// Select the previous option (if present) on up arrow
+			case 38:
+				event.preventDefault()
+				return this.previous_value() && on_change(this.previous_value())
+
+			// Select the next option (if present) on down arrow
+			case 40:
+				event.preventDefault()
+				return this.next_value() && on_change(this.next_value())
+		}
+	}
+
+	previous_value()
+	{
+		const { options, value } = this.props
+
+		let i = 0
+		while (i < options.length)
+		{
+			if (options[i].value === value)
+			{
+				if (i - 1 >= 0)
+				{
+					return options[i - 1].value
+				}
+			}
+			i++
+		}
+	}
+
+	next_value()
+	{
+		const { options, value } = this.props
+
+		let i = 0
+		while (i < options.length)
+		{
+			if (options[i].value === value)
+			{
+				if (i + 1 < options.length)
+				{
+					return options[i + 1].value
+				}
+			}
+			i++
+		}
 	}
 
 	calculate_height()
