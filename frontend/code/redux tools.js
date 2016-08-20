@@ -1,4 +1,11 @@
-export function add_reducers(handlers, namespace, event, result_name)
+// Adds reducers for:
+//
+//   * "[event] pending"
+//   * "[event] done"
+//   * "[event] failed"
+//   * "[event] reset error"
+//
+export function handle(handlers, namespace, event, result_name)
 {
 	const base = event.replace(/\s/g, '_')
 
@@ -53,3 +60,18 @@ export function add_reducers(handlers, namespace, event, result_name)
 		return new_state
 	}
 }
+
+// // A helper for creating Redux actions with Promises
+// export function asynchronous(create_promise, event)
+// {
+// 	return function(...parameters)
+// 	{
+// 		const action =
+// 		{
+// 			promise : create_promise.apply(this, parameters),
+// 			event
+// 		}
+//
+// 		return action
+// 	}
+// }
