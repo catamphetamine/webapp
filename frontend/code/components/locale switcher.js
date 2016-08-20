@@ -73,7 +73,7 @@ export default class Locale_switcher extends Component
 
 	render()
 	{
-		const { locale } = this.props
+		const { locale, translate, upward, alignment, location } = this.props
 
 		const markup =
 		(
@@ -90,12 +90,12 @@ export default class Locale_switcher extends Component
 					{/* language list */}
 					<Dropdown 
 						name="locale"
-						label={this.props.translate(messages.language)} 
+						label={translate(messages.language)} 
 						value={locale} 
 						on_change={this.set_locale} 
-						title={this.props.translate(messages.language)}
-						alignment={this.props.alignment}
-						upward={this.props.upward}>
+						title={translate(messages.language)}
+						alignment={alignment}
+						upward={upward}>
 
 						{locales.map(({ value, label }) =>
 						{
@@ -117,14 +117,14 @@ export default class Locale_switcher extends Component
 						style={style.locale.form.button} 
 						submit={true}>
 
-						{this.props.translate(messages.apply)}
+						{translate(messages.apply)}
 					</Button>
 
 					{/* this page url for back redirection */}
 					<input 
 						type="hidden" 
 						name="from_url" 
-						value={new Url(this.props.location).to_relative_url()}/>
+						value={new Url(location).to_relative_url()}/>
 				</Form>
 			</div>
 		)
@@ -162,7 +162,8 @@ const style = styler
 		width  : 1em
 		height : 1em
 
-		margin-bottom    : 0.45em
+		margin-bottom    : 0.2em
+		margin-right     : 0.2em
 
 		transition       : opacity 500ms ease-out
 		transition-delay : 150ms

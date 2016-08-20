@@ -21,8 +21,7 @@ export default class Dropdown extends Component
 				value: React.PropTypes.string.isRequired,
 				label: React.PropTypes.string.isRequired
 			})
-		)
-		.isRequired,
+		),
 		name       : PropTypes.string,
 		label      : PropTypes.string,
 		disabled   : PropTypes.bool,
@@ -63,8 +62,7 @@ export default class Dropdown extends Component
 
 		this.toggle           = this.toggle.bind(this)
 		this.document_clicked = this.document_clicked.bind(this)
-
-		this.selected_item_key_down = this.selected_item_key_down.bind(this)
+		this.on_key_down      = this.on_key_down.bind(this)
 
 		if (props.children && !props.menu)
 		{
@@ -97,8 +95,6 @@ export default class Dropdown extends Component
 	componentDidMount()
 	{
 		document.addEventListener('click', this.document_clicked)
-
-		this.setState({ javascript: true })
 	}
 
 	componentDidUpdate(previous_props, previous_state)
@@ -204,7 +200,7 @@ export default class Dropdown extends Component
 				</div>
 
 				{/* Fallback in case javascript is disabled */}
-				{!this.state.javascript && this.render_static()}
+				{this.render_static()}
 			</div>
 		)
 
@@ -330,7 +326,7 @@ export default class Dropdown extends Component
 			<button
 				ref="selected"
 				onClick={this.toggle}
-				onKeyDown={this.selected_item_key_down}
+				onKeyDown={this.on_key_down}
 				style={style.selected_item_label}
 				className={classNames
 				(
@@ -390,8 +386,8 @@ export default class Dropdown extends Component
 							return <option
 								className="dropdown-item"
 								key={child.props.value}
-								value={value}>
-								{label}
+								value={child.props.value}>
+								{child.props.label}
 							</option>
 						})
 					}
@@ -460,29 +456,56 @@ export default class Dropdown extends Component
 		this.setState({ expanded: false })
 	}
 
-	selected_item_key_down(event)
+	on_key_down(event)
 	{
 		if (event.ctrlKey || event.altKey || event.shiftKey || event.metaKey)
 		{
 			return
 		}
 
-		const { on_change } = this.props
+		// Maybe add support for "Escape" key in future
+		// (hiding the item list, cancelling current item selection process
+		//  and restoring the selection present before the item list was toggled)
 
-		switch (event.keyCode)
+		const { options, value, on_change } = this.props
+
+		// Maybe add support for `children` arrow navigation in future
+		if (options)
 		{
-			// Select the previous option (if present) on up arrow
-			case 38:
-				event.preventDefault()
-				return this.previous_value() && on_change(this.previous_value())
+			switch (event.keyCode)
+			{
+				// Select the previous option (if present) on up arrow
+				case 38:
+					event.preventDefault()
 
-			// Select the next option (if present) on down arrow
-			case 40:
-				event.preventDefault()
-				return this.next_value() && on_change(this.next_value())
+					if (this.previous_value())
+					{
+						on_change(this.previous_value())
+					}
+					else if (value === undefined)
+					{
+						on_change(options.first().value)
+					}
+					return
+
+				// Select the next option (if present) on down arrow
+				case 40:
+					event.preventDefault()
+
+					if (this.next_value())
+					{
+						return this.next_value() && on_change(this.next_value())
+					}
+					else if (value === undefined)
+					{
+						on_change(options.first().value)
+					}
+					return
+			}
 		}
 	}
 
+	// Get the previous value (relative to the currently selected value)
 	previous_value()
 	{
 		const { options, value } = this.props
@@ -501,6 +524,7 @@ export default class Dropdown extends Component
 		}
 	}
 
+	// Get the next value (relative to the currently selected value)
 	next_value()
 	{
 		const { options, value } = this.props
@@ -519,6 +543,7 @@ export default class Dropdown extends Component
 		}
 	}
 
+	// Calculates height of the expanded item list
 	calculate_height()
 	{
 		const list_dom_node = ReactDOM.findDOMNode(this.refs.list)

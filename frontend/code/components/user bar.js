@@ -170,7 +170,6 @@ export default class Authentication extends Component
 		(
 			<Form
 				className="sign-out-form"
-				style={style.user_menu_toggler.element}
 				post="/authentication/legacy/sign-out">
 
 				<Button
@@ -195,18 +194,17 @@ export default class Authentication extends Component
 		const user_info =
 		(
 			<Link
-				to={`/user/${user.id}`}>
+				to={`/user/${user.id}`}
+				style={style.user_menu_toggler}>
 
 				{/* Username */}
 				<span
-					style={style.user_menu_toggler.element}
 					className="user-name">
 					{user.name}
 				</span>
 
 				{/* User picture */}
 				<User_picture
-					style={style.user_menu_toggler.element} 
 					className="user-picture--header"
 					user={user}/>
 			</Link>
@@ -326,7 +324,6 @@ const style = styler
 		display: inline-block
 
 	user_menu_toggler
-		element
-			display: inline-block
-			vertical-align: middle
+		display     : flex
+		align-items : center
 `
