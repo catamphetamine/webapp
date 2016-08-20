@@ -2,6 +2,8 @@ import React, { Component, PropTypes } from 'react'
 import { Provider }                    from 'react-redux'
 import { IntlProvider }                from 'react-intl'
 
+import { get_language_from_locale } from '../../code/locale'
+
 function Wrapper(props)
 {
 	// all React "prop"erty providers go here.

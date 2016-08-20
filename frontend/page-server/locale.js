@@ -1,6 +1,8 @@
 import fs   from 'fs'
 import path from 'path'
 
+import { get_language_from_locale } from '../../code/locale'
+
 const messages_path = 'frontend/code/international/translations'
 
 export default async function load_locale_data(locales, options = {})

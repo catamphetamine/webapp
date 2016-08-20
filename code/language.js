@@ -508,17 +508,7 @@ Object.defineProperty(Function.prototype, 'periodical',
 	}
 })
 
-global.get_language_from_locale = function(locale)
-{
-	const dash_index = locale.indexOf('-')
-	if (dash_index >= 0)
-	{
-		return locale.substring(0, dash_index)
-	}
-	return locale
-}
-
-global.is_promise = function(object)
-{
-	return object instanceof Promise || typeof object.then === 'function'
-}
+// global.is_promise = function(object)
+// {
+// 	return object && typeof object.then === 'function'
+// }

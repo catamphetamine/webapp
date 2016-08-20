@@ -23,6 +23,8 @@ import { bindActionCreators as bind_action_creators } from 'redux'
 
 import { sign_in, register } from '../actions/authentication'
 
+import { get_language_from_locale } from '../../../code/locale'
+
 export const messages = defineMessages
 ({
 	or:

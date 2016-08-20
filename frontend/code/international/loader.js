@@ -8,6 +8,8 @@ import { addLocaleData as add_locale_data } from 'react-intl'
 import javascript_time_ago from 'javascript-time-ago'
 import is_intl_locale_supported from 'intl-locales-supported'
 
+import { get_language_from_locale } from '../../../code/locale'
+
 // `react-intl` is already used in the project, 
 // so it initialized its internal `intl-messageformat`
 // during `add_locale_data()` function call.
