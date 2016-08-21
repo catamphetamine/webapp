@@ -6,7 +6,7 @@ export const check_current_password = (password) =>
 
 export const reset_check_current_password_error = () =>
 ({
-	type : 'user settings: change password: check current password reset error'
+	type : 'user settings: change password: check current password: reset error'
 })
 
 export const change_password = (data) =>
@@ -17,5 +17,5 @@ export const change_password = (data) =>
 
 export const reset_change_password_error = () =>
 ({
-	type : 'user settings: change password: change password reset error'
+	type : 'user settings: change password: change password: reset error'
 })

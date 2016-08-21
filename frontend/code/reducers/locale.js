@@ -3,15 +3,10 @@ const initial_state = {}
 const handlers =
 {
 	'locale': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			locale : result.locale
-		}
-
-		return new_state
-	}
+	({
+		...state,
+		locale : result.locale
+	})
 }
 
 // for this module to work should be added to model/index.js

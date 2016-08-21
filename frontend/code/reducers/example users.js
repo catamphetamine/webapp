@@ -6,154 +6,89 @@ const initial_state =
 const handlers =
 {
 	'retrieving users': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			loading       : true,
-			loading_error : undefined
-		}
-
-		return new_state
-	},
+	({
+		...state,
+		loading       : true,
+		loading_error : undefined
+	}),
 
 	'users retrieved': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			loading : false,
-			loaded  : true,
-			users   : result
-		}
-
-		return new_state
-	},
+	({
+		...state,
+		loading : false,
+		loaded  : true,
+		users   : result
+	}),
 
 	'users retrieval failed': (error, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			loading       : false,
-			loading_error : error
-		}
-
-		return new_state
-	},
+	({
+		...state,
+		loading       : false,
+		loading_error : error
+	}),
 
 	'adding user': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			adding : true
-		}
-
-		return new_state
-	},
+	({
+		...state,
+		adding : true
+	}),
 
 	'user added': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			adding : false
-		}
-
-		return new_state
-	},
+	({
+		...state,
+		adding : false
+	}),
 
 	'adding user failed': (error, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			adding       : false,
-			adding_error : error
-		}
-
-		return new_state
-	},
+	({
+		...state,
+		adding       : false,
+		adding_error : error
+	}),
 
 	'deleting user': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			deleting : true
-		}
-
-		return new_state
-	},
+	({
+		...state,
+		deleting : true
+	}),
 
 	'user deleted': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			deleting : false
-		}
-
-		return new_state
-	},
+	({
+		...state,
+		deleting : false
+	}),
 
 	'deleting user failed': (error, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			deleting       : false,
-			deleting_error : error
-		}
-
-		return new_state
-	},
+	({
+		...state,
+		deleting       : false,
+		deleting_error : error
+	}),
 
 	'renaming user': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			renaming : true
-		}
-
-		return new_state
-	},
+	({
+		...state,
+		renaming : true
+	}),
 
 	'user renamed': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			renaming : false
-		}
-
-		return new_state
-	},
+	({
+		...state,
+		renaming : false
+	}),
 
 	'renaming user failed': (error, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			renaming       : false,
-			renaming_error : error
-		}
-
-		return new_state
-	},
+	({
+		...state,
+		renaming       : false,
+		renaming_error : error
+	}),
 
 	'uploading user picture': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			uploading_picture: true
-		}
-
-		return new_state
-	},
+	({
+		...state,
+		uploading_picture: true
+	}),
 
 	'user picture uploaded': (result, state) =>
 	{
@@ -163,22 +98,18 @@ const handlers =
 			uploading_picture: false
 		}
 
+		// Change the `picture` for the specified `user_id`
 		new_state.users.filter(user => user.id === result.user_id)[0].picture = result.picture
 
 		return new_state
 	},
 
 	'uploading user picture failed': (error, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			uploading_picture       : false,
-			uploading_picture_error : error
-		}
-
-		return new_state
-	}
+	({
+		...state,
+		uploading_picture       : false,
+		uploading_picture_error : error
+	})
 }
 
 // for this module to work should be added to model/index.js

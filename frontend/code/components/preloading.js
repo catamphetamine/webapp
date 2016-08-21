@@ -9,16 +9,17 @@ export default class Preloading extends React.Component
 {
 	static propTypes = 
 	{
-		pending : PropTypes.bool,
-		error   : PropTypes.any
+		pending : PropTypes.bool
 	}
 
 	render()
 	{
+		const { pending } = this.props
+
 		const markup =
 		(
-			<div className={classNames('preloading', { 'preloading--shown' : this.props.pending })}>
-				{this.props.pending && <div className="preloading-spinner-container"><Spinner/></div>}
+			<div className={classNames('preloading', { 'preloading--shown' : pending })}>
+				{pending && <div className="preloading-spinner-container"><Spinner/></div>}
 			</div>
 		)
 

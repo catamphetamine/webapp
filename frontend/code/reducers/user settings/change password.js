@@ -2,9 +2,7 @@ import { handle } from '../../redux tools'
 
 const initial_state = {}
 
-const handlers =
-{
-}
+const handlers = {}
 
 handle(handlers, 'user settings: change password', 'check current password')
 handle(handlers, 'user settings: change password', 'change password')

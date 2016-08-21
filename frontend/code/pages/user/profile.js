@@ -12,7 +12,16 @@ import { defineMessages, FormattedRelative }          from 'react-intl'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
 
-import { get_users_latest_activity_time, get_user, update_user, upload_user_picture, save_user_picture } from '../../actions/user profile'
+import
+{
+	get_users_latest_activity_time,
+	get_user,
+	update_user,
+	update_user_reset_error,
+	upload_user_picture,
+	update_user_picture
+}
+from '../../actions/user profile'
 
 import Form         from '../../components/form'
 import Text_input   from '../../components/text input'
@@ -140,15 +149,17 @@ const messages = defineMessages
 		user                 : model.user_profile.user,
 		latest_activity_time : model.user_profile.latest_activity_time,
 
-		user_update_error                            : model.user_profile.update_error,
-		user_picture_upload_error                    : model.user_profile.user_picture_upload_error,
+		update_user_info_error                       : model.user_profile.update_user_info_error,
+		update_user_picture_error                    : model.user_profile.update_user_picture_error,
+		upload_user_picture_error                    : model.user_profile.upload_user_picture_error,
 		uploaded_user_picture_is_too_big_error       : model.user_profile.uploaded_user_picture_is_too_big_error,
 		unsupported_uploaded_user_picture_file_error : model.user_profile.unsupported_uploaded_user_picture_file_error,
 
 		uploaded_picture  : model.user_profile.uploaded_picture,
-		uploading_picture : model.user_profile.uploading_picture,
+		upload_user_picture_pending : model.user_profile.upload_user_picture_pending,
 
-		updating_user : model.user_profile.updating_user,
+		update_user_info_pending    : model.user_profile.update_user_info_pending,
+		update_user_picture_pending : model.user_profile.update_user_picture_pending,
 
 		locale : model.locale.locale
 	}),
@@ -158,8 +169,9 @@ const messages = defineMessages
 		...bind_action_creators
 		({
 			update_user,
+			update_user_reset_error,
 			upload_user_picture,
-			save_user_picture,
+			update_user_picture,
 			get_users_latest_activity_time
 		},
 		dispatch)
@@ -177,21 +189,23 @@ export default class User_profile extends Component
 		user                 : PropTypes.object.isRequired,
 		latest_activity_time : PropTypes.object,
 
-		user_update_error                            : PropTypes.any,
-		user_picture_upload_error                    : PropTypes.any,
+		update_user_info_error                       : PropTypes.object,
+		update_user_picture_error                    : PropTypes.object,
+		upload_user_picture_error                    : PropTypes.object,
 		uploaded_user_picture_is_too_big_error       : PropTypes.bool,
 		unsupported_uploaded_user_picture_file_error : PropTypes.bool,
 
 		uploaded_picture     : PropTypes.object,
 
-		updating_user        : PropTypes.bool,
-		uploading_picture    : PropTypes.bool,
+		update_user_info_pending    : PropTypes.bool,
+		upload_user_picture_pending : PropTypes.bool,
 
 		locale               : PropTypes.string.isRequired,
 
 		update_user                    : PropTypes.func.isRequired,
+		update_user_reset_error        : PropTypes.func.isRequired,
 		upload_user_picture            : PropTypes.func.isRequired,
-		save_user_picture              : PropTypes.func.isRequired,
+		update_user_picture            : PropTypes.func.isRequired,
 		get_users_latest_activity_time : PropTypes.func.isRequired,
 		dispatch                       : PropTypes.func.isRequired
 	}
@@ -267,13 +281,14 @@ export default class User_profile extends Component
 			translate,
 			current_user,
 			latest_activity_time,
-			user_update_error,
-			user_picture_upload_error,
+			update_user_info_error,
+			update_user_picture_error,
+			upload_user_picture_error,
 			uploaded_user_picture_is_too_big_error,
 			unsupported_uploaded_user_picture_file_error,
 			uploaded_picture,
-			updating_user,
-			uploading_picture
+			update_user_info_pending,
+			upload_user_picture_pending
 		}
 		= this.props
 
@@ -296,14 +311,16 @@ export default class User_profile extends Component
 						style={style.personal_info}>
 
 						{/* User profile edit errors */}
-						{ (user_update_error
-							|| user_picture_upload_error
+						{ (update_user_info_error
+							|| update_user_picture_error
+							|| upload_user_picture_error
 							|| uploaded_user_picture_is_too_big_error
 							|| unsupported_uploaded_user_picture_file_error)
 							&&
 							<ul style={style.own_profile_actions.errors} className="errors">
-								{user_update_error && <li>{translate(messages.update_error)}</li>}
-								{user_picture_upload_error && <li>{translate(messages.user_picture_upload_error)}</li>}
+								{update_user_picture_error && <li>{translate(messages.update_error)}</li>}
+								{update_user_info_error && <li>{translate(messages.update_error)}</li>}
+								{upload_user_picture_error && <li>{translate(messages.user_picture_upload_error)}</li>}
 								{uploaded_user_picture_is_too_big_error && <li>{translate(messages.uploaded_user_picture_is_too_big_error)}</li>}
 								{unsupported_uploaded_user_picture_file_error && <li>{translate(messages.unsupported_uploaded_user_picture_file_error)}</li>}
 							</ul>
@@ -311,7 +328,7 @@ export default class User_profile extends Component
 
 						<Form
 							focus={this.focus}
-							busy={updating_user || uploading_picture}
+							busy={update_user_info_pending || update_user_picture_pending || upload_user_picture_pending}
 							action={this.save_profile_edits}>
 
 							{/* Edit/Save own profile */}
@@ -334,7 +351,7 @@ export default class User_profile extends Component
 											style={style.own_profile_actions.action}
 											button_style={style.own_profile_actions.action.button}
 											action={this.cancel_profile_edits}
-											disabled={updating_user || uploading_picture}>
+											disabled={update_user_info_pending || upload_user_picture_pending}>
 											{translate(messages.cancel_profile_edits)}
 										</Button>
 									}
@@ -345,8 +362,8 @@ export default class User_profile extends Component
 											submit={true}
 											style={style.own_profile_actions.action}
 											button_style={style.own_profile_actions.action.button}
-											disabled={uploading_picture}
-											busy={updating_user}>
+											disabled={upload_user_picture_pending}
+											busy={update_user_info_pending}>
 											{translate(messages.save_profile_edits)}
 										</Button>
 									}
@@ -359,7 +376,7 @@ export default class User_profile extends Component
 								edit={edit}
 								user={user}
 								uploaded_picture={uploaded_picture}
-								uploading_picture={uploading_picture}
+								uploading_picture={upload_user_picture_pending}
 								upload_user_picture={this.upload_user_picture}
 								choosing_user_picture={this.choosing_user_picture}
 								translate={translate}
@@ -371,7 +388,7 @@ export default class User_profile extends Component
 									ref="name"
 									name="name"
 									label={translate(messages.name)}
-									disabled={updating_user}
+									disabled={update_user_info_pending}
 									style={style.user_name_field}
 									input_style={style.user_name}
 									label_style={style.user_name}
@@ -389,7 +406,7 @@ export default class User_profile extends Component
 									ref="place"
 									name="place"
 									label={translate(messages.place)}
-									disabled={updating_user}
+									disabled={update_user_info_pending}
 									style={style.user_location.edit}
 									value={this.state.place}
 									on_change={place => this.setState({ place })}/>
@@ -402,7 +419,7 @@ export default class User_profile extends Component
 									ref="country"
 									name="country"
 									label={translate(messages.country)}
-									disabled={updating_user}
+									disabled={update_user_info_pending}
 									options={this.countries}
 									value={this.state.country}
 									on_change={country => this.setState({ country })}/>
@@ -480,21 +497,21 @@ export default class User_profile extends Component
 
 	cancel_profile_edits()
 	{
-		this.dismiss_user_info_edit_errors()
+		this.reset_user_info_edit_errors()
 
 		this.setState({ edit: false })
-		this.props.dispatch({ type: 'dismiss uploaded user picture' })
+		this.props.dispatch({ type: 'user profile: reset uploaded user picture' })
 	}
 
 	async save_profile_edits()
 	{
-		this.dismiss_user_info_edit_errors()
+		this.reset_user_info_edit_errors()
 
-		const { uploaded_picture } = this.props
+		const { uploaded_picture, update_user_picture } = this.props
 
 		if (uploaded_picture)
 		{
-			await this.props.save_user_picture(uploaded_picture)
+			await update_user_picture(uploaded_picture)
 		}
 
 		await this.props.update_user
@@ -505,21 +522,21 @@ export default class User_profile extends Component
 		})
 
 		this.setState({ edit: false })
-		this.props.dispatch({ type: 'dismiss uploaded user picture' })
+		this.props.dispatch({ type: 'user profile: reset uploaded user picture' })
 	}
 
-	dismiss_user_info_edit_errors()
+	reset_user_info_edit_errors()
 	{
-		this.props.dispatch({ type: 'dismiss user update error' })
-		this.props.dispatch({ type: 'dismiss user picture upload error' })
-		this.props.dispatch({ type: 'dismiss uploaded user picture is too big error' })
-		this.props.dispatch({ type: 'dismiss unsupported uploaded user picture file error' })
+		this.props.update_user_reset_error()
+		this.props.dispatch({ type: 'user profile: upload user picture: reset error' })
+		this.props.dispatch({ type: 'user profile: upload user picture: error: too big: reset' })
+		this.props.dispatch({ type: 'user profile: upload user picture: error: unsupported file: reset' })
 	}
 
 	choosing_user_picture()
 	{
-		this.props.dispatch({ type: 'dismiss uploaded user picture is too big error' })
-		this.props.dispatch({ type: 'dismiss unsupported uploaded user picture file error' })
+		this.props.dispatch({ type: 'user profile: upload user picture: error: too big: reset' })
+		this.props.dispatch({ type: 'user profile: upload user picture: error: unsupported file: reset' })
 	}
 
 	send_message()
@@ -536,12 +553,12 @@ export default class User_profile extends Component
 	{
 		if (!['image/jpeg', 'image/png', 'image/svg+xml'].has(file.type))
 		{
-			return this.props.dispatch({ type: 'unsupported uploaded user picture file' })
+			return this.props.dispatch({ type: 'user profile: upload user picture: error: unsupported file' })
 		}
 
 		if (file.size > configuration.image_service.file_size_limit)
 		{
-			return this.props.dispatch({ type: 'uploaded user picture is too big' })
+			return this.props.dispatch({ type: 'user profile: upload user picture: error: too big' })
 		}
 
 		const uploaded_picture = await this.props.upload_user_picture(file)
@@ -552,12 +569,12 @@ export default class User_profile extends Component
 
 		image.onload = () =>
 		{
-			this.props.dispatch({ type: 'prefetching uploaded user picture done', result: uploaded_picture })
+			this.props.dispatch({ type: 'user profile: upload user picture: prefetch: done', result: uploaded_picture })
 		}
 
 		image.onerror = () =>
 		{
-			this.props.dispatch({ type: 'prefetching uploaded user picture failed' })
+			this.props.dispatch({ type: 'user profile: upload user picture: prefetch: failed' })
 		}
 
 		image.src = url(get_preferred_size(uploaded_picture.sizes, this.refs.user_picture.decoratedComponentInstance.width()))
@@ -628,7 +645,7 @@ class Uploadable_user_picture extends React.Component
 			edit,
 			user,
 			uploaded_picture,
-			uploading_picture,
+			upload_user_picture_pending,
 			upload_user_picture,
 			choosing_user_picture,
 			translate,
@@ -683,15 +700,15 @@ class Uploadable_user_picture extends React.Component
 					<File_upload
 						className="user-profile__picture__change__label"
 						style={style.user_picture.element.overlay.label}
-						disabled={uploading_picture}
+						disabled={upload_user_picture_pending}
 						on_choose={choosing_user_picture}
 						action={upload_user_picture}>
 
 						{/* "Change user picture" label */}
-						{!uploaded_picture && !uploading_picture && translate(messages.change_user_picture)}
+						{!uploaded_picture && !upload_user_picture_pending && translate(messages.change_user_picture)}
 
 						{/* "Uploading picture" spinner */}
-						{uploading_picture && <Spinner style={style.user_picture.element.spinner}/>}
+						{upload_user_picture_pending && <Spinner style={style.user_picture.element.spinner}/>}
 					</File_upload>
 				}
 			</div>

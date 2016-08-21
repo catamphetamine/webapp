@@ -1,43 +1,10 @@
+import { handle } from '../redux tools'
+
 const initial_state = {}
 
-const handlers =
-{
-	'fetch log pending': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			// loading : true
-		}
+const handlers = {}
 
-		return new_state
-	},
-
-	'fetch log done': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			// loading : false,
-			// loaded  : true,
-			data    : result
-		}
-
-		return new_state
-	},
-
-	'fetch log failed': (error, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			// loading : false,
-			error   : error
-		}
-
-		return new_state
-	}
-}
+handle(handlers, 'log', 'fetch', 'data')
 
 // applies a handler based on the action type
 // (is copy & paste'd for all action response handlers)

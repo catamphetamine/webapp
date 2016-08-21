@@ -21,7 +21,14 @@ import { add_redirect, should_redirect_to, redirection_target } from '../helpers
 
 import { bindActionCreators as bind_action_creators } from 'redux'
 
-import { sign_in, register } from '../actions/authentication'
+import
+{
+	sign_in,
+	sign_in_reset_error,
+	register,
+	register_reset_error
+}
+from '../actions/authentication'
 
 import { get_language_from_locale } from '../../../code/locale'
 
@@ -150,8 +157,8 @@ export const messages = defineMessages
 		sign_in_error      : model.authentication.sign_in_error,
 		registration_error : model.authentication.registration_error,
 
-		registering : model.authentication.registering,
-		signing_in  : model.authentication.signing_in,
+		registration_pending : model.authentication.registration_pending,
+		sign_in_pending      : model.authentication.sign_in_pending,
 
 		locale   : model.locale.locale,
 		location : model.router.location
@@ -162,7 +169,9 @@ export const messages = defineMessages
 		...bind_action_creators
 		({
 			sign_in,
-			register
+			sign_in_reset_error,
+			register,
+			registration_reset_error
 		},
 		dispatch)
 	})
@@ -188,8 +197,8 @@ export default class Authentication extends Component
 	{
 		user               : PropTypes.object,
 
-		signing_in         : PropTypes.bool,
-		registering        : PropTypes.bool,
+		sign_in_pending      : PropTypes.bool,
+		registration_pending : PropTypes.bool,
 
 		sign_in_error      : PropTypes.object,
 		registration_error : PropTypes.object,
@@ -250,8 +259,8 @@ export default class Authentication extends Component
 
 	componentWillUnmount()
 	{
-		this.props.dispatch({ type: 'reset user sign in error' })
-		this.props.dispatch({ type: 'reset user registration error' })
+		this.props.sign_in_reset_error()
+		this.props.register_reset_error()
 	}
 
 	render()
@@ -261,7 +270,14 @@ export default class Authentication extends Component
 
 	render_sign_in_form()
 	{
-		const { translate, sign_in_error, signing_in, error } = this.props
+		const
+		{
+			translate,
+			sign_in_error,
+			sign_in_pending,
+			error
+		}
+		= this.props
 
 		const markup = 
 		(
@@ -270,7 +286,7 @@ export default class Authentication extends Component
 				className="authentication-form" 
 				style={this.props.style ? { ...style.form, ...this.props.style } : style.form} 
 				action={this.sign_in}
-				busy={signing_in}
+				busy={sign_in_pending}
 				focus={this.focus}
 				error={error || this.sign_in_error(sign_in_error)}
 				post="/authentication/legacy/sign-in">
@@ -285,7 +301,7 @@ export default class Authentication extends Component
 						link={add_redirect('/register', this.props.location)} 
 						button_style={style.or_register.register} 
 						action={this.start_registration}
-						disabled={signing_in}>
+						disabled={sign_in_pending}>
 
 						{translate(user_bar_messages.register)}
 					</Button>
@@ -298,7 +314,7 @@ export default class Authentication extends Component
 					ref="email"
 					name="email"
 					email={true}
-					disabled={signing_in}
+					disabled={sign_in_pending}
 					focus={this.props.focus_on === 'email'}
 					value={this.state.email}
 					invalid={this.sign_in_email_error(sign_in_error) || this.validate_email(this.state.email)}
@@ -312,7 +328,7 @@ export default class Authentication extends Component
 					ref="password"
 					name="password"
 					password={true}
-					disabled={signing_in}
+					disabled={sign_in_pending}
 					focus={this.props.focus_on === 'password'}
 					value={this.state.password}
 					invalid={this.sign_in_password_error(sign_in_error) || this.validate_password_on_sign_in(this.state.password)}
@@ -329,7 +345,7 @@ export default class Authentication extends Component
 					<Button
 						style={style.forgot_password}
 						action={this.forgot_password}
-						disabled={signing_in}>
+						disabled={sign_in_pending}>
 
 						{translate(messages.forgot_password)}
 					</Button>
@@ -339,7 +355,7 @@ export default class Authentication extends Component
 						<Button
 							style={style.form_action}
 							submit={true}
-							busy={signing_in}>
+							busy={sign_in_pending}>
 
 							{translate(user_bar_messages.sign_in)}
 						</Button>
@@ -353,7 +369,15 @@ export default class Authentication extends Component
 
 	render_registration_form()
 	{
-		const { translate, registration_error, error, signing_in, registering } = this.props
+		const
+		{
+			translate,
+			registration_error,
+			error,
+			sign_in_pending,
+			registration_pending
+		}
+		= this.props
 
 		const markup = 
 		(
@@ -362,7 +386,7 @@ export default class Authentication extends Component
 				className="registration-form" 
 				style={this.props.style ? { ...style.form, ...this.props.style } : style.form} 
 				action={this.register} 
-				busy={signing_in || registering}
+				busy={sign_in_pending || registration_pending}
 				focus={this.focus}
 				error={error || this.registration_error(registration_error)}
 				post="/authentication/legacy/register">
@@ -377,7 +401,7 @@ export default class Authentication extends Component
 						link={add_redirect('/sign-in', this.props.location)} 
 						button_style={style.or_register.register} 
 						action={this.cancel_registration}
-						disabled={signing_in || registering}>
+						disabled={sign_in_pending || registration_pending}>
 
 						{translate(user_bar_messages.sign_in)}
 					</Button>
@@ -389,7 +413,7 @@ export default class Authentication extends Component
 				<Text_input
 					ref="name"
 					name="name"
-					disabled={signing_in || registering}
+					disabled={sign_in_pending || registration_pending}
 					focus={this.props.focus_on === 'name'}
 					value={this.state.name}
 					invalid={this.validate_name(this.state.name)}
@@ -403,7 +427,7 @@ export default class Authentication extends Component
 					ref="email"
 					name="email"
 					email={true}
-					disabled={signing_in || registering}
+					disabled={sign_in_pending || registration_pending}
 					focus={this.props.focus_on === 'email'}
 					value={this.state.email}
 					invalid={this.registration_email_error(registration_error) || this.validate_email(this.state.email)}
@@ -417,7 +441,7 @@ export default class Authentication extends Component
 					ref="password"
 					name="password"
 					password={true}
-					disabled={signing_in || registering}
+					disabled={sign_in_pending || registration_pending}
 					focus={this.props.focus_on === 'password'}
 					value={this.state.password}
 					invalid={this.validate_password_on_registration(this.state.password)}
@@ -430,7 +454,7 @@ export default class Authentication extends Component
 				<Checkbox
 					ref="terms_of_service_accepted"
 					name="terms_of_service_accepted"
-					disabled={signing_in || registering}
+					disabled={sign_in_pending || registration_pending}
 					focus={this.props.focus_on === 'terms_of_service_accepted'}
 					style={style.terms_of_service}
 					value={this.state.terms_of_service_accepted}
@@ -455,7 +479,7 @@ export default class Authentication extends Component
 					<Button
 						submit={true}
 						style={style.form_action.register}
-						busy={signing_in || registering}>
+						busy={sign_in_pending || registration_pending}>
 
 						{translate(user_bar_messages.register)}
 					</Button>
@@ -485,23 +509,23 @@ export default class Authentication extends Component
 
 	set_name(name)
 	{
-		this.props.dispatch({ type: 'reset user registration error' })
+		this.props.register_reset_error()
 
 		this.setState({ name })
 	}
 
 	set_email(email)
 	{
-		this.props.dispatch({ type: 'reset user sign in error' })
-		this.props.dispatch({ type: 'reset user registration error' })
+		this.props.sign_in_reset_error()
+		this.props.register_reset_error()
 
 		this.setState({ email })
 	}
 
 	set_password(password)
 	{
-		this.props.dispatch({ type: 'reset user sign in error' })
-		this.props.dispatch({ type: 'reset user registration error' })
+		this.props.sign_in_reset_error()
+		this.props.register_reset_error()
 
 		this.setState({ password })
 	}
@@ -723,8 +747,8 @@ export default class Authentication extends Component
 
 	start_registration()
 	{
-		this.props.dispatch({ type: 'reset user sign in error' })
-		this.props.dispatch({ type: 'reset user registration error' })
+		this.props.sign_in_reset_error()
+		this.props.register_reset_error()
 
 		this.reset_validation()
 
@@ -736,8 +760,8 @@ export default class Authentication extends Component
 
 	cancel_registration()
 	{
-		this.props.dispatch({ type: 'reset user sign in error' })
-		this.props.dispatch({ type: 'reset user registration error' })
+		this.props.sign_in_reset_error()
+		this.props.register_reset_error()
 
 		this.reset_validation()
 
@@ -749,7 +773,7 @@ export default class Authentication extends Component
 
 	accept_terms_of_service(value)
 	{
-		this.props.dispatch({ type: 'reset user registration error' })
+		this.props.register_reset_error()
 
 		this.setState({ terms_of_service_accepted: value })
 	}

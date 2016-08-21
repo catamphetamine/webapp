@@ -1,7 +1,12 @@
 export const update_user = (data) =>
 ({
 	promise : http => http.patch(`/users`, data),
-	event   : 'update user'
+	event   : 'user profile: update user info'
+})
+
+export const update_user_reset_error = () =>
+({
+	type : 'user profile: update user info: reset error'
 })
 
 export const get_user = (user_id) =>
@@ -13,7 +18,7 @@ export const get_user = (user_id) =>
 export const get_users_latest_activity_time = (user_id) =>
 ({
 	promise : http => http.get(`/authentication/latest-activity/${user_id}`, { bot: true }),
-	event   : "user profile: get user's latest activity time"
+	event   : 'user profile: get latest activity time'
 })
 
 export const upload_user_picture = (file) =>
@@ -30,8 +35,8 @@ export const upload_user_picture = (file) =>
 	event: 'user profile: upload user picture'
 })
 
-export const save_user_picture = (picture) =>
+export const update_user_picture = (picture) =>
 ({
 	promise: async http => http.post(`/users/picture`, picture),
-	event: 'save user picture'
+	event: 'user: update user picture'
 })

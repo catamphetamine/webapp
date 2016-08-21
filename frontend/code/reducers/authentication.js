@@ -1,151 +1,23 @@
+import { handle } from '../redux tools'
+
 const initial_state = {}
 
 const handlers =
 {
-	'user registration pending': (result, state) =>
-	{
-		const new_state = 
+	'user: update user picture: done': (result, state) =>
+	({
+		...state,
+		user:
 		{
-			...state,
-			registering        : true,
-			registration_error : undefined
+			...state.user,
+			picture: result
 		}
-
-		return new_state
-	},
-
-	'user registration done': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			registering : false
-		}
-
-		return new_state
-	},
-
-	'user registration failed': (error, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			registering        : false,
-			registration_error : error
-		}
-
-		return new_state
-	},
-
-	'reset user registration error': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			registration_error : undefined
-		}
-
-		return new_state
-	},
-
-	'user sign in pending': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			signing_in    : true,
-			sign_in_error : undefined
-		}
-
-		return new_state
-	},
-
-	'user sign in done': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			signing_in : false,
-			user       : result
-		}
-
-		return new_state
-	},
-
-	'user sign in failed': (error, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			signing_in    : false,
-			sign_in_error : error
-		}
-
-		return new_state
-	},
-
-	'reset user sign in error': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			sign_in_error : undefined
-		}
-
-		return new_state
-	},
-
-	'user sign out pending': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			signing_out    : true,
-			sign_out_error : undefined
-		}
-
-		return new_state
-	},
-
-	'user sign out done': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			signing_out : false,
-			user        : undefined
-		}
-
-		return new_state
-	},
-
-	'user sign out failed': (error, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			signing_out    : false,
-			sign_out_error : error
-		}
-
-		return new_state
-	},
-
-	'save user picture done': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			user:
-			{
-				...state.user,
-				picture: result
-			}
-		}
-
-		return new_state
-	}
+	})
 }
+
+handle(handlers, 'user', 'sign in', 'user')
+handle(handlers, 'user', 'registration')
+handle(handlers, 'user', 'sign out', (result, state) => ({ ...state, user: undefined }))
 
 // for this module to work should be added to model/index.js
 

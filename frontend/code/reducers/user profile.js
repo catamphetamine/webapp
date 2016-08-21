@@ -1,294 +1,81 @@
+import { handle } from '../redux tools'
+
 const initial_state = {}
 
 const handlers =
 {
-	'user profile: get user pending': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			error : undefined
-		}
-
-		return new_state
-	},
-
-	'user profile: get user done': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			user : result
-		}
-
-		return new_state
-	},
-
-	'user profile: get user failed': (error, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			error
-		}
-
-		return new_state
-	},
-
-	"user profile: get user's latest activity time pending": (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			latest_activity_time_error : undefined
-		}
-
-		return new_state
-	},
-
-	"user profile: get user's latest activity time done": (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			latest_activity_time : result.time
-		}
-
-		return new_state
-	},
-
-	"user profile: get user's latest activity time failed": (error, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			latest_activity_time_error : error
-		}
-
-		return new_state
-	},
-
-	'update user pending': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			updating_user : true,
-			update_error : undefined
-		}
-
-		return new_state
-	},
-
-	'update user done': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			user : result,
-			updating_user : false
-		}
-
-		return new_state
-	},
-
-	'update user failed': (error, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			update_error : error,
-			updating_user : false
-		}
-
-		return new_state
-	},
-
-	'dismiss user update error': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			update_error : undefined
-		}
-
-		return new_state
-	},
-
-	'user profile: upload user picture pending': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			uploading_picture : true,
-			user_picture_upload_error : undefined
-		}
-
-		return new_state
-	},
-
-	'user profile: upload user picture done': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			// uploaded_picture  : result,
-			// Will be set to `false` when the image is prefetched
-			// to avoid a flash of a not yet loaded image.
-			// uploading_picture : false
-		}
-
-		return new_state
-	},
-
-	'user profile: upload user picture failed': (error, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			uploaded_picture          : undefined,
-			user_picture_upload_error : error,
-			uploading_picture         : false
-		}
-
-		return new_state
-	},
-
 	// Prefetching is done to avoid a flash of a not yet loaded image
 
-	'prefetching uploaded user picture done': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			uploading_picture : false,
-			uploaded_picture  : result
-		}
+	'user profile: upload user picture: prefetch: done': (result, state) =>
+	({
+		...state,
+		upload_user_picture_pending : false,
+		uploaded_picture            : result
+	}),
 
-		return new_state
-	},
+	'user profile: upload user picture: prefetch: failed': (error, state) =>
+	({
+		...state,
+		upload_user_picture_pending : false
+		upload_user_picture_error   : { message: 'Prefetching failed' },
+	}),
 
-	'prefetching uploaded user picture failed': (error, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			uploaded_picture          : undefined,
-			user_picture_upload_error : true,
-			uploading_picture         : false
-		}
+	'user profile: reset uploaded user picture': (result, state) =>
+	({
+		...state,
+		uploaded_picture : undefined
+	}),
 
-		return new_state
-	},
+	'user profile: upload user picture: error: too big': (result, state) =>
+	({
+		...state,
+		uploaded_user_picture_is_too_big_error : true
+	}),
 
-	'save user picture done': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			user:
-			{
-				...state.user,
-				picture : result
-			}
-		}
+	'user profile: upload user picture: error: too big: reset': (result, state) =>
+	({
+		...state,
+		uploaded_user_picture_is_too_big_error : undefined
+	}),
 
-		return new_state
-	},
+	'user profile: upload user picture: error: unsupported file': (result, state) =>
+	({
+		...state,
+		unsupported_uploaded_user_picture_file_error : true
+	}),
 
-	'save user picture failed': (error, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			update_error : error
-		}
-
-		return new_state
-	},
-
-	'dismiss uploaded user picture': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			uploaded_picture : undefined,
-			user:
-			{
-				...state.user,
-				picture : state.uploaded_picture
-			}
-		}
-
-		return new_state
-	},
-
-	'dismiss user picture upload error': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			user_picture_upload_error : undefined
-		}
-
-		return new_state
-	},
-
-	'dismiss uploaded user picture': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			uploaded_picture : undefined
-		}
-
-		return new_state
-	},
-
-	'uploaded user picture is too big': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			uploaded_user_picture_is_too_big_error : true
-		}
-
-		return new_state
-	},
-
-	'dismiss uploaded user picture is too big error': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			uploaded_user_picture_is_too_big_error : undefined
-		}
-
-		return new_state
-	},
-
-	'unsupported uploaded user picture file': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			unsupported_uploaded_user_picture_file_error : true
-		}
-
-		return new_state
-	},
-
-	'dismiss unsupported uploaded user picture file error': (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			unsupported_uploaded_user_picture_file_error : undefined
-		}
-
-		return new_state
-	}
+	'user profile: upload user picture: error: unsupported file: reset': (result, state) =>
+	({
+		...state,
+		unsupported_uploaded_user_picture_file_error : undefined
+	})
 }
+
+handle(handlers, 'user profile', 'get user', 'user')
+handle(handlers, 'user profile', 'get latest activity time', (result, state) => ({ ...state, latest_activity_time: result.time }))
+handle(handlers, 'user profile', 'update user info', 'user')
+
+handle(handlers, 'user', 'update user picture',  (result, state) =>
+({
+	...state,
+	user:
+	{
+		...state.user,
+		picture : result
+	}
+}))
+
+handle(handlers, 'user profile', 'upload user picture')
+
+if (!handlers['user profile: upload user picture: done'])
+{
+	throw new Error(`"user profile: upload user picture: done" event reducer not found. Possibly changed Promise event naming scheme.`)
+}
+
+// `upload_user_picture_pending` will be set to `false`
+// when the image is prefetched
+// to avoid a flash of a not yet loaded image.
+delete handlers['user profile: upload user picture: done']
 
 // applies a handler based on the action type
 // (is copy & paste'd for all action response handlers)

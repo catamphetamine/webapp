@@ -5,39 +5,24 @@ const initial_state = {}
 const handlers =
 {
 	[Preload_started]: (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			pending : true,
-			error   : false
-		}
-
-		return new_state
-	},
+	({
+		...state,
+		pending : true,
+		error   : false
+	}),
 
 	[Preload_finished]: (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			pending : false
-		}
-
-		return new_state
-	},
+	({
+		...state,
+		pending : false
+	}),
 
 	[Preload_failed]: (result, state) =>
-	{
-		const new_state = 
-		{
-			...state,
-			pending : false,
-			error   : true
-		}
-
-		return new_state
-	}
+	({
+		...state,
+		pending : false,
+		error   : true
+	})
 }
 
 // applies a handler based on the action type

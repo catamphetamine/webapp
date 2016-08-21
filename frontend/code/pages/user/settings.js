@@ -64,9 +64,9 @@ const messages = defineMessages
 	({
 		user : model.user_settings.main.user,
 
-		load_advanced_settings_error  : model.user_settings.main.load_advanced_settings_error,
-		loading_advanced_settings     : model.user_settings.main.loading_advanced_settings,
-		saving_settings               : model.user_settings.main.saving_settings
+		load_advanced_settings_error   : model.user_settings.main.load_advanced_settings_error,
+		load_advanced_settings_pending : model.user_settings.main.load_advanced_settings_pending,
+		saving_settings                : model.user_settings.main.saving_settings
 	}),
 	dispatch =>
 	({
@@ -89,8 +89,8 @@ export default class Settings_page extends Component
 
 		// get_user : PropTypes.func.isRequired,
 
-		loading_advanced_settings     : PropTypes.bool,
-		load_advanced_settings_error  : PropTypes.any,
+		load_advanced_settings_pending : PropTypes.bool,
+		load_advanced_settings_error   : PropTypes.object,
 
 		get_user_authentication_tokens : PropTypes.func.isRequired,
 
@@ -119,7 +119,7 @@ export default class Settings_page extends Component
 			authentication_tokens,
 			translate,
 			saving_settings,
-			loading_advanced_settings,
+			load_advanced_settings_pending,
 			load_advanced_settings_error,
 			revoking_authentication_token
 		}
@@ -180,7 +180,7 @@ export default class Settings_page extends Component
 								{/* "Show advanced settings" button */}
 								{ !showing_advanced_settings && 
 									<Button
-										busy={loading_advanced_settings}
+										busy={load_advanced_settings_pending}
 										action={this.load_advanced_settings}
 										style={style.show_advanced_settings}>
 										{translate(messages.show_advanced_settings)}
