@@ -171,7 +171,7 @@ export const messages = defineMessages
 			sign_in,
 			sign_in_reset_error,
 			register,
-			registration_reset_error
+			register_reset_error
 		},
 		dispatch)
 	})
