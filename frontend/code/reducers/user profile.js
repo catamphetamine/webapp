@@ -16,8 +16,8 @@ const handlers =
 	'user profile: upload user picture: prefetch: failed': (error, state) =>
 	({
 		...state,
-		upload_user_picture_pending : false
-		upload_user_picture_error   : { message: 'Prefetching failed' },
+		upload_user_picture_pending : false,
+		upload_user_picture_error   : { message: 'Prefetch failed' },
 	}),
 
 	'user profile: reset uploaded user picture': (result, state) =>
