@@ -1,12 +1,22 @@
-import { handle } from '../../redux tools'
+import { asynchronous_handler } from '../../redux tools'
 
 const initial_state = {}
 
-const handlers = {}
-
-handle(handlers, 'user settings', 'get user', 'user')
-handle(handlers, 'user settings', 'load advanced settings')
-handle(handlers, 'user settings', 'get user authentication tokens', 'authentication_tokens')
+const handlers = asynchronous_handler
+({
+	namespace : 'user settings',
+	name      : 'get user',
+	result    : 'user'
+},
+{
+	namespace : 'user settings',
+	name      : 'load advanced settings'
+},
+{
+	namespace : 'user settings',
+	name      : 'get user authentication tokens',
+	result    : 'authentication_tokens'
+})
 
 // applies a handler based on the action type
 // (is copy & paste'd for all action response handlers)

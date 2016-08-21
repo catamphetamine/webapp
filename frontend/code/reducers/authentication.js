@@ -1,23 +1,44 @@
-import { handle } from '../redux tools'
+import { asynchronous_handler } from '../redux tools'
 
 const initial_state = {}
 
-const handlers =
+const handlers = asynchronous_handler
+({
+	namespace : 'user',
+	name      : 'sign in',
+	result    : 'user'
+},
 {
-	'user: update user picture: done': (result, state) =>
-	({
-		...state,
-		user:
-		{
-			...state.user,
-			picture: result
-		}
-	})
-}
+	namespace : 'user',
+	name      : 'registration'
+},
+{
+	namespace : 'user',
+	name      : 'sign out',
+	reducer   : (result, state) => ({ ...state, user: undefined })
+})
 
-handle(handlers, 'user', 'sign in', 'user')
-handle(handlers, 'user', 'registration')
-handle(handlers, 'user', 'sign out', (result, state) => ({ ...state, user: undefined }))
+// Updates user picture in the user bar when it is changed on the profile page
+handlers['user: update user picture: done'] = (result, state) =>
+({
+	...state,
+	user:
+	{
+		...state.user,
+		picture: result
+	}
+})
+
+// Updates user name in the user bar when it is changed on the profile page
+handlers['user profile: update user info: done'] = (result, state) =>
+({
+	...state,
+	user:
+	{
+		...state.user,
+		name : result.name
+	}
+})
 
 // for this module to work should be added to model/index.js
 

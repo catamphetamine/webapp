@@ -1,11 +1,30 @@
+// For each handler description, adds reducers for:
+//
+//   * "[event]: pending"
+//   * "[event]: done"
+//   * "[event]: failed"
+//   * "[event]: reset error"
+//
+export function asynchronous_handler(...handlers)
+{
+	const _handlers = {}
+
+	for (let handler of handlers)
+	{
+		_asynchronous_hander(_handlers, handler.namespace, handler.name, handler.result)
+	}
+
+	return _handlers
+}
+
 // Adds reducers for:
 //
-//   * "[event] pending"
-//   * "[event] done"
-//   * "[event] failed"
-//   * "[event] reset error"
+//   * "[event]: pending"
+//   * "[event]: done"
+//   * "[event]: failed"
+//   * "[event]: reset error"
 //
-export function handle(handlers, namespace, event, on_result)
+function _asynchronous_hander(handlers, namespace, event, on_result)
 {
 	// Redux state property base name (replace spacebars with underscores)
 	const base = event.replace(/\s/g, '_')

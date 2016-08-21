@@ -1,11 +1,16 @@
-import { handle } from '../../redux tools'
+import { asynchronous_handler } from '../../redux tools'
 
 const initial_state = {}
 
-const handlers = {}
-
-handle(handlers, 'user settings: change password', 'check current password')
-handle(handlers, 'user settings: change password', 'change password')
+const handlers = asynchronous_handler
+({
+	namespace : 'user settings: change password',
+	name      : 'check current password'
+},
+{
+	namespace : 'user settings: change password',
+	name      : 'change password'
+})
 
 // applies a handler based on the action type
 // (is copy & paste'd for all action response handlers)

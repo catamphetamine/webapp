@@ -1,10 +1,13 @@
-import { handle } from '../redux tools'
+import { asynchronous_handler } from '../redux tools'
 
 const initial_state = {}
 
-const handlers = {}
-
-handle(handlers, 'log', 'fetch', 'data')
+const handlers = asynchronous_handler
+({
+	namespace : 'log',
+	name      : 'fetch',
+	result    : 'data'
+})
 
 // applies a handler based on the action type
 // (is copy & paste'd for all action response handlers)
