@@ -14,7 +14,7 @@ export default class Form extends Component
 		focus      : PropTypes.func,
 		// `error` can be passed for non-javascript
 		// web 1.0 forms error rendering support
-		error      : PropTypes.oneOf(PropTypes.string, PropTypes.object),
+		error      : PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 		post       : PropTypes.string,
 		className  : PropTypes.string,
 		style      : PropTypes.object

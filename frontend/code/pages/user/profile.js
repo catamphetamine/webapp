@@ -282,6 +282,7 @@ export default class User_profile extends Component
 			current_user,
 			latest_activity_time,
 			update_user_info_error,
+			update_user_picture_pending,
 			update_user_picture_error,
 			upload_user_picture_error,
 			uploaded_user_picture_is_too_big_error,
@@ -645,7 +646,7 @@ class Uploadable_user_picture extends React.Component
 			edit,
 			user,
 			uploaded_picture,
-			upload_user_picture_pending,
+			uploading_picture,
 			upload_user_picture,
 			choosing_user_picture,
 			translate,
@@ -700,15 +701,15 @@ class Uploadable_user_picture extends React.Component
 					<File_upload
 						className="user-profile__picture__change__label"
 						style={style.user_picture.element.overlay.label}
-						disabled={upload_user_picture_pending}
+						disabled={uploading_picture}
 						on_choose={choosing_user_picture}
 						action={upload_user_picture}>
 
 						{/* "Change user picture" label */}
-						{!uploaded_picture && !upload_user_picture_pending && translate(messages.change_user_picture)}
+						{!uploaded_picture && !uploading_picture && translate(messages.change_user_picture)}
 
 						{/* "Uploading picture" spinner */}
-						{upload_user_picture_pending && <Spinner style={style.user_picture.element.spinner}/>}
+						{uploading_picture && <Spinner style={style.user_picture.element.spinner}/>}
 					</File_upload>
 				}
 			</div>

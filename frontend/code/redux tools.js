@@ -26,15 +26,9 @@ export function handle(handlers, namespace, event, on_result)
 		// This will be the new Redux state
 		let new_state
 
-		// If `on_result` is a property name,
-		// then just set that property to the value of `result`.
-		if (typeof on_result === 'string')
-		{
-			new_state = { [on_result]: result }
-		}
 		// If `on_result` is a reducer, then call it,
 		// and the returned object will be the new state.
-		else if (typeof on_result === 'function')
+		if (typeof on_result === 'function')
 		{
 			new_state = on_result(result, state)
 
@@ -44,6 +38,17 @@ export function handle(handlers, namespace, event, on_result)
 			if (new_state === state)
 			{
 				new_state = { ...state }
+			}
+		}
+		else
+		{
+			new_state = { ...state }
+
+			// If `on_result` is a property name,
+			// then just set that property to the value of `result`.
+			if (typeof on_result === 'string')
+			{
+				new_state[on_result] = result
 			}
 		}
 
