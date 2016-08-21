@@ -1,10 +1,9 @@
 // https://github.com/59naga/babel-plugin-transform-bluebird/pull/2
 import Promise from 'bluebird'
 
-import imagemagick from 'imagemagick'
-// import imagemagick from 'imagemagick-native'
+import gm from 'gm'
 
-Promise.promisifyAll(imagemagick)
+const imagemagick = gm.subClass({ imageMagick: true })
 
 // imagemagick resize
 //
@@ -62,10 +61,7 @@ export function resize(from, to, settings)
 	// `imagemagick` parameters
 	const parameters = 
 	{
-		srcPath : from,
-		dstPath : to,
 		quality : 0.85,
-		strip   : false,
 		filter  : 'Lagrange'
 	}
 
@@ -74,59 +70,97 @@ export function resize(from, to, settings)
 		parameters.format = settings.format
 	}
 
-	// fs.writeFileSync(to, imagemagick.convert
-	// ({
-	// 	srcData     : fs.readFileSync(from),
-	// 	width       : 100,
-	// 	height      : 100,
-	// 	resizeStyle : 'aspectfill', // is the default, or 'aspectfit' or 'fill'
-	// 	gravity     : 'Center' // optional: position crop area when using 'aspectfill'
-	// }))
-
-	// fs.createReadStream('input.png').pipe(imagemagick.streams.convert
-	// ({
-	// 	// options
-	// }))
-	// .pipe(fs.createWriteStream('output.png'))
-
-	parameters.customArgs = []
-	
 	parameters.width = settings.width
 
 	if (settings.crop)
 	{
-		parameters.height = settings.height + '^'
+		// Append a ^ to the geometry so that the image is resized
+		// while maintaining the aspect ratio of the image, but
+		// the resulting width or height are treated as minimum values
+		// rather than maximum values.
+		parameters.resize_options = '^'
+		parameters.crop =
+		{
+			width  : settings.width,
+			height : settings.height
+		}
 	}
 	else
 	{
-		parameters.height = settings.height + '>'
+		// Use > to change the dimensions of the image only if 
+		// its width or height exceeds the geometry specification.
+		// < resizes the image only if both of its dimensions are
+		// less thanthe geometry specification. For example, 
+		// if you specify '640x480>' and the image size is 256x256,
+		// the image size does not change. However, if the image
+		// is 512x512 or 1024x1024, it is resized to 480x480.
+		// Enclose the geometry specification in quotation marks
+		// to prevent the < or > from being interpreted by your shell as a file redirection.
+		parameters.resize_options = '>'
 	}
 
 	if (settings.fill || settings.crop)
 	{
 		// gravitate to center (must precede the -extent setting)
-		parameters.customArgs.push('-gravity')
-		parameters.customArgs.push('center')
+		parameters.gravity = 'Center'
 
 		// if an image doesn't cover the specified rectangle,
 		// then add white padding
-		parameters.customArgs.push('-extent')
-		parameters.customArgs.push(settings.width + 'x' + settings.height)
+		parameters.extent =
+		{
+			width  : settings.width,
+			height : settings.height
+		}
 	}
-
-	// automatically orient the image based on EXIF Orientation info
-	parameters.customArgs.push('-auto-orient')
 
 	// console.log('converting image', parameters)
 	
 	// resize the image
-	return imagemagick.resizeAsync(parameters) // (error, output, errors_output) => {}
+
+	// automatically orient the image based on EXIF Orientation info
+	let pipeline = imagemagick(from).autoOrient()
+
+	if (parameters.format)
+	{
+		pipeline = pipeline.setFormat(parameters.format)
+	}
+
+	if (parameters.quality)
+	{
+		pipeline = pipeline.quality(parameters.quality)
+	}
+
+	if (parameters.filter)
+	{
+		pipeline = pipeline.filter(parameters.filter)
+	}
+
+	pipeline = pipeline.resize(parameters.width, parameters.height, parameters.resize_options)
+
+	if (parameters.gravity)
+	{
+		pipeline = pipeline.gravity(parameters.gravity)
+	}
+
+	if (parameters.extent)
+	{
+		pipeline = pipeline.extent(parameters.extent.width, parameters.extent.height)
+		// .fill(color) // rgba(r,g,b,a), #RRGGBBAA
+	}
+
+	if (parameters.crop)
+	{
+		pipeline = pipeline.crop(parameters.crop.width, parameters.crop.height)
+	}
+
+	return Promise.promisify(pipeline.write, pipeline)(to)
 }
 
 // Rotates the image based on `exif:Orientation`
 export function autorotate(from, to)
 {
-	return imagemagick.convertAsync(['-auto-orient', from, to || from])
+	const image = imagemagick(from).autoOrient()
+	return Promise.promisify(image.write, image)(to)
 }
 
 // returns:
@@ -141,7 +175,8 @@ export function autorotate(from, to)
 //
 export function identify(path)
 {
-	return imagemagick.identifyAsync(path)
+	const image = imagemagick(path)
+	return Promise.promisify(image.identify, image)()
 }
 
 // returns:
@@ -156,7 +191,9 @@ export function identify(path)
 //
 export async function read_exif(path)
 {
-	const exif = await imagemagick.identifyAsync(['-format', '%[EXIF:*]', path])
+	const image = imagemagick(path)
+
+	const exif = await Promise.promisify(image.identify, image)('%[EXIF:*]')
 
 	return exif
 		.split('\n')

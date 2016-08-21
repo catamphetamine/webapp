@@ -20,8 +20,8 @@ export default async function get_image_info(from, options = {})
 
 	const info = 
 	{
-		width  : image_info.width,
-		height : image_info.height,
+		width  : image_info.size.width,
+		height : image_info.size.height,
 		format : image_info.format
 	}
 
