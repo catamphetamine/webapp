@@ -260,15 +260,19 @@ export default class User_profile extends Component
 
 	componentDidMount()
 	{
+		const { user, get_users_latest_activity_time } = this.props
+
+		// Refresh this user's latest activity time periodically
 		this.latest_activity_time_refresh = setInterval(() =>
 		{
-			this.props.get_users_latest_activity_time(this.props.user.id)
+			get_users_latest_activity_time(user.id)
 		},
 		Latest_activity_time_refresh_interval)
 	}
 
 	componentWillUnmount()
 	{
+		// Stop refreshing this user's latest activity time
 		clearInterval(this.latest_activity_time_refresh)
 	}
 

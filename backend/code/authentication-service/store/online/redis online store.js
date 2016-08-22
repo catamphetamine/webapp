@@ -1,8 +1,7 @@
 // https://github.com/59naga/babel-plugin-transform-bluebird/pull/2
 import Promise from 'bluebird'
 
-import redis from 'redis'
-Promise.promisifyAll(redis)
+import Redis from 'ioredis'
 
 // if Redis is installed and configured, use it
 export default class Redis_online_status_store
@@ -18,20 +17,24 @@ export default class Redis_online_status_store
 	async connect()
 	{
 		// Redis caches commands until connection is established
-		this.client = redis.createClient
+		this.redis = new Redis
 		({
-			host      : configuration.redis.host,
-			port      : configuration.redis.port,
-			auth_pass : configuration.redis.password
+			host     : configuration.redis.host,
+			port     : configuration.redis.port,
+			password : configuration.redis.password,
+
+			// Dropping `Buffer` support for `hiredis`
+			// https://github.com/luin/ioredis/wiki/Improve-Performance
+			dropBufferSupport : true
 		})
 	}
 
 	// Returns the user's latest activity date
 	get(user_id)
 	{
-		return this.client
-			.getAsync(`${Redis_online_status_store.prefix}${user_id}`)
-			.then(result => result ? new Date(result) : null)
+		return this.redis
+			.get(`${Redis_online_status_store.prefix}${user_id}`)
+			.then(result => result ? new Date(parseInt(result)) : undefined)
 	}
 
 	// Stores latest access `time` for [authentication token, IP address] pair for this user.
@@ -40,16 +43,16 @@ export default class Redis_online_status_store
 	async get_and_set(user_id, access_token_id, ip, time)
 	{
 		// Set user's latest activity time
-		await this.client.multi()
+		await this.redis.multi()
 			.set(`${Redis_online_status_store.prefix}${user_id}`, time)
 			.expire(`${Redis_online_status_store.prefix}${user_id}`, Redis_online_status_store.ttl)
-			.execAsync()
+			.exec()
 
 		// Get and set this access token and IP address latest activity time
-		const token_ip_latest_activity_time = await this.client.multi()
+		const token_ip_latest_activity_time = await this.redis.multi()
 			.getset(`${Redis_online_status_store.prefix}${user_id}:${access_token_id}:${ip}`, time)
 			.expire(`${Redis_online_status_store.prefix}${user_id}:${access_token_id}:${ip}`, Redis_online_status_store.ttl)
-			.execAsync()
+			.exec()
 
 		// Return this access token and IP address latest activity time
 		if (token_ip_latest_activity_time[0])
