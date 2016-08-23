@@ -37,11 +37,11 @@ export default function(api)
 		return own_user(user)
 	})
 
-	api.get('/validate-token', async function({ bot }, { ip, authentication_token_id, user })
+	api.get('/token/valid', async function({ bot }, { ip, authentication_token_id, user })
 	{
 		// The user will be populated inside `common/web server`
 		// out of the token data if the token is valid.
-		// (only for `/validate-token` http get requests)
+		// (only for `/token/valid` http get requests)
 		//
 		// If the user isn't populated from the token data
 		// then it means that token data is corrupt.
@@ -55,11 +55,24 @@ export default function(api)
 		// Token data is valid.
 		// The next step is to check that the token hasn't been revoked.
 
-		const token = await store.find_token_by_id(authentication_token_id)
+		// Try to get token validity status from cache
+		const is_valid = await online_status_store.check_access_token_validity(authentication_token_id)
 
-		if (!token || token.revoked)
+		// If such a key exists in Redis, then the token is valid
+		if (is_valid)
 		{
-			return { valid: false }
+			// The token is valid
+		}
+		else
+		{
+			// Else, query the database for token validity
+
+			const token = await store.find_token_by_id(authentication_token_id)
+
+			if (!token || token.revoked)
+			{
+				return { valid: false }
+			}
 		}
 
 		// If it's not an automated Http request,

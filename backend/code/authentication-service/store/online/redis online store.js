@@ -6,7 +6,6 @@ import Redis from 'ioredis'
 // if Redis is installed and configured, use it
 export default class Redis_online_status_store
 {
-	static prefix = 'user:access_time:'
 	static ttl = 10 * 60 // 10 minutes
 
 	ready()
@@ -33,7 +32,7 @@ export default class Redis_online_status_store
 	get(user_id)
 	{
 		return this.redis
-			.get(`${Redis_online_status_store.prefix}${user_id}`)
+			.get(`user/${user_id}/latest-access-time`)
 			.then(result => result ? new Date(parseInt(result)) : undefined)
 	}
 
@@ -44,21 +43,41 @@ export default class Redis_online_status_store
 	{
 		// Set user's latest activity time
 		await this.redis.multi()
-			.set(`${Redis_online_status_store.prefix}${user_id}`, time)
-			.expire(`${Redis_online_status_store.prefix}${user_id}`, Redis_online_status_store.ttl)
+			.set   (`user/${user_id}/latest-access-time`, time)
+			.expire(`user/${user_id}/latest-access-time`, Redis_online_status_store.ttl)
 			.exec()
 
 		// Get and set this access token and IP address latest activity time
-		const token_ip_latest_activity_time = await this.redis.multi()
-			.getset(`${Redis_online_status_store.prefix}${user_id}:${access_token_id}:${ip}`, time)
-			.expire(`${Redis_online_status_store.prefix}${user_id}:${access_token_id}:${ip}`, Redis_online_status_store.ttl)
+		const update_token_latest_access_time = await this.redis.multi()
+			.getset(`token/${access_token_id}/ip/${ip}/latest-access-time`, time)
+			.expire(`token/${access_token_id}/ip/${ip}/latest-access-time`, Redis_online_status_store.ttl)
 			.exec()
 
+		// Get the first command result from the transaction result
+		const token_latest_access_time = update_token_latest_access_time[0][1]
+
 		// Return this access token and IP address latest activity time
-		if (token_ip_latest_activity_time[0])
+		if (token_latest_access_time)
 		{
 			// Convert from Redis string to Javascript timestamp
-			return parseInt(token_ip_latest_activity_time[0])
+			return parseInt(token_latest_access_time)
 		}
+	}
+
+	// Marks access token as being valid
+	// so that the token validity check doesn't query the database
+	// (which can be more costly)
+	async check_access_token_validity(access_token_id)
+	{
+		const result = await this.redis.multi()
+			.getset(`token/${access_token_id}/valid`, '✔')
+			.expire(`token/${access_token_id}/valid`, Redis_online_status_store.ttl)
+			.exec()
+
+		// Get the first command result from the transaction result
+		const is_valid = result[0][1]
+
+		// Set user's latest activity time
+		return is_valid
 	}
 }

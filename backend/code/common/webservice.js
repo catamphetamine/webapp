@@ -1,6 +1,6 @@
 import web_service, { api as api_service, http } from 'web-service'
 
-const validate_token_url = '/validate-token'
+const validate_token_url = '/token/valid'
 
 // `log` is a global variable in each Node.js process.
 // `_development_` is too.

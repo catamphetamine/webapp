@@ -30,4 +30,12 @@ export default class Memory_online_status_store
 		this.user_sessions[user_id] = time
 		return Promise.resolve(previous_time)
 	}
+
+	// Marks access token as being valid
+	// so that the token validity check doesn't query the database
+	// (which can be more costly)
+	check_access_token_validity(access_token_id)
+	{
+		return Promise.resolve()
+	}
 }
