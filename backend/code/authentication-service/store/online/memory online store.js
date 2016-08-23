@@ -38,4 +38,12 @@ export default class Memory_online_status_store
 	{
 		return Promise.resolve()
 	}
+
+	// Removes the flag stating that access token is valid
+	// so that the token validity check will proceed and query the database
+	// (performed upon revoking the token)
+	clear_access_token_validity(access_token_id)
+	{
+		return Promise.resolve()
+	}
 }

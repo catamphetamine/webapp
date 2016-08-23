@@ -80,4 +80,12 @@ export default class Redis_online_status_store
 		// Set user's latest activity time
 		return is_valid
 	}
+
+	// Removes the flag stating that access token is valid
+	// so that the token validity check will proceed and query the database
+	// (performed upon revoking the token)
+	async clear_access_token_validity(access_token_id)
+	{
+		await this.redis.del(`token/${access_token_id}/valid`)
+	}
 }

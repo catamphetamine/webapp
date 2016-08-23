@@ -6,7 +6,7 @@ export const get_user = (user_id) =>
 
 export const revoke_authentication_token = (token_id) =>
 ({
-	promise : http => http.post(`/authentication/revoke-token`, { id: token_id }),
+	promise : http => http.post(`/authentication/token/revoke`, { id: token_id }),
 	event   : 'user settings: revoke authentication token'
 })
 

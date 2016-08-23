@@ -217,7 +217,7 @@ export default function(api)
 		return { tokens }
 	})
 
-	api.post('/revoke-token', async function({ id }, { user })
+	api.post('/token/revoke', async function({ id }, { user })
 	{
 		if (!user)
 		{
@@ -237,6 +237,7 @@ export default function(api)
 		}
 
 		await store.revoke_token(id)
+		await online_status_store.clear_access_token_validity(id)
 	})
 
 	api.patch('/email', async function({ email }, { user })
