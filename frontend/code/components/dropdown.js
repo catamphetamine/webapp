@@ -147,10 +147,14 @@ export default class Dropdown extends Component
 
 		let list_items
 
+		// If a list of options is supplied as an array of `{ value, label }`,
+		// then transform those elements to <buttons/>
 		if (options)
 		{
 			list_items = options.map(({ value, label, icon }, index) => this.render_list_item({ value, label, overflow }))
 		}
+		// Else, if a list of options is supplied as a set of child React elements,
+		// then render those elements.
 		else
 		{
 			list_items = React.Children.map(children, element => this.render_list_item({ element }))
@@ -179,7 +183,11 @@ export default class Dropdown extends Component
 					{!menu && this.render_selected_item()}
 
 					{/* Menu toggler */}
-					{menu && React.cloneElement(toggler, { onClick: this.toggle })}
+					{menu &&
+						<div ref="menu_toggler" style={style.menu_toggler}>
+							{React.cloneElement(toggler, { onClick : this.toggle })}
+						</div>
+					}
 
 					{/* A list to select from */}
 					{/* Math.max(this.state.height, this.props.max_height) */}
@@ -209,6 +217,8 @@ export default class Dropdown extends Component
 
 	render_list_item({ element, value, label, overflow }) // , first, last
 	{
+		// If a list of options is supplied as a set of child React elements,
+		// then extract values from their props.
 		if (element)
 		{
 			value = element.props.value
@@ -222,13 +232,6 @@ export default class Dropdown extends Component
 		{
 			list_item_style.maxHeight = 0
 			list_item_style.overflow  = 'hidden'
-		}
-
-		if (element && element.props.className && element.props.className.split(/\s/).has('dropdown-separator'))
-		{
-			list_item_style.lineHeight    = 0
-			list_item_style.paddingTop    = '0.2em'
-			list_item_style.paddingBottom = '0.3em'
 		}
 
 		let item_style = style.list.item
@@ -248,6 +251,8 @@ export default class Dropdown extends Component
 
 		let button
 
+		// If a list of options is supplied as a set of child React elements,
+		// then enhance those elements with extra props.
 		if (element)
 		{
 			const extra_props =
@@ -257,7 +262,7 @@ export default class Dropdown extends Component
 				(
 					'dropdown-item',
 					{
-						'dropdown-item-selected-in-list': is_selected
+						'dropdown-item--selected-in-list' : is_selected
 					},
 					element.props.className
 				)
@@ -270,25 +275,33 @@ export default class Dropdown extends Component
 
 			button = React.cloneElement(element, extra_props)
 		}
+		// Else, if a list of options is supplied as an array of `{ value, label }`,
+		// then transform those options to <buttons/>
 		else
 		{
 			button = <button
 				onClick={event => this.item_clicked(value, event)}
-				style={item_style}
 				className={classNames
 				(
 					'dropdown-item',
 					{
-						'dropdown-item-selected-in-list': is_selected
+						'dropdown-item--selected-in-list' : is_selected
 					}
-				)}>
+				)}
+				style={item_style}>
 				{label}
 			</button>
 		}
 
 		const markup =
 		(
-			<li key={value} style={list_item_style}>
+			<li
+				key={value}
+				className={classNames
+				({
+					'dropdown-list-item--separator' : element && element.type === Dropdown_separator
+				})}
+				style={list_item_style}>
 				{button}
 			</li>
 		)
@@ -419,10 +432,12 @@ export default class Dropdown extends Component
 	{
 		if (event)
 		{
+			// Don't navigate away when clicking links
 			event.preventDefault()
 
+			// Discard the click event so that it won't reach `document` click listener
 			// event.stopPropagation() // doesn't work
-			event.nativeEvent.stopImmediatePropagation()
+			// event.nativeEvent.stopImmediatePropagation()
 		}
 
 		const { disabled } = this.props
@@ -453,6 +468,29 @@ export default class Dropdown extends Component
 
 	document_clicked(event)
 	{
+		// Don't close the dropdown if its expander button has been clicked
+		if (event.target === ReactDOM.findDOMNode(this.refs.selected)
+			|| is_descendant(event.target, ReactDOM.findDOMNode(this.refs.selected)))
+		{
+			return
+		}
+
+		// Don't close the dropdown if menu toggler has been clicked
+		if (this.props.menu && is_descendant(event.target, ReactDOM.findDOMNode(this.refs.menu_toggler)))
+		{
+			return
+		}
+
+		// Don't close the dropdown if a blank spot in the list was clicked
+		if (is_descendant(event.target, ReactDOM.findDOMNode(this.refs.list)))
+		{
+			if (!event.target.classList.contains('dropdown-item')
+				&& !find_ancestor_by_class(event.target, 'dropdown-item'))
+			{
+				return
+			}
+		}
+
 		this.setState({ expanded: false })
 	}
 
@@ -597,6 +635,11 @@ export default class Dropdown extends Component
 	// }
 }
 
+export function Dropdown_separator(props)
+{
+	return <div className="dropdown-separator" style={style.separator}/>
+}
+
 const arrow_height = 0.35
 const arrow_width = 0.4
 
@@ -683,4 +726,29 @@ const style = styler
 		item
 			display     : inline-block
 			white-space : nowrap
+
+	menu_toggler
+		display : inline-block
+
+	separator
+		padding     : 0
+		line-height : 0
+		font-size   : 0
 `
+
+function find_ancestor_by_class(element, class_name)
+{
+	while ((element = element.parentElement) && !element.classList.contains(class_name)) {}
+	return element
+}
+
+function is_descendant(element, ancestor)
+{
+	while (element = element.parentElement)
+	{
+		if (element === ancestor)
+		{
+			return true
+		}
+	}
+}

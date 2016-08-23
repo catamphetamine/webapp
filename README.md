@@ -467,6 +467,190 @@ npm run docker:image
 
 To monitor Docker containers (availability) one can use Consul.
 
+Elasticsearch
+=============
+
+(currently not used)
+
+Install JDK
+
+```
+sudo add-apt-repository -y ppa:webupd8team/java
+sudo apt-get update
+sudo apt-get -y install oracle-java8-installer
+```
+
+Install Elasticsearch
+
+```
+# https://www.elastic.co/downloads/elasticsearch
+wget ...
+dpkg --install xxx.deb
+
+# change cluster name
+nano /etc/sysconfig/elasticsearch
+
+sudo /bin/systemctl daemon-reload
+sudo /bin/systemctl enable elasticsearch.service
+sudo /bin/systemctl start elasticsearch.service
+```
+
+Install Kibana
+
+```
+wget -qO - https://packages.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+echo "deb http://packages.elastic.co/kibana/4.5/debian stable main" | sudo tee -a /etc/apt/sources.list
+
+sudo apt-get update && sudo apt-get install kibana
+
+sudo /bin/systemctl daemon-reload
+sudo /bin/systemctl enable kibana.service
+```
+
+Elasticsearch URL: http://localhost:9200
+
+Kibana URL: http://localhost:5601
+
+Monitoring:
+
+https://github.com/lmenezes/elasticsearch-kopf
+
+https://github.com/mobz/elasticsearch-head
+
+```
+nano config/elasticsearch.yml
+
+# action.auto_create_index: false
+```
+
+Set up a cluster with 256 primary shards (`{ settings: number_of_shards: 256 }`).
+
+For logs: `{ settings: “index.codec”: “best_compression” }`
+
+Maybe later use some of these notes (work in progress):
+
+```
+"type":
+{
+  // "include_in_all": false,
+  "_all": { "enabled": false },
+  "dynamic": "no"
+}
+```
+
+```
+PUT /my_index_v1/_alias/my_index
+```
+
+```
+PUT /my_index
+{
+  "settings": {
+    "analysis": {
+      "char_filter": {
+        "quotes": {
+          "type": "mapping",
+          "mappings": [
+            "\\u0091=>\\u0027",
+            "\\u0092=>\\u0027",
+            "\\u2018=>\\u0027",
+            "\\u2019=>\\u0027",
+            "\\u201B=>\\u0027"
+          ]
+        }
+      },
+      "analyzer": {
+        "quotes_analyzer": {
+          "tokenizer":     "standard",
+          "char_filter": [ "quotes" ],
+          "filter":  [ "lowercase", "asciifolding" ]
+        }
+      }
+    }
+  }
+}
+
+{
+  "query": {
+    "multi_match": {
+      "type":     "most_fields",
+      "query":    "está loca",
+      "fields": [ "title", "title.folded" ]
+    }
+  }
+}
+
+{
+  "settings": {
+    "analysis": {
+      "filter": {
+        "nfkc_normalizer": {
+          "type": "icu_normalizer",
+          "name": "nfkc_cf"
+        }
+      },
+      "analyzer": {
+        "my_normalizer": {
+          "tokenizer": "icu_tokenizer",
+          "filter":  [ "nfkc_normalizer" ]
+        }
+      }
+    }
+  }
+}
+
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "my_lowercaser": {
+          "tokenizer": "icu_tokenizer",
+          "filter":  [ "icu_normalizer" ]
+        }
+      }
+    }
+  }
+}
+
+# The icu_normalizer defaults to the nfkc_cf form.
+
+# "char_filter":  [ "icu_normalizer" ]
+
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "my_folder": {
+          "tokenizer": "icu_tokenizer",
+          "filter":  [ "icu_folding" ]
+        }
+      }
+    }
+  }
+}
+
+ {
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "ducet_sort": {
+          "tokenizer": "keyword",
+          "filter": [ "icu_collation" ]
+        }
+      }
+    }
+  }
+}
+
+"content": {
+  "type":          "string",
+  "index_options": "freqs"
+}
+
+./bin/plugin -install elasticsearch/elasticsearch-analysis-icu/$VERSION
+# The current $VERSION can be found at https://github.com/elasticsearch/elasticsearch-analysis-icu.
+```
+
 Troubleshooting
 ===============
 
@@ -475,27 +659,36 @@ Troubleshooting
 To do
 ====================
 
-на время подгрузки всяких полифиллов, до конца инициализации страницы, показывать крутилку.
-(показывать её яваскриптом, чтобы если wget-ом страницу запросить, то её не было бы показано)
-скрывать крутилку после того, как реакт отрендерился (примерно).
+images перенести в sql (и убрать user_image_stats)
+files_size вынести из info в images
 
-поля на формах входа и регистрации сделать с "летающими" леблами
+user_authentication - убрать вообще
 
-сделать textarea с двумя строками по умолчанию и авторесайзом
-
+у authentication_tokens - будет update (+ возможно insert + update)
 
 
 
-переделать смену почты и пароля - кнопками "изменить" и активируемым полем ввода, а при сохранении - модальными окошками с запросом пароля.
 
-при вводе неправильного пароля - уведомление о неправильности пароля в окошке ввода пароля.
 
-соответственно, внизу кнопка "сохранить" переедет в другую панель.
 
-сделать класс <Panel title={}></Panel>, с busy={true/false}
 
-панель с токенами подгружать по запросу.
-также резолвить там IP в страну и город.
+мб упразднить user_image_stats
+
+мб перейти с mongodb на postgres
+
+сделать смену почты со вводом пароля
+
+показывать "снек", что "пароль изменён"
+
+
+
+// при изменении роли пользователя - уничтожать все authentication_token'ы
+
+
+
+при регистрации пользователя username брать из почтового адреса, и если не уникально, то подставлять мб что-нибудь
+
+
 
 при смене емейла - отправлять i18n шаблон на новую почту со ссылкой на подтверждение ящика, до этого генерируя в authentication service ключ для смены емейла (и с текстом, что "если это не вы, то не обращайте внимания"). при проходе по ссылке - страницу "ваш email изменён".
 
@@ -546,6 +739,12 @@ To do
 
 
 в мониторинге показывать график "горячих запросов" (url, method, логгировать параметры)
+
+
+
+
+nginx чтобы перезаписывал X-Forwarded-For.
+можно это валидировать где-нибудь на web-server-е.
 
 
 

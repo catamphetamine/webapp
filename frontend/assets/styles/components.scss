@@ -74,17 +74,17 @@
 	// for Safari
 	-webkit-background-clip: padding-box;
 
-    overflow-y: auto;
+	overflow-y: auto;
 }
 
 .dropdown-item-list-simple-left-aligned
 {
-	left: calc(-1 * var(--dropdown-item-horizontal-padding)) !important;
+	left: calc(var(--modular-grid-unit) * var(--dropdown-item-side-padding) * -1) !important;
 }
 
 .dropdown-item-list-simple-right-aligned
 {
-	right : calc(-1 * var(--dropdown-item-horizontal-padding)) !important;
+	right : calc(var(--modular-grid-unit) * var(--dropdown-item-side-padding) * -1) !important;
 }
 
 .dropdown-item-list-expanded
@@ -98,11 +98,11 @@
 {
 	width: 100%;
 
-	padding-left  : var(--dropdown-item-horizontal-padding);
-	padding-right : var(--dropdown-item-horizontal-padding);
+	padding-left  : calc(var(--modular-grid-unit) * var(--dropdown-item-side-padding));
+	padding-right : calc(var(--modular-grid-unit) * var(--dropdown-item-side-padding));
 
-	padding-top    : var(--dropdown-item-vertical-padding);
-	padding-bottom : var(--dropdown-item-vertical-padding);
+	padding-top    : calc(var(--modular-grid-unit) * 1);
+	padding-bottom : calc(var(--modular-grid-unit) * 1);
 
 	box-sizing: border-box;
 
@@ -114,12 +114,22 @@
 	}
 }
 
+.dropdown-item__icon
+{
+	margin-right : calc(var(--modular-grid-unit) * 3);
+}
+
 .dropdown-separator
 {
-	height: var(--input-separator-width);
-	padding: 0;
-	font-size: 0;
-	background-color: var(--gray-color);
+	height           : var(--input-separator-width);
+	background-color : var(--gray-color);
+}
+
+// <li/>
+.dropdown-list-item--separator
+{
+	padding-top      : calc(var(--modular-grid-unit) * 2);
+	padding-bottom   : calc(var(--modular-grid-unit) * 2);
 }
 
 .dropdown-item-list
@@ -157,7 +167,7 @@
 	}
 }
 
-.dropdown-item-selected-in-list
+.dropdown-item--selected-in-list
 {
 	background-color: var(--gray-color-lighter);
 }
@@ -166,12 +176,12 @@
 {
 	> li:first-child
 	{
-		padding-top    : calc(2 * var(--dropdown-item-vertical-padding));
+		padding-top    : calc(2 * var(--modular-grid-unit));
 	}
 
 	> li:last-child
 	{
-		padding-bottom : calc(2 * var(--dropdown-item-vertical-padding));
+		padding-bottom : calc(2 * var(--modular-grid-unit));
 	}
 }
 

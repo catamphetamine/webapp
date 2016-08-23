@@ -35,10 +35,9 @@
 
 	--input-border-width         : 2pt;
 	--input-separator-width      : 1pt;
-	--input-padding              : 0.15em;
+	--input-padding              : 0.15rem;
 
-	--dropdown-item-vertical-padding   : 0.2em;
-	--dropdown-item-horizontal-padding : 0.8em;
+	--dropdown-item-side-padding : 4; // im modular grid units
 
 	--header-vertically-centered-text-margin-top: 0.1em;
 

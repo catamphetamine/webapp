@@ -9,8 +9,10 @@ html
 
 body
 {
-	margin: 0;
-	overflow-y: scroll;
+	margin : 0;
+
+	// Always show vertical scrollbar to avoid page width jumping
+	overflow-y : scroll;
 }
 
 // // This will be replaced with the contents of the mixin

@@ -15,7 +15,7 @@ import Form                from './form'
 import Modal               from './modal'
 import Authentication_form from './authentication form'
 import User_picture        from './user picture'
-import Dropdown            from './dropdown'
+import Dropdown, { Dropdown_separator } from './dropdown'
 import Spinner             from './spinner'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
@@ -230,7 +230,7 @@ export default class Authentication extends Component
 					{/* Profile */}
 					<Link key="profile" to={`/user/${user.id}`}>
 						{/* Icon */}
-						<i className="material-icons">account_box</i>
+						<i className="material-icons dropdown-item__icon">account_box</i>
 						{/* Text */}
 						{translate(messages.profile)}
 					</Link>
@@ -238,7 +238,7 @@ export default class Authentication extends Component
 					{/* Settings */}
 					<Link key="settings" to="/settings">
 						{/* Icon */}
-						<i className="material-icons">settings</i>
+						<i className="material-icons dropdown-item__icon">settings</i>
 						{/* Text */}
 						{translate(messages.settings)}
 					</Link>
@@ -246,7 +246,7 @@ export default class Authentication extends Component
 					{/* Feed */}
 					<Link key="notifications" to="/feed">
 						{/* Icon */}
-						<i className="material-icons">notifications</i>
+						<i className="material-icons dropdown-item__icon">notifications</i>
 						{/* Text */}
 						{translate(messages.notifications)}
 					</Link>
@@ -254,13 +254,13 @@ export default class Authentication extends Component
 					{/* Messages */}
 					<Link key="messages" to="/messages">
 						{/* Icon */}
-						<i className="material-icons">chat_bubble_outline</i>
+						<i className="material-icons dropdown-item__icon">chat_bubble_outline</i>
 						{/* Text */}
 						{translate(messages.messages)}
 					</Link>
 
 					{/* Separator */}
-					<div className="dropdown-separator"/>
+					<Dropdown_separator/>
 
 					{/* Sign out */}
 					<div key="log_out" onClick={event =>
@@ -273,7 +273,7 @@ export default class Authentication extends Component
 						// }
 					}}>
 						{/* Icon */}
-						<i className="material-icons material-icons--empty"></i>
+						<i className="material-icons material-icons--empty dropdown-item__icon"></i>
 						{/* Text */}
 						<Button style={style.sign_out}
 							className="sign-out"

@@ -822,6 +822,7 @@ const style = styler
 		margin-top : 0.2em
 
 		&edit
+			margin-top    : 0.6rem
 			margin-bottom : 0.6rem
 
 	latest_activity
