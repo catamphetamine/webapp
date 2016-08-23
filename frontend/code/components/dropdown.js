@@ -9,6 +9,16 @@ const scrollbar_width = '17px'
 const add_padding_for_scrollbar = true
 const show_selected_item_in_list = true
 
+// Possible enhancements:
+//
+//  * Show menu above the toggler (Material design)
+//  * Position the selected element on top
+//    (scroll the list upon opening until it's positioned on top)
+//  * If the menu is close to a screen edge,
+//    automatically reposition it so that it fits on the screen
+//
+// https://material.google.com/components/menus.html
+
 @input()
 export default class Dropdown extends Component
 {
