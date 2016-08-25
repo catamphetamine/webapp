@@ -8,6 +8,7 @@ import global_variables from '../../code/global variables'
 
 import autoprefixer from 'autoprefixer'
 import css_custom_properties from 'postcss-custom-properties'
+import postcss_calc from 'postcss-calc'
 
 const root_folder = path.resolve(__dirname, '..', '..')
 const frontend_root_folder = path.resolve(__dirname, '..')
@@ -132,7 +133,12 @@ const configuration =
 	// maybe some kind of a progress bar during compilation
 	progress: true,
 
-	postcss: () => [autoprefixer({ browsers: 'last 2 version' }), css_custom_properties()],
+	postcss: () =>
+	([
+		autoprefixer({ browsers: 'last 2 version' }),
+		css_custom_properties(),
+		postcss_calc()
+	]),
 
 	resolve:
 	{
