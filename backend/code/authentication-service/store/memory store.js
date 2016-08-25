@@ -79,7 +79,7 @@ export default class Memory_store
 	async revoke_token(token_id)
 	{
 		const token = await this.find_token_by_id(token_id)
-		token.revoked = new Date()
+		token.revoked_at = new Date()
 	}
 
 	async add_authentication_token(user, ip)
