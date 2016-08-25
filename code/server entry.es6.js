@@ -19,6 +19,10 @@ if (fs.existsSync(path.join(Root_folder, 'backend/knexfile.js')))
 {
 	global.knexfile = require(path.join(Root_folder, 'backend/knexfile.js'))
 }
+else
+{
+	global.knexfile = false
+}
 
 global.configuration = configuration
 
