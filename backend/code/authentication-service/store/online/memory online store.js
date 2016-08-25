@@ -39,6 +39,14 @@ export default class Memory_online_status_store
 		return Promise.resolve()
 	}
 
+	// Caches access token validity
+	// so that the token validity check doesn't query the database
+	// (which can be more costly)
+	set_access_token_validity(user_id, access_token_id, valid)
+	{
+		return Promise.resolve()
+	}
+	
 	// Removes the flag stating that access token is valid
 	// so that the token validity check will proceed and query the database
 	// (performed upon revoking the token)

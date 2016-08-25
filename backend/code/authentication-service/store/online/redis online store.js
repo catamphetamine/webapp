@@ -80,7 +80,7 @@ export default class Redis_online_status_store
 		return true
 	}
 
-	// Marks access token as being valid
+	// Caches access token validity
 	// so that the token validity check doesn't query the database
 	// (which can be more costly)
 	set_access_token_validity(user_id, access_token_id, valid)
