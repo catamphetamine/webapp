@@ -6,14 +6,20 @@ exports.up = function(knex, Promise)
 {
 	return knex.schema
 
+	// // PostGIS must be installed.
+	// // Allows for handling geospacial data in PostgreSQL.
+	// // (this command won't work as it requires superuser privileges)
+	// .raw('CREATE EXTENSION postgis')
+
 	// // Random UUID generator for PostgreSQL
 	// // http://www.starkandwayne.com/blog/uuid-primary-keys-in-postgresql/
 	// // https://www.clever-cloud.com/blog/engineering/2015/05/20/why-auto-increment-is-a-terrible-idea/
 	// .raw('CREATE EXTENSION pgcrypto')
+	//
+	// table.uuid('id').primary().defaultTo('gen_random_uuid()')
 
 	.createTable('users', function(table)
 	{
-		// table.uuid('id').primary().defaultTo('gen_random_uuid()')
 		table.bigIncrements('id').primary().unsigned()
 
 		table.text('password').notNullable()
@@ -32,7 +38,7 @@ exports.up = function(knex, Promise)
 		table.string('role', 256)
 		table.string('locale', 128)
 
-		table.json('picture')
+		table.jsonb('picture')
 
 		table.timestamp('login_attempt_failed_at')
 		table.integer('login_attempt_temperature')
@@ -43,27 +49,23 @@ exports.up = function(knex, Promise)
 
 	.createTable('authentication_tokens', function(table)
 	{
-		// table.uuid('id').primary().defaultTo('gen_random_uuid()')
 		table.bigIncrements('id').primary().unsigned()
 
 		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
 		table.timestamp('revoked_at')
 
-		// table.uuid('user').notNullable().references('users.id')
 		table.bigint('user').notNullable().references('users.id')
 	})
 
 	.createTable('authentication_token_access_history', function(table)
 	{
-		// table.uuid('id').primary().defaultTo('gen_random_uuid()')
 		table.bigIncrements('id').primary().unsigned()
 
 		table.timestamp('updated_at').notNullable()
 		table.string('ip', ip_address_max_length).notNullable()
 
-		table.json('place')
+		table.jsonb('place')
 
-		// table.uuid('token').notNullable().references('users.id')
 		table.bigint('token').notNullable().references('authentication_tokens.id')
 
 		// "authentication_token_access_history_token_ip_unique" constraint name
@@ -71,18 +73,34 @@ exports.up = function(knex, Promise)
 		table.unique(['token', 'ip'], 'authentication_token_access_history_token_ip_unique')
 	})
 
+	.createTable('images', function(table)
+	{
+		table.bigIncrements('id').primary().unsigned()
+
+		table.text('type').notNullable()
+		table.bigint('files_size').notNullable()
+		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
+
+		table.timestamp('taken_at_utc0')
+		table.timestamp('taken_at')
+
+		table.jsonb('sizes').notNullable()
+		table.jsonb('info')
+
+		table.bigint('user').notNullable().references('users.id')
+	})
+
+	// Add `coordinates` column
+	.raw(`ALTER TABLE images ADD COLUMN coordinates GEOMETRY(Point, 26910)`)
+
 	.createTable('messages', function(table)
 	{
-		// table.uuid('id').primary().defaultTo('gen_random_uuid()')
 		table.bigIncrements('id').primary().unsigned()
 
 		table.text('text').notNullable()
 		table.boolean('read').notNullable().defaultTo(false)
 
 		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
-
-		// table.uuid('from').notNullable().references('users.id')
-		// table.uuid('to'  ).notNullable().references('users.id')
 
 		table.bigint('from').notNullable().references('users.id')
 		table.bigint('to'  ).notNullable().references('users.id')

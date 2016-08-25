@@ -6,7 +6,7 @@ import fs   from 'fs-extra'
 
 import get_image_info         from './image info'
 import { resize, autorotate } from './image manipulation'
-import database               from './database'
+import database               from './database/database'
 import { clean_up }           from './cleaner'
 
 const upload_folder = path.resolve(Root_folder, configuration.image_service.temporary_files_directory)
@@ -68,7 +68,7 @@ web.delete('/:id', async ({ id }, { user }) =>
 		throw new errors.Unauthenticated()
 	}
 
-	const image = await database.get(id)
+	const image = await database.get_with_user(id)
 
 	if (!image)
 	{
@@ -87,7 +87,7 @@ web.delete('/:id', async ({ id }, { user }) =>
 		throw new Error(`Unknown image-service type: "${type}"`)
 	}
 
-	for (let size of image.info.sizes)
+	for (let size of image.sizes)
 	{
 		const image_path = permanent_path(size.name, image_type)
 
@@ -97,7 +97,7 @@ web.delete('/:id', async ({ id }, { user }) =>
 		}
 	}
 
-	await database.decrease_user_images_size(user, image.info.files_size)
+	// await database.decrease_user_images_size(user, image.info.files_size)
 
 	await database.delete(id)
 })
@@ -129,11 +129,21 @@ web.post('/save', async ({ type, image }, { user }) =>
 		size.file_size = (await fs.statAsync(to)).size
 	}
 
-	image.files_size = image.sizes.reduce((total, size) => total + size.file_size, 0)
+	const { date, date_utc0, location, sizes, ...rest } = image
 
-	image.id = await database.create(user, type, image)
+	image.id = await database.create
+	({
+		user,
+		type, 
+		sizes : image.sizes,
+		files_size : image.sizes.reduce((total, size) => total + size.file_size, 0),
+		coordinates : location,
+		taken_at : date,
+		taken_at_utc0 : date_utc0,
+		info: rest
+	})
 
-	await database.increase_user_images_size(user, image.files_size)
+	// await database.increase_user_images_size(user, image.files_size)
 
 	return image
 })
@@ -320,3 +330,34 @@ error =>
 {
 	log.error(error, 'Image service shutdown')
 })
+
+function image_info_to_database_image_data(image)
+{
+	const { date, date_utc0, location, sizes, ...rest } = image
+
+	const data =
+	{
+	}
+
+	if (Object.keys(rest) > 0)
+	{
+		data.info = rest
+	}
+
+	if (date_utc0)
+	{
+		data.date_utc0 = date_utc0
+	}
+
+	if (date)
+	{
+		data.date = date
+	}
+
+	if (location)
+	{
+		data.location = location
+	}
+
+	return data
+}

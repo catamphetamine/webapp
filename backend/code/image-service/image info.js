@@ -42,7 +42,7 @@ export default async function get_image_info(from, options = {})
 		// GPS Time Stamp should take priority 
 		// over GPS Date Time Original and GPS Date Time Digitized
 	}
-	
+
 	if (exif.DateTimeOriginal || exif.DateTimeDigitized)
 	{
 		info.date_utc0 = parse_gps_date(exif.DateTimeOriginal || exif.DateTimeDigitized)
@@ -111,5 +111,5 @@ function parse_gps_coordinate(value)
 // e.g. value = "2005:07:09 14:05:15"
 function parse_gps_date(value)
 {
-	return moment(value, "YYYY:MM:DD HH:mm:ss").toDate()
+	return moment.utc(value, "YYYY:MM:DD HH:mm:ss").toDate()
 }

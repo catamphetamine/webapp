@@ -314,6 +314,17 @@ createuser --username=postgres --interactive USERNAME
 createdb --username=postgres --encoding=utf8 --owner=USERNAME DATABASE_NAME --template=template0
 ```
 
+Also install PostGIS for geospacial data support
+
+```sh
+brew install postgis
+
+# install the database extension (requires superuser privileges)
+psql --username=postgres --dbname=DATABASE_NAME
+CREATE EXTENSION postgis;
+\q
+```
+
 Then create your `knexfile.js` file
 
 ```sh
@@ -660,21 +671,28 @@ Troubleshooting
 To do
 ====================
 
+сделать там нормальные координаты:
+
+geomFromText(`Point(0 0)`, 26910)
+
+и что за число 26910 (везде в коде)
+
+
+
+
+в redux tools убрать namespace (будет частью event'а)
+
+список логов не оборачивать в объект, а слать прямо массивом
+
+если в http response есть один ключ `result` и значение - не is_object и не Array.isArray(), то разворачивать этот response в этот примитив сразу (проверить все функции result у asynchronous_handlers)
+
+
+
 images перенести в sql (и убрать user_image_stats)
 files_size вынести из info в images
 
 
 
-
-rabbitmq для писем
-
-
-
-
-
-мб упразднить user_image_stats
-
-мб перейти с mongodb на postgres
 
 сделать смену почты со вводом пароля
 
@@ -682,7 +700,9 @@ rabbitmq для писем
 
 
 
-// при изменении роли пользователя - уничтожать все authentication_token'ы
+
+rabbitmq для писем
+
 
 
 
@@ -874,17 +894,7 @@ https://github.com/gaearon/react-hot-boilerplate/pull/61
 
 
 
-`npm install hiredis@latest --save`, когда его зарелизят
-
-https://www.npmjs.com/package/hiredis
-
-
-
-
-`npm install dtrace-provider@latest`, когда он исправит ошибку:
-
-https://github.com/chrisa/node-dtrace-provider/issues/74
-
+// при изменении роли пользователя - уничтожать все authentication_token'ы
 
 
 

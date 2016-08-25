@@ -2,10 +2,4 @@ require('../../../code/server entry')
 
 global.log = require('./log')
 
-require('./store/store').ready()
-	.then(require('./web server'))
-	.catch((error) =>
-	{
-		log.error(error)
-		process.exit(1)
-	})
+wait_for_stores([require('./store/store')], () => require('./web server'))

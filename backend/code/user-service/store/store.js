@@ -1,6 +1,3 @@
-import path from 'path'
-import fs   from 'fs'
-
 import Memory_store from './memory store'
 import Sql_store    from './sql store'
 

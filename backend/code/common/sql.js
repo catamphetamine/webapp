@@ -1,6 +1,6 @@
-import Knex      from 'knex'
+import Knex from 'knex'
+import knex_postgis_plugin from 'knex-postgis'
 import Bookshelf from 'bookshelf'
-
 import cascade_delete from 'bookshelf-cascade-delete'
 
 export default class Sql
@@ -54,18 +54,25 @@ export default class Sql
 	}
 }
 
+let knex_postgis
 let bookshelf
 
 Sql.bookshelf = () =>
 {
 	if (!bookshelf)
 	{
-		bookshelf = Bookshelf(Knex(knexfile))
+		const knex = Knex(knexfile)
+
+		knex_postgis = knex_postgis_plugin(knex)
+
+		bookshelf = Bookshelf(knex)
 		bookshelf.plugin(cascade_delete)
 	}
 
 	return bookshelf
 }
+
+Sql.knex_postgis = () => knex_postgis
 
 Sql.json = (model) =>
 {

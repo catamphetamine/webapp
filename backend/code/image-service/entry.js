@@ -2,4 +2,4 @@ require('../../../code/server entry')
 
 global.log = require('./log')
 
-require('./database').connect().then(() => require('./main'))
+wait_for_stores([require('./database/database')], () => require('./web server'))
