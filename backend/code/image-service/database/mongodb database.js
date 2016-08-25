@@ -38,7 +38,7 @@ export default class mongodb_database extends MongoDB
 			taken_at,
 			taken_at_utc0,
 			info,
-			location,
+			coordinates,
 			created_at : new Date()
 		})
 

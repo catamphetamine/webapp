@@ -54,7 +54,7 @@ export default class memory_database
 			taken_at,
 			taken_at_utc0,
 			info,
-			location,
+			coordinates,
 			created_at : new Date()
 		}
 
