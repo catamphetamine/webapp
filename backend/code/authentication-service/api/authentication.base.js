@@ -93,7 +93,7 @@ async function is_login_attempts_limit_exceeded(user)
 	
 	// If no login attempts failed so far
 	// then allow the next login attempt.
-	if (!user.latest_failed_login_attempt)
+	if (!user.login_attempt_failed_at)
 	{
 		return
 	}
@@ -101,8 +101,8 @@ async function is_login_attempts_limit_exceeded(user)
 	// Fast forward temperature cooldown 
 	// since the latest failed login attempt till now.
 
-	let temperature = user.latest_failed_login_attempt.temperature
-	let when        = user.latest_failed_login_attempt.when.getTime()
+	let temperature = user.login_attempt_temperature
+	let when        = user.login_attempt_failed_at.getTime()
 	const now       = Date.now()
 	
 	while (now >= when + Temperature_half_life * 1000)
@@ -121,10 +121,9 @@ async function is_login_attempts_limit_exceeded(user)
 	}
 
 	// Update the temperature in the database
-	if (temperature !== user.latest_failed_login_attempt.temperature)
+	if (temperature !== user.login_attempt_temperature)
 	{
 		await store.set_login_temperature(user.id, temperature)
-		user.latest_failed_login_attempt.temperature = temperature
 	}
 
 	// If the temperature is still too hot,
@@ -144,15 +143,15 @@ async function login_attempt_failed(user)
 {
 	const Penalty_interval = 15 * 60 // in seconds
 
-	let temperature
+	let temperature = user.login_attempt_temperature
 
-	if (user.latest_failed_login_attempt && user.latest_failed_login_attempt.temperature)
+	if (temperature)
 	{
-		temperature = user.latest_failed_login_attempt.temperature
+		const when = user.login_attempt_failed_at.getTime()
 
 		// If the two consecutive failed login attempts weren't close enough to each other
 		// then don't penalize and don't double the temperature.
-		if (Date.now() > user.latest_failed_login_attempt.when.getTime() + Penalty_interval * 1000)
+		if (Date.now() > when.getTime() + Penalty_interval * 1000)
 		{
 			// no penalty
 		}

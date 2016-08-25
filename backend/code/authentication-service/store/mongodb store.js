@@ -2,15 +2,13 @@ import MongoDB from '../../common/mongodb'
 
 import { lookup_ip, can_lookup_ip } from '../../../../code/geocoding'
 
-import { round_user_access_time } from './store'
 import online_status_store from './online/online store'
 
-// if MongoDB is installed and configured, use it
+// This store is probably out of sync because it's not used now
 export default class Mongodb_store extends MongoDB
 {
 	async ready()
 	{
-		await online_status_store.ready()
 		return this.connecting || (this.connecting = this.connect())
 	}
 
@@ -179,91 +177,77 @@ export default class Mongodb_store extends MongoDB
 		}
 	}
 
-	async record_access(user, authentication_token_id, ip)
+	async record_access(user_id, authentication_token_id, ip, time)
 	{
-		const latest_activity_time_refresh_interval = 60 * 1000 // one minute
-
-		const now = Date.now()
-
-		// Update user's online status
-		const previous_timestamp = await online_status_store.get_and_set(user.id, authentication_token_id, ip, now)
-
-		// If enough time has passed to update this user's latest activity time,
-		// then update it
-		if (!previous_timestamp || now - previous_timestamp >= latest_activity_time_refresh_interval)
+		// Update user's `latest_activity_time`
+		await this.collection('user_authentication').update_by_id(user_id,
 		{
-			const time = round_user_access_time(now)
-
-			// Update user's `latest_activity_time`
-			await this.collection('user_authentication').update_by_id(user.id,
+			$set:
 			{
-				$set:
-				{
-					// redundant field for faster latest activity time querying
-					latest_activity_time: time
-				}
-			})
+				// redundant field for faster latest activity time querying
+				latest_activity_time: time
+			}
+		})
 
-			// Create access history entry for the token for this IP
-			const access_entry = { ip, time }
+		// Create access history entry for the token for this IP
+		const access_entry = { ip, time }
 
-			// If there's no access history entry for the token for this IP,
-			// then insert it to the history.
-			const history_entry_added = await this.collection('authentication_tokens').findAndModifyAsync
-			(
-				{
-					_id          : this.ObjectId(authentication_token_id),
-					'history.ip' : { $ne: ip }
-				},
-				undefined,
-				{
-					$push:
-					{
-						history: access_entry
-					}
-				}
-			)
-
-			// The update that will be performed on the token
-			let update =
+		// If there's no access history entry for the token for this IP,
+		// then insert it to the history.
+		const history_entry_added = await this.collection('authentication_tokens').findAndModifyAsync
+		(
 			{
-				$set:
+				_id          : this.ObjectId(authentication_token_id),
+				'history.ip' : { $ne: ip }
+			},
+			undefined,
+			{
+				$push:
 				{
-					// Redundant field for faster access token sorting
-					latest_access: time
+					history: access_entry
 				}
 			}
+		)
 
-			// If there previously was no access history entry for the token for this IP,
-			// then also set the place on this history entry.
-			if (history_entry_added.value !== null)
+		// The update that will be performed on the token
+		let update =
+		{
+			$set:
 			{
-				// Gather info about the place of access
-				const place = await get_place_for_ip(ip)
-
-				// Log the place info
-				if (place && place.city)
-				{
-					update.$set['history.$.place'] = place
-				}
+				// Redundant field for faster access token sorting
+				latest_access: time
 			}
-			// Else, if there already was an access history entry for the token for this IP,
-			// then just update its `time`.
-			else
-			{
-				update.$set['history.$.time'] = time
-			}
-
-			// Perform the update on the token
-			await this.collection('authentication_tokens').updateOneAsync
-			(
-				{
-					_id          : this.ObjectId(authentication_token_id),
-					'history.ip' : ip
-				},
-				update
-			)
 		}
+
+		// If there previously was no access history entry for the token for this IP,
+		// then also set the place on this history entry.
+		if (history_entry_added.value !== null)
+		{
+			// Gather info about the place of access
+			const place = await get_place_for_ip(ip)
+
+			// Log the place info
+			if (place && place.city)
+			{
+				update.$set['history.$.place'] = place
+			}
+		}
+		// Else, if there already was an access history entry for the token for this IP,
+		// then just update its `time`.
+		else
+		{
+			update.$set['history.$.time'] = time
+		}
+
+		// Perform the update on the token
+		await this.collection('authentication_tokens').updateOneAsync
+		(
+			{
+				_id          : this.ObjectId(authentication_token_id),
+				'history.ip' : ip
+			},
+			update
+		)
 	}
 
 	async get_tokens(user_id)

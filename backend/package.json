@@ -9,14 +9,15 @@
   "homepage": "https://github.com/halt-hammerzeit/webapp",
   "dependencies": {
     "better-npm-run": "0.0.8",
-    "bookshelf": "~0.8.1",
+    "bookshelf": "^0.10.0",
+    "bookshelf-cascade-delete": "^1.0.5",
     "bytes": "^2.1.0",
     "hiredis": "^0.5.0",
     "ioredis": "^2.3.0",
-    "knex": "~0.8.6",
+    "knex": "^0.11.10",
     "mongodb": "^2.1.7",
     "mongodb-migrate": "^2.0.0",
-    "pg": "~4.4.0",
+    "pg": "^6.1.0",
     "web-service": "^0.2.1"
   },
   "scripts": {

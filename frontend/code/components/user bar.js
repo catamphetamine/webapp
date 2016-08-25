@@ -105,18 +105,21 @@ export default class Authentication extends Component
 
 	static propTypes =
 	{
-		user           : PropTypes.object,
+		user : PropTypes.object,
+		
+		sign_out : PropTypes.func.isRequired,
 		sign_out_error : PropTypes.object,
-		sign_out       : PropTypes.func.isRequired
+
+		sign_in_pending      : PropTypes.bool,
+		registration_pending : PropTypes.bool
 	}
 
 	constructor(properties)
 	{
 		super(properties)
 
-		this.hide     = this.hide.bind(this)
-		this.show     = this.show.bind(this)
-		this.sign_out = this.sign_out.bind(this)
+		this.hide = this.hide.bind(this)
+		this.show = this.show.bind(this)
 
 		extend(this.state, this.pristine_form_state)
 	}
@@ -180,10 +183,9 @@ export default class Authentication extends Component
 				post="/authentication/legacy/sign-out">
 
 				<Button
-					style={style.sign_out}
-					className="sign-out sign-out--fallback"
 					submit={true}
-					action={this.sign_out}>
+					className="sign-out sign-out--fallback"
+					style={style.sign_out}>
 
 					{translate(messages.sign_out)}
 				</Button>
@@ -195,7 +197,7 @@ export default class Authentication extends Component
 
 	render_user_info(user)
 	{
-		const { translate } = this.props
+		const { translate, sign_out } = this.props
 
 		{/* Username and user picture */}
 		const user_info =
@@ -263,23 +265,13 @@ export default class Authentication extends Component
 					<Dropdown_separator/>
 
 					{/* Sign out */}
-					<div key="log_out" onClick={event =>
-					{
-						this.sign_out()
-
-						// if (event.target.type !== 'submit')
-						// {
-						// 	this.sign_out()
-						// }
-					}}>
+					<div key="sign_out" onClick={sign_out}>
 						{/* Icon */}
 						<i className="material-icons material-icons--empty dropdown-item__icon"></i>
 						{/* Text */}
-						<Button style={style.sign_out}
+						<Button
 							className="sign-out"
-							submit={true}
-							action={this.sign_out}>
-
+							style={style.sign_out}>
 							{translate(messages.sign_out)}
 						</Button>
 					</div>
@@ -306,22 +298,6 @@ export default class Authentication extends Component
 	hide()
 	{
 		this.setState({ show: false, ...this.pristine_form_state })
-	}
-
-	async sign_out()
-	{
-		try
-		{
-			await this.props.sign_out()
-		}
-		catch (error)
-		{
-			// swallows http errors
-			if (!error.status)
-			{
-				throw error
-			}
-		}
 	}
 }
 

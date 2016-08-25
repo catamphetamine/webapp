@@ -22,7 +22,8 @@ function public_user(user)
 		'name',
 		'place',
 		'country',
-		'picture'
+		'picture',
+		'was_online_at'
 	]
 
 	const result = {}

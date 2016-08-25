@@ -567,13 +567,13 @@ export default class User_profile extends Component
 	reset_user_info_edit_errors()
 	{
 		this.props.update_user_reset_error()
-		this.props.dispatch({ type: 'user profile: upload user picture: reset error' })
 
 		this.reset_upload_user_picture_errors()
 	}
 
 	reset_upload_user_picture_errors()
 	{
+		this.props.dispatch({ type: 'user profile: upload user picture: reset error' })
 		this.props.dispatch({ type: 'user profile: upload user picture: error: too big: reset' })
 		this.props.dispatch({ type: 'user profile: upload user picture: error: unsupported file: reset' })
 	}

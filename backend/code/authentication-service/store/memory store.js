@@ -1,6 +1,5 @@
 import uid from 'uid-safe'
 
-import { round_user_access_time } from './store'
 import online_status_store from './online/online store'
 
 // if no MongoDB connection is configured,
@@ -10,9 +9,9 @@ export default class Memory_store
 	users = new Map()
 	id_counter = 1
 
-	async ready()
+	ready()
 	{
-		await online_status_store.ready()
+		return Promise.resolve()
 	}
 
 	create_user(user)
@@ -113,51 +112,42 @@ export default class Memory_store
 		user.authentication_tokens.push
 		({
 			id      : authentication_token_id,
-			created : now,
+			created_at : now,
 			// redundant field for faster access token sorting
 			latest_access : now,
-			history : [{ ip, time: now }]
+			user : user.id,
+			history : [{ ip, updated_at: now }]
 		})
 
 		// redundant field for faster latest activity time querying
-		user.latest_activity_time = now
+		user.was_online_at = now
 
 		return authentication_token_id
 	}
 
-	async record_access(user, authentication_token_id, ip)
+	async record_access(user_id, authentication_token_id, ip, now)
 	{
-		user = await store.find_user_by_id(user.id)
+		const user = this.find_user_by_id(user_id)
 
-		// update user's online status
-		const previous_timestamp = await online_status_store.get_and_set(user.id, authentication_token_id, ip, Date.now())
+		// update access time for this authentication token
+		const token = user.authentication_tokens.find_by({ id: authentication_token_id })
 
-		// if enough time has passed to update this user's latest activity time,
-		// then update it
-		if (!previous_timestamp || Date.now() - previous_timestamp >= 60 * 1000)
+		// redundant field for faster access token sorting
+		token.latest_access = now
+
+		const this_ip_access = token.history.find_by({ ip })
+
+		if (this_ip_access)
 		{
-			const now = round_user_access_time(new Date())
-
-			// update access time for this authentication token
-			const token = user.authentication_tokens.find_by({ id: authentication_token_id })
-
-			// redundant field for faster access token sorting
-			token.latest_access = now
-
-			const this_ip_access = token.history.find_by({ ip })
-
-			if (this_ip_access)
-			{
-				this_ip_access.time = now
-			}
-			else
-			{
-				token.history.push({ ip, time: now })
-			}
-
-			// redundant field for faster latest activity time querying
-			user.latest_activity_time = now
+			this_ip_access.updated_at = now
 		}
+		else
+		{
+			token.history.push({ ip, updated_at: now })
+		}
+
+		// redundant field for faster latest activity time querying
+		user.was_online_at = now
 	}
 
 	get_tokens(user_id)

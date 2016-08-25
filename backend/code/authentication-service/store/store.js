@@ -1,12 +1,16 @@
-import moment from 'moment'
-
-import Mongodb_store from './mongodb store'
+// import Mongodb_store from './mongodb store'
 import Memory_store  from './memory store'
+import Sql_store     from './sql store'
 
-export default configuration.mongodb ? new Mongodb_store() : new Memory_store()
-
-// user's latest activity time accuracy
-export function round_user_access_time(time)
+function create_store()
 {
-	return new Date(moment(time).seconds(0).unix() * 1000)
+	if (!knexfile) 
+	{
+		log.info('PostgreSQL connection is not configured. Using in-memory store.')
+		return new Memory_store()
+	}
+
+	return new Sql_store()
 }
+
+export default create_store()

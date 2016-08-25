@@ -133,10 +133,10 @@ export default class Authentication_tokens extends Component
 								key={token_index}
 								className={classNames('content-section-padding',
 								{
-									'background-color--gray-color-lightest' : token.revoked,
+									'background-color--gray-color-lightest' : token.revoked_at,
 									// 'background-color--base-color-lightest' : token.currently_used
 								})}
-								style={token.revoked ? style.authentication_token.revoked : style.authentication_token}>
+								style={token.revoked_at ? style.authentication_token.revoked : style.authentication_token}>
 
 								{/* Divider line */}
 								{ token_index > 0 && <div className="content-section-divider"/> }
@@ -164,7 +164,7 @@ export default class Authentication_tokens extends Component
 									{' '}
 									{/* when */}
 									<React_time_ago
-										date={token.created}
+										date={token.created_at}
 										style={style.authentication_token.issued}/>
 								</div>
 
@@ -172,18 +172,18 @@ export default class Authentication_tokens extends Component
 								{!token.currently_used &&
 									<div style={style.authentication_token.status}>
 										{/* If the token was revoked, show revocation date */}
-										{token.revoked &&
+										{token.revoked_at &&
 											<span>
 												{/* "Revoked" */}
 												{translate(messages.authentication_token_revoked)}
 												{' '}
 												{/* when */}
-												<React_time_ago date={token.revoked}/>
+												<React_time_ago date={token.revoked_at}/>
 											</span>
 										}
 
 										{/* If the token wasn't revoked then it's valid */}
-										{!token.revoked &&
+										{!token.revoked_at &&
 											<span>
 												{/* "Valid" */}
 												{translate(messages.authentication_token_valid)}
@@ -209,7 +209,7 @@ export default class Authentication_tokens extends Component
 
 									{/* For each different IP address show latest activity time */}
 									<ul style={style.authentication_token.latest_activity}>
-										{token.history.sort((a, b) => b.time.getTime() - a.time.getTime()).map((activity, activity_index) =>
+										{token.history.map((activity, activity_index) =>
 										{
 											{/* Latest activity time for this IP address */}
 											return <li key={activity_index}>
@@ -219,7 +219,7 @@ export default class Authentication_tokens extends Component
 												{ activity.place && activity.place.city && `${activity.place.city}, ${activity.place.country}, ` }
 												{' '}
 												{/* Latest activity time */}
-												<React_time_ago date={activity.time}/>
+												<React_time_ago date={activity.updated_at}/>
 											</li>
 										})}
 									</ul>
@@ -238,16 +238,18 @@ export default class Authentication_tokens extends Component
 
 	async revoke_authentication_token(id)
 	{
+		const { revoke_authentication_token, get_user_authentication_tokens, translate } = this.props
+
 		try
 		{
-			await this.props.revoke_authentication_token(id)
+			await revoke_authentication_token(id)
 		}
 		catch (error)
 		{
-			return alert(this.props.translate(messages.revoke_authentication_token_failed))
+			return alert(translate(messages.revoke_authentication_token_failed))
 		}
 
-		this.props.get_user_authentication_tokens()
+		get_user_authentication_tokens()
 	}
 }
 

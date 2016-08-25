@@ -10,7 +10,7 @@ export default class Memory_online_status_store
 	}
 
 	// Returns the user's latest activity date
-	get(user_id)
+	get_latest_access_time(user_id)
 	{
 		if (!this.user_sessions[user_id])
 		{
@@ -24,7 +24,7 @@ export default class Memory_online_status_store
 	// `access_token_id` and `ip` are ignored here, because it's just a demo mode RAM store.
 	// `time` is a number (timestamp).
 	// Returns the previously stored `time`.
-	get_and_set(user_id, access_token_id, ip, time)
+	update_latest_access_time(user_id, access_token_id, ip, time)
 	{
 		const previous_time = this.user_sessions[user_id]
 		this.user_sessions[user_id] = time
@@ -34,7 +34,7 @@ export default class Memory_online_status_store
 	// Marks access token as being valid
 	// so that the token validity check doesn't query the database
 	// (which can be more costly)
-	check_access_token_validity(access_token_id)
+	check_access_token_validity(user_id, access_token_id)
 	{
 		return Promise.resolve()
 	}
@@ -42,7 +42,7 @@ export default class Memory_online_status_store
 	// Removes the flag stating that access token is valid
 	// so that the token validity check will proceed and query the database
 	// (performed upon revoking the token)
-	clear_access_token_validity(access_token_id)
+	clear_access_token_validity(user_id, access_token_id)
 	{
 		return Promise.resolve()
 	}

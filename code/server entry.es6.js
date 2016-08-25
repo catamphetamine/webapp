@@ -15,6 +15,11 @@ Promise.promisifyAll(fs)
 
 global.Root_folder = path.join(__dirname, '..')
 
+if (fs.existsSync(path.join(Root_folder, 'backend/knexfile.js')))
+{
+	global.knexfile = require(path.join(Root_folder, 'backend/knexfile.js'))
+}
+
 global.configuration = configuration
 
 for (let key of Object.keys(global_variables))

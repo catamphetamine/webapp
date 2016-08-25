@@ -99,7 +99,7 @@ class mongodb_database extends MongoDB
 	{
 		const result = await this.collection('images').insertAsync
 		({
-			user    : this.ObjectId(user.id),
+			user    : user.id,
 			created : new Date(),
 			type,
 			info
@@ -117,7 +117,7 @@ class mongodb_database extends MongoDB
 	{
 		const result = await this.collection('user_image_stats').updateAsync
 		({
-			user: this.ObjectId(user.id)
+			user: user.id
 		},
 		{
 			$inc:
@@ -131,7 +131,7 @@ class mongodb_database extends MongoDB
 		{
 			await this.collection('user_image_stats').insertAsync
 			({
-				user       : this.ObjectId(user.id),
+				user       : user.id,
 				files_size : size,
 				count      : 1
 			})
@@ -142,7 +142,7 @@ class mongodb_database extends MongoDB
 	{
 		await this.collection('user_image_stats').updateAsync
 		({
-			user: this.ObjectId(user.id)
+			user: user.id
 		},
 		{
 			$inc:

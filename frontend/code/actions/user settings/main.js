@@ -18,6 +18,17 @@ export const change_email = (email) =>
 
 export const get_user_authentication_tokens = () =>
 ({
-	promise : http => http.get(`/authentication/tokens`),
+	promise : async http =>
+	{
+		const result = await http.get(`/authentication/tokens`)
+
+		// Sort token history (most recently updated first)
+		for (let token of result.tokens)
+		{
+			token.history.sort((a, b) => b.updated_at.getTime() - a.updated_at.getTime())
+		}
+
+		return result
+	},
 	event   : 'user settings: get user authentication tokens'
 })

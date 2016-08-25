@@ -24,19 +24,6 @@ export default class Memory_store
 		return Promise.resolve(this.users.get(String(id)))
 	}
 
-	find_user_by_email(email)
-	{
-		for (let [user_id, user] of this.users)
-		{
-			if (user.email === email)
-			{
-				return Promise.resolve(user)
-			}
-		}
-
-		return Promise.resolve()
-	}
-
 	update_user(id, data)
 	{
 		const user = this.users.get(String(id))
