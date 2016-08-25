@@ -1,5 +1,6 @@
 import uid from 'uid-safe'
 
+import { sort_tokens_by_relevance } from './store'
 import online_status_store from './online/online store'
 
 // if no MongoDB connection is configured,
@@ -152,7 +153,9 @@ export default class Memory_store
 
 	get_tokens(user_id)
 	{
-		return Promise.resolve(this.users.get(user_id).authentication_tokens)
+		const tokens = clone(this.users.get(user_id).authentication_tokens)
+		sort_tokens_by_relevance(tokens)
+		return Promise.resolve(tokens)
 	}
 
 	set_login_temperature(user_id, temperature)

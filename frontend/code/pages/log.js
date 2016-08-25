@@ -59,7 +59,7 @@ export const messages = defineMessages
 (
 	model => 
 	({
-		log   : model.log.data,
+		log   : model.log.log,
 		error : model.log.error
 	}),
 	dispatch => bind_action_creators({ get_log }, dispatch)
@@ -128,7 +128,7 @@ export default class Log extends Component
 						button_style : style.stack_trace_modal.button
 					}]}>
 
-					{!this.state.stack_trace ? null : this.state.stack_trace.map((stack, stack_index) =>
+					{this.state.stack_trace && this.state.stack_trace.map((stack, stack_index) =>
 					{
 						const markup = 
 						(

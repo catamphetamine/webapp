@@ -6,7 +6,7 @@ const handlers = asynchronous_handler
 ({
 	namespace : 'log',
 	name      : 'fetch',
-	result    : 'data'
+	result    : 'log'
 })
 
 // applies a handler based on the action type
