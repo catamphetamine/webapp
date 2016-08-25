@@ -85,28 +85,13 @@ export default function(api)
 			{ type: 'user_picture', image: picture }
 		)
 
-		// Store only the picture `id` and also `sizes`
-		// (to avoid joining the giant `images` table) in `users` table,
-		// and not disclose any private info like the image GPS coordinates.
-		picture =
-		{
-			id    : picture.id,
-			sizes : picture.sizes
-		}
-
-		// `file_size`s aren't needed, so remove them too to free a bit of space
-		for (let size of picture.sizes)
-		{
-			delete size.file_size
-		}
-
 		// Update the picture in `users` table
-		await store.update_user(user.id, { picture })
+		await store.update_picture(user.id, picture)
 
 		// Delete the previous user picture (if any)
 		if (user_data.picture)
 		{
-			await internal_http.delete(`${address_book.image_service}/api/${user_data.picture.id}`)
+			await internal_http.delete(`${address_book.image_service}/api/${user_data.picture}`)
 		}
 
 		return picture

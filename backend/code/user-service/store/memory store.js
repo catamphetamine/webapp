@@ -38,6 +38,15 @@ export default class Memory_store
 		return Promise.resolve()
 	}
 
+	update_picture(id, picture)
+	{
+		return this.update_user(id,
+		{
+			picture       : picture.id,
+			picture_sizes : picture.sizes
+		})
+	}
+
 	update_locale(user_id, locale)
 	{
 		this.find_user_by_id(user_id).locale = locale

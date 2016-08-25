@@ -32,6 +32,24 @@ export default class Sql_store
 		return this.users.update(id, data)
 	}
 
+	update_picture(id, picture)
+	{
+		// Store the picture `id` and also picture `sizes`
+		// (to avoid joining the giant `images` table)
+		return this.update_user(id,
+		{
+			picture : picture.id,
+
+			// `file_size`s aren't needed, so remove them too to free a bit of space
+			picture_sizes : JSON.stringify(picture.sizes.map((size) =>
+			({
+				name   : size.name,
+				width  : size.width,
+				height : size.height
+			})))
+		})
+	}
+
 	update_locale(user_id, locale)
 	{
 		return this.users.update(user_id, { locale })

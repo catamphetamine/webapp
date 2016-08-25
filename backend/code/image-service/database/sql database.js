@@ -34,8 +34,6 @@ export default class Sql_store
 
 	async create({ user, type, sizes, files_size, coordinates, taken_at, taken_at_utc0, info })
 	{
-		taken_at_utc0 = taken_at_utc0.toISOString()
-		
 		const data =
 		{
 			user : user.id,

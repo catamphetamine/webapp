@@ -25,7 +25,8 @@ handlers['user: update user picture: done'] = (result, state) =>
 	user:
 	{
 		...state.user,
-		picture: result
+		picture: result.id,
+		picture_sizes: result.sizes
 	}
 })
 

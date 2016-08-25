@@ -261,6 +261,7 @@ export function own_user(user)
 		'id',
 		'name',
 		'picture',
+		'picture_sizes',
 		'role',
 		// 'moderation',
 		// 'switches',

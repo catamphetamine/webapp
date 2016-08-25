@@ -38,7 +38,8 @@ exports.up = function(knex, Promise)
 		table.string('role', 256)
 		table.string('locale', 128)
 
-		table.jsonb('picture')
+		table.bigint('picture').references('images.id')
+		table.jsonb('picture_sizes')
 
 		table.timestamp('login_attempt_failed_at')
 		table.integer('login_attempt_temperature')

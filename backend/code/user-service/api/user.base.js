@@ -23,6 +23,7 @@ function public_user(user)
 		'place',
 		'country',
 		'picture',
+		'picture_sizes',
 		'was_online_at'
 	]
 

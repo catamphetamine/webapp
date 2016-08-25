@@ -9,16 +9,13 @@ export default class User_picture extends React.Component
 	{
 		user : PropTypes.shape
 		({
-			picture : PropTypes.shape
+			picture_sizes : PropTypes.arrayOf(PropTypes.shape
 			({
-				sizes : PropTypes.arrayOf(PropTypes.shape
-				({
-					// `width` is not required for vector graphics
-					width : PropTypes.number,
-					name  : PropTypes.string.isRequired
-				}))
-				.isRequired
-			})
+				// `width` and `height` are not required for vector graphics
+				width  : PropTypes.number,
+				height : PropTypes.number,
+				name   : PropTypes.string.isRequired
+			}))
 		})
 		.isRequired,
 
@@ -26,9 +23,10 @@ export default class User_picture extends React.Component
 		({
 			sizes : PropTypes.arrayOf(PropTypes.shape
 			({
-				// `width` is not required for vector graphics
-				width : PropTypes.number,
-				name  : PropTypes.string.isRequired
+				// `width` and `height` are not required for vector graphics
+				width  : PropTypes.number,
+				height : PropTypes.number,
+				name   : PropTypes.string.isRequired
 			}))
 			.isRequired
 		}),
@@ -47,9 +45,9 @@ export default class User_picture extends React.Component
 		{
 			sizes = picture.sizes
 		}
-		else if (user.picture)
+		else if (user.picture_sizes)
 		{
-			sizes = user.picture.sizes
+			sizes = user.picture_sizes
 		}
 
 		return <Image
