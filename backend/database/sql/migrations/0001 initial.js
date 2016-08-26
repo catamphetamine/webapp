@@ -46,6 +46,12 @@ exports.up = function(knex, Promise)
 
 		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
 		table.timestamp('was_online_at')
+
+		// Find user by username for username URLs
+		table.index('username')
+
+		// Find user by email on sign in (and register)
+		table.index('email')
 	})
 
 	.createTable('authentication_tokens', function(table)
