@@ -92,7 +92,7 @@ exports.up = function(knex, Promise)
 	})
 
 	// Add `coordinates` column
-	.raw(`ALTER TABLE images ADD COLUMN coordinates GEOMETRY(Point, 26910)`)
+	.raw(`ALTER TABLE images ADD COLUMN coordinates GEOMETRY(Point, 4326)`)
 
 	.createTable('messages', function(table)
 	{

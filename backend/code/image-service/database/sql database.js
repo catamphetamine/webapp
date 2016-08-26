@@ -50,7 +50,9 @@ export default class Sql_store
 
 		if (coordinates)
 		{
-			data.coordinates = Sql.knex_postgis().geomFromText(`Point(0 0)`, 26910)
+			// "from text" is slower
+			// data.coordinates = Sql.knex_postgis().geomFromText(`Point(${coordinates.longitude} ${coordinates.latitude})`, 4326)
+			data.coordinates = Sql.knex_postgis().longitude_latitude(coordinates.longitude, coordinates.latitude)
 		}
 
 		if (Object.keys(info).length > 0)

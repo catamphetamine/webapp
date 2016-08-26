@@ -65,6 +65,19 @@ Sql.bookshelf = () =>
 
 		knex_postgis = knex_postgis_plugin(knex)
 
+		knex.postgisDefineExtras(function(knex, formatter)
+		{
+			const extras =
+			{
+				longitude_latitude(longitude, latitude)
+				{
+					return knex.raw('ST_SetSRID(ST_MakePoint(?, ?), 4326)', [longitude, latitude])
+				}
+			}
+
+			return extras
+		})
+
 		bookshelf = Bookshelf(knex)
 		bookshelf.plugin(cascade_delete)
 	}
