@@ -20,15 +20,15 @@ export const get_user_authentication_tokens = () =>
 ({
 	promise : async http =>
 	{
-		const result = await http.get(`/authentication/tokens`)
+		const tokens = await http.get(`/authentication/tokens`)
 
 		// Sort token history (most recently updated first)
-		for (let token of result.tokens)
+		for (let token of tokens)
 		{
 			token.history.sort((a, b) => b.updated_at.getTime() - a.updated_at.getTime())
 		}
 
-		return result
+		return tokens
 	},
 	event   : 'user settings: get user authentication tokens'
 })

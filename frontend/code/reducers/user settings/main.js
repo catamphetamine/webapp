@@ -12,7 +12,7 @@ const handlers = asynchronous_handler
 },
 {
 	event  : 'user settings: get user authentication tokens',
-	result : (result, state) => ({ ...state, authentication_tokens: result.tokens })
+	result : 'authentication_tokens'
 })
 
 // applies a handler based on the action type

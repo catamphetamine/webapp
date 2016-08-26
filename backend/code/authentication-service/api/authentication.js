@@ -175,7 +175,7 @@ export default function(api)
 
 		if (latest_activity_time)
 		{
-			return { time: latest_activity_time }
+			return latest_activity_time
 		}
 
 		// if there's no current session for the user, 
@@ -188,7 +188,7 @@ export default function(api)
 			throw new errors.Not_found(`User not found: ${id}`)
 		}
 
-		return { time: user.was_online_at }
+		return user.was_online_at
 	})
 
 	api.get('/tokens', async function({}, { user, authentication_token_id })
@@ -209,7 +209,7 @@ export default function(api)
 			}
 		}
 
-		return { tokens }
+		return tokens
 	})
 
 	api.post('/token/revoke', async function({ id }, { user })

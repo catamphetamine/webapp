@@ -9,7 +9,7 @@ const handlers = asynchronous_handler
 },
 {
 	event  : 'user profile: get latest activity time',
-	result : (result, state) => ({ ...state, latest_activity_time: result.time })
+	result : 'latest_activity_time'
 },
 {
 	event  : 'user profile: update user info',
