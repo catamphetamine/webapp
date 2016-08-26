@@ -11,7 +11,11 @@ export function asynchronous_handler(...handlers)
 
 	for (let handler of handlers)
 	{
-		_asynchronous_hander(_handlers, handler.namespace, handler.name, handler.result)
+		const event_name_parts = handler.event.split(': ')
+		const name = event_name_parts.pop()
+		const namespace = event_name_parts.join(': ')
+
+		_asynchronous_hander(_handlers, namespace, name, handler.result)
 	}
 
 	return _handlers

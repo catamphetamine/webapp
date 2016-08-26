@@ -4,18 +4,15 @@ const initial_state = {}
 
 const handlers = asynchronous_handler
 ({
-	namespace : 'user',
-	name      : 'sign in',
-	result    : 'user'
+	event  : 'user: sign in',
+	result : 'user'
 },
 {
-	namespace : 'user',
-	name      : 'registration'
+	event  : 'user: registration'
 },
 {
-	namespace : 'user',
-	name      : 'sign out',
-	result    : (result, state) => ({ ...state, user: undefined })
+	event  : 'user: sign out',
+	result : (result, state) => ({ ...state, user: undefined })
 })
 
 // Updates user picture in the user bar when it is changed on the profile page

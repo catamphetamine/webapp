@@ -4,18 +4,15 @@ const initial_state = {}
 
 const handlers = asynchronous_handler
 ({
-	namespace : 'user settings',
-	name      : 'get user',
-	result    : 'user'
+	event  : 'user settings: get user',
+	result : 'user'
 },
 {
-	namespace : 'user settings',
-	name      : 'load advanced settings'
+	event  : 'user settings: load advanced settings'
 },
 {
-	namespace : 'user settings',
-	name      : 'get user authentication tokens',
-	result    : (result, state) => ({ ...state, authentication_tokens: result.tokens })
+	event  : 'user settings: get user authentication tokens',
+	result : (result, state) => ({ ...state, authentication_tokens: result.tokens })
 })
 
 // applies a handler based on the action type

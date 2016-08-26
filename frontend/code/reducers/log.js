@@ -4,9 +4,8 @@ const initial_state = {}
 
 const handlers = asynchronous_handler
 ({
-	namespace : 'log',
-	name      : 'fetch',
-	result    : 'log'
+	event  : 'log: fetch',
+	result : 'log'
 })
 
 // applies a handler based on the action type

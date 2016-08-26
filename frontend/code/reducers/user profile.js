@@ -4,28 +4,23 @@ const initial_state = {}
 
 const handlers = asynchronous_handler
 ({
-	namespace : 'user profile',
-	name      : 'get user',
-	result    : 'user'
+	event  : 'user profile: get user',
+	result : 'user'
 },
 {
-	namespace : 'user profile',
-	name      : 'get latest activity time',
-	result    : (result, state) => ({ ...state, latest_activity_time: result.time })
+	event  : 'user profile: get latest activity time',
+	result : (result, state) => ({ ...state, latest_activity_time: result.time })
 },
 {
-	namespace : 'user profile',
-	name      : 'update user info',
-	result    : 'user'
+	event  : 'user profile: update user info',
+	result : 'user'
 },
 {
-	namespace : 'user profile',
-	name      : 'upload user picture'
+	event  : 'user profile: upload user picture'
 },
 {
-	namespace : 'user',
-	name      : 'update user picture',
-	result    : (result, state) =>
+	event  : 'user: update user picture',
+	result : (result, state) =>
 	({
 		...state,
 		user:

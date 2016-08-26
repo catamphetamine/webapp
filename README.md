@@ -671,8 +671,6 @@ Troubleshooting
 To do
 ====================
 
-в redux tools убрать namespace (будет частью event'а)
-
 список логов не оборачивать в объект, а слать прямо массивом
 
 если в http response есть один ключ `result` и значение - не is_object и не Array.isArray(), то разворачивать этот response в этот примитив сразу (проверить все функции result у asynchronous_handlers)
