@@ -48,15 +48,10 @@ export default function(api)
 		// Try to get token validity status from cache
 		const is_valid = await online_status_store.check_access_token_validity(user.id, authentication_token_id)
 
-		// If such a key exists in Redis, then the token is valid
-		if (is_valid)
+		// If such a key exists in Redis, then the token is valid.
+		// Else, query the database for token validity
+		if (!is_valid)
 		{
-			// The token is valid
-		}
-		else
-		{
-			// Else, query the database for token validity
-
 			const token = await store.find_token_by_id(authentication_token_id)
 
 			const valid = token && !token.revoked_at

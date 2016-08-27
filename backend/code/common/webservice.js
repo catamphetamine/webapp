@@ -16,6 +16,7 @@ const authentication_options =
 	authentication : configuration.authentication_token_payload.read,
 	validate_token : async (token, ctx) =>
 	{
+		// Prevents recursion
 		if (ctx.path === validate_token_url)
 		{
 			return { valid: true }

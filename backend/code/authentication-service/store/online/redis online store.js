@@ -69,15 +69,14 @@ export default class Redis_online_status_store
 	// (which can be more costly)
 	async check_access_token_validity(user_id, access_token_id)
 	{
-		if (!await this.redis.get(`user/${user_id}/token/${access_token_id}/valid`))
-		{
-			return false
-		}
+		const key = `user/${user_id}/token/${access_token_id}/valid`
 
-		// The token is valid, so prolong its cache entry lifespan
-		await this.set_access_token_validity(user_id, access_token_id, true)
+		const result = await this.redis.get(key)
 
-		return true
+		// If the key exists in Redis, refresh its TTL
+		this.redis.expire(key, Redis_online_status_store.ttl)
+
+		return result
 	}
 
 	// Caches access token validity
