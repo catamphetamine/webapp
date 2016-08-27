@@ -671,14 +671,8 @@ Troubleshooting
 To do
 ====================
 
-  проверить регистрацию и вход на базе данных + на memory store
-  (оба случая - как с javascript'ом, так и без него)
-  (+ все возможные ошибки)
   (+ смену пароля)
 
-  проверить, что обновляется was_online_at
-
-  authentication.base мб убрать оттуда sign-in и register
 
 
 
