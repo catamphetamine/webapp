@@ -83,6 +83,11 @@ export default function(api)
 			throw new errors.Unauthenticated()
 		}
 
+		if (!exists(password))
+		{
+			throw new errors.Input_rejected(`"password" is required`)
+		}
+
 		// Check if the password matches
 		const matches = await check_password(user.id, password)
 
