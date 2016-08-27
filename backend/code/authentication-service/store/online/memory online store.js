@@ -54,4 +54,12 @@ export default class Memory_online_status_store
 	{
 		return Promise.resolve()
 	}
+
+	async get_latest_access_time_persisted_at(authentication_token_id, ip)
+	{
+	}
+
+	async set_latest_access_time_persisted_at(authentication_token_id, ip, now)
+	{
+	}
 }

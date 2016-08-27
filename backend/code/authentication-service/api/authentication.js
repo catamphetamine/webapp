@@ -219,19 +219,27 @@ async function record_access(user_id, authentication_token_id, ip)
 	{
 		const now = Date.now()
 
-		// Update user's online status
-		const previous_timestamp = await online_status_store.update_latest_access_time(user_id, authentication_token_id, ip, now)
+		// Update latest access time: both for this (token, IP) pair and for the user
+		await online_status_store.update_latest_access_time(user_id, authentication_token_id, ip, now)
 
-		// If enough time has passed to update this user's latest activity time,
-		// then update it
-		if (!previous_timestamp || now - previous_timestamp >= latest_activity_time_refresh_interval)
+		// When was the last time it was persisted to the database for this (token, IP) pair
+		const persisted_at = await online_status_store.get_latest_access_time_persisted_at(authentication_token_id, ip)
+
+		// If enough time has passed to update the persisted latest activity time
+		// for this (token, IP) pair, then do it.
+		if (!persisted_at || now - persisted_at >= latest_activity_time_refresh_interval)
 		{
-			const online_date = round_user_access_time(now)
+			// Update the time it was persisted to the database for this (token, IP) pair
+			await online_status_store.set_latest_access_time_persisted_at(authentication_token_id, ip, now)
 
-			await store.record_access(user_id, authentication_token_id, ip, online_date)
+			// Fuzzy latest access time
+			const was_online_at = round_user_access_time(now)
+
+			// Update latest access time for this (token, IP) pair
+			await store.record_access(user_id, authentication_token_id, ip, was_online_at)
 
 			// Also update the redundant `was_online_at` field in the `users` table
-			http.patch(`${address_book.user_service}/was-online-at/${user_id}`, { date: online_date })
+			await http.patch(`${address_book.user_service}/was-online-at/${user_id}`, { date: was_online_at })
 		}
 	}
 	catch (error)

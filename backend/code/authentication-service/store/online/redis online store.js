@@ -100,4 +100,16 @@ export default class Redis_online_status_store
 	{
 		return this.redis.del(`user/${user_id}/token/${access_token_id}/valid`)
 	}
+
+	get_latest_access_time_persisted_at(access_token_id, ip)
+	{
+		return this.redis
+			.get(`token/${access_token_id}/ip/${ip}/latest-access-time/persisted-at`)
+			.then(result => result ? new Date(parseInt(result)) : undefined)
+	}
+
+	set_latest_access_time_persisted_at(access_token_id, ip, now)
+	{
+		return this.redis.set(`token/${access_token_id}/ip/${ip}/latest-access-time/persisted-at`, now)
+	}
 }

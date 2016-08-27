@@ -45,7 +45,7 @@ export default class Memory_store
 
 	async find_user_by_email(email)
 	{
-		for (let user of this.users)
+		for (let [id, user] of this.users)
 		{
 			if (user.email === email)
 			{
