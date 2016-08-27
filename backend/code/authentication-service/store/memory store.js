@@ -102,11 +102,11 @@ export default class Memory_store
 	{
 	}
 
-	async set_latest_failed_login_attempt(authentication_data_id, temperature)
+	async set_latest_failed_authentication_attempt(authentication_data_id, temperature)
 	{
 	}
 
-	async clear_latest_failed_login_attempt(authentication_data_id)
+	async clear_latest_failed_authentication_attempt(authentication_data_id)
 	{
 	}
 }

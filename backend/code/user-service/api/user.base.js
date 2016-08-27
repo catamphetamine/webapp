@@ -21,6 +21,11 @@ export async function sign_in({ email, password }, { set_cookie })
 		throw new errors.Not_found(`No user registered with this email`, { field: 'email' })
 	}
 
+	if (user.blocked_at)
+	{
+		throw new errors.Access_denied(`You are blocked`)
+	}
+
 	// Generate JWT authentication token
 	const token = await http.post(`${address_book.authentication_service}/sign-in`,
 	{

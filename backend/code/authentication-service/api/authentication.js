@@ -83,22 +83,8 @@ export default function(api)
 			throw new errors.Unauthenticated()
 		}
 
-		if (!password)
-		{
-			throw new errors.Input_rejected(`"password" is required`)
-		}
-
-		// Get user's authentication data
-		const authentication_data = await store.get_authentication_data(user.id)
-
-		// Shouldn't happen, but just in case
-		if (!authentication_data)
-		{
-			throw new errors.Not_found()
-		}
-
 		// Check if the password matches
-		const matches = await check_password(password, authentication_data.password)
+		const matches = await check_password(user.id, password)
 
 		// If the password is wrong, return an error
 		if (!matches)
@@ -124,17 +110,8 @@ export default function(api)
 			throw new errors.Input_rejected(`"new_password" is required`)
 		}
 
-		// Get user's authentication data
-		const authentication_data = await store.get_authentication_data(user.id)
-
-		// Shouldn't happen, but just in case
-		if (!authentication_data)
-		{
-			throw new errors.Not_found()
-		}
-
 		// Check if the old password matches
-		const matches = await check_password(old_password, authentication_data.password)
+		const matches = await check_password(user.id, old_password)
 
 		// If the old password is wrong, return an error
 		if (!matches)

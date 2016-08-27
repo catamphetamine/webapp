@@ -267,18 +267,18 @@ export default class Mongodb_store extends MongoDB
 		{
 			$set:
 			{
-				'latest_failed_login_attempt.temperature': temperature
+				'latest_failed_authentication_attempt.temperature': temperature
 			}
 		})
 	}
 
-	async set_latest_failed_login_attempt(user_id, temperature)
+	async set_latest_failed_authentication_attempt(user_id, temperature)
 	{
 		await this.collection('user_authentication').update_by_id(user_id,
 		{
 			$set:
 			{
-				latest_failed_login_attempt:
+				latest_failed_authentication_attempt:
 				{
 					when: new Date(),
 					temperature
@@ -287,13 +287,13 @@ export default class Mongodb_store extends MongoDB
 		})
 	}
 
-	async clear_latest_failed_login_attempt(user_id)
+	async clear_latest_failed_authentication_attempt(user_id)
 	{
 		await this.collection('user_authentication').update_by_id(user_id,
 		{
 			$unset:
 			{
-				latest_failed_login_attempt: true
+				latest_failed_authentication_attempt: true
 			}
 		})
 	}

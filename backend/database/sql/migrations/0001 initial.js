@@ -55,8 +55,8 @@ exports.up = function(knex, Promise)
 
 		table.text('password').notNullable()
 
-		table.timestamp('login_attempt_failed_at')
-		table.integer('login_attempt_temperature')
+		table.timestamp('authentication_attempt_failed_at')
+		table.integer('authentication_attempt_temperature')
 
 		table.bigint('user').notNullable().unique().references('users.id')
 	})

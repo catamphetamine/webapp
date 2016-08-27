@@ -269,27 +269,27 @@ export default class Sql_store
 	{
 		return this.authentication_data.update(authentication_data_id,
 		{
-			login_attempt_temperature : temperature
+			authentication_attempt_temperature : temperature
 		})
 	}
 
 	// Is called on a failed login attempt
-	set_latest_failed_login_attempt(authentication_data_id, temperature)
+	set_latest_failed_authentication_attempt(authentication_data_id, temperature)
 	{
 		return this.authentication_data.update(authentication_data_id,
 		{
-			login_attempt_failed_at   : new Date(),
-			login_attempt_temperature : temperature
+			authentication_attempt_failed_at   : new Date(),
+			authentication_attempt_temperature : temperature
 		})
 	}
 
 	// Is called on a successfull login
-	clear_latest_failed_login_attempt(authentication_data_id)
+	clear_latest_failed_authentication_attempt(authentication_data_id)
 	{
 		return this.authentication_data.update(authentication_data_id,
 		{
-			login_attempt_failed_at   : null,
-			login_attempt_temperature : null
+			authentication_attempt_failed_at   : null,
+			authentication_attempt_temperature : null
 		})
 	}
 }
