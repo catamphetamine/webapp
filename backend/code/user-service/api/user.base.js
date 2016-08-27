@@ -97,7 +97,7 @@ export async function get_user({ id }, { user })
 		throw new errors.Not_found(`User not found: ${id}`)
 	}
 
-	return (user && id === user.id) ? own_user(user_data) : public_user(user_data)
+	return (user && id === String(user.id)) ? own_user(user_data) : public_user(user_data)
 }
 
 function public_user(user)
