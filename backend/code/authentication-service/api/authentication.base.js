@@ -2,45 +2,35 @@ import { http, errors, jwt } from 'web-service'
 
 import store from '../store/store'
 
-export async function sign_in({ email, password }, { ip, set_cookie, keys, internal_http })
+export async function sign_in(user, { ip, set_cookie, keys, internal_http })
 {
-	if (!exists(email))
-	{
-		throw new errors.Input_rejected(`"email" is required`)
-	}
-
-	if (!exists(password))
-	{
-		throw new errors.Input_rejected(`"password" is required`)
-	}
-
-	// Get user by email
-	const user = await store.find_user_by_email(email)
-
-	if (!user)
-	{
-		throw new errors.Not_found(`No user with this email`, { field: 'email' })
-	}
+	// Get authentication data by user's `id`
+	const authentication_data = await store.get_authentication_data(user.id)
 
 	// If too many login attempts have been made
 	// for this user recently, then impose a short cooldown period.
-	if (await is_login_attempts_limit_exceeded(user))
+	if (await is_login_attempts_limit_exceeded(authentication_data))
 	{
 		throw new errors.Access_denied(`Login attempts limit exceeded`)
 	}
 
+	if (!exists(user.password))
+	{
+		throw new errors.Input_rejected(`"password" is required`)
+	}
+
 	// Check if the password matches
-	const matches = await check_password(password, user.password)
+	const matches = await check_password(user.password, authentication_data.password)
 
 	// If the password is wrong, return an error
 	if (!matches)
 	{
-		await login_attempt_failed(user)
+		await login_attempt_failed(authentication_data)
 		throw new errors.Input_rejected(`Wrong password`, { field: 'password' }) 
 	}
 
 	// Reset threshold for login attempt count limiter
-	await login_attempt_succeeded(user)
+	await login_attempt_succeeded(authentication_data)
 
 	// sign in
 	return await sign_in_as(user, { ip, set_cookie, keys, internal_http })
@@ -49,35 +39,17 @@ export async function sign_in({ email, password }, { ip, set_cookie, keys, inter
 async function sign_in_as(user, { ip, set_cookie, keys, internal_http })
 {
 	// Add a new JWT token to the list of valid tokens for this user
-	const jwt_id = await store.add_authentication_token(user, ip)
+	const jwt_id = await store.add_authentication_token(user.id, ip)
 
 	// Use this temporary token just to obtain full user info,
 	// which will be used for populating `payload` of the real JWT token.
 	const temporary_token = jwt({ payload: {}, keys, user_id: user.id, jwt_id })
 
-	// Get full user info (e.g. `role`)
-	const user_data = await http.get(`${address_book.user_service}/${user.id}`, {},
-	{
-		headers: { Authorization: `Bearer ${temporary_token}` }
-	})
-
-	// If the user was not found (shouldn't normally happen)
-	if (!user_data.id)
-	{
-		throw new errors.Not_found(`No user with this id`, { field: 'email' })
-	}
-
 	// Generate real JWT token payload
-	const payload = configuration.authentication_token_payload.write(user_data)
+	const payload = configuration.authentication_token_payload.write(user)
 
 	// Issue JWT token
-	const token = jwt({ payload, keys, user_id: user.id, jwt_id })
-
-	// Write JWT token to a cookie
-	set_cookie('authentication', token, { signed: false })
-
-	// Return full user info
-	return own_user(user_data)
+	return jwt({ payload, keys, user_id: user.id, jwt_id })
 }
 
 // Password bruteforce protection.
@@ -87,13 +59,13 @@ const The_hottest_allowed_temperature = 1000
 // Once the temperature reaches the maximum threshold
 // all further login attempts will be denied.
 // The temperature cools down to a half of its value every 15 minutes.
-async function is_login_attempts_limit_exceeded(user)
+async function is_login_attempts_limit_exceeded(authentication_data)
 {
 	const Temperature_half_life = 15 * 60 // in seconds
 	
 	// If no login attempts failed so far
 	// then allow the next login attempt.
-	if (!user.login_attempt_failed_at)
+	if (!authentication_data.login_attempt_failed_at)
 	{
 		return
 	}
@@ -101,8 +73,8 @@ async function is_login_attempts_limit_exceeded(user)
 	// Fast forward temperature cooldown 
 	// since the latest failed login attempt till now.
 
-	let temperature = user.login_attempt_temperature
-	let when        = user.login_attempt_failed_at.getTime()
+	let temperature = authentication_data.login_attempt_temperature
+	let when        = authentication_data.login_attempt_failed_at.getTime()
 	const now       = Date.now()
 	
 	while (now >= when + Temperature_half_life * 1000)
@@ -121,9 +93,9 @@ async function is_login_attempts_limit_exceeded(user)
 	}
 
 	// Update the temperature in the database
-	if (temperature !== user.login_attempt_temperature)
+	if (temperature !== authentication_data.login_attempt_temperature)
 	{
-		await store.set_login_temperature(user.id, temperature)
+		await store.set_login_temperature(authentication_data.id, temperature)
 	}
 
 	// If the temperature is still too hot,
@@ -134,24 +106,24 @@ async function is_login_attempts_limit_exceeded(user)
 	}
 }
 
-async function login_attempt_succeeded(user)
+async function login_attempt_succeeded(authentication_data)
 {
-	await store.clear_latest_failed_login_attempt(user.id)
+	await store.clear_latest_failed_login_attempt(authentication_data.id)
 }
 
-async function login_attempt_failed(user)
+async function login_attempt_failed(authentication_data)
 {
 	const Penalty_interval = 15 * 60 // in seconds
 
-	let temperature = user.login_attempt_temperature
+	let temperature = authentication_data.login_attempt_temperature
 
 	if (temperature)
 	{
-		const when = user.login_attempt_failed_at.getTime()
+		const when = authentication_data.login_attempt_failed_at.getTime()
 
 		// If the two consecutive failed login attempts weren't close enough to each other
 		// then don't penalize and don't double the temperature.
-		if (Date.now() > when.getTime() + Penalty_interval * 1000)
+		if (Date.now() > when + Penalty_interval * 1000)
 		{
 			// no penalty
 		}
@@ -170,112 +142,20 @@ async function login_attempt_failed(user)
 	}
 
 	// Register this failed login attempt
-	await store.set_latest_failed_login_attempt(user.id, temperature)
+	await store.set_latest_failed_login_attempt(authentication_data.id, temperature)
 }
 
 export async function sign_out({}, { destroy_cookie, user, authentication_token_id })
 {
+	// Shouldn't happen
 	if (!user)
 	{
 		return
 	}
 
-	// console.log('*** user before sign out', user)
-
 	await store.revoke_token(authentication_token_id, user.id)
 
-	// console.log('*** user after sign out', user)
-
 	destroy_cookie('authentication')
-}
-
-export async function register({ name, email, password, terms_of_service_accepted })
-{
-	if (!exists(name))
-	{
-		throw new errors.Input_rejected(`"name" is required`)
-	}
-
-	if (!exists(email))
-	{
-		throw new errors.Input_rejected(`"email" is required`)
-	}
-
-	if (!exists(password))
-	{
-		throw new errors.Input_rejected(`"password" is required`)
-	}
-
-	if (!terms_of_service_accepted)
-	{
-		throw new errors.Input_rejected(`You must accept the terms of service`)
-	}
-
-	if (await store.find_user_by_email(email))
-	{
-		throw new errors.Error(`User is already registered for this email`, { field: 'email' })
-	}
-
-	// hashing a password is a CPU-intensive lengthy operation.
-	// takes about 60 milliseconds on my machine.
-	//
-	// maybe could be offloaded from node.js 
-	// to some another multithreaded backend.
-	//
-	password = await hash_password(password)
-
-	const user =
-	{
-		email,
-		password
-	}
-
-	const id = await store.create_user(user)
-
-	const privileges =
-	{
-		role          : 'administrator', // 'moderator', 'senior moderator' (starting from moderator)
-		// moderation    : [], // [1, 2, 3, ...] (starting from moderator)
-		// switches      : [], // ['read_only', 'disable_user_registration', ...] (starting from senior moderator)
-		// grant   : ['moderation', 'switches'] // !== true (starting from senior moderator)
-		// revoke  : ['moderation', 'switches'] // !== true (starting from senior moderator)
-	}
-
-	const user_data = 
-	{
-		id, 
-		name,
-		email,
-		...privileges
-	}
-
-	await create_user(user_data)
-
-	return { id }
-}
-
-export function own_user(user)
-{
-	const fields =
-	[
-		'id',
-		'name',
-		'picture',
-		'picture_sizes',
-		'role',
-		// 'moderation',
-		// 'switches',
-		'locale'
-	]
-
-	const result = {}
-
-	for (let key of fields)
-	{
-		result[key] = user[key]
-	}
-
-	return result
 }
 
 export async function check_password(password, hashed_password)

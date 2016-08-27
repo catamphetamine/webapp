@@ -126,6 +126,7 @@ export default class Checkbox extends Component
 		const markup =
 		(
 			<div className="rich-fallback">
+				{/* This checkbox will be sent as either "on" or `undefined` */}
 				<input
 					type="checkbox"
 					name={name}

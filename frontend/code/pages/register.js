@@ -9,7 +9,7 @@ import { should_redirect_to } from '../helpers/redirection'
 
 import international from '../international/internationalize'
 
-import { messages as user_bar_messages }                           from '../components/user bar'
+import { messages as user_bar_messages } from '../components/user bar'
 import Authentication_form, { messages as authentication_form_messages } from '../components/authentication form'
 
 const messages = defineMessages
@@ -28,7 +28,7 @@ const messages = defineMessages
 		name                      : model.router.location.query.name,
 		email                     : model.router.location.query.email,
 		password                  : model.router.location.query.password,
-		terms_of_service_accepted : model.router.location.query.terms_of_service_accepted
+		terms_of_service_accepted : exists(model.router.location.query.terms_of_service_accepted)
 	})
 )
 @international()

@@ -31,6 +31,16 @@ export default class Sql_store
 			}
 		})
 
+		this.Authentication_data = bookshelf.Model.extend
+		({
+			tableName : 'authentication_data',
+
+			user()
+			{
+				return this.belongsTo(models.User, 'user')
+			}
+		})
+
 		this.Authentication_token = bookshelf.Model.extend
 		({
 			tableName : 'authentication_tokens',
@@ -61,38 +71,29 @@ export default class Sql_store
 		})
 
 		this.users = new Sql(this.User)
+		this.authentication_data = new Sql(this.Authentication_data)
 		this.authentication_tokens = new Sql(this.Authentication_token)
 		this.authentication_token_access_history = new Sql(this.Authentication_token_access_history)
 	}
 
-	create_user(user)
+	create_authentication_data(user_id, data)
 	{
-		return this.users.create(user)
+		return this.authentication_data.create({ ...data, user: user_id })
 	}
 
-	find_user_by_email(email)
+	get_authentication_data(user_id)
 	{
-		return this.users.find({ email })
+		return this.authentication_data.find({ user: user_id })
 	}
 
-	find_user_by_id(id)
+	update_password(user_id, password)
 	{
-		return this.users.find(id)
+		return this.authentication_data.update({ user: user_id }, { password })
 	}
 
 	find_token_by_id(id)
 	{
 		return this.authentication_tokens.find(id)
-	}
-
-	update_email(user_id, email)
-	{
-		return this.users.update(user_id, { email })
-	}
-
-	update_password(user_id, password)
-	{
-		return this.users.update(user_id, { password })
 	}
 
 	revoke_token(token_id)
@@ -107,14 +108,14 @@ export default class Sql_store
 		})
 	}
 
-	async add_authentication_token(user, ip)
+	async add_authentication_token(user_id, ip)
 	{
 		const now = new Date()
 
 		const authentication_token = await this.authentication_tokens.create
 		({
 			created_at : now,
-			user       : user.id
+			user       : user_id
 		})
 
 		const history_entry =
@@ -139,7 +140,7 @@ export default class Sql_store
 		const access_history_entry = await this.authentication_token_access_history.create(history_entry)
 
 		// If there's too much tokens, then remove excessive revoked ones
-		await this.remove_excessive_tokens(user.id)
+		await this.remove_excessive_tokens(user_id)
 
 		return authentication_token.id
 	}
@@ -249,9 +250,6 @@ export default class Sql_store
 				throw error
 			}
 		}
-
-		// Update user's `was_online_at`
-		await this.users.update(user_id, { was_online_at: time })
 	}
 
 	async get_tokens(user_id)
@@ -267,18 +265,18 @@ export default class Sql_store
 
 	// Is called on cooldown (with time),
 	// when a login attempt is requested.
-	async set_login_temperature(user_id, temperature)
+	async set_login_temperature(authentication_data_id, temperature)
 	{
-		return this.users.update(user_id,
+		return this.authentication_data.update(authentication_data_id,
 		{
 			login_attempt_temperature : temperature
 		})
 	}
 
 	// Is called on a failed login attempt
-	set_latest_failed_login_attempt(user_id, temperature)
+	set_latest_failed_login_attempt(authentication_data_id, temperature)
 	{
-		return this.users.update(user_id,
+		return this.authentication_data.update(authentication_data_id,
 		{
 			login_attempt_failed_at   : new Date(),
 			login_attempt_temperature : temperature
@@ -286,9 +284,9 @@ export default class Sql_store
 	}
 
 	// Is called on a successfull login
-	clear_latest_failed_login_attempt(user_id)
+	clear_latest_failed_login_attempt(authentication_data_id)
 	{
-		return this.users.update(user_id,
+		return this.authentication_data.update(authentication_data_id,
 		{
 			login_attempt_failed_at   : null,
 			login_attempt_temperature : null

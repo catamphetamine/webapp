@@ -22,9 +22,32 @@ export default class Sql_store
 		this.users = new Sql(this.User)
 	}
 
+	async create_user(user)
+	{
+		return (await this.users.create(user)).id
+	}
+
+	// Finds user by `id` or `username`
+	find_user(id)
+	{
+		// If `id` is numerical, then find user by id
+		if (String(parseInt(id)) === String(id))
+		{
+			return this.find_user_by_id(id)
+		}
+
+		// Otherwise, find user by `username`
+		return this.users.find({ username: id })
+	}
+
 	find_user_by_id(id)
 	{
 		return this.users.find(id)
+	}
+
+	find_user_by_email(email)
+	{
+		return this.users.find({ email })
 	}
 
 	update_user(id, data)

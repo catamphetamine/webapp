@@ -22,8 +22,6 @@ exports.up = function(knex, Promise)
 	{
 		table.bigIncrements('id').primary().unsigned()
 
-		table.text('password').notNullable()
-
 		table.text('name').notNullable()
 		table.string('email', email_max_length).notNullable().unique()
 		
@@ -41,9 +39,6 @@ exports.up = function(knex, Promise)
 		table.bigint('picture').references('images.id')
 		table.jsonb('picture_sizes')
 
-		table.timestamp('login_attempt_failed_at')
-		table.integer('login_attempt_temperature')
-
 		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
 		table.timestamp('was_online_at')
 
@@ -52,6 +47,18 @@ exports.up = function(knex, Promise)
 
 		// Find user by email on sign in (and register)
 		table.index('email')
+	})
+
+	.createTable('authentication_data', function(table)
+	{
+		table.bigIncrements('id').primary().unsigned()
+
+		table.text('password').notNullable()
+
+		table.timestamp('login_attempt_failed_at')
+		table.integer('login_attempt_temperature')
+
+		table.bigint('user').notNullable().unique().references('users.id')
 	})
 
 	.createTable('authentication_tokens', function(table)

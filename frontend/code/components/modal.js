@@ -41,8 +41,18 @@ export default class Modal extends Component
 			})
 		),
 		scroll           : PropTypes.bool,
+		body_overflow_x  : PropTypes.string.isRequired,
+		body_overflow_y  : PropTypes.string.isRequired,
 		style            : PropTypes.object,
 		className        : PropTypes.string
+	}
+
+	static defaultProps =
+	{
+		body_overflow_x : 'auto',
+		// Prevents document width from jumping due to the
+		// vertical scrollbar appearance/disappearance
+		body_overflow_y : 'scroll'
 	}
 
 	static contextTypes =
@@ -247,14 +257,17 @@ export default class Modal extends Component
 
 	restore_document_scroll()
 	{
+		const { close_timeout, body_overflow_x, body_overflow_y } = this.props
+
 		setTimeout(() =>
 		{
 			this.header.style.right = 0
 
 			document.body.style.marginRight = 0
-			document.body.style.overflow    = 'auto'
+			document.body.style.overflowX   = body_overflow_x
+			document.body.style.overflowY   = body_overflow_y
 		},
-		this.props.closeTimeoutMS || default_close_timeout)
+		close_timeout || default_close_timeout)
 	}
 
 	on_window_resize()

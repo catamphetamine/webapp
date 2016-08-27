@@ -83,11 +83,11 @@ const server = webpage_server
 	// (will be added to Redux store)
 	preload: async (http, { request }) =>
 	{
-		const user = await http.post(`/authentication/authenticate`)
+		const user = await http.get(`/users/current`)
 
 		const model =
 		{
-			authentication: { user },
+			authentication: { user: user.id ? user : undefined },
 			// Is used by "material-ui" for CSS autoprefixing
 			navigator: { userAgent: request.headers['user-agent'] }
 		}

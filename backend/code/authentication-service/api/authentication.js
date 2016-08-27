@@ -1,10 +1,10 @@
 import moment from 'moment'
-import { errors } from 'web-service'
+import { http, errors } from 'web-service'
 
 import store               from '../store/store'
 import online_status_store from '../store/online/online store'
 
-import { sign_in, sign_out, register, get_user, own_user, check_password, hash_password } from './authentication.base'
+import { sign_in, sign_out, get_user, check_password, hash_password } from './authentication.base'
 
 const latest_activity_time_refresh_interval = 60 * 1000 // one minute
 
@@ -14,30 +14,17 @@ export default function(api)
 
 	api.post('/sign-out', sign_out)
 
-	api.post('/register', register)
-
-	api.post('/authenticate', async function({}, { user, internal_http, get_cookie, set_cookie })
+	api.post('/register', async function({ id, password })
 	{
-		// If no valid JWT token present,
-		// then assume this user is not authenticated.
-		if (!user)
-		{
-			return
-		}
+		// hashing a password is a CPU-intensive lengthy operation.
+		// takes about 60 milliseconds on my machine.
+		//
+		// maybe could be offloaded from node.js 
+		// to some another multithreaded backend.
+		//
+		password = await hash_password(password)
 
-		// Get user info from the database
-		user = await internal_http.get(`${address_book.user_service}/${user.id}`)
-
-		// If the user wasn't found in the databse
-		// (shouldn't happen in normal circumstances)
-		// then abort
-		if (!user)
-		{
-			return
-		}
-
-		// Return user info
-		return own_user(user)
+		await store.create_authentication_data(id, { password })
 	})
 
 	api.get('/token/valid', async function({ bot }, { ip, authentication_token_id, user })
@@ -103,17 +90,17 @@ export default function(api)
 			throw new errors.Input_rejected(`"password" is required`)
 		}
 
-		// Get user by id
-		user = await store.find_user_by_id(user.id)
+		// Get user's authentication data
+		const authentication_data = await store.get_authentication_data(user.id)
 
 		// Shouldn't happen, but just in case
-		if (!user)
+		if (!authentication_data)
 		{
 			throw new errors.Not_found()
 		}
 
 		// Check if the password matches
-		const matches = await check_password(password, user.password)
+		const matches = await check_password(password, authentication_data.password)
 
 		// If the password is wrong, return an error
 		if (!matches)
@@ -139,17 +126,17 @@ export default function(api)
 			throw new errors.Input_rejected(`"new_password" is required`)
 		}
 
-		// Get user by email
-		user = await store.find_user_by_id(user.id)
+		// Get user's authentication data
+		const authentication_data = await store.get_authentication_data(user.id)
 
 		// Shouldn't happen, but just in case
-		if (!user)
+		if (!authentication_data)
 		{
 			throw new errors.Not_found()
 		}
 
 		// Check if the old password matches
-		const matches = await check_password(old_password, user.password)
+		const matches = await check_password(old_password, authentication_data.password)
 
 		// If the old password is wrong, return an error
 		if (!matches)
@@ -166,29 +153,9 @@ export default function(api)
 		await store.update_password(user.id, new_password)
 	})
 
-	api.get('/latest-activity/:id', async function({ id })
+	api.get('/latest-recent-activity/:id', async function({ id })
 	{
-		// try to fetch user's latest activity time from the current session
-		// (is faster and more precise)
-
-		const latest_activity_time = await online_status_store.get_latest_access_time(id)
-
-		if (latest_activity_time)
-		{
-			return latest_activity_time
-		}
-
-		// if there's no current session for the user, 
-		// then try to fetch user's latest activity time from the database
-
-		const user = await store.find_user_by_id(id)
-
-		if (!user)
-		{
-			throw new errors.Not_found(`User not found: ${id}`)
-		}
-
-		return user.was_online_at
+		return await online_status_store.get_latest_access_time(id)
 	})
 
 	api.get('/tokens', async function({}, { user, authentication_token_id })
@@ -259,7 +226,12 @@ async function record_access(user_id, authentication_token_id, ip)
 		// then update it
 		if (!previous_timestamp || now - previous_timestamp >= latest_activity_time_refresh_interval)
 		{
-			await store.record_access(user_id, authentication_token_id, ip, round_user_access_time(now))
+			const online_date = round_user_access_time(now)
+
+			await store.record_access(user_id, authentication_token_id, ip, online_date)
+
+			// Also update the redundant `was_online_at` field in the `users` table
+			http.patch(`${address_book.user_service}/was-online-at/${user_id}`, { date: online_date })
 		}
 	}
 	catch (error)

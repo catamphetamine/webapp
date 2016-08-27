@@ -19,9 +19,39 @@ export default class Memory_store
 		return Promise.resolve(user.id)
 	}
 
+	// Finds user by `id` or `username`
+	find_user(id)
+	{
+		// If `id` is numerical, then find user by id
+		if (String(parseInt(id)) === String(id))
+		{
+			return this.find_user_by_id(id)
+		}
+
+		// Otherwise, find user by `username`
+		for (let user of this.users)
+		{
+			if (user.username === id)
+			{
+				return user
+			}
+		}
+	}
+
 	find_user_by_id(id)
 	{
 		return Promise.resolve(this.users.get(String(id)))
+	}
+
+	async find_user_by_email(email)
+	{
+		for (let user of this.users)
+		{
+			if (user.email === email)
+			{
+				return user
+			}
+		}
 	}
 
 	update_user(id, data)

@@ -177,7 +177,7 @@ export const messages = defineMessages
 	})
 )
 @international()
-export default class Authentication extends Component
+export default class Authentication_form extends Component
 {
 	state = 
 	{
@@ -289,7 +289,7 @@ export default class Authentication extends Component
 				busy={sign_in_pending}
 				focus={this.focus}
 				error={error || this.sign_in_error(sign_in_error)}
-				post="/authentication/legacy/sign-in">
+				post="/users/legacy/sign-in">
 
 				{/* "Sign in" */}
 				<h2 style={style.form_title}>{translate(user_bar_messages.sign_in)}</h2>
@@ -351,15 +351,12 @@ export default class Authentication extends Component
 					</Button>
 
 					{/* "Sign in" button */}
-					<div style={style.to_the_right}>
-						<Button
-							style={style.form_action}
-							submit={true}
-							busy={sign_in_pending}>
+					<Button
+						submit={true}
+						busy={sign_in_pending}>
 
-							{translate(user_bar_messages.sign_in)}
-						</Button>
-					</div>
+						{translate(user_bar_messages.sign_in)}
+					</Button>
 				</Form_actions>
 			</Form>
 		)
@@ -389,7 +386,7 @@ export default class Authentication extends Component
 				busy={sign_in_pending || registration_pending}
 				focus={this.focus}
 				error={error || this.registration_error(registration_error)}
-				post="/authentication/legacy/register">
+				post="/users/legacy/register">
 
 				{/* "Register" */}
 				<h2 style={style.form_title}>{translate(user_bar_messages.register)}</h2>
@@ -451,6 +448,7 @@ export default class Authentication extends Component
 					input_style={style.input.input}/>
 
 				{/* "Accept terms of service" */}
+				{this.state.terms_of_service_accepted}
 				<Checkbox
 					ref="terms_of_service_accepted"
 					name="terms_of_service_accepted"
@@ -475,10 +473,9 @@ export default class Authentication extends Component
 					value={should_redirect_to(this.props.location)}/>
 
 				{/* "Register" button */}
-				<Form_actions style={style.to_the_right}>
+				<Form_actions style={style.register_buttons}>
 					<Button
 						submit={true}
-						style={style.form_action.register}
 						busy={sign_in_pending || registration_pending}>
 
 						{translate(user_bar_messages.register)}
@@ -805,11 +802,6 @@ const style = styler
 		float   : left
 		z-index : 1
 
-	form_action
-		&register
-			margin-top: 1em
-			// margin-bottom: 1em
-
 	clearfix
 		clear : both
 
@@ -820,8 +812,16 @@ const style = styler
 			width : 100%
 
 	sign_in_buttons
+		display         : flex
+		flex-direction  : row
+		justify-content : space-between
+
 		margin-top : 1.5em
 
-	to_the_right
-		float : right
+	register_buttons
+		display         : flex
+		flex-direction  : row
+		justify-content : flex-end
+
+		margin-top: 1em
 `

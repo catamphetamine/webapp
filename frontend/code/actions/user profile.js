@@ -17,7 +17,7 @@ export const get_user = (user_id) =>
 
 export const get_users_latest_activity_time = (user_id) =>
 ({
-	promise : http => http.get(`/authentication/latest-activity/${user_id}`, { bot: true }),
+	promise : http => http.get(`/users/was-online-at/${user_id}`, { bot: true }),
 	event   : 'user profile: get latest activity time'
 })
 

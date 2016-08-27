@@ -1,6 +1,6 @@
 export const sign_in = (info) =>
 ({
-	promise : http => http.post(`/authentication/sign-in`, info),
+	promise : http => http.post(`/users/sign-in`, info),
 	event   : 'user: sign in'
 })
 
@@ -17,7 +17,7 @@ export const sign_out = () =>
 
 export const register = (info) =>
 ({
-	promise : http => http.post(`/authentication/register`, info),
+	promise : http => http.post(`/users/register`, info),
 	event   : 'user: registration'
 })
 

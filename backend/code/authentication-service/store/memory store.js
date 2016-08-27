@@ -8,72 +8,30 @@ import online_status_store from './online/online store'
 export default class Memory_store
 {
 	users = new Map()
-	id_counter = 1
+	tokens = []
 
-	ready()
+	async ready()
 	{
-		return Promise.resolve()
 	}
 
-	create_user(user)
+	async create_authentication_data(user_id, data)
 	{
-		user = Object.clone(user)
-
-		user.id = String(this.id_counter++)
-
-		this.users.set(user.id, user)
-
-		return Promise.resolve(user.id)
+		this.users.set(user_id, data)
 	}
 
-	find_user_by_id(id)
+	async get_authentication_data(user_id)
 	{
-		return Promise.resolve(this.users.get(id))
+		return this.users.get(user_id)
 	}
 
-	find_user_by_email(email)
-	{
-		for (let [user_id, user] of this.users)
-		{
-			if (user.email === email)
-			{
-				return Promise.resolve(user)
-			}
-		}
-
-		return Promise.resolve()
-	}
-
-	update_email(user_id, email)
-	{
-		this.users.get(user_id).email = email
-
-		return Promise.resolve(true)
-	}
-
-	update_password(user_id, password)
+	async update_password(user_id, password)
 	{
 		this.users.get(user_id).password = password
-
-		return Promise.resolve(true)
 	}
 
-	find_token_by_id(token_id)
+	async find_token_by_id(token_id)
 	{
-		for (let [user_id, user] of this.users)
-		{
-			if (exists(user.authentication_tokens))
-			{
-				const token = user.authentication_tokens.find_by({ id: token_id })
-
-				if (token)
-				{
-					return Promise.resolve(token)
-				}
-			}
-		}
-
-		return Promise.resolve()
+		return this.tokens.filter(token => token.id === token_id)[0]
 	}
 
 	async revoke_token(token_id)
@@ -82,7 +40,7 @@ export default class Memory_store
 		token.revoked_at = new Date()
 	}
 
-	async add_authentication_token(user, ip)
+	async add_authentication_token(user_id, ip)
 	{
 		const generate_unique_jwt_id = async () =>
 		{
@@ -104,37 +62,24 @@ export default class Memory_store
 			return uid.sync(24)
 		}
 
-		user.authentication_tokens = user.authentication_tokens || []
-
 		const now = new Date()
 
 		const authentication_token_id = await generate_unique_jwt_id()
 
-		user.authentication_tokens.push
+		tokens.push
 		({
 			id      : authentication_token_id,
 			created_at : now,
-			// redundant field for faster access token sorting
-			latest_access : now,
-			user : user.id,
+			user : user_id,
 			history : [{ ip, updated_at: now }]
 		})
-
-		// redundant field for faster latest activity time querying
-		user.was_online_at = now
 
 		return authentication_token_id
 	}
 
 	async record_access(user_id, authentication_token_id, ip, now)
 	{
-		const user = this.find_user_by_id(user_id)
-
-		// update access time for this authentication token
-		const token = user.authentication_tokens.find_by({ id: authentication_token_id })
-
-		// redundant field for faster access token sorting
-		token.latest_access = now
+		const token = await this.find_token_by_id(authentication_token_id)
 
 		const this_ip_access = token.history.find_by({ ip })
 
@@ -146,30 +91,22 @@ export default class Memory_store
 		{
 			token.history.push({ ip, updated_at: now })
 		}
-
-		// redundant field for faster latest activity time querying
-		user.was_online_at = now
 	}
 
-	get_tokens(user_id)
+	async get_tokens(user_id)
 	{
-		const tokens = clone(this.users.get(user_id).authentication_tokens)
-		sort_tokens_by_relevance(tokens)
-		return Promise.resolve(tokens)
+		return this.tokens.filter(token => token.user === user_id)
 	}
 
-	set_login_temperature(user_id, temperature)
+	async set_login_temperature(authentication_data_id, temperature)
 	{
-		return Promise.resolve()
 	}
 
-	set_latest_failed_login_attempt(user_id, temperature)
+	async set_latest_failed_login_attempt(authentication_data_id, temperature)
 	{
-		return Promise.resolve()
 	}
 
-	clear_latest_failed_login_attempt(user_id)
+	async clear_latest_failed_login_attempt(authentication_data_id)
 	{
-		return Promise.resolve()
 	}
 }

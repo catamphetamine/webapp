@@ -90,31 +90,42 @@ export default class Form extends Component
 			})
 		})
 
-		// Show form errors above form actions,
-		// so that the errors will be visible and won't be overlooked.
-		let index = 0
-		for (let child of form_elements)
+		// Insert `errors` element
+		if (errors)
 		{
-			if (child.type === Form_actions)
-			{
-				// React children's children's props are protected,
-				// and this would throw "can't add property object is not extensible".
-				//
-				// // If the form is busy,
-				// // then mark all its action buttons as busy too.
-				// // (while retaining the original button business, if set)
-				// for (let form_action of child.props.children)
-				// {
-				// 	form_action.props.busy = form_action.props.busy === true || busy === true
-				// }
+			let errors_inserted = false
 
-				form_elements.insert_at(index, errors)
-				return form_elements
+			// Show form errors above form actions,
+			// so that the errors will be visible and won't be overlooked.
+			let index = 0
+			for (let child of form_elements)
+			{
+				if (child.type === Form_actions)
+				{
+					// React children's children's props are protected,
+					// and this would throw "can't add property object is not extensible".
+					//
+					// // If the form is busy,
+					// // then mark all its action buttons as busy too.
+					// // (while retaining the original button business, if set)
+					// for (let form_action of child.props.children)
+					// {
+					// 	form_action.props.busy = form_action.props.busy === true || busy === true
+					// }
+
+					form_elements.insert_at(index, errors)
+					errors_inserted = true
+					break
+				}
+				index++
 			}
-			index++
+
+			if (!errors_inserted)
+			{
+				form_elements.push(errors)
+			}
 		}
 
-		form_elements.push(errors)
 		return form_elements
 	}
 
