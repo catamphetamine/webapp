@@ -160,7 +160,7 @@ export async function sign_out({}, { destroy_cookie, user, authentication_token_
 
 export async function check_password(password, hashed_password)
 {
-	return (await http.get(`${address_book.password_service}/check`, { password, hashed_password })).result
+	return await http.get(`${address_book.password_service}/check`, { password, hashed_password })
 }
 
 export async function hash_password(password)
@@ -170,5 +170,5 @@ export async function hash_password(password)
 
 async function create_user(user)
 {
-	return (await http.post(address_book.user_service, user))
+	return await http.post(address_book.user_service, user)
 }

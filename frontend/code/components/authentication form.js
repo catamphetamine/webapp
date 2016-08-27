@@ -671,16 +671,6 @@ export default class Authentication_form extends Component
 				password                  : this.state.password,
 				terms_of_service_accepted : true // is used when posting the <form/>
 			})
-
-			await this.sign_in()
-
-			// this.cancel_registration()
-
-			// // a sane security measure
-			// this.setState({ password: undefined }, function()
-			// {
-			// 	this.refs.password.focus()
-			// })
 		}
 		catch (error)
 		{
@@ -696,6 +686,21 @@ export default class Authentication_form extends Component
 				this.refs.email.focus()
 			}
 		}
+
+		// Switch to sign in form
+		this.cancel_registration()
+
+		// Sign in as the newly created user
+
+		// Won't show validation errors for sign-in form
+		// (because `indicate_invalid` is set to `true` only on form submit)
+		// await this.sign_in()
+
+		// Submit the sign-in form
+		this.setState({ register: false }, () =>
+		{
+			this.refs.form.submit()
+		})
 	}
 
 	sign_in_error(error)

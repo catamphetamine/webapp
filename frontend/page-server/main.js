@@ -87,7 +87,7 @@ const server = webpage_server
 
 		const model =
 		{
-			authentication: { user: user.id ? user : undefined },
+			authentication: { user },
 			// Is used by "material-ui" for CSS autoprefixing
 			navigator: { userAgent: request.headers['user-agent'] }
 		}

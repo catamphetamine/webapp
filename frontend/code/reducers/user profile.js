@@ -90,5 +90,5 @@ handlers['user profile: upload user picture: error: unsupported file: reset'] = 
 // (is copy & paste'd for all action response handlers)
 export default function(state = initial_state, action_data = {})
 {
-	return (handlers[action_data.type] || ((result, state) => state))(action_data.result || action_data.error || action_data, state)
+	return (handlers[action_data.type] || ((result, state) => state))(Object.keys(action_data).has('result') ? action_data.result : action_data.error || action_data, state)
 }

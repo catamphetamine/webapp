@@ -1,7 +1,7 @@
 export default class Memory_store
 {
 	users = new Map();
-	// id_counter = 0;
+	id_counter = 1;
 
 	ready()
 	{
@@ -12,7 +12,7 @@ export default class Memory_store
 	{
 		user = Object.clone(user)
 
-		// user.id = this.id_counter++
+		user.id = this.id_counter++
 
 		this.users.set(String(user.id), user)
 
@@ -29,7 +29,7 @@ export default class Memory_store
 		}
 
 		// Otherwise, find user by `username`
-		for (let user of this.users)
+		for (let [id, user] of this.users)
 		{
 			if (user.username === id)
 			{

@@ -22,7 +22,7 @@ export async function sign_in({ email, password }, { set_cookie })
 	}
 
 	// Generate JWT authentication token
-	const token = (await http.post(`${address_book.authentication_service}/sign-in`,
+	const token = await http.post(`${address_book.authentication_service}/sign-in`,
 	{
 		// Send only the neccessary fields required for authentication
 		id : user.id,
@@ -30,8 +30,7 @@ export async function sign_in({ email, password }, { set_cookie })
 
 		// Send only the neccessary fields required for JWT payload
 		role : user.role
-	}))
-	.result
+	})
 
 	// Write JWT token to a cookie
 	set_cookie('authentication', token, { signed: false })

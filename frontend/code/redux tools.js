@@ -71,16 +71,6 @@ function _asynchronous_hander(handlers, namespace, event, on_result)
 			// then just set that property to the value of `result`.
 			if (typeof on_result === 'string')
 			{
-				// If `result` object has just a `result` key, and the value is a primitive,
-				// then set `result` to be what was `result.result`.
-				if (Object.keys(result).length === 1
-					&& Object.keys(result)[0] === 'result'
-					&& !is_object(result.result)
-					&& !Array.isArray(result.result))
-				{
-					result = result.result
-				}
-
 				new_state[on_result] = result
 			}
 		}

@@ -12,7 +12,7 @@ export default function(api)
 	{
 		// Try to fetch user's latest activity time from the current session
 		// (is faster and more precise than from a database)
-		const latest_recent_activity = (await http.get(`${address_book.authentication_service}/latest-recent-activity/${id}`)).result
+		const latest_recent_activity = await http.get(`${address_book.authentication_service}/latest-recent-activity/${id}`)
 
 		if (latest_recent_activity)
 		{

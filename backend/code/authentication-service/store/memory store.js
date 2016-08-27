@@ -66,7 +66,7 @@ export default class Memory_store
 
 		const authentication_token_id = await generate_unique_jwt_id()
 
-		tokens.push
+		this.tokens.push
 		({
 			id      : authentication_token_id,
 			created_at : now,
