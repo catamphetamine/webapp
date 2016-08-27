@@ -59,12 +59,15 @@ export default function(api)
 
 			const token = await store.find_token_by_id(authentication_token_id)
 
-			const valid = token && !token.revoked
+			const valid = token && !token.revoked_at
 
 			// Cache access token validity
 			await online_status_store.set_access_token_validity(user.id, authentication_token_id, valid)
 
-			return { valid }
+			if (!valid)
+			{
+				return { valid }
+			}
 		}
 
 		// If it's not an automated Http request,
