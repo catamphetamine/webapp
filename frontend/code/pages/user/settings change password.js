@@ -16,7 +16,7 @@ import http_status_codes from '../../tools/http status codes'
 
 import international from '../../international/internationalize'
 
-const messages = defineMessages
+export const messages = defineMessages
 ({
 	// Change password popup
 	change_password:
@@ -344,7 +344,7 @@ class Change_password_step_1 extends Component
 
 		if (error.status === http_status_codes.Input_rejected)
 		{
-			return // translate(authentication_messages.wrong_password)
+			return
 		}
 
 		return translate(messages.check_current_password_failed)
@@ -373,6 +373,7 @@ class Change_password_step_1 extends Component
 		return this.validate_password(value)
 	}
 
+	// Reset form error before running form field validation
 	on_submit_step()
 	{
 		this.props.reset_error()
@@ -594,6 +595,7 @@ class Change_password_step_3 extends Component
 		return this.validate_password(value)
 	}
 
+	// Reset form error before running form field validation
 	on_submit_step()
 	{
 		this.setState({ error: undefined })

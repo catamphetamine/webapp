@@ -8,6 +8,7 @@ export default function(api)
 	api.post('/sign-in', sign_in)
 	api.post('/register', register)
 
+	// Get user's "was online at" time
 	api.get('/was-online-at/:id', async ({ id }) =>
 	{
 		// Try to fetch user's latest activity time from the current session
@@ -32,11 +33,13 @@ export default function(api)
 		return user.was_online_at
 	})
 
+	// Update user's "was online at" time
 	api.patch('/was-online-at/:id', async ({ id, date }) =>
 	{
 		await store.update_user(id, { was_online_at: date })
 	})
 
+	// Get currently logged in user (if any)
 	api.get('/current', async function({}, { user, internal_http, get_cookie, set_cookie })
 	{
 		// If no valid JWT token present,
@@ -61,33 +64,32 @@ export default function(api)
 		return own_user(user)
 	})
 
-	// api.patch('/settings', async function({ xxx }, { user })
-	// {
-	// 	if (!user)
-	// 	{
-	// 		throw new errors.Unauthenticated()
-	// 	}
-	//
-	// 	await store.update_user(user.id, { xxx })
-	// })
-
-	api.patch('/email', async function({ email }, { user, authentication_token, internal_http })
+	// Change user's `email`
+	api.patch('/email', async function({ email, password }, { user, authentication_token, internal_http })
 	{
-		if (!email)
-		{
-			throw new errors.Input_rejected('email')
-		}
-
 		if (!user)
 		{
 			throw new errors.Unauthenticated()
 		}
 
-		await store.update_user(user.id, { email })
+		if (!email)
+		{
+			throw new errors.Input_rejected('"email" is required', { field: 'email' })
+		}
 
-		await internal_http.patch(`${address_book.authentication_service}/email`, { email })
+		if (!password)
+		{
+			throw new errors.Input_rejected('"password" is required', { field: 'password' })
+		}
+
+		password = 'blah'
+
+		await internal_http.get(`${address_book.authentication_service}/password/check`, { password })
+
+		await store.update_user(user.id, { email })
 	})
 
+	// Change user data
 	api.patch('/', async function(data, { user })
 	{
 		if (!user)
@@ -110,6 +112,7 @@ export default function(api)
 		return await get_user({ id: user.id }, { user })
 	})
 
+	// Change user picture
 	api.post('/picture', async function(picture, { user, authentication_token, internal_http })
 	{
 		if (!user)

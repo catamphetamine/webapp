@@ -27,6 +27,7 @@ import Content_section from '../../components/content section'
 import Editable_field  from '../../components/editable field'
 
 import Change_password_popup from './settings change password'
+import Check_password_popup  from './settings check password'
 import Authentication_tokens from './settings authentication tokens'
 
 const messages = defineMessages
@@ -42,6 +43,12 @@ const messages = defineMessages
 		id             : 'user.settings.show_advanced_settings',
 		description    : 'Show user account\'s advanced settings',
 		defaultMessage : 'Show advanced settings'
+	},
+	change_email_failed:
+	{
+		id             : 'user.settings.could_not_change_email',
+		description    : `Couldn't change user's email to a new one`,
+		defaultMessage : `Couldn't change your email`
 	},
 	save_settings_failed:
 	{
@@ -104,11 +111,13 @@ export default class Settings_page extends Component
 	{
 		super(props, context)
 
-		this.save_settings               = this.save_settings.bind(this)
 		this.load_advanced_settings      = this.load_advanced_settings.bind(this)
 		this.validate_email              = this.validate_email.bind(this)
 		this.change_password             = this.change_password.bind(this)
 		this.cancel_change_password      = this.cancel_change_password.bind(this)
+		this.dismiss_check_password      = this.dismiss_check_password.bind(this)
+		this.update_email                = this.update_email.bind(this)
+		this.save_new_email              = this.save_new_email.bind(this)
 	}
 
 	render()
@@ -142,6 +151,12 @@ export default class Settings_page extends Component
 					is_open={this.state.change_password}
 					close={this.cancel_change_password}/>
 
+				{/* Password check popup */}
+				<Check_password_popup
+					is_open={this.state.check_password}
+					close={this.dismiss_check_password}
+					done={this.update_email}/>
+
 				{/* General settings */}
 				<div className="row row--content-sections">
 					<div className="column-l-6-of-12">
@@ -159,7 +174,7 @@ export default class Settings_page extends Component
 								label={translate(authentication_form_messages.email)}
 								value={user.email}
 								validate={this.validate_email}
-								on_save={value => alert('work in progress: save ' + value)}/>
+								on_save={this.save_new_email}/>
 
 							{/* User's password */}
 							<Editable_field
@@ -206,19 +221,6 @@ export default class Settings_page extends Component
 		return markup
 	}
 
-	async save_settings()
-	{
-		try
-		{
-			await this.props.change_email(this.state.email)
-		}
-		catch (error)
-		{
-			console.error(error)
-			return alert(this.props.translate(messages.save_settings_failed))
-		}
-	}
-
 	async load_advanced_settings()
 	{
 		try
@@ -262,6 +264,40 @@ export default class Settings_page extends Component
 	cancel_change_password()
 	{
 		this.setState({ change_password: false })
+	}
+
+	check_password()
+	{
+		this.setState({ check_password: true })
+	}
+
+	dismiss_check_password()
+	{
+		this.setState({ check_password: false })
+	}
+
+	async update_email(password)
+	{
+		const { change_email, translate } = this.props
+		const { new_email } = this.state
+
+		return alert('To do: change email to ' + new_email)
+
+		try
+		{
+			await change_email(new_email, password)
+		}
+		catch (error)
+		{
+			console.error(error)
+			return alert(translate(messages.change_email_failed))
+		}
+	}
+
+	save_new_email(value)
+	{
+		this.setState({ new_email: value })
+		this.check_password()
 	}
 }
 

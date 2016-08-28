@@ -56,7 +56,14 @@ export default function(api)
 
 			const valid = token && !token.revoked_at
 
-			// Cache access token validity
+			// Cache access token validity.
+			// 
+			// Theoretically there could be a small race condition here,
+			// when a token validity is not cached, and that token is revoked
+			// between the token validity being read from the database
+			// and the token validition being cached, but I assume exploitability
+			// of this race condition practically equal to zero.
+			//
 			await online_status_store.set_access_token_validity(user.id, authentication_token_id, valid)
 
 			if (!valid)
@@ -180,16 +187,6 @@ export default function(api)
 
 		await store.revoke_token(id)
 		await online_status_store.clear_access_token_validity(user.id, id)
-	})
-
-	api.patch('/email', async function({ email }, { user })
-	{
-		if (!user)
-		{
-			throw new errors.Unauthenticated()
-		}
-
-		await store.update_email(user.id, email)
 	})
 }
 

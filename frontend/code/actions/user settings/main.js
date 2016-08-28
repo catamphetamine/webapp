@@ -10,10 +10,21 @@ export const revoke_authentication_token = (token_id) =>
 	event   : 'user settings: revoke authentication token'
 })
 
-export const change_email = (email) =>
+export const change_email = (email, password) =>
 ({
-	promise : http => http.patch(`/users/email`, { email }),
-	event   : 'user settings: save settings'
+	promise : http => http.patch(`/users/email`, { email, password }),
+	event   : 'user settings: change email'
+})
+
+export const check_password = (password) =>
+({
+	promise : http => http.get(`/authentication/password/check`, { password }),
+	event   : 'user settings: check password'
+})
+
+export const reset_check_password_error = () =>
+({
+	type : 'user settings: check password: reset error'
 })
 
 export const get_user_authentication_tokens = () =>

@@ -19,6 +19,7 @@ export default function()
 				super(props, context)
 
 				this.on_change = this.on_change.bind(this)
+				this.focus     = this.focus.bind(this)
 			}
 
 			render()

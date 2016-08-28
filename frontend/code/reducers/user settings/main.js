@@ -13,6 +13,12 @@ const handlers = asynchronous_handler
 {
 	event  : 'user settings: get user authentication tokens',
 	result : 'authentication_tokens'
+},
+{
+	event : 'user settings: check password'
+},
+{
+	event : 'user settings: change email'
 })
 
 // applies a handler based on the action type
