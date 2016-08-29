@@ -82,8 +82,6 @@ export default function(api)
 			throw new errors.Input_rejected('"password" is required', { field: 'password' })
 		}
 
-		password = 'blah'
-
 		await internal_http.get(`${address_book.authentication_service}/password/check`, { password })
 
 		await store.update_user(user.id, { email })

@@ -63,6 +63,7 @@ export default class Check_password_popup extends Component
 	static propTypes =
 	{
 		is_open : PropTypes.bool,
+		busy    : PropTypes.bool,
 		close   : PropTypes.func.isRequired,
 
 		done : PropTypes.func.isRequired,
@@ -93,6 +94,7 @@ export default class Check_password_popup extends Component
 			reset_check_password_error,
 
 			is_open,
+			busy,
 
 			translate
 		}
@@ -105,7 +107,7 @@ export default class Check_password_popup extends Component
 				is_open={is_open}
 				close={this.close}
 				cancel={true}
-				busy={check_password_pending}
+				busy={check_password_pending || busy}
 				actions=
 				{[{
 					text    : translate(default_messages.done),
@@ -214,7 +216,7 @@ class Check_password extends Component
 	// Public API
 	submit()
 	{
-		this.refs.input.submit()
+		this.refs.form.submit()
 	}
 
 	// Reset form error before running form field validation

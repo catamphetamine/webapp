@@ -671,36 +671,17 @@ Troubleshooting
 To do
 ====================
 
+отменять editable field по эскейпу
+
+вынести смену пароля в отдельный файл (и смену емейла тоже)
+
+
+
 не сбрасывать состояние Editable_field по нажатию на сохранить, когда запрашивает пароль для смены почты.
 (сбрасывать по закрытию окошка проверки пароля)
 
 
 
-
-при сабмите формы, до валидации полей, вызывать метод reset_error, и его прописать для change_password и для check_password (мб для других тоже)
-это заменит вызов функции on_submit у формы
-
-
-
-
-ещё сделать у modal методы reset() (= cleanup()) и focus()
-
-reset() будет вызываться после закрытия по таймауту и очищать ошибки (как сейчас сделано в close() в change password)
-
-focus будет делать фокус на инпуте в setTimeout:
-
-  componentDidMount()
-  {
-    // Because this component is mounted before
-    // the react-modal contents are mounted,
-    // focus after the modal has been mounted.
-    setTimeout(this.refs.input.focus, 0)
-  }
-
-
-
-
-сделать смену почты со вводом пароля
 
 показывать "снек", что "пароль изменён"
 

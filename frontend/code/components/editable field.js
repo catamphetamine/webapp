@@ -19,6 +19,8 @@ export default class Editable_field extends Component
 		label       : PropTypes.string,
 		name        : PropTypes.string.isRequired,
 		value       : PropTypes.any,
+		saving      : PropTypes.bool,
+		editing     : PropTypes.bool,
 		on_edit     : PropTypes.func,
 		on_save     : PropTypes.func,
 		validate    : PropTypes.func,
@@ -42,9 +44,16 @@ export default class Editable_field extends Component
 
 	render()
 	{
-		const { name, label, value, validate, email, password, multiline, className } = this.props
+		const
+		{
+			label,
+			editing,
+			saving,
+			className
+		}
+		= this.props
+
 		const { edit } = this.state
-		const translate = this.props.intl.formatMessage
 
 		const markup =
 		(
@@ -56,54 +65,102 @@ export default class Editable_field extends Component
 				{/* htmlFor={name} */}
 				<label>{label}</label>
 
-				{/* Field value */}
-				{ !edit && value !== undefined &&
-					<div className="editable-field__value">{value}</div>
-				}
-
-				{/* "Change" */}
-				{ !edit && 
-					<Button
-						action={this.edit}>
-						{translate(default_messages.change).toLowerCase()}
-					</Button>
-				}
-
-				{/* Text input */}
-				{ edit &&
-					<Form
-						focus={this.focus}
-						action={this.save}>
-
-						<Text_input
-							value={this.state.value}
-							ref={name}
-							name={name}
-							email={email}
-							password={password}
-							multiline={multiline}
-							placeholder={label}
-							invalid={validate(this.state.value)}
-							on_change={this.update_value}/>
-
-						{/* Validation debugging */}
-						{/* JSON.stringify(this.state.valid) */}
-
-						{/* "Cancel" */}
-						<Button
-							action={this.cancel}>
-							{translate(default_messages.cancel).toLowerCase()}
-						</Button>
-
-						{/* "Save" */}
-						<Button
-							submit={true}
-							className="editable-field__button--subsequent">
-							{translate(default_messages.save).toLowerCase()}
-						</Button>
-					</Form>
-				}
+				{/* Field value and actions */}
+				{ (edit || editing || saving) ? this.render_editing() : this.render_not_editing() }
 			</div>
+		)
+
+		return markup
+	}
+
+	render_not_editing()
+	{
+		const
+		{
+			value,
+			saving
+		}
+		= this.props
+
+		const translate = this.props.intl.formatMessage
+
+		const elements = []
+
+		// Display field value
+		if (value !== undefined)
+		{
+			elements.push(<div key="value" className="editable-field__value">{value}</div>)
+		}
+
+		// "Change" button
+		elements.push
+		(
+			<Button
+				key="change"
+				action={this.edit}
+				disabled={saving}>
+				{translate(default_messages.change).toLowerCase()}
+			</Button>
+		)
+
+		return elements
+	}
+
+	render_editing()
+	{
+		const
+		{
+			label,
+			name,
+			value,
+			validate,
+			email,
+			password,
+			multiline,
+			saving
+		}
+		= this.props
+
+		const translate = this.props.intl.formatMessage
+
+		const markup =
+		(
+			<Form
+				focus={this.focus}
+				action={this.save}
+				busy={saving}>
+
+				{/* Editable text field */}
+				<Text_input
+					value={this.state.value}
+					ref={name}
+					name={name}
+					email={email}
+					password={password}
+					multiline={multiline}
+					placeholder={label}
+					invalid={validate(this.state.value)}
+					disabled={saving}
+					on_change={this.update_value}/>
+
+				{/* Validation debugging */}
+				{/* JSON.stringify(this.state.valid) */}
+
+				{/* "Cancel" */}
+				<Button
+					action={this.cancel}
+					disabled={saving}>
+					{translate(default_messages.cancel).toLowerCase()}
+				</Button>
+
+				{/* "Save" */}
+				<Button
+					submit={true}
+					busy={saving}
+					className="editable-field__button--subsequent">
+					{translate(default_messages.save).toLowerCase()}
+				</Button>
+			</Form>
 		)
 
 		return markup
@@ -121,7 +178,7 @@ export default class Editable_field extends Component
 
 		on_save(value)
 
-		this.setState({ value: undefined, edit: false })
+		this.setState({ edit : false })
 	}
 
 	edit()

@@ -142,7 +142,7 @@ export default class Modal extends Component
 						onClick={this.block_event}
 						style={this.props.style ? { ...style.content, ...this.props.style } : style.content}>
 						
-						{children}
+						{this.content()}
 					</div>
 
 					{/* dialog window actions */}
@@ -177,6 +177,20 @@ export default class Modal extends Component
 		)
 
 		return markup
+	}
+
+	content()
+	{
+		const { children } = this.props
+
+		// if (React.Children.count(children) === 1)
+		// {
+		// 	return React.cloneElement(React.Children.only(children),
+		// 	{
+		// 	})
+		// }
+
+		return children
 	}
 
 	// Play "cannot close" animation on the modal
