@@ -49,7 +49,8 @@ export default class Editable_field extends Component
 			label,
 			editing,
 			saving,
-			className
+			className,
+			children
 		}
 		= this.props
 
@@ -67,6 +68,9 @@ export default class Editable_field extends Component
 
 				{/* Field value and actions */}
 				{ (edit || editing || saving) ? this.render_editing() : this.render_not_editing() }
+
+				{/* Can be used for relevant <Modal/>s */}
+				{children}
 			</div>
 		)
 

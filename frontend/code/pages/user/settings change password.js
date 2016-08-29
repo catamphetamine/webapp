@@ -7,6 +7,7 @@ import { bindActionCreators as bind_action_creators } from 'redux'
 
 import { check_current_password, reset_check_current_password_error, change_password, reset_change_password_error } from '../../actions/user settings/change password'
 
+import Editable_field  from '../../components/editable field'
 import Modal, { reset_modal } from '../../components/modal'
 import Steps, { Text_input_step } from '../../components/steps'
 import default_messages from '../../components/messages'
@@ -81,7 +82,71 @@ export const messages = defineMessages
 	}
 })
 
-{/* Change password popup */}
+@international()
+export default class Change_password extends Component
+{
+	static propTypes =
+	{
+
+	}
+
+	state = {}
+
+	constructor(props, context)
+	{
+		super(props, context)
+
+		this.change_password        = this.change_password.bind(this)
+		this.cancel_change_password = this.cancel_change_password.bind(this)
+	}
+
+	render()
+	{
+		const { translate } = this.props
+		const { changing_password } = this.state
+
+		// {/* User's password */}
+		
+		const markup =
+		(
+			<Editable_field
+				key="editable_field"
+				name="password"
+				password={true}
+				label={translate(authentication_messages.password)}
+				on_edit={this.change_password}>
+
+				{/* Change password popup */}
+				<Change_password_popup
+					key="popup"
+					is_open={changing_password}
+					close={this.cancel_change_password}/>
+			</Editable_field>
+		)
+
+		return markup
+	}
+
+	change_password()
+	{
+		this.setState({ changing_password: true, step: 1 })
+	}
+
+	cancel_change_password()
+	{
+		this.setState({ changing_password: false })
+	}
+
+	validate_password(value)
+	{
+		if (!value)
+		{
+			return this.props.translate(authentication_messages.registration_password_is_required)
+		}
+	}
+}
+
+// {/* Change password popup */}
 @international()
 @connect
 (
@@ -102,7 +167,7 @@ export const messages = defineMessages
 	},
 	dispatch)
 )
-export default class Change_password_popup extends Component
+class Change_password_popup extends Component
 {
 	state = {}
 

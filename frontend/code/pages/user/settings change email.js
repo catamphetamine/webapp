@@ -5,12 +5,19 @@ import { defineMessages }              from 'react-intl'
 import { connect }                     from 'react-redux'
 import { bindActionCreators as bind_action_creators } from 'redux'
 
-import { check_password, reset_check_password_error } from '../../actions/user settings/main'
+import
+{
+	check_password,
+	reset_check_password_error,
+	change_email
+}
+from '../../actions/user settings/main'
 
 import http_status_codes from '../../tools/http status codes'
 
 import international from '../../international/internationalize'
 
+import Editable_field  from '../../components/editable field'
 import Modal, { reset_modal } from '../../components/modal'
 import Form from '../../components/form'
 import Text_input from '../../components/text input'
@@ -41,6 +48,170 @@ const messages = defineMessages
 	}
 })
 
+@connect
+(
+	model =>
+	({
+		user : model.user_settings.main.user,
+
+		// change_email_pending : model.user_settings.main.change_email_pending,
+	}),
+	dispatch =>
+	({
+		dispatch,
+		...bind_action_creators
+		({
+			change_email
+		},
+		dispatch)
+	})
+)
+@international()
+export default class Change_email extends Component
+{
+	static propTypes =
+	{
+		change_email         : PropTypes.func.isRequired,
+		// change_email_pending : PropTypes.bool
+	}
+
+	state = {}
+
+	constructor(props, context)
+	{
+		super(props, context)
+
+		this.validate_email              = this.validate_email.bind(this)
+		this.dismiss_check_password      = this.dismiss_check_password.bind(this)
+		this.update_email                = this.update_email.bind(this)
+		this.save_new_email              = this.save_new_email.bind(this)
+		this.cancel_change_email         = this.cancel_change_email.bind(this)
+	}
+
+	render()
+	{
+		const
+		{
+			user,
+			translate,
+			// change_email_pending
+		}
+		= this.props
+
+		const
+		{
+			new_email,
+			changing_email,
+			saving_email
+		}
+		= this.state
+
+		// {/* User's email */}
+		const markup = 
+		(
+			<Editable_field
+				name="email"
+				email={true}
+				label={translate(authentication_messages.email)}
+				value={new_email || user.email}
+				validate={this.validate_email}
+				on_cancel={this.cancel_change_email}
+				on_save={this.save_new_email}
+				editing={changing_email}
+				saving={saving_email}>
+
+				{/* Password check popup */}
+				<Check_password_popup
+					is_open={this.state.check_password}
+					close={this.dismiss_check_password}
+					done={this.update_email}/>
+			</Editable_field>
+		)
+
+		return markup
+	}
+
+	validate_email(value)
+	{
+		if (!value)
+		{
+			return this.props.translate(authentication_form_messages.registration_email_is_required)
+		}
+	}
+
+	check_password()
+	{
+		this.setState({ check_password: true })
+	}
+
+	dismiss_check_password()
+	{
+		this.setState
+		({
+			check_password : false,
+			changing_email : false,
+			new_email      : undefined
+		})
+	}
+
+	cancel_change_email()
+	{
+		this.setState
+		({
+			changing_email : false,
+			new_email      : undefined
+		})
+	}
+
+	async update_email(password)
+	{
+		const { change_email, dispatch, translate } = this.props
+		const { new_email } = this.state
+
+		try
+		{
+			this.setState({ saving_email: true })
+
+			await change_email(new_email, password)
+
+			dispatch
+			({
+				type   : 'user settings: email changed',
+				result : new_email
+			})
+		}
+		catch (error)
+		{
+			console.error(error)
+			return alert(translate(messages.change_email_failed))
+		}
+		finally
+		{
+			this.setState
+			({
+				changing_email : false,
+				saving_email   : false
+			})
+		}
+	}
+
+	save_new_email(value)
+	{
+		const { user } = this.props
+
+		if (value !== user.email)
+		{
+			this.setState
+			({
+				changing_email : true,
+				new_email      : value
+			})
+
+			this.check_password()
+		}
+	}
+}
+
 @international()
 @connect
 (
@@ -56,7 +227,7 @@ const messages = defineMessages
 	},
 	dispatch)
 )
-export default class Check_password_popup extends Component
+class Check_password_popup extends Component
 {
 	state = {}
 
