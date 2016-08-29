@@ -7,7 +7,7 @@ import { bindActionCreators as bind_action_creators } from 'redux'
 
 import { check_current_password, reset_check_current_password_error, change_password, reset_change_password_error } from '../../actions/user settings/change password'
 
-import Modal from '../../components/modal'
+import Modal, { reset_modal } from '../../components/modal'
 import Steps, { Text_input_step } from '../../components/steps'
 import default_messages from '../../components/messages'
 import { messages as authentication_messages } from '../../components/authentication form'
@@ -211,15 +211,13 @@ export default class Change_password_popup extends Component
 	{
 		this.props.close()
 
-		// https://github.com/reactjs/react-modal/issues/214
-		setTimeout(() =>
+		reset_modal(() =>
 		{
 			this.props.reset_check_current_password_error()
 			this.props.reset_change_password_error()
 
 			this.setState({ is_last_step: false })
-		},
-		150)
+		})
 	}
 }
 

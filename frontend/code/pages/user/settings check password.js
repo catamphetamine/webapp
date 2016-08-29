@@ -11,7 +11,7 @@ import http_status_codes from '../../tools/http status codes'
 
 import international from '../../international/internationalize'
 
-import Modal from '../../components/modal'
+import Modal, { reset_modal } from '../../components/modal'
 import Form from '../../components/form'
 import Text_input from '../../components/text input'
 
@@ -132,12 +132,7 @@ export default class Check_password_popup extends Component
 	{
 		this.props.close()
 
-		// https://github.com/reactjs/react-modal/issues/214
-		setTimeout(() =>
-		{
-			this.props.reset_check_password_error()
-		},
-		150)
+		reset_modal(this.props.reset_check_password_error)
 	}
 
 	done(password)

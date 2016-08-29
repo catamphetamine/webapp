@@ -281,6 +281,14 @@ export default class Modal extends Component
 	}
 }
 
+// Reset modal after its closing animation finishes
+// (to avoid weird content jumping)
+// https://github.com/reactjs/react-modal/issues/214
+export function reset_modal(reset, close_timeout)
+{
+	setTimeout(reset, close_timeout || default_close_timeout)
+}
+
 // https://material.google.com/components/dialogs.html
 const style = styler
 `
