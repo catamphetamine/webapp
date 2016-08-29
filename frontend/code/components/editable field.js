@@ -201,6 +201,8 @@ export default class Editable_field extends Component
 		}
 
 		this.setState({ value, edit: true })
+
+		setTimeout(() => this.refs[name].focus(), 0)
 	}
 
 	update_value(value)
