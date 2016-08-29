@@ -64,56 +64,56 @@
   },
   "betterScripts": {
     "development-web-server": {
-      "command": "nodemon ./code/web-server/entry.js  --watch ./code/web-server --watch ./code/common",
+      "command": "\"../node_modules/.bin/nodemon\" ./code/web-server/entry.js  --watch ./code/web-server --watch ./code/common",
       "env": {
         "NODE_ENV": "development",
         "BABEL_ENV": "server"
       }
     },
     "development-image-service": {
-      "command": "nodemon ./code/image-service/entry.js --watch ./code/image-service --watch ./code/common",
+      "command": "\"../node_modules/.bin/nodemon\" ./code/image-service/entry.js --watch ./code/image-service --watch ./code/common",
       "env": {
         "NODE_ENV": "development",
         "BABEL_ENV": "server"
       }
     },
     "development-api-service": {
-      "command": "nodemon ./code/api-service/entry.js --watch ./code/api-service --watch ./code/common",
+      "command": "\"../node_modules/.bin/nodemon\" ./code/api-service/entry.js --watch ./code/api-service --watch ./code/common",
       "env": {
         "NODE_ENV": "development",
         "BABEL_ENV": "server"
       }
     },
     "development-password-service": {
-      "command": "nodemon ./code/password-service/entry.js --watch ./code/password-service --watch ./code/common",
+      "command": "\"../node_modules/.bin/nodemon\" ./code/password-service/entry.js --watch ./code/password-service --watch ./code/common",
       "env": {
         "NODE_ENV": "development",
         "BABEL_ENV": "server"
       }
     },
     "development-user-service": {
-      "command": "nodemon ./code/user-service/entry.js --watch ./code/user-service --watch ./code/common",
+      "command": "\"../node_modules/.bin/nodemon\" ./code/user-service/entry.js --watch ./code/user-service --watch ./code/common",
       "env": {
         "NODE_ENV": "development",
         "BABEL_ENV": "server"
       }
     },
     "development-authentication-service": {
-      "command": "nodemon ./code/authentication-service/entry.js --watch ./code/authentication-service --watch ./code/common",
+      "command": "\"../node_modules/.bin/nodemon\" ./code/authentication-service/entry.js --watch ./code/authentication-service --watch ./code/common",
       "env": {
         "NODE_ENV": "development",
         "BABEL_ENV": "server"
       }
     },
     "development-mail-service": {
-      "command": "nodemon ./code/mail-service/entry.js --watch ./code/mail-service --watch ./code/common",
+      "command": "\"../node_modules/.bin/nodemon\" ./code/mail-service/entry.js --watch ./code/mail-service --watch ./code/common",
       "env": {
         "NODE_ENV": "development",
         "BABEL_ENV": "server"
       }
     },
     "development-log-service": {
-      "command": "nodemon ./code/log-service/entry.js --watch ./code/log-service --watch ./code/common",
+      "command": "\"../node_modules/.bin/nodemon\" ./code/log-service/entry.js --watch ./code/log-service --watch ./code/common",
       "env": {
         "NODE_ENV": "development",
         "BABEL_ENV": "server"
