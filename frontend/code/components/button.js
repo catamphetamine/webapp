@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import ReactDOM from 'react-dom'
 import styler from 'react-styling'
 import classNames from 'classnames'
 
@@ -58,6 +59,7 @@ export default class Button extends Component
 			const markup = 
 			(
 				<a
+					ref="button"
 					href={link}
 					onClick={event =>
 					{
@@ -94,6 +96,7 @@ export default class Button extends Component
 		const markup = 
 		(
 			<button
+				ref="button"
 				type={submit ? 'submit' : 'button'}
 				disabled={busy || disabled}
 				onClick={action}
@@ -104,6 +107,11 @@ export default class Button extends Component
 		)
 
 		return markup
+	}
+
+	focus()
+	{
+		ReactDOM.findDOMNode(this.refs.button).focus()
 	}
 }
 

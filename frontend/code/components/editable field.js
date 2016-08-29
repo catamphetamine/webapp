@@ -101,6 +101,7 @@ export default class Editable_field extends Component
 		(
 			<Button
 				key="change"
+				ref="change_button"
 				action={this.edit}
 				disabled={saving}>
 				{translate(default_messages.change).toLowerCase()}
@@ -132,7 +133,8 @@ export default class Editable_field extends Component
 			<Form
 				focus={this.focus}
 				action={this.save}
-				busy={saving}>
+				busy={saving}
+				cancel={this.cancel}>
 
 				{/* Editable text field */}
 				<Text_input
@@ -172,7 +174,10 @@ export default class Editable_field extends Component
 
 	cancel()
 	{
-		this.setState({ value: undefined, edit: false })
+		this.setState({ value: undefined, edit: false }, () =>
+		{
+			this.refs.change_button.focus()
+		})
 	}
 
 	save()
@@ -182,7 +187,10 @@ export default class Editable_field extends Component
 
 		on_save(value)
 
-		this.setState({ edit : false })
+		this.setState({ edit : false }, () =>
+		{
+			this.refs.change_button.focus()
+		})
 	}
 
 	edit()
@@ -200,9 +208,10 @@ export default class Editable_field extends Component
 			return on_edit()
 		}
 
-		this.setState({ value, edit: true })
-
-		setTimeout(() => this.refs[name].focus(), 0)
+		this.setState({ value, edit: true }, () =>
+		{
+			this.refs[name].focus()
+		})
 	}
 
 	update_value(value)

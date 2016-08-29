@@ -11,6 +11,7 @@ export default class Form extends Component
 	{
 		action      : PropTypes.func,
 		focus       : PropTypes.func,
+		cancel      : PropTypes.func,
 		// `error` can be passed for non-javascript
 		// web 1.0 forms error rendering support
 		error       : PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
@@ -24,8 +25,9 @@ export default class Form extends Component
 	{
 		super(props, context)
 		
-		this.on_submit = this.on_submit.bind(this)
-		this.submit    = this.submit.bind(this)
+		this.on_submit   = this.on_submit.bind(this)
+		this.submit      = this.submit.bind(this)
+		this.on_key_down = this.on_key_down.bind(this)
 	}
 
 	render()
@@ -36,6 +38,7 @@ export default class Form extends Component
 		(
 			<form
 				onSubmit={this.on_submit}
+				onKeyDown={this.on_key_down}
 				action={post}
 				method="POST"
 				className={className}
@@ -228,6 +231,22 @@ export default class Form extends Component
 	reset_validation_indication()
 	{
 		this.setState({ indicate_invalid: {} })
+	}
+
+	on_key_down(event)
+	{
+		// Cancel editing on "Escape" key
+		if (event.keyCode === 27)
+		{
+			const { cancel } = this.props
+
+			if (cancel)
+			{
+				cancel()
+			}
+
+			event.preventDefault()
+		}
 	}
 }
 
