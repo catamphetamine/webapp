@@ -248,7 +248,7 @@ class Change_password_step_1 extends Component
 		this.validate_password = this.validate_password.bind(this)
 		this.submit            = this.submit.bind(this)
 		this.submit_step       = this.submit_step.bind(this)
-		this.on_submit_step    = this.on_submit_step.bind(this)
+		this.reset_error       = this.reset_error.bind(this)
 		this.on_change         = this.on_change.bind(this)
 	}
 
@@ -280,7 +280,7 @@ class Change_password_step_1 extends Component
 				invalid={this.invalid()}
 				placeholder={translate(messages.current_password)}
 				submit={this.submit_step}
-				on_submit={this.on_submit_step}/>
+				reset_error={this.reset_error}/>
 		)
 
 		return markup
@@ -374,7 +374,7 @@ class Change_password_step_1 extends Component
 	}
 
 	// Reset form error before running form field validation
-	on_submit_step()
+	reset_error()
 	{
 		this.props.reset_error()
 	}
@@ -479,7 +479,7 @@ class Change_password_step_3 extends Component
 		this.validate_password = this.validate_password.bind(this)
 		this.submit            = this.submit.bind(this)
 		this.submit_step       = this.submit_step.bind(this)
-		this.on_submit_step    = this.on_submit_step.bind(this)
+		this.reset_error       = this.reset_error.bind(this)
 		this.on_change         = this.on_change.bind(this)
 	}
 
@@ -508,7 +508,7 @@ class Change_password_step_3 extends Component
 				busy={busy}
 				placeholder={translate(messages.new_password)}
 				submit={this.submit_step}
-				on_submit={this.on_submit_step}/>
+				reset_error={this.reset_error}/>
 		)
 
 		return markup
@@ -596,7 +596,7 @@ class Change_password_step_3 extends Component
 	}
 
 	// Reset form error before running form field validation
-	on_submit_step()
+	reset_error()
 	{
 		this.setState({ error: undefined })
 	}

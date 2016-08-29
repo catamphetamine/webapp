@@ -130,7 +130,7 @@ export class Text_input_step extends Component
 		password    : PropTypes.bool,
 		email       : PropTypes.bool,
 		submit      : PropTypes.func.isRequired,
-		on_submit   : PropTypes.func,
+		reset_error : PropTypes.func,
 		busy        : PropTypes.bool,
 		error       : PropTypes.string,
 		className   : PropTypes.string,
@@ -159,7 +159,7 @@ export class Text_input_step extends Component
 			error,
 			busy,
 			submit,
-			on_submit
+			reset_error
 		}
 		= this.props
 
@@ -170,7 +170,7 @@ export class Text_input_step extends Component
 				busy={busy}
 				focus={this.focus}
 				action={submit}
-				on_submit={on_submit}
+				reset_error={reset_error}
 				error={error}>
 
 				<Text_input

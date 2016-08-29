@@ -9,15 +9,15 @@ export default class Form extends Component
 
 	static propTypes =
 	{
-		action     : PropTypes.func,
-		on_submit  : PropTypes.func,
-		focus      : PropTypes.func,
+		action      : PropTypes.func,
+		focus       : PropTypes.func,
 		// `error` can be passed for non-javascript
 		// web 1.0 forms error rendering support
-		error      : PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-		post       : PropTypes.string,
-		className  : PropTypes.string,
-		style      : PropTypes.object
+		error       : PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+		reset_error : PropTypes.func,
+		post        : PropTypes.string,
+		className   : PropTypes.string,
+		style       : PropTypes.object
 	}
 
 	constructor(props, context)
@@ -148,11 +148,11 @@ export default class Form extends Component
 	{
 		// this.reset_error()
 
-		const { on_submit, children, indicate_invalid, set_indicate_invalid } = this.props
+		const { reset_error, children, indicate_invalid, set_indicate_invalid } = this.props
 
-		if (on_submit)
+		if (reset_error)
 		{
-			on_submit()
+			reset_error()
 		}
 
 		// Will focus on the first invalid field

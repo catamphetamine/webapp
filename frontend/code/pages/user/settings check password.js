@@ -171,7 +171,7 @@ class Check_password extends Component
 		this.validate_password = this.validate_password.bind(this)
 		this.submit            = this.submit.bind(this)
 		this.submit_form       = this.submit_form.bind(this)
-		this.on_submit_form    = this.on_submit_form.bind(this)
+		this.reset_error       = this.reset_error.bind(this)
 		this.on_change         = this.on_change.bind(this)
 	}
 
@@ -197,7 +197,7 @@ class Check_password extends Component
 				busy={busy}
 				focus={this.focus}
 				action={this.submit_form}
-				on_submit={this.on_submit_form}
+				reset_error={this.reset_error}
 				error={this.error_message(error)}>
 
 				<Text_input
@@ -223,7 +223,7 @@ class Check_password extends Component
 	}
 
 	// Reset form error before running form field validation
-	on_submit_form()
+	reset_error()
 	{
 		this.props.reset_error()
 	}
