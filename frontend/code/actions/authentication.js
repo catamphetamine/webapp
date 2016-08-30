@@ -11,7 +11,7 @@ export const sign_in_reset_error = () =>
 
 export const sign_out = () =>
 ({
-	promise : http => http.post(`/authentication/sign-out`),
+	promise : http => http.post(`/users/sign-out`),
 	event   : 'user: sign out'
 })
 

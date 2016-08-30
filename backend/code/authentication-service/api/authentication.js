@@ -1,30 +1,69 @@
 import moment from 'moment'
-import { http, errors } from 'web-service'
+import { http, errors, jwt } from 'web-service'
 
 import store               from '../store/store'
 import online_status_store from '../store/online/online store'
 
-import { sign_in, sign_out, get_user, check_password, hash_password } from './authentication.base'
+import { check_password } from './authentication.check'
 
 const latest_activity_time_refresh_interval = 60 * 1000 // one minute
 
 export default function(api)
 {
-	api.post('/sign-in', sign_in)
-
-	api.post('/sign-out', sign_out)
-
-	api.post('/register', async function({ id, password })
+	// Issues a new access token for this user
+	api.post('/token', async function(user, { ip, keys })
 	{
-		// hashing a password is a CPU-intensive lengthy operation.
+		// Check the password
+		if (!await check_password(user.id, user.password))
+		{
+			throw new errors.Input_rejected(`Wrong password`, { field: 'password' }) 
+		}
+
+		// Add a new JWT token to the list of valid tokens for this user
+		const jwt_id = await store.add_authentication_token(user.id, ip)
+
+		// Generate real JWT token payload
+		const payload = configuration.authentication_token_payload.write(user)
+
+		// Issue JWT token
+		return jwt({ payload, keys, user_id: user.id, jwt_id })
+	})
+
+	api.post('/authentication-data', async function({ id, password })
+	{
+		// Hash the password.
+		//
+		// Hashing a password is a CPU-intensive lengthy operation.
 		// takes about 60 milliseconds on my machine.
 		//
-		// maybe could be offloaded from node.js 
+		// Maybe could be offloaded from node.js 
 		// to some another multithreaded backend.
 		//
 		password = await hash_password(password)
 
+		// Add the hashed password to the dabase
 		await store.create_authentication_data(id, { password })
+	})
+
+	api.get('/tokens', async function({}, { user, authentication_token_id })
+	{
+		if (!user)
+		{
+			throw new errors.Unauthenticated()
+		}
+
+		const tokens = await store.get_tokens(user.id)
+
+		// Mark the currently used token
+		for (let token of tokens)
+		{
+			if (token.id === authentication_token_id)
+			{
+				token.currently_used = true
+			}
+		}
+
+		return tokens
 	})
 
 	api.get('/token/valid', async function({ bot }, { ip, authentication_token_id, user })
@@ -81,6 +120,29 @@ export default function(api)
 
 		// The token is considered valid
 		return { valid: true }
+	})
+
+	api.post('/token/revoke', async function({ id }, { user })
+	{
+		if (!user)
+		{
+			throw new errors.Unauthenticated()
+		}
+
+		const token = await store.find_token_by_id(id)
+
+		if (!token)
+		{
+			return new errors.Not_found()
+		}
+
+		if (token.user !== user.id)
+		{
+			return new errors.Unauthorized()
+		}
+
+		await store.revoke_token(id)
+		await online_status_store.clear_access_token_validity(user.id, id)
 	})
 
 	api.get('/password/check', async function({ password }, { user })
@@ -144,50 +206,6 @@ export default function(api)
 	{
 		return await online_status_store.get_latest_access_time(id)
 	})
-
-	api.get('/tokens', async function({}, { user, authentication_token_id })
-	{
-		if (!user)
-		{
-			throw new errors.Unauthenticated()
-		}
-
-		const tokens = await store.get_tokens(user.id)
-
-		// Mark the currently used token
-		for (let token of tokens)
-		{
-			if (token.id === authentication_token_id)
-			{
-				token.currently_used = true
-			}
-		}
-
-		return tokens
-	})
-
-	api.post('/token/revoke', async function({ id }, { user })
-	{
-		if (!user)
-		{
-			throw new errors.Unauthenticated()
-		}
-
-		const token = await store.find_token_by_id(id)
-
-		if (!token)
-		{
-			return new errors.Not_found()
-		}
-
-		if (token.user !== user.id)
-		{
-			return new errors.Unauthorized()
-		}
-
-		await store.revoke_token(id)
-		await online_status_store.clear_access_token_validity(user.id, id)
-	})
 }
 
 async function record_access(user_id, authentication_token_id, ip)
@@ -230,4 +248,10 @@ async function record_access(user_id, authentication_token_id, ip)
 function round_user_access_time(time)
 {
 	return new Date(moment(time).seconds(0).unix() * 1000)
+}
+
+// Hashes a password
+async function hash_password(password)
+{
+	return (await http.get(`${address_book.password_service}/hash`, { password })).hash
 }

@@ -387,7 +387,7 @@ export default class Dropdown extends Component
 			<div className="rich-fallback">
 				<select
 					name={name}
-					value={value}
+					value={value === null ? undefined : value}
 					disabled={disabled}
 					onChange={event => {}}
 					style={{ width: 'auto' }}>

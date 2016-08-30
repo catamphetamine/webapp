@@ -1,11 +1,12 @@
 import { http, errors } from 'web-service'
 
 import store from '../store/store'
-import { get_user, sign_in, register, own_user } from './user.base'
+import { get_user, sign_in, sign_out, register, own_user } from './user.base'
 
 export default function(api)
 {
 	api.post('/sign-in', sign_in)
+	api.post('/sign-out', sign_out)
 	api.post('/register', register)
 
 	// Get user's "was online at" time

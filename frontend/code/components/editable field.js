@@ -189,7 +189,12 @@ export default class Editable_field extends Component
 
 		this.setState({ edit : false }, () =>
 		{
-			this.refs.change_button.focus()
+			// If `on_save` didn't retain edit mode,
+			// then focus on the "Change" button.
+			if (this.refs.change_button)
+			{
+				this.refs.change_button.focus()
+			}
 		})
 	}
 

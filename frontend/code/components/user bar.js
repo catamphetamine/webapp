@@ -180,7 +180,7 @@ export default class Authentication extends Component
 		(
 			<Form
 				className="sign-out-form"
-				post="/authentication/legacy/sign-out">
+				post="/users/legacy/sign-out">
 
 				<Button
 					submit={true}

@@ -1,34 +1,6 @@
-import { http, errors, jwt } from 'web-service'
+import { http, errors } from 'web-service'
 
 import store from '../store/store'
-
-export async function sign_in(user, { ip, set_cookie, keys, internal_http })
-{
-	// Check the password
-	if (!await check_password(user.id, user.password))
-	{
-		throw new errors.Input_rejected(`Wrong password`, { field: 'password' }) 
-	}
-
-	// Sign in
-	return await sign_in_as(user, { ip, set_cookie, keys, internal_http })
-}
-
-async function sign_in_as(user, { ip, set_cookie, keys, internal_http })
-{
-	// Add a new JWT token to the list of valid tokens for this user
-	const jwt_id = await store.add_authentication_token(user.id, ip)
-
-	// Use this temporary token just to obtain full user info,
-	// which will be used for populating `payload` of the real JWT token.
-	const temporary_token = jwt({ payload: {}, keys, user_id: user.id, jwt_id })
-
-	// Generate real JWT token payload
-	const payload = configuration.authentication_token_payload.write(user)
-
-	// Issue JWT token
-	return jwt({ payload, keys, user_id: user.id, jwt_id })
-}
 
 // Password bruteforce protection.
 const The_hottest_allowed_temperature = 1000
@@ -123,19 +95,6 @@ async function authentication_attempt_failed(authentication_data)
 	await store.set_latest_failed_authentication_attempt(authentication_data.id, temperature)
 }
 
-export async function sign_out({}, { destroy_cookie, user, authentication_token_id })
-{
-	// Shouldn't happen
-	if (!user)
-	{
-		return
-	}
-
-	await store.revoke_token(authentication_token_id, user.id)
-
-	destroy_cookie('authentication')
-}
-
 export async function check_password(user_id, password)
 {
 	if (!exists(password))
@@ -154,7 +113,11 @@ export async function check_password(user_id, password)
 	}
 
 	// Check if the password matches
-	const matches = await check_password_hash(password, authentication_data.password)
+	const matches = await http.get(`${address_book.password_service}/check`,
+	{
+		password,
+		hashed_password : authentication_data.password
+	})
 
 	// If the password is wrong, return an error
 	if (!matches)
@@ -166,19 +129,4 @@ export async function check_password(user_id, password)
 	// Reset threshold for login attempt count limiter
 	await authentication_attempt_succeeded(authentication_data)
 	return true
-}
-
-export async function check_password_hash(password, hashed_password)
-{
-	return await http.get(`${address_book.password_service}/check`, { password, hashed_password })
-}
-
-export async function hash_password(password)
-{
-	return (await http.get(`${address_book.password_service}/hash`, { password })).hash
-}
-
-async function create_user(user)
-{
-	return await http.post(address_book.user_service, user)
 }

@@ -4,10 +4,11 @@ import store from '../store/store'
 
 import Url from '../../../../code/url'
 
-import { sign_in, register } from './user.base'
+import { sign_in, sign_out, register } from './user.base'
 
 export default function(api)
 {
+	// Sign in
 	api.legacy.post('/legacy/sign-in', async function({ request })
 	{
 		const user = await sign_in.apply(this, arguments)
@@ -16,6 +17,16 @@ export default function(api)
 	},
 	error => `${address_book.web_server}/sign-in`)
 
+	// Sign out
+	api.legacy.post('/legacy/sign-out', async function()
+	{
+		await sign_out.apply(this, arguments)
+
+		return `${address_book.web_server}/`
+	},
+	error => `${address_book.web_server}/error`)
+
+	// Register
 	api.legacy.post('/legacy/register', async function({ request })
 	{
 		await register.apply(this, arguments)
@@ -26,6 +37,7 @@ export default function(api)
 	},
 	error => `${address_book.web_server}/register`)
 
+	// Change user's locale
 	api.legacy.post('/legacy/locale', async function({ locale, from_url }, { set_cookie, user })
 	{
 		if (exists(user))

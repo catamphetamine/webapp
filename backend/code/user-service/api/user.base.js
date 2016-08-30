@@ -27,7 +27,7 @@ export async function sign_in({ email, password }, { set_cookie })
 	}
 
 	// Generate JWT authentication token
-	const token = await http.post(`${address_book.authentication_service}/sign-in`,
+	const token = await http.post(`${address_book.authentication_service}/token`,
 	{
 		// Send only the neccessary fields required for authentication
 		id : user.id,
@@ -41,6 +41,25 @@ export async function sign_in({ email, password }, { set_cookie })
 	set_cookie('authentication', token, { signed: false })
 
 	return own_user(user)
+}
+
+// Revokes access token and clears authentication cookie
+export async function sign_out({}, { user, authentication_token_id, destroy_cookie, internal_http })
+{
+	// Must be logged in
+	if (!user)
+	{
+		return new errors.Unauthenticated()
+	}
+
+	// Revoke access token
+	await internal_http.post(`${address_book.authentication_service}/token/revoke`,
+	{
+		id : authentication_token_id
+	})
+
+	// Clear authentcication cookie
+	destroy_cookie('authentication')
 }
 
 export async function register({ name, email, password, terms_of_service_accepted })
@@ -88,7 +107,12 @@ export async function register({ name, email, password, terms_of_service_accepte
 
 	const id = await store.create_user(user)
 
-	await http.post(`${address_book.authentication_service}/register`, { id, password })
+	// Add authentication data (password) for this user
+	await http.post(`${address_book.authentication_service}/authentication-data`,
+	{
+		id,
+		password
+	})
 
 	return { id }
 }
