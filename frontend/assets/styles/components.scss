@@ -312,7 +312,8 @@
 	flex-direction  : column;
 	justify-content : center;
 
-	margin-right: 0.8em;
+	margin-left  : calc(var(--modular-grid-unit) * 1);
+	margin-right : calc(var(--modular-grid-unit) * 2);
 
 	margin-top: var(--header-vertically-centered-text-margin-top);
 }
@@ -346,8 +347,8 @@ header > .nav-widescreen
 
 .sign-in, .sign-out
 {
-	margin-top: var(--header-vertically-centered-text-margin-top);
-	margin-right: 0.8em;
+	margin-top   : var(--header-vertically-centered-text-margin-top);
+	margin-right : calc(var(--modular-grid-unit));
 }
 
 body.javascript-is-enabled .sign-out--fallback
