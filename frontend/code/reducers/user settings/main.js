@@ -15,20 +15,19 @@ const handlers = asynchronous_handler
 	result : 'authentication_tokens'
 },
 {
-	event : 'user settings: check password'
+	event  : 'user settings: check password'
 },
 {
-	event : 'user settings: change email'
-})
-
-handlers['user settings: email changed'] = (result, state) =>
-({
-	...state,
-	user:
-	{
-		...state.user,
-		email : result
-	}
+	event  : 'user settings: change email',
+	result : (result, state) =>
+	({
+		...state,
+		user:
+		{
+			...state.user,
+			email : result
+		}
+	})
 })
 
 // applies a handler based on the action type

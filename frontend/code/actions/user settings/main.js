@@ -12,7 +12,11 @@ export const revoke_authentication_token = (token_id) =>
 
 export const change_email = (email, password) =>
 ({
-	promise : http => http.patch(`/users/email`, { email, password }),
+	promise : async http =>
+	{
+		await http.patch(`/users/email`, { email, password })
+		return email
+	},
 	event   : 'user settings: change email'
 })
 

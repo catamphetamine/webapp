@@ -165,7 +165,7 @@ export default class Change_email extends Component
 
 	async update_email(password)
 	{
-		const { change_email, dispatch, translate } = this.props
+		const { change_email, translate } = this.props
 		const { new_email } = this.state
 
 		try
@@ -173,12 +173,6 @@ export default class Change_email extends Component
 			this.setState({ saving_email: true })
 
 			await change_email(new_email, password)
-
-			dispatch
-			({
-				type   : 'user settings: email changed',
-				result : new_email
-			})
 		}
 		catch (error)
 		{
