@@ -81,7 +81,7 @@ The application consists of the following microservices
   * `log-service` aggregates logs from all the other services
   * `email-service` sends emails
 
-<!-- 
+<!--
 Running in production (to be done)
 ====================
 
@@ -99,11 +99,11 @@ pm2 save
 
 https://github.com/Unitech/pm2
 
-Посмотреть статус процесса: 
+Посмотреть статус процесса:
 
 pm2 list
 
-Мониторинг процесса: 
+Мониторинг процесса:
 
 pm2 monit
 
@@ -191,7 +191,7 @@ redis:
   port     : 6379,
   password : ... // is optional
 }
-``` 
+```
 
 <!-- MongoDB
 =======
@@ -222,7 +222,7 @@ mongodb:
   user     : ...,
   password : ...
 }
-``` 
+```
 
 Setting up a freshly installed MongoDB
 
@@ -426,7 +426,7 @@ CREATE CONTINUOUS QUERY emails_in_a_day ON webapp BEGIN SELECT mean(website) AS 
 
 ```
 # To do: generate SSL certificate
-# 
+#
 # [http]
 #   https-enabled = true
 #   https-certificate = “/etc/ssl/influxdb.pem”
@@ -671,9 +671,22 @@ Troubleshooting
 To do
 ====================
 
-user profile вынести в отдельный компонент.
+проверить валидацию шага смены пароля (1, 3)
 
-У инпутов invalid переименовать в error.
+
+
+
+сделать redux-form
+
+
+
+Text Input переписать на createElement
+
+оказывается, htmlFor - не для name, а для id, поэтому попробовать делать <label/>, оборачивающий input.
+
+
+
+user profile вынести в отдельный компонент.
 
 
 
@@ -689,7 +702,7 @@ user profile вынести в отдельный компонент.
 
 в настройках - смена адресного имени с подсказкой о том, что это такое
 
-автоматически генерировать адресное имя из Имени, присоединяя 
+автоматически генерировать адресное имя из Имени, присоединяя
 
 
 
@@ -1118,7 +1131,7 @@ endless scroll в логах: выгрузка тех страниц, котор
 
 
 
-на страницах товара и магазина (профиль + список) 
+на страницах товара и магазина (профиль + список)
 сделать скинирование страницы через переменные CSS:
 
 const styles = getComputedStyle(document.documentElement)
@@ -1133,9 +1146,9 @@ document.documentElement.style.setProperty('--primary-color', 'green')
 
 
 // можно сделать сопоставление области на карте и IP-адреса использования токена
-// 
+//
 // ajax('freegeoip.net/json/{IP_or_hostname}')
-// 
+//
 // {
 //   "ip": "192.30.252.129",
 //   "country_code": "US",
@@ -1179,13 +1192,13 @@ document.documentElement.style.setProperty('--primary-color', 'green')
 message:
 {
   text: '...',
-  images: 
+  images:
   [{
     id: '...',
     type: 'jpg',
     meta: ...,
     url: ..., // если добавлена по url'у
-    sizes: 
+    sizes:
     [{
       width: ...,
       height: ...,
@@ -1339,7 +1352,7 @@ https://www.youtube.com/watch?v=VkTCL6Nqm6Y
 http://habrahabr.ru/post/245991/
 
 
-Webpack development server по умолчанию принимает все запросы на себя, 
+Webpack development server по умолчанию принимает все запросы на себя,
 но некоторые из них может "проксировать" на Node.js сервер, например.
 Для этого требуется указать шаблоны Url'ов, которые нужно "проксировать",
 в файле webpack/development server.js, в параметре proxy запуска webpack-dev-server'а.
@@ -1364,7 +1377,7 @@ https://github.com/remy/nodemon/issues/709
 Нужные url'ы подставляются в index.html плагином HtmlWebpackPlugin.
 
 
-При запуске через npm run dev работает hot reload для компонентов React, 
+При запуске через npm run dev работает hot reload для компонентов React,
 а также для Redux'а (например, для action response handlers)
 
 
@@ -1376,7 +1389,7 @@ https://github.com/FormidableLabs/radium
 
 
 Для подгрузки "глобального" стиля используется модуль Webpack'а style-loader,
-и поэтому при запуске в режиме разработчика при обновлении страницы присутствует 
+и поэтому при запуске в режиме разработчика при обновлении страницы присутствует
 как бы "мигание" протяжённостью в секунду: это время от загрузки Html разметки до
 отработки javascript'а style-loader'а, который динамически создаёт элемент <style/>
 с "глобальными" стилями (преимущество: работает hot reload для "глобальных" стилей)

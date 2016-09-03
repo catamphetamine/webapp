@@ -18,7 +18,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme'
 @connect(model => ({ navigator: model.navigator }))
 export default class Form_showcase extends Component
 {
-	state = 
+	state =
 	{
 		phone          : '',
 		text_value     : '',
@@ -50,14 +50,14 @@ export default class Form_showcase extends Component
 
 	render()
 	{
-		const markup = 
+		const markup =
 		(
 			<div>
 				{title("Form UI Showcase")}
 
 				<Form
 					style={style.form}>
-					
+
 					<h2 style={style.form.label}>{'Text input field'}</h2>
 					<Text_input style={style.form.input} name="text_input" value={this.state.text_value} on_change={value => this.setState({ text_value: value })} label="Enter text"/>
 					You entered: {this.state.text_value}
@@ -127,9 +127,10 @@ export default class Form_showcase extends Component
 					+7
 					<Phone
 						style={ style.form.phone }
+						placeholder="Enter phone number"
 						format={ phone_number_format.RU }
 						value={ this.state.phone }
-						onChange={ phone => this.setState({ phone }) } />
+						onChange={ phone => this.setState({ phone }) }/>
 
 					<div style={{ marginTop: '1em' }}>
 						You entered: {this.state.phone}
@@ -139,7 +140,7 @@ export default class Form_showcase extends Component
 						Is valid: {is_valid_phone_number(this.state.phone, phone_number_format.RU).toString()}
 					</div>
 
-					<h2 style={style.form.label}>Date picker (part of Material UI)</h2>					
+					<h2 style={style.form.label}>Date picker (part of Material UI)</h2>
 					<p><i>You may see a "React attempted to reuse markup in a container" warning in the console because of this 3rd party component</i></p>
 					<p><a href="https://github.com/callemall/material-ui/issues/4219">has calendar positioning issue</a></p>
 					<div className="date-picker">

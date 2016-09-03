@@ -18,7 +18,7 @@ export default class Text_input extends Component
 		disabled         : PropTypes.bool,
 		description      : PropTypes.string,
 		on_change        : PropTypes.func.isRequired,
-		invalid          : PropTypes.string,
+		error            : PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
 		indicate_invalid : PropTypes.bool,
 		placeholder      : PropTypes.string,
 		multiline        : PropTypes.bool,
@@ -50,7 +50,18 @@ export default class Text_input extends Component
 
 	render()
 	{
-		const { name, value, label, label_style, description, invalid, indicate_invalid, className } = this.props
+		const
+		{
+			name,
+			value,
+			label,
+			label_style,
+			description,
+			error,
+			indicate_invalid,
+			className
+		}
+		= this.props
 
 		const markup =
 		(
@@ -62,7 +73,7 @@ export default class Text_input extends Component
 					'text-input',
 					{
 						'text-input--empty'   : !value,
-						'text-input--invalid' : indicate_invalid && invalid
+						'text-input--invalid' : indicate_invalid && error
 					},
 					className
 				)}>
@@ -171,11 +182,11 @@ export default class Text_input extends Component
 
 	render_error_message()
 	{
-		const { invalid, indicate_invalid } = this.props
+		const { error, indicate_invalid } = this.props
 
-		if (indicate_invalid && invalid)
+		if (indicate_invalid && error)
 		{
-			return <div className="text-input-error-message">{invalid}</div>
+			return <div className="text-input-error-message">{error}</div>
 		}
 	}
 
@@ -298,7 +309,7 @@ function autoresize_measure(element)
 {
 	const style = window.getComputedStyle(element)
 
-	const extra_height = 
+	const extra_height =
 		parseInt(style.borderTopWidth) +
 		parseInt(style.borderBottomWidth)
 

@@ -18,7 +18,7 @@ export const sign_out = () =>
 export const register = (info) =>
 ({
 	promise : http => http.post(`/users/register`, info),
-	event   : 'user: registration'
+	event   : 'user: register'
 })
 
 export const register_reset_error = () =>

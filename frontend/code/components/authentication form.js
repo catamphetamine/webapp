@@ -134,28 +134,28 @@ export const messages = defineMessages
 	{
 		id             : 'authentication.error',
 		description    : 'User sign in error',
-		defaultMessage : 'Couldn\'t sign in'  
+		defaultMessage : 'Couldn\'t sign in'
 	},
 	registration_error:
 	{
 		id             : 'registration.error',
 		description    : 'User registration error',
-		defaultMessage : 'Couldn\'t register'  
+		defaultMessage : 'Couldn\'t register'
 	},
 	login_attempts_limit_exceeded_error:
 	{
 		id             : 'authentication.login_attempts_limit_exceeded_error',
 		description    : `The user's login attempts limit has been reached. The user shold try again in 15 minutes or so.`,
-		defaultMessage : 'Login attempts limit exceeded. Try again later.'  
+		defaultMessage : 'Login attempts limit exceeded. Try again later.'
 	}
 })
 
 @connect
 (
-	model => 
+	model =>
 	({
-		sign_in_error      : model.authentication.sign_in_error,
-		registration_error : model.authentication.registration_error,
+		sign_in_error  : model.authentication.sign_in_error,
+		register_error : model.authentication.register_error,
 
 		registration_pending : model.authentication.registration_pending,
 		sign_in_pending      : model.authentication.sign_in_pending,
@@ -179,11 +179,11 @@ export const messages = defineMessages
 @international()
 export default class Authentication_form extends Component
 {
-	state = 
+	state =
 	{
 	}
 
-	pristine_form_state = 
+	pristine_form_state =
 	{
 		name                      : undefined,
 		email                     : undefined,
@@ -197,11 +197,11 @@ export default class Authentication_form extends Component
 	{
 		user               : PropTypes.object,
 
-		sign_in_pending      : PropTypes.bool,
-		registration_pending : PropTypes.bool,
+		sign_in_pending  : PropTypes.bool,
+		register_pending : PropTypes.bool,
 
-		sign_in_error      : PropTypes.object,
-		registration_error : PropTypes.object,
+		sign_in_error  : PropTypes.object,
+		register_error : PropTypes.object,
 
 		style              : PropTypes.object,
 		on_sign_in         : PropTypes.func,
@@ -253,7 +253,7 @@ export default class Authentication_form extends Component
 			{
 				this.focus()
 			}
-		}, 
+		},
 		0)
 	}
 
@@ -279,12 +279,12 @@ export default class Authentication_form extends Component
 		}
 		= this.props
 
-		const markup = 
+		const markup =
 		(
 			<Form
 				ref="form"
-				className="authentication-form" 
-				style={this.props.style ? { ...style.form, ...this.props.style } : style.form} 
+				className="authentication-form"
+				style={this.props.style ? { ...style.form, ...this.props.style } : style.form}
 				action={this.sign_in}
 				busy={sign_in_pending}
 				focus={this.focus}
@@ -298,8 +298,8 @@ export default class Authentication_form extends Component
 				<div style={style.or_register} className="or-register">
 					<span>{translate(messages.or)}&nbsp;</span>
 					<Button
-						link={add_redirect('/register', this.props.location)} 
-						button_style={style.or_register.register} 
+						link={add_redirect('/register', this.props.location)}
+						button_style={style.or_register.register}
 						action={this.start_registration}
 						disabled={sign_in_pending}>
 
@@ -317,7 +317,7 @@ export default class Authentication_form extends Component
 					disabled={sign_in_pending}
 					focus={this.props.focus_on === 'email'}
 					value={this.state.email}
-					invalid={this.sign_in_email_error(sign_in_error) || this.validate_email(this.state.email)}
+					error={this.sign_in_email_error(sign_in_error) || this.validate_email(this.state.email)}
 					on_change={this.set_email}
 					label={translate(messages.email)}
 					style={style.input}
@@ -331,7 +331,7 @@ export default class Authentication_form extends Component
 					disabled={sign_in_pending}
 					focus={this.props.focus_on === 'password'}
 					value={this.state.password}
-					invalid={this.sign_in_password_error(sign_in_error) || this.validate_password_on_sign_in(this.state.password)}
+					error={this.sign_in_password_error(sign_in_error) || this.validate_password_on_sign_in(this.state.password)}
 					on_change={this.set_password}
 					label={translate(messages.password)}
 					style={style.input}
@@ -369,23 +369,23 @@ export default class Authentication_form extends Component
 		const
 		{
 			translate,
-			registration_error,
+			register_error,
 			error,
 			sign_in_pending,
-			registration_pending
+			register_pending
 		}
 		= this.props
 
-		const markup = 
+		const markup =
 		(
-			<Form 
+			<Form
 				ref="form"
-				className="registration-form" 
-				style={this.props.style ? { ...style.form, ...this.props.style } : style.form} 
-				action={this.register} 
-				busy={sign_in_pending || registration_pending}
+				className="registration-form"
+				style={this.props.style ? { ...style.form, ...this.props.style } : style.form}
+				action={this.register}
+				busy={sign_in_pending || register_pending}
 				focus={this.focus}
-				error={error || this.registration_error(registration_error)}
+				error={error || this.registration_error(register_error)}
 				post="/users/legacy/register">
 
 				{/* "Register" */}
@@ -395,10 +395,10 @@ export default class Authentication_form extends Component
 				<div style={style.or_register} className="or-register">
 					<span>{translate(messages.or)}&nbsp;</span>
 					<Button
-						link={add_redirect('/sign-in', this.props.location)} 
-						button_style={style.or_register.register} 
+						link={add_redirect('/sign-in', this.props.location)}
+						button_style={style.or_register.register}
 						action={this.cancel_registration}
-						disabled={sign_in_pending || registration_pending}>
+						disabled={sign_in_pending || register_pending}>
 
 						{translate(user_bar_messages.sign_in)}
 					</Button>
@@ -410,10 +410,10 @@ export default class Authentication_form extends Component
 				<Text_input
 					ref="name"
 					name="name"
-					disabled={sign_in_pending || registration_pending}
+					disabled={sign_in_pending || register_pending}
 					focus={this.props.focus_on === 'name'}
 					value={this.state.name}
-					invalid={this.validate_name(this.state.name)}
+					error={this.validate_name(this.state.name)}
 					on_change={this.set_name}
 					label={translate(messages.name)}
 					style={style.input}
@@ -424,10 +424,10 @@ export default class Authentication_form extends Component
 					ref="email"
 					name="email"
 					email={true}
-					disabled={sign_in_pending || registration_pending}
+					disabled={sign_in_pending || register_pending}
 					focus={this.props.focus_on === 'email'}
 					value={this.state.email}
-					invalid={this.registration_email_error(registration_error) || this.validate_email(this.state.email)}
+					error={this.registration_email_error(register_error) || this.validate_email(this.state.email)}
 					on_change={this.set_email}
 					label={translate(messages.email)}
 					style={style.input}
@@ -438,10 +438,10 @@ export default class Authentication_form extends Component
 					ref="password"
 					name="password"
 					password={true}
-					disabled={sign_in_pending || registration_pending}
+					disabled={sign_in_pending || register_pending}
 					focus={this.props.focus_on === 'password'}
 					value={this.state.password}
-					invalid={this.validate_password_on_registration(this.state.password)}
+					error={this.validate_password_on_registration(this.state.password)}
 					on_change={this.set_password}
 					label={translate(messages.password)}
 					style={style.input}
@@ -452,12 +452,12 @@ export default class Authentication_form extends Component
 				<Checkbox
 					ref="terms_of_service_accepted"
 					name="terms_of_service_accepted"
-					disabled={sign_in_pending || registration_pending}
+					disabled={sign_in_pending || register_pending}
 					focus={this.props.focus_on === 'terms_of_service_accepted'}
 					style={style.terms_of_service}
 					value={this.state.terms_of_service_accepted}
 					on_change={this.accept_terms_of_service}
-					invalid={this.validate_terms_of_service(this.state.terms_of_service_accepted)}>
+					error={this.validate_terms_of_service(this.state.terms_of_service_accepted)}>
 
 					{/* "Accept" */}
 					{translate(messages.i_accept)}
@@ -476,7 +476,7 @@ export default class Authentication_form extends Component
 				<Form_actions style={style.register_buttons}>
 					<Button
 						submit={true}
-						busy={sign_in_pending || registration_pending}>
+						busy={sign_in_pending || register_pending}>
 
 						{translate(user_bar_messages.register)}
 					</Button>
@@ -671,6 +671,21 @@ export default class Authentication_form extends Component
 				password                  : this.state.password,
 				terms_of_service_accepted : true // is used when posting the <form/>
 			})
+
+			// Switch to sign in form
+			this.cancel_registration()
+
+			// Sign in as the newly created user
+
+			// Won't show validation errors for sign-in form
+			// (because `indicate_invalid` is set to `true` only on form submit)
+			// await this.sign_in()
+
+			// Submit the sign-in form
+			this.setState({ register: false }, () =>
+			{
+				this.refs.form.submit()
+			})
 		}
 		catch (error)
 		{
@@ -686,21 +701,6 @@ export default class Authentication_form extends Component
 				this.refs.email.focus()
 			}
 		}
-
-		// Switch to sign in form
-		this.cancel_registration()
-
-		// Sign in as the newly created user
-
-		// Won't show validation errors for sign-in form
-		// (because `indicate_invalid` is set to `true` only on form submit)
-		// await this.sign_in()
-
-		// Submit the sign-in form
-		this.setState({ register: false }, () =>
-		{
-			this.refs.form.submit()
-		})
 	}
 
 	sign_in_error(error)

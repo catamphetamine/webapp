@@ -8,7 +8,7 @@ const handlers = asynchronous_handler
 	result : 'user'
 },
 {
-	event  : 'user: registration'
+	event  : 'user: register'
 },
 {
 	event  : 'user: sign out',

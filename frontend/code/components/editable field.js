@@ -145,7 +145,7 @@ export default class Editable_field extends Component
 					password={password}
 					multiline={multiline}
 					placeholder={label}
-					invalid={validate(this.state.value)}
+					error={validate(this.state.value)}
 					disabled={saving}
 					on_change={this.update_value}/>
 

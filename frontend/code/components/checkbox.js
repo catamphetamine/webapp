@@ -11,7 +11,7 @@ import input from './input'
 export default class Checkbox extends Component
 {
 	state = {}
-	
+
 	static propTypes =
 	{
 		name      : PropTypes.string,
@@ -57,18 +57,18 @@ export default class Checkbox extends Component
 
 	render()
 	{
-		const { value, invalid, indicate_invalid, disabled } = this.props
+		const { value, error, indicate_invalid, disabled } = this.props
 
-		const markup = 
+		const markup =
 		(
 			<div
 				className={classNames('rich', 'checkbox',
 				{
-					'checkbox-invalid': indicate_invalid && invalid
+					'checkbox-invalid': indicate_invalid && error
 				})}
 				style={ this.props.style ? { ...style.container, ...this.props.style } : style.container}>
 
-				<input 
+				<input
 					ref="input"
 					type="checkbox"
 					disabled={disabled}
@@ -88,7 +88,7 @@ export default class Checkbox extends Component
 					{this.props.children}
 				</label>
 
-				{ indicate_invalid && invalid && <div className="checkbox-error-message">{invalid}</div> }
+				{ indicate_invalid && error && <div className="checkbox-error-message">{error}</div> }
 
 				{!this.state.javascript && this.render_static()}
 			</div>
@@ -162,7 +162,7 @@ export default class Checkbox extends Component
 		// {
 			path_element.style.strokeDashoffset = Math.floor(length) - 1
 		// }
-		// else 
+		// else
 		// {
 		// 	path_element.style.strokeDashoffset = length
 		// }
@@ -175,9 +175,9 @@ export default class Checkbox extends Component
 		// (skips the animation on the initial page render)
 		if (this.was_toggled)
 		{
-			path_style.transition = 
-			path_element.style.WebkitTransition = 
-			path_element.style.MozTransition = 
+			path_style.transition =
+			path_element.style.WebkitTransition =
+			path_element.style.MozTransition =
 				`stroke-dashoffset ${animation.speed}s ${animation.easing} ${i * animation.speed}s`
 		}
 

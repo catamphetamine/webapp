@@ -59,7 +59,7 @@ const messages = defineMessages
 	{
 		id             : `user.profile.latest_activity_time`,
 		description    : `This user's most recent activity time`,
-		defaultMessage : `{gender, select, 
+		defaultMessage : `{gender, select,
 							male   {Last seen}
 							female {Last seen}
 							other  {Last seen}}`
@@ -302,7 +302,7 @@ export default class User_profile extends Component
 
 		const is_own_profile = current_user && current_user.id === user.id
 
-		const markup = 
+		const markup =
 		(
 			<div className="content user-profile">
 				{title(user.name)}
@@ -364,7 +364,7 @@ export default class User_profile extends Component
 								<div style={style.own_profile_actions} className="user-profile__actions">
 
 									{/* "Edit profile" */}
-									{ !edit && 
+									{ !edit &&
 										<Button
 											style={style.own_profile_actions.action}
 											button_style={style.own_profile_actions.action.button}
@@ -374,8 +374,8 @@ export default class User_profile extends Component
 									}
 
 									{/* "Cancel changes" */}
-									{  edit && 
-										<Button 
+									{  edit &&
+										<Button
 											style={style.own_profile_actions.action}
 											button_style={style.own_profile_actions.action.button}
 											action={this.cancel_profile_edits}
@@ -385,7 +385,7 @@ export default class User_profile extends Component
 									}
 
 									{/* "Save changes" */}
-									{  edit && 
+									{  edit &&
 										<Button
 											submit={true}
 											style={style.own_profile_actions.action}
@@ -421,7 +421,7 @@ export default class User_profile extends Component
 									input_style={style.user_name}
 									label_style={style.user_name}
 									value={this.state.name}
-									invalid={this.validate_name(this.state.name)}
+									error={this.validate_name(this.state.name)}
 									on_change={name => this.setState({ name })}/>
 							}
 
@@ -711,7 +711,7 @@ class Uploadable_user_picture extends React.Component
 					'user-profile__picture',
 					'card'
 				)}>
-				
+
 				{/* The picture itself */}
 				<User_picture
 					ref="user_picture"

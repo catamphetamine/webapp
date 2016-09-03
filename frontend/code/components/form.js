@@ -14,7 +14,7 @@ export default class Form extends Component
 		cancel      : PropTypes.func,
 		// `error` can be passed for non-javascript
 		// web 1.0 forms error rendering support
-		error       : PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+		error       : PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
 		reset_error : PropTypes.func,
 		post        : PropTypes.string,
 		className   : PropTypes.string,
@@ -24,7 +24,7 @@ export default class Form extends Component
 	constructor(props, context)
 	{
 		super(props, context)
-		
+
 		this.on_submit   = this.on_submit.bind(this)
 		this.submit      = this.submit.bind(this)
 		this.on_key_down = this.on_key_down.bind(this)
@@ -34,7 +34,7 @@ export default class Form extends Component
 	{
 		const { post, error, className, style } = this.props
 
-		const markup = 
+		const markup =
 		(
 			<form
 				onSubmit={this.on_submit}
@@ -45,7 +45,7 @@ export default class Form extends Component
 				style={style}
 				noValidate>
 
-				{this.children(error && <div key="form-errors" className="form-error-message">{error.message ? error.message : error}</div>)}
+				{this.children(error && <div key="form-errors" className="form-error-message">{error}</div>)}
 
 				{/* Debug */}
 				{/* JSON.stringify(this.state.indicate_invalid) */}
@@ -169,7 +169,7 @@ export default class Form extends Component
 				continue
 			}
 
-			const { name, on_change, invalid } = child.props
+			const { name, on_change, error } = child.props
 
 			// If it has a `name` and `on_change` handler
 			// then it's likely an input field
@@ -179,7 +179,7 @@ export default class Form extends Component
 			}
 
 			// If the field is invalid, then the form won't be submitted
-			if (exists(invalid))
+			if (exists(error))
 			{
 				console.log(`[debug] "${name}" field is invalid`)
 

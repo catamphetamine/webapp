@@ -28,6 +28,12 @@ import { messages as change_password_messages } from './settings change password
 
 const messages = defineMessages
 ({
+	enter_new_email:
+	{
+		id             : 'user.settings.change_email.enter_new_email',
+		description    : `An error message stating that new email hasn't been entered`,
+		defaultMessage : `Enter new email`
+	},
 	password_check:
 	{
 		id             : 'user.settings.check_password.title',
@@ -107,7 +113,7 @@ export default class Change_email extends Component
 		= this.state
 
 		// {/* User's email */}
-		const markup = 
+		const markup =
 		(
 			<Editable_field
 				name="email"
@@ -135,7 +141,7 @@ export default class Change_email extends Component
 	{
 		if (!value)
 		{
-			return this.props.translate(authentication_form_messages.registration_email_is_required)
+			return this.props.translate(messages.enter_new_email)
 		}
 	}
 
@@ -209,7 +215,7 @@ export default class Change_email extends Component
 @international()
 @connect
 (
-	model => 
+	model =>
 	({
 		check_password_pending : model.user_settings.main.check_password_pending,
 		check_password_error   : model.user_settings.main.check_password_error,
@@ -325,7 +331,7 @@ class Check_password extends Component
 	{
 		intl : PropTypes.object
 	}
-	
+
 	constructor(props, context)
 	{
 		super(props, context)
@@ -360,7 +366,7 @@ class Check_password extends Component
 				focus={this.focus}
 				action={this.submit_form}
 				reset_error={this.reset_error}
-				error={this.error_message(error)}>
+				error={error && this.error_message(error)}>
 
 				<Text_input
 					ref="input"
@@ -370,7 +376,7 @@ class Check_password extends Component
 					placeholder={translate(messages.password)}
 					value={value}
 					disabled={busy}
-					invalid={this.invalid()}
+					error={this.password_error()}
 					on_change={this.on_change}/>
 			</Form>
 		)
@@ -435,11 +441,7 @@ class Check_password extends Component
 	{
 		const translate = this.context.intl.formatMessage
 
-		if (!error)
-		{
-			return
-		}
-
+		// "Wrong password" error will belong to the password field
 		if (error.status === http_status_codes.Input_rejected)
 		{
 			return
@@ -454,7 +456,7 @@ class Check_password extends Component
 		this.props.reset_error()
 	}
 
-	invalid()
+	password_error()
 	{
 		const translate = this.context.intl.formatMessage
 

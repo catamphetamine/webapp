@@ -124,7 +124,6 @@ export class Text_input_step extends Component
 		submit      : PropTypes.func.isRequired,
 		value       : PropTypes.string,
 		on_change   : PropTypes.func.isRequired,
-		invalid     : PropTypes.string,
 		description : PropTypes.string,
 		placeholder : PropTypes.string,
 		password    : PropTypes.bool,
@@ -133,10 +132,11 @@ export class Text_input_step extends Component
 		reset_error : PropTypes.func,
 		busy        : PropTypes.bool,
 		error       : PropTypes.string,
+		input_error : PropTypes.string,
 		className   : PropTypes.string,
 		style       : PropTypes.object
 	}
-	
+
 	constructor(props, context)
 	{
 		super(props, context)
@@ -155,8 +155,8 @@ export class Text_input_step extends Component
 			password,
 			description,
 			placeholder,
-			invalid,
 			error,
+			input_error,
 			busy,
 			submit,
 			reset_error
@@ -182,7 +182,7 @@ export class Text_input_step extends Component
 					placeholder={placeholder}
 					value={value}
 					disabled={busy}
-					invalid={invalid}
+					error={input_error}
 					on_change={on_change}/>
 			</Form>
 		)

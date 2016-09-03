@@ -16,7 +16,7 @@ export default class Sql
 	{
 		if (!is_object(example))
 		{
-			return this.find({ id: example }, { require: true })
+			return this.find({ id: example }) // , { require: true })
 		}
 
 		return new this.model(example).fetch(options).then(x => x !== null ? Sql.json(x) : null)
@@ -110,7 +110,7 @@ const ISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*))(?:Z|(\+|-
 // Walks JSON object tree
 function parse_dates(object)
 {
-	// If an array is encountered, 
+	// If an array is encountered,
 	// proceed recursively with each element of this array.
 	if (object instanceof Array)
 	{

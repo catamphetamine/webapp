@@ -106,7 +106,7 @@ export default class Change_password extends Component
 		const { changing_password } = this.state
 
 		// {/* User's password */}
-		
+
 		const markup =
 		(
 			<Editable_field
@@ -150,7 +150,7 @@ export default class Change_password extends Component
 @international()
 @connect
 (
-	model => 
+	model =>
 	({
 		check_current_password_pending : model.user_settings.change_password.check_current_password_pending,
 		check_current_password_error   : model.user_settings.change_password.check_current_password_error,
@@ -303,7 +303,7 @@ class Change_password_step_1 extends Component
 	{
 		intl : PropTypes.object
 	}
-	
+
 	constructor(props, context)
 	{
 		super(props, context)
@@ -336,11 +336,11 @@ class Change_password_step_1 extends Component
 				ref="step"
 				password={true}
 				description={translate(messages.enter_current_password)}
-				error={this.error_message(error)}
+				error={error && !this.wrong_password(error) && this.error_message(error)}
+				input_error={this.validate_password(value) || (error && this.wrong_password(error))}
 				busy={busy}
 				value={value}
 				on_change={this.on_change}
-				invalid={this.invalid()}
 				placeholder={translate(messages.current_password)}
 				submit={this.submit_step}
 				reset_error={this.reset_error}/>
@@ -396,19 +396,21 @@ class Change_password_step_1 extends Component
 		}
 	}
 
-	error_message(error)
+	wrong_password(error)
 	{
 		const translate = this.context.intl.formatMessage
 
-		if (!error)
-		{
-			return
-		}
-
+		// Don't show "Password required" when it's deliberately being reset
+		// due to "Wrong password" error.
 		if (error.status === http_status_codes.Input_rejected)
 		{
-			return
+			return translate(authentication_messages.wrong_password)
 		}
+	}
+
+	error_message(error)
+	{
+		const translate = this.context.intl.formatMessage
 
 		return translate(messages.check_current_password_failed)
 	}
@@ -417,23 +419,6 @@ class Change_password_step_1 extends Component
 	{
 		this.setState({ value })
 		this.props.reset_error()
-	}
-
-	invalid()
-	{
-		const translate = this.context.intl.formatMessage
-
-		const { error } = this.props
-		const { value } = this.state
-
-		// Don't show "Password required" when it's deliberately being reset
-		// due to "Wrong password" error.
-		if (error && error.status === http_status_codes.Input_rejected)
-		{
-			return translate(authentication_messages.wrong_password)
-		}
-
-		return this.validate_password(value)
 	}
 
 	// Reset form error before running form field validation
@@ -452,7 +437,7 @@ class Change_password_step_2 extends Component
 	{
 		intl : PropTypes.object
 	}
-	
+
 	constructor(props, context)
 	{
 		super(props, context)
@@ -482,7 +467,7 @@ class Change_password_step_2 extends Component
 				description={translate(messages.enter_new_password)}
 				value={value}
 				on_change={this.on_change}
-				invalid={this.validate_password(value)}
+				input_error={this.validate_password(value)}
 				placeholder={translate(messages.new_password)}
 				submit={this.submit_step}/>
 		)
@@ -534,7 +519,7 @@ class Change_password_step_3 extends Component
 	{
 		intl : PropTypes.object
 	}
-	
+
 	constructor(props, context)
 	{
 		super(props, context)
@@ -566,8 +551,8 @@ class Change_password_step_3 extends Component
 				description={translate(messages.enter_new_password_again)}
 				value={value}
 				on_change={this.on_change}
-				invalid={this.invalid()}
-				error={this.error_message(error)}
+				error={error && this.error_message(error)}
+				input_error={this.state.error || this.validate_password(value)}
 				busy={busy}
 				placeholder={translate(messages.new_password)}
 				submit={this.submit_step}
@@ -619,21 +604,11 @@ class Change_password_step_3 extends Component
 		{
 			return translate(messages.password_is_required)
 		}
-
-		// if (value !== this.props.state.new_password)
-		// {
-		// 	return translate(messages.new_password_misspelled)
-		// }
 	}
 
 	error_message(error)
 	{
 		const translate = this.context.intl.formatMessage
-
-		if (!error)
-		{
-			return
-		}
 
 		return translate(messages.change_password_failed)
 	}
@@ -642,20 +617,6 @@ class Change_password_step_3 extends Component
 	{
 		this.setState({ value, error: undefined })
 		this.props.reset_error()
-	}
-
-	invalid()
-	{
-		const { value, error } = this.state
-
-		// Don't show "Password required" when it's deliberately being reset
-		// due to "Password misspelled" error.
-		if (error)
-		{
-			return error
-		}
-
-		return this.validate_password(value)
 	}
 
 	// Reset form error before running form field validation

@@ -109,10 +109,12 @@
 	"user.settings.password.new_misspelled"              : "Вы опечатались. Попробуйте ещё раз",
 	"user.settings.password.check_current_failed"        : "Не удалось проверить ваш пароль",
 	"user.settings.password.change_failed"               : "Не удалось изменить пароль",
-	
+
 	"user.settings.check_password.title"          : "Проверка безопасности",
 	"user.settings.check_password.enter_password" : "Введите ваш пароль",
 	"user.settings.check_password.password"       : "Пароль",
+
+	"user.settings.change_email.enter_new_email" : "Введите новую почту",
 
 	"unauthenticated.header" : "Войдите, чтобы посмотреть эту страницу",
 	"unauthorized.header"    : "У вас нет доступа к странице",
