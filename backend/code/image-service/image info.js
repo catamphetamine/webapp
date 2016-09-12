@@ -32,11 +32,6 @@ export default async function get_image_info(from, options = {})
 		return info
 	}
 
-	if (info.format !== 'jpeg')
-	{
-		return info
-	}
-
 	const exif = await read_exif(from)
 
 	// UTC time in EXIF < 2.2

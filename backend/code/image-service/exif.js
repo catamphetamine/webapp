@@ -44,8 +44,22 @@ export default async function read_exif(path)
 
 	const Exif = new ExifReader.ExifReader()
 
-	// Parse the Exif tags using a simple DataView polyfill.
-	Exif.loadView(new DataView(buffer))
+	try
+	{
+		// Parse the Exif tags using a simple DataView polyfill.
+		Exif.loadView(new DataView(buffer))
+	}
+	catch (error)
+	{
+		if (error.message === 'No Exif data'
+			|| error.message === 'Invalid image format'
+			|| error.message === 'Illegal byte order value. Faulty image.')
+		{
+			return {}
+		}
+
+		throw error
+	}
 
 	// The MakerNote tag can be really large. Remove it to lower memory usage.
 	Exif.deleteTag('MakerNote')

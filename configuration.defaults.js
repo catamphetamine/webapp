@@ -1,13 +1,13 @@
-module.exports = 
+module.exports =
 {
 	api_service:
 	{
-		http: 
+		http:
 		{
 			host: '127.0.0.1',
 			port: 3002
 		},
-		database: 
+		database:
 		{
 			host: '127.0.0.1',
 			port: 5432,
@@ -18,7 +18,7 @@ module.exports =
 	},
 	authentication_service:
 	{
-		http: 
+		http:
 		{
 			host: '127.0.0.1',
 			port: 3006
@@ -26,7 +26,7 @@ module.exports =
 	},
 	password_service:
 	{
-		http: 
+		http:
 		{
 			host: '127.0.0.1',
 			port: 3007
@@ -34,7 +34,7 @@ module.exports =
 	},
 	user_service:
 	{
-		http: 
+		http:
 		{
 			host: '127.0.0.1',
 			port: 3008
@@ -42,14 +42,14 @@ module.exports =
 	},
 	image_service:
 	{
-		http: 
+		http:
 		{
 			host: '127.0.0.1',
 			port: 3003
 		},
 		files_directory: 'storage/images',
 		temporary_files_directory: 'temporary_storage',
-		temporary_image_expiration_interval: { days: 1 }, 
+		temporary_image_expiration_interval: { days: 1 },
 		clean_up_interval: { hours: 1 },
 		file_size_limit: '10mb',
 		//
@@ -67,8 +67,8 @@ module.exports =
 			600,
 			1000,
 			1500,
-			2100,
-			2800
+			2100
+			// 2800,
 			// 3600,
 			// 4500
 		],
@@ -77,30 +77,36 @@ module.exports =
 			user_picture:
 			{
 				square: true,
-				path: 'user_pictures'
+				path: 'user_pictures',
+				sizes:
+				[
+					300,
+					600,
+					1000
+				]
 			}
 		}
 	},
-	webpage_server: 
+	webpage_server:
 	{
-		http: 
+		http:
 		{
 			host: '127.0.0.1',
 			port: 3004
 		}
 	},
-	web_server: 
+	web_server:
 	{
-		http: 
+		http:
 		{
 			host: '127.0.0.1',
 			port: 3000
 		},
 		image_service_path: '/images'
 	},
-	log_service: 
+	log_service:
 	{
-		http: 
+		http:
 		{
 			host: '127.0.0.1',
 			port: 3005
@@ -117,7 +123,7 @@ module.exports =
 	},
 	mail_service:
 	{
-		http: 
+		http:
 		{
 			host: '127.0.0.1',
 			port: 3009

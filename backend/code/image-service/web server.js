@@ -222,7 +222,9 @@ web.upload('/upload', upload_folder,
 
 		const image_min_extent = Math.min(image_info.width, image_info.height)
 
-		for (let max_extent of configuration.image_service.sizes)
+		const target_sizes = image_type.sizes || configuration.image_service.sizes
+
+		for (let max_extent of target_sizes)
 		{
 			resizing.push(resize_for_size(from, max_extent, image_info, image_type, uploaded_file_name))
 
