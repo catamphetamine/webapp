@@ -9,7 +9,7 @@
   },
   "homepage": "https://github.com/halt-hammerzeit/webapp",
   "dependencies": {
-    "gm": "^1.23.0"
+    "sharp": "^0.16.0"
   },
   "author": "Halt Hammerzeit",
   "license": "MIT",

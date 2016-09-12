@@ -2,7 +2,6 @@
 import Promise from 'bluebird'
 
 import gm from 'gm'
-
 const imagemagick = gm.subClass({ imageMagick: true })
 
 // imagemagick resize
@@ -49,17 +48,11 @@ export function resize(from, to, settings)
 	// (width = square, height = square, cropped)
 	if (settings.square)
 	{
-		if (typeof settings.square === 'number')
-		{
-			settings.width  = settings.square
-			settings.height = settings.square
-		}
-		
 		settings.crop = true
 	}
 
 	// `imagemagick` parameters
-	const parameters = 
+	const parameters =
 	{
 		quality : 0.85,
 		filter  : 'Lagrange'
@@ -87,10 +80,10 @@ export function resize(from, to, settings)
 	}
 	else
 	{
-		// Use > to change the dimensions of the image only if 
+		// Use > to change the dimensions of the image only if
 		// its width or height exceeds the geometry specification.
 		// < resizes the image only if both of its dimensions are
-		// less thanthe geometry specification. For example, 
+		// less thanthe geometry specification. For example,
 		// if you specify '640x480>' and the image size is 256x256,
 		// the image size does not change. However, if the image
 		// is 512x512 or 1024x1024, it is resized to 480x480.
@@ -114,7 +107,7 @@ export function resize(from, to, settings)
 	}
 
 	// console.log('converting image', parameters)
-	
+
 	// resize the image
 
 	// automatically orient the image based on EXIF Orientation info
@@ -122,7 +115,7 @@ export function resize(from, to, settings)
 
 	if (parameters.format)
 	{
-		pipeline = pipeline.setFormat(parameters.format)
+		pipeline = pipeline.setFormat(parameters.format.toUpperCase())
 	}
 
 	if (parameters.quality)
@@ -168,15 +161,21 @@ export function autorotate(from, to)
 // {
 // 	width,       // 1000
 // 	height,      // 1000
-// 	format,      // 'JPEG', 'PNG', 
+// 	format,      // 'jpeg', 'png', ...
 // 	'mime type', // 'image/jpeg'
 // 	...
 // }
 //
-export function identify(path)
+export async function identify(path)
 {
 	const image = imagemagick(path)
-	return Promise.promisify(image.identify, image)()
+	const result = await Promise.promisify(image.identify, image)()
+
+	result.format = result.format.toLowerCase()
+	result.width  = result.size.width
+	result.height = result.size.height
+
+	return result
 }
 
 // returns:

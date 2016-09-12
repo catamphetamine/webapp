@@ -5,7 +5,8 @@ import path from 'path'
 import fs   from 'fs-extra'
 
 import get_image_info         from './image info'
-import { resize, autorotate } from './image manipulation'
+// import { resize, autorotate } from './image manipulation gm'
+import { resize, autorotate } from './image manipulation sharp'
 import database               from './database/database'
 import { clean_up }           from './cleaner'
 
@@ -15,7 +16,7 @@ const output_folder = path.resolve(Root_folder, configuration.image_service.file
 // checks if filesystem path exists
 function fs_exists(path)
 {
-	return new Promise((resolve, reject) => 
+	return new Promise((resolve, reject) =>
 	{
 		fs.exists(path, exists => resolve(exists))
 	})
@@ -134,7 +135,7 @@ web.post('/save', async ({ type, image }, { user }) =>
 	image.id = await database.create
 	({
 		user,
-		type, 
+		type,
 		sizes : image.sizes,
 		files_size : image.sizes.reduce((total, size) => total + size.file_size, 0),
 		coordinates : location,
@@ -177,10 +178,8 @@ web.upload('/upload', upload_folder,
 		// May restrict file uploads for this ip.
 		// `ip` trusts X-Forwarded-For HTTP Header.
 	},
-	postprocess: async function(uploaded)
+	process: async function({ original_file_name, uploaded_file_name }, parameters)
 	{
-		const { file, parameters } = uploaded
-
 		const image_type = configuration.image_service.type[parameters.type]
 
 		if (!image_type)
@@ -188,11 +187,11 @@ web.upload('/upload', upload_folder,
 			throw new Error(`Unknown image-service type: "${parameters.type}"`)
 		}
 
-		const from = path.resolve(upload_folder, file.uploaded_file_name)
+		const from = path.resolve(upload_folder, uploaded_file_name)
 
-		if (path.extname(file.original_file_name) === '.svg')
+		if (path.extname(original_file_name) === '.svg')
 		{
-			const file_name = file.uploaded_file_name + '.svg'
+			const file_name = uploaded_file_name + '.svg'
 
 			const to = temporary_path(file_name)
 
@@ -214,12 +213,12 @@ web.upload('/upload', upload_folder,
 
 		const image_info = await get_image_info(from)
 
-		if (image_info.format !== 'JPEG' && image_info.format !== 'PNG')
+		if (image_info.format !== 'jpeg' && image_info.format !== 'png')
 		{
 			throw new Error('Only JPEG, PNG and SVG images are supported')
 		}
 
-		const dot_extension = image_info.format === 'PNG' ? '.png' : '.jpg'
+		const dot_extension = image_info.format === 'png' ? '.png' : '.jpg'
 		const to_temporary = from + dot_extension
 
 		const sizes = []
@@ -250,7 +249,7 @@ web.upload('/upload', upload_folder,
 			}
 
 			const resized = await get_image_info(to_temporary, { simple: true })
-			const file_name = `${file.uploaded_file_name}@${resized.width}x${resized.height}${dot_extension}`
+			const file_name = `${uploaded_file_name}@${resized.width}x${resized.height}${dot_extension}`
 
 			const to = temporary_path(file_name)
 			await fs.moveAsync(to_temporary, to)

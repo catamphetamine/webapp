@@ -1,6 +1,7 @@
 import moment from 'moment'
 
-import { identify, read_exif } from './image manipulation'
+// import { identify, read_exif } from './image manipulation gm'
+import { identify, read_exif } from './image manipulation sharp'
 import local_date from './local date'
 
 // when using this module do `npm install geolib simplesets timezone --save`,
@@ -18,10 +19,10 @@ export default async function get_image_info(from, options = {})
 
 	const image_info = await identify(from)
 
-	const info = 
+	const info =
 	{
-		width  : image_info.size.width,
-		height : image_info.size.height,
+		width  : image_info.width,
+		height : image_info.height,
 		format : image_info.format
 	}
 
@@ -30,7 +31,10 @@ export default async function get_image_info(from, options = {})
 		return info
 	}
 
-	let location
+	if (info.format !== 'jpeg')
+	{
+		return info
+	}
 
 	const exif = await read_exif(from)
 
@@ -39,7 +43,7 @@ export default async function get_image_info(from, options = {})
 	if (exif.GPSTimeStamp)
 	{
 		// e.g. "21/1, 53/1, 5611/100"
-		// GPS Time Stamp should take priority 
+		// GPS Time Stamp should take priority
 		// over GPS Date Time Original and GPS Date Time Digitized
 	}
 
@@ -94,16 +98,21 @@ export default async function get_image_info(from, options = {})
 
 // e.g. value = "38/1, 1535/100, 0/1"
 //
-// According to http://en.wikipedia.org/wiki/Geotagging, 
-// ( [0] => 46/1 [1] => 5403/100 [2] => 0/1 ) should mean 
-// 46/1 degrees, 5403/100 minutes, 0/1 seconds, i.e. 46°54.03′0″N. 
+// According to http://en.wikipedia.org/wiki/Geotagging,
+// ( [0] => 46/1 [1] => 5403/100 [2] => 0/1 ) should mean
+// 46/1 degrees, 5403/100 minutes, 0/1 seconds, i.e. 46°54.03′0″N.
 // Normalizing the seconds gives 46°54′1.8″N.
 //
 function parse_gps_coordinate(value)
 {
-	const [hours, minutes, seconds] = value.split(', ')
-		.map(x => x.split('/').map(x => parseInt(x)))
-		.map(xy => xy[0] / xy[1])
+	if (typeof value === 'string')
+	{
+		value = value.split(', ')
+			.map(x => x.split('/').map(x => parseInt(x)))
+			.map(xy => xy[0] / xy[1])
+	}
+
+	const [hours, minutes, seconds] = value
 
 	return hours + minutes / 60 + seconds / (60 * 60)
 }
