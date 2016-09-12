@@ -54,15 +54,15 @@ export const messages = defineMessages
 	}
 })
 
-@preload((dispatch, get_state) => dispatch(get_log()))
+@preload(({ dispatch }) => dispatch(get_log()))
 @connect
 (
-	model => 
+	model =>
 	({
 		log   : model.log.log,
 		error : model.log.error
 	}),
-	dispatch => bind_action_creators({ get_log }, dispatch)
+	{ get_log }
 )
 @international()
 export default class Log extends Component
@@ -91,7 +91,7 @@ export default class Log extends Component
 	{
 		const { error, log, translate } = this.props
 
-		const markup = 
+		const markup =
 		(
 			<div>
 				{title(this.props.translate(layout_messages.menu_log))}
@@ -130,7 +130,7 @@ export default class Log extends Component
 
 					{this.state.stack_trace && this.state.stack_trace.map((stack, stack_index) =>
 					{
-						const markup = 
+						const markup =
 						(
 							<div key={stack_index} style={style.stack_trace}>
 								<h2 style={style.stack_trace.stack.title}>{stack.title}</h2>
@@ -138,7 +138,7 @@ export default class Log extends Component
 								<ul style={style.stack_trace.stack}>
 									{stack.lines.map((line, line_index) =>
 									{
-										const markup = 
+										const markup =
 										(
 											<li key={line_index} style={style.stack_trace.stack.line}>
 												{this.render_stack_trace_line(line)}
@@ -162,7 +162,7 @@ export default class Log extends Component
 
 	render_log_entry(entry, index)
 	{
-		const markup = 
+		const markup =
 		(
 			<tr key={index} style={style.log.entry[(log_levels[entry.level] || 'generic').toLowerCase()]}>
 				<td>{entry.pid}</td>
@@ -185,7 +185,7 @@ export default class Log extends Component
 					{entry.err &&
 						<span>
 							{' '}
-							<button 
+							<button
 								onClick={() => this.show_stack_trace(parse_stack_trace(entry.err.stack), entry.msg)}>
 								{this.props.translate(messages.show_stack_trace)}
 							</button>
@@ -229,7 +229,7 @@ export default class Log extends Component
 		}
 
 		if (line_info.file_path)
-		{	
+		{
 			line.push(<div key="file-path" style={style.stack_trace.stack.line.file_path}>{line_info.file_path}</div>)
 		}
 

@@ -142,27 +142,6 @@ The application should be run as an unprivileged user.
 
 When switching to TLS will be made all cookies should be recreated (`{ secure: true }` option will be set on them automatically upon Https detection when they are recreated).
 
-Image Server
-============
-
-In order to be able to upload pictures ImageMagic is required to be installed
-
-https://github.com/elad/node-imagemagick-native#installation-windows
-
-http://www.imagemagick.org/script/binary-releases.php
-
-On OS X:
-
-```
-brew install imagemagick
-```
-
-<!-- Then it should be configured in your `configuration.js` file
-
-```javascript
-imagemagic: true
-``` -->
-
 Redis
 =====
 
@@ -671,18 +650,21 @@ Troubleshooting
 To do
 ====================
 
-проверить валидацию шага смены пароля (1, 3)
+скроллить на поле, содержащее ошибку
+
+
+
+проверить формы входа и регистрации как с javascript-ом, так и без javascirt-а (на страницах)
 
 
 
 
-сделать redux-form
+<!-- мб разделить sign-in и register -->
 
 
 
-Text Input переписать на createElement
 
-оказывается, htmlFor - не для name, а для id, поэтому попробовать делать <label/>, оборачивающий input.
+оказывается, htmlFor - не для name, а для id, поэтому поискать в код "htmlFor" и попробовать делать <label/>, оборачивающий input.
 
 
 

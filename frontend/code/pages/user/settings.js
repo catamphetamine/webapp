@@ -56,11 +56,11 @@ const messages = defineMessages
 	}
 })
 
-@preload((dispatch, get_state, location, parameters) =>
+@preload(({ dispatch, getState }) =>
 {
 	return Promise.all
 	([
-		dispatch(get_user(get_state().authentication.user.id))
+		dispatch(get_user(getState().authentication.user.id))
 	])
 })
 @connect
@@ -129,7 +129,7 @@ export default class Settings_page extends Component
 		}
 		= this.state
 
-		const markup = 
+		const markup =
 		(
 			<div className="content user-settings">
 				{/* "Settings" */}
@@ -161,7 +161,7 @@ export default class Settings_page extends Component
 						{ !showing_advanced_settings &&
 							<div className="background-section">
 								{/* "Show advanced settings" button */}
-								{ !showing_advanced_settings && 
+								{ !showing_advanced_settings &&
 									<Button
 										busy={load_advanced_settings_pending}
 										action={this.load_advanced_settings}
@@ -196,7 +196,7 @@ export default class Settings_page extends Component
 			this.props.dispatch({ type: 'user settings: load advanced settings pending' })
 
 			await this.props.get_user_authentication_tokens()
-			
+
 			this.props.dispatch({ type: 'user settings: load advanced settings done' })
 		}
 		catch (error)

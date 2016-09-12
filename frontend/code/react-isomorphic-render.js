@@ -24,7 +24,10 @@ export default
 		return middleware
 	},
 
-	on_preload_error: on_error,
+	preload:
+	{
+		on_error
+	},
 
 	on_store_created({ reload_reducer })
 	{

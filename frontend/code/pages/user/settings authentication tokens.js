@@ -90,12 +90,10 @@ const messages = defineMessages
 		authentication_tokens         : model.user_settings.main.authentication_tokens,
 		revoking_authentication_token : model.user_settings.main.revoking_authentication_token
 	}),
-	dispatch => bind_action_creators
-	({
+	{
 		get_user_authentication_tokens,
 		revoke_authentication_token
-	},
-	dispatch)
+	}
 )
 @international()
 export default class Authentication_tokens extends Component

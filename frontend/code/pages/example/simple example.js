@@ -11,10 +11,10 @@ import { get as get_users, add as add_user, remove as delete_user, upload_pictur
 
 import Button from '../../components/button'
 
-@preload((dispatch, get_model) => dispatch(get_users()))
+@preload(({ dispatch }) => dispatch(get_users()))
 @connect
 (
-	model => 
+	model =>
 	({
 		users         : model.example_users.users,
 		loading       : model.example_users.loading,
@@ -27,14 +27,12 @@ import Button from '../../components/button'
 
 		user : model.authentication.user
 	}),
-	dispatch => bind_action_creators
-	({
-		get_users, 
-		add_user, 
-		delete_user, 
+	{
+		get_users,
+		add_user,
+		delete_user,
 		upload_picture
-	},
-	dispatch)
+	}
 )
 export default class Page extends Component
 {
@@ -85,7 +83,7 @@ export default class Page extends Component
 	{
 		const { error, loaded, users } = this.props
 
-		const markup = 
+		const markup =
 		(
 			<div>
 				{title("Simple REST API example")}
@@ -105,7 +103,7 @@ export default class Page extends Component
 	{
 		if (error)
 		{
-			const markup = 
+			const markup =
 			(
 				<div style={style.users}>
 					{'Failed to load the list of users'}
@@ -126,7 +124,7 @@ export default class Page extends Component
 
 		if (users.is_empty())
 		{
-			const markup = 
+			const markup =
 			(
 				<div style={style.users}>
 					No users
@@ -142,13 +140,13 @@ export default class Page extends Component
 
 		const no_user_picture = require('../../../assets/images/user picture.png')
 
-		const markup = 
+		const markup =
 		(
 			<div style={style.users}>
 				<span style={style.users.list.title}>Users</span>
 
 				<button onClick={this.add_user} style={style.users.add}>Add user</button>
-				
+
 				<button onClick={this.refresh} style={style.users.refresh}>Refresh</button>
 
 				<div>
@@ -158,7 +156,7 @@ export default class Page extends Component
 							return <li key={user.id}>
 								<span style={style.user.id}>{user.id}</span>
 
-								<img style={style.user.picture} src={user.picture ? `${_image_service_url_}/uploaded/${user.picture.sizes[0].name}` : no_user_picture}/>
+								<img style={style.user.picture} src={user.picture && user.picture.sizes ? `${_image_service_url_}/uploaded/${user.picture.sizes[0].name}` : no_user_picture}/>
 
 								<span style={style.user.name}>{user.name}</span>
 
@@ -168,8 +166,8 @@ export default class Page extends Component
 									style={style.users.upload_picture_input}
 									onChange={event => this.on_picture_file_selected(event, user.id)}/>
 
-								<Button 
-									busy={this.props.uploading_picture} 
+								<Button
+									busy={this.props.uploading_picture}
 									action={event =>
 									{
 										if (!this.props.user)
@@ -178,7 +176,7 @@ export default class Page extends Component
 										}
 
 										this.refs[`upload_picture_${i}`].click()
-									}} 
+									}}
 									style={style.users.upload_picture}>
 
 									upload picture
@@ -204,7 +202,7 @@ export default class Page extends Component
 	async refresh()
 	{
 		this.setState({ refreshing: true })
-		
+
 		try
 		{
 			await this.props.get_users()
@@ -222,7 +220,7 @@ export default class Page extends Component
 	async add_user()
 	{
 		const name = prompt(`Enter user's name`)
-		
+
 		if (!name)
 		{
 			return
@@ -257,8 +255,8 @@ export default class Page extends Component
 		const file = event.target.files[0]
 		this.upload_picture(file, user_id)
 
-		// reset the selected file 
-		// so that onChange would trigger again 
+		// reset the selected file
+		// so that onChange would trigger again
 		// even with the same file
 		event.target.value = null
 	}
@@ -274,7 +272,7 @@ export default class Page extends Component
 		catch (error)
 		{
 			console.error(error)
-			alert('DEBUG: Image upload failed. Make sure you have ImageMagick installed.')
+			alert('DEBUG: Image upload failed for some reason (see the terminal).')
 		}
 	}
 }

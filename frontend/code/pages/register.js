@@ -38,13 +38,21 @@ export default class Sign_in extends Component
 	{
 		super(props, context)
 
+		this.fields =
+		{
+			name                      : props.name,
+			email                     : props.email,
+			password                  : props.password,
+			terms_of_service_accepted : props.terms_of_service_accepted
+		}
+
 		this.redirect = this.redirect.bind(this)
 	}
 
 	componentWillMount()
 	{
-		// при обновлении этой страницы (Ctrl + R), 
-		// если пользователь уже вошёл, 
+		// при обновлении этой страницы (Ctrl + R),
+		// если пользователь уже вошёл,
 		// то автоматически перенаправлять на requested url.
 		//
 		if (this.props.user)
@@ -57,16 +65,17 @@ export default class Sign_in extends Component
 	{
 		const { name, email, password, accept, terms_of_service_accepted, translate } = this.props
 
-		const markup = 
+		const markup =
 		(
 			<section className="content">
 				{title(translate(user_bar_messages.register))}
 
-				<Authentication_form 
+				<Authentication_form
+					form_id="register_page_form"
 					registration={true}
-					fields={{ name, email, password, accept, terms_of_service_accepted }}
+					initial_values={this.fields}
 					focus_on={this.get_focused_element()}
-					style={style.form} 
+					style={style.form}
 					error={this.error_message()}/>
 			</section>
 		)
@@ -97,7 +106,7 @@ export default class Sign_in extends Component
 		{
 			return translate(authentication_form_messages.registration_password_is_required)
 		}
-		
+
 		if (error === 'You must accept the terms of service')
 		{
 			return translate(authentication_form_messages.registration_terms_of_service_acceptance_is_required)
@@ -129,7 +138,7 @@ export default class Sign_in extends Component
 		{
 			return 'password'
 		}
-		
+
 		if (error === 'You must accept the terms of service')
 		{
 			return 'terms_of_service_accepted'

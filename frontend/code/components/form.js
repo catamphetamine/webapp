@@ -10,12 +10,10 @@ export default class Form extends Component
 	static propTypes =
 	{
 		action      : PropTypes.func,
-		focus       : PropTypes.func,
 		cancel      : PropTypes.func,
 		// `error` can be passed for non-javascript
 		// web 1.0 forms error rendering support
 		error       : PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
-		reset_error : PropTypes.func,
 		post        : PropTypes.string,
 		className   : PropTypes.string,
 		style       : PropTypes.object
@@ -55,43 +53,12 @@ export default class Form extends Component
 		return markup
 	}
 
-	// Adds extra properties to form field elements
+	// Adds `errors` element to the form
 	children(errors)
 	{
 		const { children } = this.props
 
-		const form_elements = React.Children.toArray(children).map((child) =>
-		{
-			if (!child || !child.props)
-			{
-				return child
-			}
-
-			const { name, on_change } = child.props
-
-			// If it has a `name` and `on_change` handler
-			// then it's likely an input field
-			if (!name || !on_change)
-			{
-				return child
-			}
-
-			// If it's a form field, then add extra properties to it
-			return React.cloneElement(child,
-			{
-				indicate_invalid : this.state.indicate_invalid[name],
-				on_change : (value) =>
-				{
-					on_change(value)
-
-					// Since the field value changed,
-					// it's likely that user is in the process of editing it,
-					// so don't show that the field is invalid (if it is).
-					this.state.indicate_invalid[name] = false
-					this.setState({ indicate_invalid: this.state.indicate_invalid })
-				}
-			})
-		})
+		const form_elements = React.Children.toArray(children)
 
 		// Insert `errors` element
 		if (errors)
@@ -149,88 +116,10 @@ export default class Form extends Component
 	// Submit form
 	submit()
 	{
-		// this.reset_error()
-
-		const { reset_error, children, indicate_invalid, set_indicate_invalid } = this.props
-
-		if (reset_error)
-		{
-			reset_error()
-		}
-
-		// Will focus on the first invalid field
-		let first_invalid_field
-
-		// Check validity state for each form field
-		for (let child of React.Children.toArray(children))
-		{
-			if (!child || !child.props)
-			{
-				continue
-			}
-
-			const { name, on_change, error } = child.props
-
-			// If it has a `name` and `on_change` handler
-			// then it's likely an input field
-			if (!name || !on_change)
-			{
-				continue
-			}
-
-			// If the field is invalid, then the form won't be submitted
-			if (exists(error))
-			{
-				console.log(`[debug] "${name}" field is invalid`)
-
-				first_invalid_field = first_invalid_field || name
-			}
-
-			// Indicate invalid, if the field is invalid
-			// (if the field is valid then there will be nothing to indicate)
-			this.state.indicate_invalid[name] = true
-		}
-
-		// Apply field validity indication
-		this.setState({ indicate_invalid: this.state.indicate_invalid })
-
-		// If there is an invalid field, then focus on it and exit
-		if (first_invalid_field)
-		{
-			if (this.props.focus)
-			{
-				this.props.focus(first_invalid_field)
-			}
-
-			return false
-		}
-
-		// Form is valid, and is therefore submitted
-
 		if (this.props.action)
 		{
 			this.props.action()
 		}
-
-		// try
-		// {
-		// 	await this.props.action()
-		// }
-		// catch (error)
-		// {
-		// 	this.setState({ error: error.message })
-		// 	// console.error(error)
-		// }
-	}
-
-	// reset_error()
-	// {
-	// 	this.setState({ error: undefined })
-	// }
-
-	reset_validation_indication()
-	{
-		this.setState({ indicate_invalid: {} })
 	}
 
 	on_key_down(event)

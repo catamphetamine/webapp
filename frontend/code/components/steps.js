@@ -5,6 +5,8 @@ import classNames from 'classnames'
 import Form       from './form'
 import Text_input from './text input'
 
+import Redux_form, { Field } from '../simpler-redux-form/index.es6'
+
 export default class Steps extends Component
 {
 	state =
@@ -115,15 +117,16 @@ export default class Steps extends Component
 	}
 }
 
+@Redux_form()
 export class Text_input_step extends Component
 {
 	state = {}
 
 	static propTypes =
 	{
+		action      : PropTypes.func.isRequired,
 		submit      : PropTypes.func.isRequired,
 		value       : PropTypes.string,
-		on_change   : PropTypes.func.isRequired,
 		description : PropTypes.string,
 		placeholder : PropTypes.string,
 		password    : PropTypes.bool,
@@ -131,8 +134,9 @@ export class Text_input_step extends Component
 		submit      : PropTypes.func.isRequired,
 		reset_error : PropTypes.func,
 		busy        : PropTypes.bool,
-		error       : PropTypes.string,
-		input_error : PropTypes.string,
+		error       : PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+		input_error : PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+		validate    : PropTypes.func,
 		className   : PropTypes.string,
 		style       : PropTypes.object
 	}
@@ -142,7 +146,6 @@ export class Text_input_step extends Component
 		super(props, context)
 
 		this.submit = this.submit.bind(this)
-		this.focus  = this.focus.bind(this)
 	}
 
 	render()
@@ -150,14 +153,15 @@ export class Text_input_step extends Component
 		const
 		{
 			value,
-			on_change,
 			email,
 			password,
 			description,
 			placeholder,
 			error,
 			input_error,
+			validate,
 			busy,
+			action,
 			submit,
 			reset_error
 		}
@@ -168,13 +172,11 @@ export class Text_input_step extends Component
 			<Form
 				ref="form"
 				busy={busy}
-				focus={this.focus}
-				action={submit}
-				reset_error={reset_error}
+				action={submit(reset_error, action)}
 				error={error}>
 
-				<Text_input
-					ref="input"
+				<Field
+					component={Text_input}
 					name="input"
 					email={email}
 					password={password}
@@ -183,7 +185,7 @@ export class Text_input_step extends Component
 					value={value}
 					disabled={busy}
 					error={input_error}
-					on_change={on_change}/>
+					validate={validate}/>
 			</Form>
 		)
 
@@ -191,25 +193,8 @@ export class Text_input_step extends Component
 	}
 
 	// Public API
-	focus(name = 'input')
-	{
-		this.refs[name].focus()
-	}
-
-	// Public API
 	submit()
 	{
 		this.refs.form.submit()
 	}
-
-	// // Public API
-	// submit()
-	// {
-	// 	if (!this.refs.input.validate())
-	// 	{
-	// 		return this.refs.input.focus({ preserve_validation: true })
-	// 	}
-	//
-	// 	this.props.submit(this.state.value)
-	// }
 }

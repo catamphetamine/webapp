@@ -7,13 +7,13 @@
 //
 // an alternative solution is to add this to .babelrc
 //
-// ["react-intl", 
+// ["react-intl",
 // {
 // 	"messagesDir": "./build/messages/",
 // 	"enforceDescriptions": true
 // }]
 //
-// and then use something like this 
+// and then use something like this
 // to convert those `.json`s into a proper translations file
 // https://github.com/yahoo/react-intl/blob/master/examples/translations/scripts/translate.js
 //
@@ -77,7 +77,7 @@ export default function() // ({ dispatch, getState })
 			<Route path="user">
 				<Route path=":id" component={Profile}/>
 			</Route>
-			
+
 			<Route path="settings" component={authorize(Settings, 'administrator')}/>
 
 			<Route path="logs" component={authorize(Log, 'administrator')}/>

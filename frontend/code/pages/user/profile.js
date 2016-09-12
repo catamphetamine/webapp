@@ -134,7 +134,7 @@ const messages = defineMessages
 
 const Latest_activity_time_refresh_interval = 60 * 1000 // once in a minute
 
-@preload((dispatch, get_state, location, parameters) =>
+@preload(({ dispatch, get_state, location, parameters }) =>
 {
 	return Promise.all
 	([

@@ -22,6 +22,8 @@ import Modal, { reset_modal } from '../../components/modal'
 import Form from '../../components/form'
 import Text_input from '../../components/text input'
 
+import Redux_form, { Field } from '../../simpler-redux-form/index.es6'
+
 import default_messages from '../../components/messages'
 import { messages as authentication_messages } from '../../components/authentication form'
 import { messages as change_password_messages } from './settings change password'
@@ -288,8 +290,9 @@ class Check_password_popup extends Component
 				}]}>
 
 				<Check_password
+					form_id="change_email_check_password"
 					ref="check_password"
-					submit={this.done}
+					submit_form={this.done}
 					busy={check_password_pending}
 					action={check_password}
 					error={check_password_error}
@@ -315,6 +318,7 @@ class Check_password_popup extends Component
 	}
 }
 
+@Redux_form()
 class Check_password extends Component
 {
 	state = {}
@@ -340,7 +344,6 @@ class Check_password extends Component
 		this.submit            = this.submit.bind(this)
 		this.submit_form       = this.submit_form.bind(this)
 		this.reset_error       = this.reset_error.bind(this)
-		this.on_change         = this.on_change.bind(this)
 	}
 
 	componentDidMount()
@@ -348,13 +351,12 @@ class Check_password extends Component
 		// Because this component is mounted before
 		// the react-modal contents are mounted,
 		// focus after the modal has been mounted.
-		setTimeout(this.refs.input.focus, 0)
+		setTimeout(() => this.props.focus('input'), 0)
 	}
 
 	render()
 	{
-		const { error, busy } = this.props
-		const { value } = this.state
+		const { error, busy, submit } = this.props
 
 		const translate = this.context.intl.formatMessage
 
@@ -363,21 +365,18 @@ class Check_password extends Component
 			<Form
 				ref="form"
 				busy={busy}
-				focus={this.focus}
-				action={this.submit_form}
-				reset_error={this.reset_error}
+				action={submit(this.reset_error, this.submit_form)}
 				error={error && this.error_message(error)}>
 
-				<Text_input
-					ref="input"
+				<Field
+					component={Text_input}
 					name="input"
 					password={true}
 					description={translate(messages.enter_password)}
 					placeholder={translate(messages.password)}
-					value={value}
 					disabled={busy}
 					error={this.password_error()}
-					on_change={this.on_change}/>
+					validate={this.validate_password}/>
 			</Form>
 		)
 
@@ -396,10 +395,10 @@ class Check_password extends Component
 		this.props.reset_error()
 	}
 
-	async submit_form()
+	async submit_form(values)
 	{
-		const { submit, action } = this.props
-		const { value } = this.state
+		const { submit_form, action, focus, clear } = this.props
+		const value = values.input
 
 		try
 		{
@@ -407,7 +406,7 @@ class Check_password extends Component
 			await action(value)
 
 			// The current password matches
-			submit(value)
+			submit_form(value)
 		}
 		catch (error)
 		{
@@ -421,8 +420,8 @@ class Check_password extends Component
 			// Focus password input field on wrong password
 			if (error.status === http_status_codes.Input_rejected)
 			{
-				this.setState({ value: '' })
-				this.refs.input.focus()
+				clear('input', this.validate_password())
+				focus('input')
 			}
 		}
 	}
@@ -450,18 +449,11 @@ class Check_password extends Component
 		return translate(change_password_messages.check_current_password_failed)
 	}
 
-	on_change(value)
-	{
-		this.setState({ value })
-		this.props.reset_error()
-	}
-
 	password_error()
 	{
 		const translate = this.context.intl.formatMessage
 
 		const { error } = this.props
-		const { value } = this.state
 
 		// Don't show "Password required" when it's deliberately being reset
 		// due to "Wrong password" error.
@@ -469,7 +461,5 @@ class Check_password extends Component
 		{
 			return translate(authentication_messages.wrong_password)
 		}
-
-		return this.validate_password(value)
 	}
 }

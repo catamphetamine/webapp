@@ -10,11 +10,11 @@ import Unauthorized    from '../pages/errors/unauthorized'
 
 import { add_redirect } from '../helpers/redirection'
 
-export default function(authorization)
+export default function authorize(authorization)
 {
 	return function(Wrapped)
 	{
-		class _Authorize extends Component
+		class Authorize extends Component
 		{
 			state = { error: undefined }
 
@@ -79,9 +79,9 @@ export default function(authorization)
 			}
 		}
 
-		_Authorize.displayName = `Authorize(${get_display_name(Wrapped)})`
+		Authorize.displayName = `Authorize(${get_display_name(Wrapped)})`
 
-		const Authorize = hoist_statics(_Authorize, Wrapped)
+		hoist_statics(Authorize, Wrapped)
 
 		const preloads = [Preload_method_name, Preload_blocking_method_name]
 
@@ -94,15 +94,14 @@ export default function(authorization)
 
 			const preloader = Authorize[preload]
 
-			Authorize[preload] = function authorize_then_preload(...parameters)
+			Authorize[preload] = function authorize_then_preload(parameters)
 			{
-				const model = parameters[1]()
-				const location = parameters[2]
+				const location = parameters.location
 
-				const user = model.authentication.user
+				const user = parameters.getState().authentication.user
 				const url = location.pathname + location.search
 
-				const result = check_privileges({ user, url, authorization }) 
+				const result = check_privileges({ user, url, authorization })
 
 				if (result.error)
 				{
@@ -112,10 +111,10 @@ export default function(authorization)
 					// return Promise.reject(new Error(result.error))
 				}
 
-				return preloader.apply(this, parameters)
+				return preloader(parameters)
 			}
 		})
-	
+
 		return connect
 		(model =>
 		({

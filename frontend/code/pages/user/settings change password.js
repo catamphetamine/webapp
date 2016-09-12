@@ -158,14 +158,12 @@ export default class Change_password extends Component
 		change_password_pending : model.user_settings.change_password.change_password_pending,
 		change_password_error   : model.user_settings.change_password.change_password_error
 	}),
-	dispatch => bind_action_creators
-	({
+	{
 		check_current_password,
 		reset_check_current_password_error,
 		change_password,
 		reset_change_password_error
-	},
-	dispatch)
+	}
 )
 class Change_password_popup extends Component
 {
@@ -214,7 +212,7 @@ class Change_password_popup extends Component
 				is_open={is_open}
 				close={this.close}
 				cancel={true}
-				busy={check_current_password_pending}
+				busy={check_current_password_pending || change_password_pending}
 				actions={this.change_password_steps_actions()}>
 
 				{/* Change password steps */}
@@ -312,7 +310,6 @@ class Change_password_step_1 extends Component
 		this.submit            = this.submit.bind(this)
 		this.submit_step       = this.submit_step.bind(this)
 		this.reset_error       = this.reset_error.bind(this)
-		this.on_change         = this.on_change.bind(this)
 	}
 
 	componentDidMount()
@@ -333,16 +330,16 @@ class Change_password_step_1 extends Component
 		const markup =
 		(
 			<Text_input_step
+				form_id="change_password_step_1"
 				ref="step"
 				password={true}
 				description={translate(messages.enter_current_password)}
 				error={error && !this.wrong_password(error) && this.error_message(error)}
-				input_error={this.validate_password(value) || (error && this.wrong_password(error))}
+				input_error={error && this.wrong_password(error)}
+				validate={this.validate_password}
 				busy={busy}
-				value={value}
-				on_change={this.on_change}
 				placeholder={translate(messages.current_password)}
-				submit={this.submit_step}
+				action={this.submit_step}
 				reset_error={this.reset_error}/>
 		)
 
@@ -355,10 +352,10 @@ class Change_password_step_1 extends Component
 		this.refs.step.submit()
 	}
 
-	async submit_step()
+	async submit_step(values)
 	{
 		const { submit, action } = this.props
-		const { value } = this.state
+		const value = values.input
 
 		try
 		{
@@ -380,7 +377,7 @@ class Change_password_step_1 extends Component
 			// Focus password input field on wrong password
 			if (error.status === http_status_codes.Input_rejected)
 			{
-				this.setState({ value: '' })
+				this.refs.step.clear('input', this.validate_password())
 				this.refs.step.focus()
 			}
 		}
@@ -415,15 +412,10 @@ class Change_password_step_1 extends Component
 		return translate(messages.check_current_password_failed)
 	}
 
-	on_change(value)
-	{
-		this.setState({ value })
-		this.props.reset_error()
-	}
-
 	// Reset form error before running form field validation
 	reset_error()
 	{
+		this.setState({ error: undefined })
 		this.props.reset_error()
 	}
 }
@@ -445,31 +437,27 @@ class Change_password_step_2 extends Component
 		this.validate_password = this.validate_password.bind(this)
 		this.submit            = this.submit.bind(this)
 		this.submit_step       = this.submit_step.bind(this)
-		this.on_change         = this.on_change.bind(this)
 	}
 
 	componentDidMount()
 	{
-		this.refs.step.focus()
+		setTimeout(() => this.refs.step.focus(), 0)
 	}
 
 	render()
 	{
-		const { value } = this.state
-
 		const translate = this.context.intl.formatMessage
 
 		const markup =
 		(
 			<Text_input_step
+				form_id="change_password_step_2"
 				ref="step"
 				password={true}
 				description={translate(messages.enter_new_password)}
-				value={value}
-				on_change={this.on_change}
-				input_error={this.validate_password(value)}
+				validate={this.validate_password}
 				placeholder={translate(messages.new_password)}
-				submit={this.submit_step}/>
+				action={this.submit_step}/>
 		)
 
 		return markup
@@ -481,9 +469,11 @@ class Change_password_step_2 extends Component
 		this.refs.step.submit()
 	}
 
-	submit_step()
+	submit_step(values)
 	{
-		this.props.submit({ ...this.props.state, new_password: this.state.value })
+		const value = values.input
+
+		this.props.submit({ ...this.props.state, new_password: value })
 	}
 
 	validate_password(value)
@@ -494,11 +484,6 @@ class Change_password_step_2 extends Component
 		{
 			return translate(messages.password_is_required)
 		}
-	}
-
-	on_change(value)
-	{
-		this.setState({ value })
 	}
 }
 
@@ -528,34 +513,32 @@ class Change_password_step_3 extends Component
 		this.submit            = this.submit.bind(this)
 		this.submit_step       = this.submit_step.bind(this)
 		this.reset_error       = this.reset_error.bind(this)
-		this.on_change         = this.on_change.bind(this)
 	}
 
 	componentDidMount()
 	{
-		this.refs.step.focus()
+		setTimeout(() => this.refs.step.focus(), 0)
 	}
 
 	render()
 	{
 		const { busy, error } = this.props
-		const { value } = this.state
 
 		const translate = this.context.intl.formatMessage
 
 		const markup =
 		(
 			<Text_input_step
+				form_id="change_password_step_3"
 				ref="step"
 				password={true}
 				description={translate(messages.enter_new_password_again)}
-				value={value}
-				on_change={this.on_change}
 				error={error && this.error_message(error)}
-				input_error={this.state.error || this.validate_password(value)}
+				input_error={this.state.error}
+				validate={this.validate_password}
 				busy={busy}
 				placeholder={translate(messages.new_password)}
-				submit={this.submit_step}
+				action={this.submit_step}
 				reset_error={this.reset_error}/>
 		)
 
@@ -568,12 +551,12 @@ class Change_password_step_3 extends Component
 		this.refs.step.submit()
 	}
 
-	async submit_step()
+	async submit_step(values)
 	{
 		const translate = this.context.intl.formatMessage
 
 		const { action, state, submit } = this.props
-		const { value } = this.state
+		const value = values.input
 
 		// If the new password is misspelled,
 		// then reset the input field
@@ -613,15 +596,10 @@ class Change_password_step_3 extends Component
 		return translate(messages.change_password_failed)
 	}
 
-	on_change(value)
-	{
-		this.setState({ value, error: undefined })
-		this.props.reset_error()
-	}
-
 	// Reset form error before running form field validation
 	reset_error()
 	{
 		this.setState({ error: undefined })
+		this.props.reset_error()
 	}
 }

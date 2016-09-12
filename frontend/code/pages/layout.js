@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react'
 // import { StickyContainer, Sticky } from 'react-sticky'
-import { bindActionCreators as bind_action_creators } from 'redux'
 
 // testing `flat` styler
 import styler              from 'react-styling/flat'
@@ -35,7 +34,7 @@ const menu_transition_duration = 0 // 210 // milliseconds
 // })
 @connect
 (
-	model => 
+	model =>
 	({
 		locale   : model.locale.locale
 	})
@@ -51,7 +50,7 @@ const menu_transition_duration = 0 // 210 // milliseconds
 }))
 export default class Layout extends Component
 {
-	state = 
+	state =
 	{
 		show_menu  : false,
 		menu_width : 0,
@@ -118,7 +117,7 @@ export default class Layout extends Component
 		// `translate3d` animation won't work:
 		// http://stackoverflow.com/questions/14732403/position-fixed-not-working-for-header/14732712#14732712
 
-		const markup = 
+		const markup =
 		(
 			<div
 				onTouchStart={this.hide_menu_on_click}
@@ -193,7 +192,7 @@ export default class Layout extends Component
 			setTimeout(() =>
 			{
 				this.setState({ page_moved_aside: this.state.show_menu })
-			}, 
+			},
 			menu_transition_duration)
 		})
 	}

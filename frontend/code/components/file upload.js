@@ -24,7 +24,7 @@ export default class File_upload extends React.Component
 	{
 		const { style, className } = this.props
 
-		const markup = 
+		const markup =
 		(
 			<div
 				style={style}
@@ -45,7 +45,7 @@ export default class File_upload extends React.Component
 
 		return markup
 
-		// const file_input = 
+		// const file_input =
 		// 	<input
 		// 		type="file"
 		// 		ref="file_upload"
@@ -88,8 +88,8 @@ export default class File_upload extends React.Component
 
 		action(data)
 
-		// reset the selected file 
-		// so that onChange would trigger again 
+		// reset the selected file
+		// so that onChange would trigger again
 		// even with the same file
 		event.target.value = null
 	}

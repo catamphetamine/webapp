@@ -32,8 +32,7 @@ const messages = defineMessages
 
 		error        : model.router.location.query.error,
 		error_status : parseInt(model.router.location.query.error_status),
-
-		email      : model.router.location.query.email
+		email        : model.router.location.query.email
 	})
 )
 @international()
@@ -43,13 +42,18 @@ export default class Sign_in extends Component
 	{
 		super(props, context)
 
+		this.fields =
+		{
+			email : props.email
+		}
+
 		this.redirect = this.redirect.bind(this)
 	}
 
 	componentWillMount()
 	{
-		// при обновлении этой страницы (Ctrl + R), 
-		// если пользователь уже вошёл, 
+		// при обновлении этой страницы (Ctrl + R),
+		// если пользователь уже вошёл,
 		// то автоматически перенаправлять на requested url.
 		//
 		if (this.props.user)
@@ -62,15 +66,16 @@ export default class Sign_in extends Component
 	{
 		const { email, translate } = this.props
 
-		const markup = 
+		const markup =
 		(
 			<section className="content">
 				{title(translate(user_bar_messages.sign_in))}
 
-				<Authentication_form 
-					fields={{ email }}
+				<Authentication_form
+					form_id="sign_in_page_form"
+					initial_values={this.fields}
 					focus_on={this.get_focused_element()}
-					style={style.form} 
+					style={style.form}
 					error={this.error_message()}/>
 			</section>
 		)

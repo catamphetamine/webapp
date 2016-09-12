@@ -70,7 +70,7 @@ export const messages = defineMessages
 
 @connect
 (
-	model => 
+	model =>
 	({
 		user                 : model.authentication.user,
 		sign_out_error       : model.authentication.sign_out_error,
@@ -93,12 +93,12 @@ export const messages = defineMessages
 @international()
 export default class Authentication extends Component
 {
-	state = 
+	state =
 	{
 		show : false
 	}
 
-	pristine_form_state = 
+	pristine_form_state =
 	{
 		register : false
 	}
@@ -106,7 +106,7 @@ export default class Authentication extends Component
 	static propTypes =
 	{
 		user : PropTypes.object,
-		
+
 		sign_out : PropTypes.func.isRequired,
 		sign_out_error : PropTypes.object,
 
@@ -163,7 +163,7 @@ export default class Authentication extends Component
 					is_open={exists(this.state.password) || (!user && this.state.show)}
 					close={this.hide}>
 
-					<Authentication_form/>
+					<Authentication_form form_id="authentication_form_popup"/>
 				</Modal>
 			</div>
 		)
@@ -219,7 +219,7 @@ export default class Authentication extends Component
 			</Link>
 		)
 
-		const markup = 
+		const markup =
 		(
 			<div className="user-info">
 
