@@ -9,6 +9,7 @@
   },
   "homepage": "https://github.com/halt-hammerzeit/webapp",
   "dependencies": {
+    "promisepipe": "^1.0.1",
     "sharp": "^0.16.0"
   },
   "author": "Halt Hammerzeit",

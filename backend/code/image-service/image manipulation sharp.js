@@ -3,6 +3,9 @@ import Promise from 'bluebird'
 
 import sharp from 'sharp'
 
+import fs from 'fs'
+import promise_pipe from 'promisepipe'
+
 // image resize
 //
 // settings:
@@ -50,26 +53,45 @@ export function resize(from, to, settings)
 
 	// Resize the image
 
-	let pipeline = sharp(from)
-		// Automatically orient the image based on EXIF Orientation info
-		.rotate()
-		// preserve EXIF metadata + add sRGB ICC profile
-		.withMetadata()
-		// Resize the image, cropping it with gravity to (center, center)
-		.resize(settings.width, settings.height)
-		// Don't enlarge small images
-		.withoutEnlargement()
+	const streaming = typeof from !== 'string'
 
-	if (!settings.square && (settings.max_width && settings.max_height))
+	let pipeline
+
+	if (streaming)
 	{
-		pipeline = pipeline.max()
+		pipeline = from.clone()
+	}
+	else
+	{
+		pipeline = image_stream(from)
+	}
+
+	if (settings.width || settings.height)
+	{
+		pipeline = pipeline
+			// Don't enlarge small images
+			.withoutEnlargement()
+			// Resize the image, cropping it with gravity to (center, center)
+			.resize(settings.width, settings.height)
+
+		if (settings.max_width && settings.max_height && !settings.square)
+		{
+			pipeline = pipeline.max()
+		}
 	}
 
 	if (settings.format)
 	{
-		console.log('@@@@@@@@@@@@ settings.format', settings.format)
-		console.log('jpeg, png, webp or raw')
 		pipeline = pipeline.toFormat(settings.format)
+	}
+
+	if (streaming)
+	{
+		let info
+
+		pipeline.on('info', image_info => info = image_info)
+
+		return promise_pipe(pipeline, fs.createWriteStream(to)).then(() => info)
 	}
 
 	return pipeline.toFile(to)
@@ -78,7 +100,16 @@ export function resize(from, to, settings)
 // Rotates the image based on `exif:Orientation`
 export function autorotate(from, to)
 {
-	return sharp(from).rotate().toFile(to)
+	return resize(from, to, {})
+}
+
+export function image_stream(from)
+{
+	return sharp(from)
+		// Automatically orient the image based on EXIF Orientation info
+		.rotate()
+		// preserve EXIF metadata + add sRGB ICC profile
+		.withMetadata()
 }
 
 // returns:

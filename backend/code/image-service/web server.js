@@ -3,10 +3,11 @@ import web_service from '../common/webservice'
 
 import path from 'path'
 import fs   from 'fs-extra'
+import promise_pipe from 'promisepipe'
 
 import get_image_info         from './image info'
 // import { resize, autorotate } from './image manipulation gm'
-import { resize, autorotate } from './image manipulation sharp'
+import { resize, autorotate, image_stream } from './image manipulation sharp'
 import database               from './database/database'
 import { clean_up }           from './cleaner'
 
@@ -224,9 +225,11 @@ web.upload('/upload', upload_folder,
 
 		const target_sizes = image_type.sizes || configuration.image_service.sizes
 
+		const stream = image_stream()
+
 		for (let max_extent of target_sizes)
 		{
-			resizing.push(resize_for_size(from, max_extent, image_info, image_type, uploaded_file_name))
+			resizing.push(resize_for_size(stream, from, max_extent, image_info, image_type, uploaded_file_name))
 
 			// file_sizes.push((await fs.statAsync(to)).size)
 
@@ -237,6 +240,11 @@ web.upload('/upload', upload_folder,
 			{
 				break
 			}
+		}
+
+		if (stream)
+		{
+			await promise_pipe(fs.createReadStream(from), stream)
 		}
 
 		const sizes = await Promise.all(resizing)
@@ -299,13 +307,15 @@ error =>
 	log.error(error, 'Image service shutdown')
 })
 
-async function resize_for_size(from, max_extent, image_info, image_type, uploaded_file_name)
+async function resize_for_size(stream, from, max_extent, image_info, image_type, uploaded_file_name)
 {
 	const dot_extension = image_info.format === 'png' ? '.png' : '.jpg'
 
 	const image_min_extent = Math.min(image_info.width, image_info.height)
 
 	const to_temporary = `${from}@${max_extent}${dot_extension}`
+
+	let resized
 
 	// If the image is smaller than (or equal to) the current resize step extent
 	// then don't stretch the image to the lengh of the current resize step extent
@@ -314,20 +324,24 @@ async function resize_for_size(from, max_extent, image_info, image_type, uploade
 	{
 		if (image_type.square)
 		{
-			await resize(from, to_temporary, { max_extent: image_min_extent, square: true })
+			resized = await resize(stream || from, to_temporary, { max_extent: image_min_extent, square: true })
 		}
 		else
 		{
-			await autorotate(from, to_temporary)
+			resized = await autorotate(stream || from, to_temporary)
 		}
 	}
 	// Otherwise scale down the image to the length of the current resize step extent
 	else
 	{
-		await resize(from, to_temporary, { max_extent, square: image_type.square })
+		resized = await resize(stream || from, to_temporary, { max_extent, square: image_type.square })
 	}
 
-	const resized = await get_image_info(to_temporary, { simple: true })
+	if (!resized)
+	{
+		resized = await get_image_info(to_temporary, { simple: true })
+	}
+
 	const file_name = `${uploaded_file_name}@${resized.width}x${resized.height}${dot_extension}`
 
 	const to = temporary_path(file_name)
