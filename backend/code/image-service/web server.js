@@ -218,48 +218,13 @@ web.upload('/upload', upload_folder,
 			throw new Error('Only JPEG, PNG and SVG images are supported')
 		}
 
-		const dot_extension = image_info.format === 'png' ? '.png' : '.jpg'
-		const to_temporary = from + dot_extension
-
-		const sizes = []
-		// const file_sizes = []
+		const resizing = []
 
 		const image_min_extent = Math.min(image_info.width, image_info.height)
 
 		for (let max_extent of configuration.image_service.sizes)
 		{
-			// If the image is smaller than (or equal to) the current resize step extent
-			// then don't stretch the image to the lengh of the current resize step extent
-			// and leave its scale as it is.
-			if (image_min_extent <= max_extent)
-			{
-				if (image_type.square)
-				{
-					await resize(from, to_temporary, { max_extent: image_min_extent, square: true })
-				}
-				else
-				{
-					await autorotate(from, to_temporary)
-				}
-			}
-			// Otherwise scale down the image to the length of the current resize step extent
-			else
-			{
-				await resize(from, to_temporary, { max_extent, square: image_type.square })
-			}
-
-			const resized = await get_image_info(to_temporary, { simple: true })
-			const file_name = `${uploaded_file_name}@${resized.width}x${resized.height}${dot_extension}`
-
-			const to = temporary_path(file_name)
-			await fs.moveAsync(to_temporary, to)
-
-			sizes.push
-			({
-				width  : resized.width,
-				height : resized.height,
-				name   : file_name
-			})
+			resizing.push(resize_for_size(from, max_extent, image_info, image_type, uploaded_file_name))
 
 			// file_sizes.push((await fs.statAsync(to)).size)
 
@@ -271,6 +236,8 @@ web.upload('/upload', upload_folder,
 				break
 			}
 		}
+
+		const sizes = await Promise.all(resizing)
 
 		await fs.unlinkAsync(from)
 
@@ -329,6 +296,50 @@ error =>
 {
 	log.error(error, 'Image service shutdown')
 })
+
+async function resize_for_size(from, max_extent, image_info, image_type, uploaded_file_name)
+{
+	const dot_extension = image_info.format === 'png' ? '.png' : '.jpg'
+
+	const image_min_extent = Math.min(image_info.width, image_info.height)
+
+	const to_temporary = `${from}@${max_extent}${dot_extension}`
+
+	// If the image is smaller than (or equal to) the current resize step extent
+	// then don't stretch the image to the lengh of the current resize step extent
+	// and leave its scale as it is.
+	if (image_min_extent <= max_extent)
+	{
+		if (image_type.square)
+		{
+			await resize(from, to_temporary, { max_extent: image_min_extent, square: true })
+		}
+		else
+		{
+			await autorotate(from, to_temporary)
+		}
+	}
+	// Otherwise scale down the image to the length of the current resize step extent
+	else
+	{
+		await resize(from, to_temporary, { max_extent, square: image_type.square })
+	}
+
+	const resized = await get_image_info(to_temporary, { simple: true })
+	const file_name = `${uploaded_file_name}@${resized.width}x${resized.height}${dot_extension}`
+
+	const to = temporary_path(file_name)
+	await fs.moveAsync(to_temporary, to)
+
+	const result =
+	{
+		width  : resized.width,
+		height : resized.height,
+		name   : file_name
+	}
+
+	return result
+}
 
 function image_info_to_database_image_data(image)
 {

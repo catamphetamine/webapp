@@ -178,29 +178,29 @@ export async function identify(path)
 	return result
 }
 
-// returns:
-//
+// // returns:
+// //
+// // {
+// // 	DateTimeOriginal, // "2005:07:09 14:05:15"
+// // 	GPSLatitude,      // "38/1, 1535/100, 0/1"
+// // 	GPSLatitudeRef,   // "N"
+// // 	GPSTimeStamp,
+// // 	...
+// // }
+// //
+// export async function read_exif(path)
 // {
-// 	DateTimeOriginal, // "2005:07:09 14:05:15"
-// 	GPSLatitude,      // "38/1, 1535/100, 0/1"
-// 	GPSLatitudeRef,   // "N"
-// 	GPSTimeStamp,
-// 	...
-// }
+// 	const image = imagemagick(path)
 //
-export async function read_exif(path)
-{
-	const image = imagemagick(path)
-
-	const exif = await Promise.promisify(image.identify, image)('%[EXIF:*]')
-
-	return exif
-		.split('\n')
-		.map(line => line.trim().split('='))
-		.reduce((exif, key_value) =>
-		{
-			exif[key_value[0].replace(/^exif:/, '')] = key_value[1]
-			return exif
-		},
-		{})
-}
+// 	const exif = await Promise.promisify(image.identify, image)('%[EXIF:*]')
+//
+// 	return exif
+// 		.split('\n')
+// 		.map(line => line.trim().split('='))
+// 		.reduce((exif, key_value) =>
+// 		{
+// 			exif[key_value[0].replace(/^exif:/, '')] = key_value[1]
+// 			return exif
+// 		},
+// 		{})
+// }
