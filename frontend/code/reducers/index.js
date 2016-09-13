@@ -3,7 +3,7 @@ import { combineReducers } from 'redux'
 import user_settings_main            from './user settings/main'
 import user_settings_change_password from './user settings/change password'
 
-export { reducer as form } from '../simpler-redux-form/index.es6'
+export { reducer as form } from 'simpler-redux-form'
 
 export { default as preload }        from './preload'
 export { default as authentication } from './authentication'

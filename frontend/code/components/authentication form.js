@@ -32,7 +32,7 @@ from '../actions/authentication'
 
 import { get_language_from_locale } from '../../../code/locale'
 
-import Redux_form, { Field } from '../simpler-redux-form/index.es6'
+import Redux_form, { Field } from 'simpler-redux-form'
 
 export const messages = defineMessages
 ({
@@ -604,12 +604,12 @@ export default class Authentication_form extends Component
 
 			if (error.status === http_status_codes.Not_found)
 			{
-				this.props.focus('email')
+				// this.props.focus('email')
 			}
 			else if (error.status === http_status_codes.Input_rejected)
 			{
-				this.props.clear('password')
-				this.props.focus('password')
+				this.props.clear('password', this.validate_password_on_sign_in())
+				// this.props.focus('password')
 			}
 		}
 	}
@@ -643,7 +643,6 @@ export default class Authentication_form extends Component
 			// Submit the sign-in form
 			this.setState({ register: false }, () =>
 			{
-				console.log(2)
 				this.props.submit(this.sign_in)()
 			})
 		}
@@ -658,7 +657,7 @@ export default class Authentication_form extends Component
 
 			if (error.message === 'User is already registered for this email')
 			{
-				this.props.focus('email')
+				// this.props.focus('email')
 			}
 		}
 	}

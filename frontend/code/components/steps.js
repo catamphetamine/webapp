@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import Form       from './form'
 import Text_input from './text input'
 
-import Redux_form, { Field } from '../simpler-redux-form/index.es6'
+import Redux_form, { Field } from 'simpler-redux-form'
 
 export default class Steps extends Component
 {

@@ -22,7 +22,7 @@ import Modal, { reset_modal } from '../../components/modal'
 import Form from '../../components/form'
 import Text_input from '../../components/text input'
 
-import Redux_form, { Field } from '../../simpler-redux-form/index.es6'
+import Redux_form, { Field } from 'simpler-redux-form'
 
 import default_messages from '../../components/messages'
 import { messages as authentication_messages } from '../../components/authentication form'
