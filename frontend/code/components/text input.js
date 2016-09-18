@@ -85,7 +85,6 @@ export default class Text_input extends Component
 				{this.render_input({ name: false })}
 
 				{/* input label */}
-				{/* htmlFor={name} */}
 				{!description && label &&
 					<label
 						className="text-input-label"

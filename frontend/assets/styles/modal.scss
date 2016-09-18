@@ -1,0 +1,159 @@
+// styling react-modal dialog widget
+
+// when changing css transition times here
+// also change `default_close_timeout` in ./components/modal.js accordingly
+
+.ReactModal__Overlay
+{
+	opacity: 0;
+	// "auto" introduces a vertical scrollbar when "bouncing" (animation)
+	// overflow: auto;
+	overflow: hidden;
+}
+
+.ReactModal__Overlay--after-open
+{
+	opacity: 1;
+}
+
+.ReactModal__Overlay--before-close
+{
+	opacity: 0;
+}
+
+.ReactModal__Overlay--after-open,
+.ReactModal__Overlay--before-close
+{
+	transition: opacity 100ms ease-out;
+}
+
+.ReactModal__Content
+{
+	outline: none;
+}
+
+.ReactModal__Content
+{
+	transform: scale(0.8);
+}
+
+.ReactModal__Content--after-open
+{
+	transform: scale(1);
+}
+
+.ReactModal__Content--before-close
+{
+	transform: scale(0.8);
+}
+
+.ReactModal__Content--after-open,
+.ReactModal__Content--before-close
+{
+	transition: transform 120ms ease-out;
+}
+
+// hides `react-modal` scrollbar when closing the modal
+.ReactModal__Overlay--before-close
+{
+	overflow: hidden;
+}
+
+// .ReactModal__Body--open
+// {
+// 	// disables page scrolling when modal is presented,
+// 	// but introduces page width jumps.
+// 	height: 100%;
+// 	overflow: hidden;
+// }
+
+// end react-modal stying
+
+.modal-header--separated
+{
+	border-bottom: 1px solid #e0e0e0;
+}
+
+.modal-actions--separated
+{
+	border-top: 1px solid #e0e0e0;
+}
+
+.modal-header
+{
+	padding-left   : calc(4 * var(--modular-grid-unit));
+	padding-right  : calc(4 * var(--modular-grid-unit));
+	padding-top    : calc(3 * var(--modular-grid-unit)); // 4
+	padding-bottom : calc(3 * var(--modular-grid-unit)); // 3.5
+
+	border-top-left-radius  : var(--card-border-radius);
+	border-top-right-radius : var(--card-border-radius);
+}
+
+.modal-actions
+{
+	padding-left   : calc(4 * var(--modular-grid-unit));
+	padding-right  : calc(2 * var(--modular-grid-unit));
+	padding-top    : calc(1.5 * var(--modular-grid-unit));
+	padding-bottom : calc(1.5 * var(--modular-grid-unit));
+
+	border-bottom-left-radius  : var(--card-border-radius);
+	border-bottom-right-radius : var(--card-border-radius);
+
+	.button
+	{
+		margin-right : calc(2 * var(--modular-grid-unit));
+
+		&:last-child
+		{
+			margin-right : 0;
+		}
+	}
+}
+
+.modal-content--no-bars
+{
+	padding-top   : calc(4 * var(--modular-grid-unit));
+	border-radius : var(--card-border-radius);
+}
+
+.modal--could-not-close-because-busy
+{
+	animation: bounce_z 0.6s;
+	transform: translate3d(0, 0, 0);
+}
+
+// https://daneden.github.io/animate.css/
+// https://github.com/daneden/animate.css/blob/master/source/bouncing_entrances/bounceIn.css
+@keyframes bounce_z
+{
+	from, 25%, 47%, 72%, to
+	{
+		animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+	}
+
+	0%
+	{
+		transform: scale3d(1, 1, 1);
+	}
+
+	25%
+	{
+		transform: scale3d(.97, .97, .97);
+	}
+
+	47%
+	{
+		transform: scale3d(1.025, 1.025, 1.025);
+	}
+
+	72%
+	{
+		transform: scale3d(0.99, 0.99, 0.99);
+	}
+
+	to
+	{
+		transform: scale3d(1, 1, 1);
+	}
+}

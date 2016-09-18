@@ -8,12 +8,12 @@ import React_modal from 'react-modal'
 import Button from './button'
 import default_messages from './messages'
 
-// when changing this also change 
-// your .ReactModal__Overlay and .ReactModal__Content 
+// when changing this also change
+// your .ReactModal__Overlay and .ReactModal__Content
 // css transition times accordingly
 const default_close_timeout = 150 // ms
 
-// when changing this also change 
+// when changing this also change
 // your .modal--could-not-close-because-busy
 // css transition times accordingly
 const could_not_close_because_busy_animation_duration = 1500 // ms
@@ -102,7 +102,7 @@ export default class Modal extends Component
 
 		const translate = this.context.intl.formatMessage
 
-		const markup = 
+		const markup =
 		(
 			<React_modal
 				ref="modal"
@@ -132,7 +132,7 @@ export default class Modal extends Component
 							{title}
 						</h1>
 					}
-					
+
 					{/* dialog window content */}
 					<div
 						className={classNames('modal-content',
@@ -141,7 +141,7 @@ export default class Modal extends Component
 						})}
 						onClick={this.block_event}
 						style={this.props.style ? { ...style.content, ...this.props.style } : style.content}>
-						
+
 						{this.content()}
 					</div>
 
@@ -212,7 +212,7 @@ export default class Modal extends Component
 	on_request_close(event)
 	{
 		const { cancel } = this.props
-		
+
 		// If the modal has an explicit "Cancel" button,
 		// allow closing it by hitting "Escape" key,
 		// then don't close it on a click outside.
@@ -413,7 +413,7 @@ const style = styler
 			// bottom                : auto
 			// margin-right          : -50%
 			// transform             : translate(-50%, -50%)
-			
+
 			// // centering
 			// display      : table
 			// margin-left  : auto

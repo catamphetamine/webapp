@@ -44,7 +44,7 @@ configuration.plugins = configuration.plugins.concat
 	// css files from the extract-text-plugin loader
 	// (for more information see the extract_text_plugin code for scss_loader below)
 	//
-	// the "allChunks: true" option means that this extracted file will contain 
+	// the "allChunks: true" option means that this extracted file will contain
 	// the styles from all chunks of an entry (each entry can be divided into chunks).
 	// without this option styles would only be extracted from the top-level chunk of an entry.
 	new extract_text_plugin({ filename: '[name]-[contenthash].css', allChunks: true }),
@@ -73,13 +73,13 @@ const scss_loader = configuration.module.loaders.filter(loader =>
 
 // https://github.com/webpack/extract-text-webpack-plugin
 //
-// It moves every require("style.css") in entry chunks into a separate css output file. 
-// So your styles are no longer inlined into the javascript, but separate 
-// in a css bundle file (styles.css). If your total stylesheet volume is big, 
+// It moves every require("style.css") in entry chunks into a separate css output file.
+// So your styles are no longer inlined into the javascript, but separate
+// in a css bundle file (styles.css). If your total stylesheet volume is big,
 // it will be faster because the stylesheet bundle is loaded in parallel to the javascript bundle.
 // (but it also disables hot module reload)
 //
-// the first argument to the .extract() function is the name of the loader 
+// the first argument to the .extract() function is the name of the loader
 // ("style-loader" in this case) to be applied to non-top-level-chunks in case of "allChunks: false" option.
 // since in this configuration "allChunks: true" option is used, this first argument is irrelevant.
 scss_loader.loader = extract_text_plugin.extract({ notExtractLoader: scss_loader.loaders.shift(), loader: scss_loader.loaders })

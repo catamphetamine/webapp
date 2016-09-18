@@ -63,7 +63,6 @@ export default class Editable_field extends Component
 				style={this.props.style}>
 
 				{/* Field label */}
-				{/* htmlFor={name} */}
 				<label>{label}</label>
 
 				{/* Field value and actions */}

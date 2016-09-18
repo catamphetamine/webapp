@@ -76,7 +76,7 @@ export default class Checkbox extends Component
 					onFocus={this.on_focus}
 					onBlur={this.on_blur}
 					style={style.checkbox.input}
-					value={(value === undefined || value === null) ? false : value}/>
+					checked={(value === undefined || value === null) ? false : value}/>
 
 				<div className="checkbox-border" style={ !value ? style.checkbox.label_before : style.checkbox.label_before.when_checked }/>
 

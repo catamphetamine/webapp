@@ -11,6 +11,7 @@ import Dropdown     from '../../components/dropdown'
 import Switch       from '../../components/switch'
 import Button_group from '../../components/button group'
 import Spinner      from '../../components/spinner'
+import Tooltip      from '../../components/tooltip'
 
 import Date_picker from 'material-ui/DatePicker/DatePicker'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
@@ -139,6 +140,12 @@ export default class Form_showcase extends Component
 					<div style={{ marginTop: '1em' }}>
 						Is valid: {is_valid_phone_number(this.state.phone, phone_number_format.RU).toString()}
 					</div>
+
+					<h2 style={style.form.label}>Tooltip</h2>
+
+					<Tooltip text="Testing testing" container={() => document.querySelector('.content')}>
+						Hover this element
+					</Tooltip>
 
 					<h2 style={style.form.label}>Date picker (part of Material UI)</h2>
 					<p><i>You may see a "React attempted to reuse markup in a container" warning in the console because of this 3rd party component</i></p>
