@@ -3,7 +3,6 @@ import { title }                       from 'react-isomorphic-render'
 import { preload }                     from 'react-isomorphic-render/redux'
 import { connect }                     from 'react-redux'
 import styler                          from 'react-styling'
-import React_time_ago                  from 'react-time-ago'
 import classNames                      from 'classnames'
 import { NativeTypes }                 from 'react-dnd-html5-backend'
 import { DropTarget }                  from 'react-dnd'
@@ -30,6 +29,7 @@ import Dropdown     from '../../components/dropdown'
 import File_upload  from '../../components/file upload'
 import User_picture from '../../components/user picture'
 import Spinner      from '../../components/spinner'
+import Time_ago     from '../../components/time ago'
 
 import { get_preferred_size, url } from '../../components/image'
 
@@ -501,7 +501,7 @@ export default class User_profile extends Component
 								{/* Icon */}
 								<i className="material-icons">schedule</i>
 								{/* "an hour ago" */}
-								<React_time_ago date={latest_activity_time}/>
+								<Time_ago date={latest_activity_time}/>
 							</div>
 						}
 					</section>

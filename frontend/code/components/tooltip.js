@@ -1,15 +1,31 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 
-const hide_timeout = 120 // in milliseconds
-
 // https://github.com/Dogfalo/materialize/blob/master/js/tooltip.js
 export default class Tooltip extends Component
 {
 	static propTypes =
 	{
-		text: PropTypes.string.isRequired,
-		container: PropTypes.func
+		// Tooltip text
+		text : PropTypes.string.isRequired,
+
+		// The delay before the tooltip is shown (in milliseconds)
+		delay : PropTypes.number.isRequired,
+
+		// The duration of the tooltip hiding animation.
+		// The DOM element will retain `display: block` for this time period.
+		// When changing this timeout also change `transition` time for
+		// `.tooltip--after-show` and `.tooltip--before-hide` CSS classes.
+		hiding_animation_duration : PropTypes.number.isRequired,
+
+		// `container` property is optional (it's `document.body` by default)
+		container : PropTypes.func
+	}
+
+	static defaultProps =
+	{
+		delay : 200, // in milliseconds
+		hiding_animation_duration : 120 // in milliseconds
 	}
 
 	constructor(props, context)
@@ -58,15 +74,8 @@ export default class Tooltip extends Component
 		return (this.props.container && this.props.container()) || document.body
 	}
 
-	show()
+	calculate_coordinates()
 	{
-		if (this.tooltip.style.display === 'block')
-		{
-			return
-		}
-
-		this.tooltip.style.display = 'block'
-
 		const width  = this.tooltip.offsetWidth
 		const height = this.tooltip.offsetHeight
 
@@ -80,22 +89,48 @@ export default class Tooltip extends Component
 		const top  = _offset.top - height - offset(this.container()).top
 		const left = _offset.left + origin_width / 2 - width / 2
 
-		const coordinates = reposition_within_screen(left, top, width, height)
+		return reposition_within_screen(left, top, width, height)
+	}
 
-		// console.log(coordinates)
+	show()
+	{
+		// Play tooltip showing animation
+		let animate = false
 
-		this.tooltip.style.left = coordinates.x + 'px'
-		this.tooltip.style.top  = coordinates.y + 'px'
-
+		// If hiding animation is being played,
+		// then cancel it, and cancel setting
+		// `display` to `none` after it finishes playing.
 		if (this.hide_timeout)
 		{
 			clearTimeout(this.hide_timeout)
 			this.hide_timeout = undefined
 
+			// Abort tooltip hiding animation.
+			// It will automatically return to the "showing" state.
 			this.tooltip.classList.remove('tooltip--before-hide')
 		}
+		// Otherwise, the tooltip is hidden (or never been shown)
+		else
+		{
+			this.tooltip.style.display = 'block'
 
-		this.tooltip.classList.add('tooltip--after-show')
+			// Play tooltip showing animation
+			animate = true
+		}
+
+		const coordinates = this.calculate_coordinates()
+		// console.log(coordinates)
+
+		this.tooltip.style.left = coordinates.x + 'px'
+		this.tooltip.style.top  = coordinates.y + 'px'
+
+		// Play tooltip showing animation
+		// (doing it after setting position because
+		//  setting position applies `display: block`)
+		if (animate)
+		{
+			this.tooltip.classList.add('tooltip--after-show')
+		}
 	}
 
 	hide()
@@ -106,13 +141,20 @@ export default class Tooltip extends Component
 			return
 		}
 
+		// Play tooltip hiding animation
 		this.tooltip.classList.add('tooltip--before-hide')
 
+		// Set the tooltip to `display: none`
+		// after its hiding animation finishes.
 		this.hide_timeout = setTimeout(() =>
 		{
+			this.hide_timeout = undefined
 			this.tooltip.style.display = 'none'
+
+			this.tooltip.classList.remove('tooltip--before-hide')
+			this.tooltip.classList.remove('tooltip--after-show')
 		},
-		hide_timeout)
+		this.props.hiding_animation_duration)
 	}
 
 	on_mouse_enter()
@@ -124,7 +166,23 @@ export default class Tooltip extends Component
 			return
 		}
 
-		this.show()
+		// Shouldn't happen, because
+		// `mouse leave` event clears this timeout.
+		if (this.show_timeout)
+		{
+			return
+		}
+
+		// Don't show the tooltip immediately
+		// but rather wait for the user to
+		// "mouse over" it for a short time interval.
+		// (prevents false positives)
+		this.show_timeout = setTimeout(() =>
+		{
+			this.show_timeout = undefined
+			this.show()
+		},
+		this.props.delay)
 	}
 
 	on_mouse_leave()
@@ -136,6 +194,16 @@ export default class Tooltip extends Component
 			return
 		}
 
+		// If tooltip hasn't been shown yet,
+		// then cancel showing it.
+		if (this.show_timeout)
+		{
+			clearTimeout(this.show_timeout)
+			this.show_timeout = undefined
+			return
+		}
+
+		// Otherwise, the tooltip is shown, so hide it.
 		this.hide()
 	}
 
