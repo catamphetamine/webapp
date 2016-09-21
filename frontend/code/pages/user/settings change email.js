@@ -99,7 +99,7 @@ export default class Change_email extends Component
 		this.dismiss_check_password      = this.dismiss_check_password.bind(this)
 		this.update_email                = this.update_email.bind(this)
 		this.save_new_email              = this.save_new_email.bind(this)
-		this.cancel_change_email         = this.cancel_change_email.bind(this)
+		// this.cancel_change_email         = this.cancel_change_email.bind(this)
 	}
 
 	render()
@@ -129,8 +129,7 @@ export default class Change_email extends Component
 				label={translate(authentication_messages.email)}
 				value={new_email || user.email}
 				validate={this.validate_email}
-				on_cancel={this.cancel_change_email}
-				on_save={this.save_new_email}
+				save={this.save_new_email}
 				editing={changing_email}
 				saving={saving_email}>
 
@@ -168,14 +167,14 @@ export default class Change_email extends Component
 		})
 	}
 
-	cancel_change_email()
-	{
-		this.setState
-		({
-			changing_email : false,
-			new_email      : undefined
-		})
-	}
+	// cancel_change_email()
+	// {
+	// 	this.setState
+	// 	({
+	// 		changing_email : false,
+	// 		new_email      : undefined
+	// 	})
+	// }
 
 	async update_email(password)
 	{

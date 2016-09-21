@@ -19,10 +19,11 @@ export default class Editable_field extends Component
 		label       : PropTypes.string,
 		name        : PropTypes.string.isRequired,
 		value       : PropTypes.any,
+		hint        : PropTypes.string,
 		saving      : PropTypes.bool,
 		editing     : PropTypes.bool,
 		on_edit     : PropTypes.func,
-		on_save     : PropTypes.func,
+		save        : PropTypes.func,
 		validate    : PropTypes.func,
 		multiline   : PropTypes.bool,
 		email       : PropTypes.bool,
@@ -47,6 +48,7 @@ export default class Editable_field extends Component
 		const
 		{
 			label,
+			hint,
 			editing,
 			saving,
 			className,
@@ -64,6 +66,9 @@ export default class Editable_field extends Component
 
 				{/* Field label */}
 				<label>{label}</label>
+
+				{/* Hint */}
+				{ hint && <p>{hint}</p> }
 
 				{/* Field value and actions */}
 				{ (edit || editing || saving) ? this.render_editing() : this.render_not_editing() }
@@ -181,14 +186,14 @@ export default class Editable_field extends Component
 
 	save()
 	{
-		const { on_save } = this.props
+		const { save } = this.props
 		const { value } = this.state
 
-		on_save(value)
+		save(value)
 
 		this.setState({ edit : false }, () =>
 		{
-			// If `on_save` didn't retain edit mode,
+			// If `save` didn't retain edit mode,
 			// then focus on the "Change" button.
 			if (this.refs.change_button)
 			{

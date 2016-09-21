@@ -713,7 +713,7 @@ body.javascript-is-enabled .sign-out--fallback
 	label
 	{
 		display       : block;
-		margin-bottom : var(--modular-grid-unit);
+		margin-bottom : calc(var(--modular-grid-unit) * 0.5);
 		opacity       : 0.6;
 	}
 
@@ -731,6 +731,17 @@ body.javascript-is-enabled .sign-out--fallback
 	{
 		padding-top  : 0;
 		padding-left : 0;
+	}
+
+	p
+	{
+		margin-top    : calc(var(--modular-grid-unit) * 0.5);
+		margin-bottom : var(--modular-grid-unit);
+
+		font-size : 85%;
+		color     : var(--gray-color-darker);
+		border-left: 0.1em solid var(--gray-color);
+		padding-left: 0.4em;
 	}
 }
 

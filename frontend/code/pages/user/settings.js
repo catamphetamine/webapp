@@ -22,7 +22,7 @@ import default_messages from '../../components/messages'
 // import Text_input      from '../../components/text input'
 import Button          from '../../components/button'
 import Content_section from '../../components/content section'
-// import Editable_field  from '../../components/editable field'
+import Editable_field  from '../../components/editable field'
 
 import Change_email    from './settings change email'
 import Change_password from './settings change password'
@@ -53,6 +53,24 @@ const messages = defineMessages
 		id             : 'user.settings.could_not_save',
 		description    : `Couldn't save new user's settings`,
 		defaultMessage : `Couldn't save your settings`
+	},
+	username:
+	{
+		id             : 'user.settings.username',
+		description    : `User's username, which is a unique human-readable identifier used in user's URL`,
+		defaultMessage : `Username`
+	},
+	username_hint:
+	{
+		id             : 'user.settings.username.hint',
+		description    : `A hint on user's username, which is a unique human-readable identifier used in user's URL`,
+		defaultMessage : `A "username" is a unique textual identifier used as part of your profile page URL`
+	},
+	enter_username:
+	{
+		id             : 'user.settings.username.required',
+		description    : `An error message stating that new username hasn't been entered`,
+		defaultMessage : `Enter username`
 	}
 })
 
@@ -106,7 +124,8 @@ export default class Settings_page extends Component
 	{
 		super(props, context)
 
-		this.load_advanced_settings      = this.load_advanced_settings.bind(this)
+		this.load_advanced_settings = this.load_advanced_settings.bind(this)
+		this.update_username        = this.update_username.bind(this)
 	}
 
 	render()
@@ -144,6 +163,15 @@ export default class Settings_page extends Component
 						<Content_section
 							title={translate(messages.header)}
 							busy={saving_settings}>
+
+							{/* Username */}
+							<Editable_field
+								name="username"
+								label={translate(messages.username)}
+								hint={translate(messages.username_hint)}
+								value={user.username}
+								validate={this.validate_username}
+								save={this.update_username}/>
 
 							{/* User's email */}
 							<Change_email/>
@@ -187,6 +215,19 @@ export default class Settings_page extends Component
 		)
 
 		return markup
+	}
+
+	validate_username(value)
+	{
+		if (!value)
+		{
+			return this.props.translate(messages.enter_username)
+		}
+	}
+
+	update_username(username)
+	{
+		alert('update username to ' + username)
 	}
 
 	async load_advanced_settings()

@@ -118,6 +118,10 @@
 	"user.settings.change_email.enter_new_email" : "Введите новую почту",
 	"user.settings.change_email.email_updated"   : "Почта изменена",
 
+	"user.settings.username"          : "Адресное имя",
+	"user.settings.username.hint"     : "Адресное имя — это уникальный текстовый id пользователя, который используется в адресе страницы вашего профиля",
+	"user.settings.username.required" : "Введите адресное имя",
+
 	"unauthenticated.header" : "Войдите, чтобы посмотреть эту страницу",
 	"unauthorized.header"    : "У вас нет доступа к странице",
 	"not_found.header"       : "Страница не найдена",
