@@ -83,4 +83,22 @@ export default class Memory_store
 
 		return Promise.resolve()
 	}
+
+	async is_unique_username(username)
+	{
+		for (let [id, user] of this.users)
+		{
+			if (user.username === username)
+			{
+				return false
+			}
+		}
+
+		return true
+	}
+
+	validate_username(username)
+	{
+		return String(parseInt(username)) !== String(username)
+	}
 }

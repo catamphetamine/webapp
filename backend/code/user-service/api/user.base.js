@@ -1,6 +1,7 @@
 import { http, errors } from 'web-service'
 
 import store from '../store/store'
+import generate_username from '../username'
 
 export async function sign_in({ email, password }, { set_cookie })
 {
@@ -98,13 +99,30 @@ export async function register({ name, email, password, terms_of_service_accepte
 		// revoke  : ['moderation', 'switches'] // !== true (starting from senior moderator)
 	}
 
-	const user = 
+	const user =
 	{
 		name,
 		email,
 		...privileges
 	}
 
+	// Try to derive a unique username from email
+	try
+	{
+		const username = await generate_username(email, store.is_unique_username.bind(store))
+
+		if (store.validate_username(username))
+		{
+			user.username = username
+		}
+	}
+	catch (error)
+	{
+		log.error(`Couldn't generate username for email ${email}`, error)
+		// `username` is not required
+	}
+
+	// Create user
 	const id = await store.create_user(user)
 
 	// Add authentication data (password) for this user
@@ -119,7 +137,7 @@ export async function register({ name, email, password, terms_of_service_accepte
 
 export async function get_user({ id }, { user })
 {
-	const user_data = await store.find_user_by_id(id)
+	const user_data = await store.find_user(id)
 
 	if (!user_data)
 	{
@@ -135,6 +153,7 @@ function public_user(user)
 	[
 		'id',
 		'name',
+		'username',
 		'place',
 		'country',
 		'picture',
@@ -154,7 +173,7 @@ function public_user(user)
 
 export function own_user(user)
 {
-	const result = 
+	const result =
 	{
 		...public_user(user),
 

@@ -21,10 +21,10 @@ export default function(api)
 			return latest_recent_activity
 		}
 
-		// If there's no current session for the user, 
+		// If there's no current session for the user,
 		// then try to fetch user's latest activity time from the database
 
-		const user = await store.find_user_by_id(id)
+		const user = await store.find_user(id)
 
 		if (!user)
 		{
@@ -100,7 +100,7 @@ export default function(api)
 		{
 			throw new errors.Input_rejected(`"name" is required`)
 		}
-		
+
 		await store.update_user(user.id,
 		{
 			name    : data.name,
