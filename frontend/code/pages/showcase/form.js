@@ -12,6 +12,7 @@ import Switch       from '../../components/switch'
 import Button_group from '../../components/button group'
 import Spinner      from '../../components/spinner'
 import Tooltip      from '../../components/tooltip'
+import Snackbar     from '../../components/snackbar'
 
 import Date_picker from 'material-ui/DatePicker/DatePicker'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
@@ -146,6 +147,11 @@ export default class Form_showcase extends Component
 					<Tooltip text="Testing testing" container={() => document.querySelector('.content')}>
 						Hover this element
 					</Tooltip>
+
+					<h2 style={style.form.label}>Snackbar</h2>
+
+					<button onClick={() => this.setState({ snack: `Current time: ${Date.now()}` })}>Show a snack</button>
+					<Snackbar value={this.state.snack}/>
 
 					<h2 style={style.form.label}>Date picker (part of Material UI)</h2>
 					<p><i>You may see a "React attempted to reuse markup in a container" warning in the console because of this 3rd party component</i></p>

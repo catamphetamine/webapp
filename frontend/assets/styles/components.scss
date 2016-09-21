@@ -774,3 +774,17 @@ body.javascript-is-enabled .sign-out--fallback
 {
 	transition: opacity 120ms ease-out, transform 120ms ease-out;
 }
+
+.snackbar
+{
+	background : var(--black-color);
+	color      : var(--white-color);
+
+	border-top-left-radius  : var(--border-radius);
+	border-top-right-radius : var(--border-radius);
+
+	padding-left   : calc(var(--modular-grid-unit) * 3);
+	padding-right  : calc(var(--modular-grid-unit) * 3);
+	padding-top    : calc(var(--modular-grid-unit) * 2);
+	padding-bottom : calc(var(--modular-grid-unit) * 2);
+}
