@@ -66,7 +66,8 @@ export default class Tooltip extends Component
 
 	componentWillUnmount()
 	{
-		this.container().removeChild(this.tooltip)
+		// Won't throw an exception
+		this.tooltip.parentNode.removeChild(this.tooltip)
 	}
 
 	container()
