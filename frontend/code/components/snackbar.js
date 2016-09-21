@@ -7,7 +7,9 @@ export default class Snackbar extends Component
 	static propTypes =
 	{
 		auto_hide_timeout : PropTypes.number,
-		hide_animation_duration : PropTypes.number.isRequired
+		hide_animation_duration : PropTypes.number.isRequired,
+		value : PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+		counter : PropTypes.number
 	}
 
 	static defaultProps =
@@ -29,7 +31,11 @@ export default class Snackbar extends Component
 
 	componentWillReceiveProps(new_props)
 	{
-		if (new_props.value !== this.props.value)
+		// Since Redux won't rerender
+		// if the snack value is the same as the previous one,
+		// an explicit change detection variable is introduced.
+		if (new_props.counter !== this.props.counter
+			|| new_props.value !== this.props.value)
 		{
 			this.push(new_props.value)
 		}
@@ -67,11 +73,13 @@ export default class Snackbar extends Component
 
 			setTimeout(this.next, this.props.hide_animation_duration)
 		},
-		this.props.auto_hide_timeout || (1000 + String(value).length * 100))
+		this.props.auto_hide_timeout || (800 + String(value).length * 100))
 	}
 
 	componentDidUpdate()
 	{
+		// Calculate rendered DOM element height
+		// so that the slide-from-bottom animation could be played.
 		if (this.state.height === undefined && this.state.value)
 		{
 			const height = ReactDOM.findDOMNode(this.refs.snackbar).offsetHeight

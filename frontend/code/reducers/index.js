@@ -6,6 +6,7 @@ import user_settings_change_password from './user settings/change password'
 export { reducer as form } from 'simpler-redux-form'
 
 export { default as preload }        from './preload'
+export { default as snackbar }       from './snackbar'
 export { default as authentication } from './authentication'
 export { default as navigator }      from './navigator'
 export { default as locale }         from './locale'

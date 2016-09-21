@@ -53,6 +53,12 @@ const messages = defineMessages
 		id             : 'user.settings.check_password.password',
 		description    : `User's current password`,
 		defaultMessage : `Password`
+	},
+	email_updated:
+	{
+		id             : 'user.settings.change_email.email_updated',
+		description    : `User's new email has been saved`,
+		defaultMessage : `Email updated`
 	}
 })
 
@@ -173,7 +179,7 @@ export default class Change_email extends Component
 
 	async update_email(password)
 	{
-		const { change_email, translate } = this.props
+		const { change_email, translate, dispatch } = this.props
 		const { new_email } = this.state
 
 		try
@@ -181,6 +187,8 @@ export default class Change_email extends Component
 			this.setState({ saving_email: true })
 
 			await change_email(new_email, password)
+
+			dispatch({ type: 'snack', snack: translate(messages.email_updated) })
 		}
 		catch (error)
 		{
@@ -284,7 +292,7 @@ class Check_password_popup extends Component
 				actions=
 				{[{
 					text    : translate(default_messages.done),
-					action  : () => this.refs.check_password.submit(),
+					action  : () => this.refs.check_password.ref().submit(),
 					primary : true,
 					busy    : check_password_pending
 				}]}>

@@ -19,6 +19,7 @@ import Menu_button     from '../components/menu button'
 import Locale_switcher from '../components/locale switcher'
 import User_bar        from '../components/user bar'
 import Preloading      from '../components/preloading'
+import Snackbar        from '../components/snackbar'
 
 import HTML5Backend                   from 'react-dnd-html5-backend'
 import { DragDropContext, DragLayer } from 'react-dnd'
@@ -36,7 +37,9 @@ const menu_transition_duration = 0 // 210 // milliseconds
 (
 	model =>
 	({
-		locale   : model.locale.locale
+		locale : model.locale.locale,
+		snack  : model.snackbar.snack,
+		snack_counter : model.snackbar.counter
 	})
 )
 @international()
@@ -68,7 +71,15 @@ export default class Layout extends Component
 		// 	y: PropTypes.number.isRequired
 		// }),
 		is_dragging : PropTypes.bool.isRequired,
-		locale      : PropTypes.string.isRequired
+
+		locale : PropTypes.string.isRequired,
+		snack  : PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+		snack_counter : PropTypes.number.isRequired
+	}
+
+	static defaultProps =
+	{
+		snack : {}
 	}
 
 	constructor(props, context)
@@ -82,7 +93,7 @@ export default class Layout extends Component
 
 	render()
 	{
-		const { translate, is_dragging } = this.props
+		const { translate, is_dragging, snack, snack_counter, locale } = this.props
 
 		const title       = translate(messages.title)
 		const description = translate(messages.description)
@@ -105,7 +116,7 @@ export default class Layout extends Component
 			// <meta property="..." content="..."/>
 			{ property: 'og:title',       content: title },
 			{ property: 'og:site_name',   content: title },
-			{ property: 'og:locale',      content: this.props.locale },
+			{ property: 'og:locale',      content: locale },
 			{ property: 'og:description', content: description }
 		]
 
@@ -133,6 +144,9 @@ export default class Layout extends Component
 
 				{/* "page is preloading" spinner */}
 				<Preloading/>
+
+				{/* An application-wide global snackbar */}
+				<Snackbar value={snack.text} counter={snack_counter}/>
 
 				{/* webpage */}
 				{/* <StickyContainer className="page" style={style.page}> */}

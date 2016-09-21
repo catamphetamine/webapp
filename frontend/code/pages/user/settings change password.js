@@ -79,6 +79,12 @@ export const messages = defineMessages
 		id             : 'user.settings.password.change_failed',
 		description    : `Something went wrong while changing user's password`,
 		defaultMessage : `Couldn't change your password`
+	},
+	password_updated:
+	{
+		id             : 'user.settings.password.password_updated',
+		description    : `User's new password has been saved`,
+		defaultMessage : `Password updated`
 	}
 })
 
@@ -158,12 +164,18 @@ export default class Change_password extends Component
 		change_password_pending : model.user_settings.change_password.change_password_pending,
 		change_password_error   : model.user_settings.change_password.change_password_error
 	}),
-	{
-		check_current_password,
-		reset_check_current_password_error,
-		change_password,
-		reset_change_password_error
-	}
+	dispatch =>
+	({
+		dispatch,
+		...bind_action_creators
+		({
+			check_current_password,
+			reset_check_current_password_error,
+			change_password,
+			reset_change_password_error
+		},
+		dispatch)
+	})
 )
 class Change_password_popup extends Component
 {
@@ -183,6 +195,7 @@ class Change_password_popup extends Component
 
 		this.set_last_step = this.set_last_step.bind(this)
 		this.close         = this.close.bind(this)
+		this.finished      = this.finished.bind(this)
 	}
 
 	render()
@@ -219,7 +232,7 @@ class Change_password_popup extends Component
 				<Steps
 					ref="change_password_steps"
 					set_last_step={this.set_last_step}
-					on_finished={this.close}>
+					on_finished={this.finished}>
 
 					{/* Enter current password */}
 					<Change_password_step_1
@@ -281,6 +294,12 @@ class Change_password_popup extends Component
 
 			this.setState({ is_last_step: false })
 		})
+	}
+
+	finished()
+	{
+		this.props.dispatch({ type: 'snack', snack: this.props.translate(messages.password_updated) })
+		this.close()
 	}
 }
 
