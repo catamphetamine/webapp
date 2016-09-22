@@ -24,7 +24,7 @@ export default class Modal extends Component
 
 	static propTypes =
 	{
-		is_open          : PropTypes.bool,
+		shown            : PropTypes.bool,
 		close            : PropTypes.func.isRequired,
 		after_open       : PropTypes.func,
 		close_timeout    : PropTypes.number,
@@ -89,7 +89,7 @@ export default class Modal extends Component
 
 	componentWillUpdate(next_props)
 	{
-		if (next_props.is_open === false && this.props.is_open === true)
+		if (next_props.shown === false && this.props.shown === true)
 		{
 			this.restore_document_scroll()
 		}
@@ -97,7 +97,7 @@ export default class Modal extends Component
 
 	render()
 	{
-		const { busy, is_open, close_timeout, title, cancel, actions, scroll, children } = this.props
+		const { busy, shown, close_timeout, title, cancel, actions, scroll, children } = this.props
 		const { could_not_close_because_busy } = this.state
 
 		const translate = this.context.intl.formatMessage
@@ -106,7 +106,7 @@ export default class Modal extends Component
 		(
 			<React_modal
 				ref="modal"
-				isOpen={is_open}
+				isOpen={shown}
 				onAfterOpen={this.on_after_open}
 				onRequestClose={this.on_request_close}
 				closeTimeoutMS={close_timeout || default_close_timeout}

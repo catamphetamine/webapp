@@ -160,7 +160,7 @@ export default class Authentication extends Component
 				{/* Sign in / Register popup */}
 				<Modal
 					busy={registration_pending || sign_in_pending}
-					is_open={exists(this.state.password) || (!user && this.state.show)}
+					shown={exists(this.state.password) || (!user && this.state.show)}
 					close={this.hide}>
 
 					<Authentication_form form_id="authentication_form_popup"/>

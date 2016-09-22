@@ -59,6 +59,12 @@ const messages = defineMessages
 		id             : 'user.settings.change_email.email_updated',
 		description    : `User's new email has been saved`,
 		defaultMessage : `Email updated`
+	},
+	change_email_failed:
+	{
+		id             : 'user.settings.change_email.failed',
+		description    : `An error stating that the user's email couldn't be changed to the new one`,
+		defaultMessage : `Couldn't update your email`
 	}
 })
 
@@ -124,6 +130,7 @@ export default class Change_email extends Component
 		const markup =
 		(
 			<Editable_field
+				form_id="change-email"
 				name="email"
 				email={true}
 				label={translate(authentication_messages.email)}
@@ -135,7 +142,7 @@ export default class Change_email extends Component
 
 				{/* Password check popup */}
 				<Check_password_popup
-					is_open={this.state.check_password}
+					shown={this.state.check_password}
 					close={this.dismiss_check_password}
 					done={this.update_email}/>
 			</Editable_field>
@@ -242,7 +249,7 @@ class Check_password_popup extends Component
 
 	static propTypes =
 	{
-		is_open : PropTypes.bool,
+		shown   : PropTypes.bool,
 		busy    : PropTypes.bool,
 		close   : PropTypes.func.isRequired,
 
@@ -273,7 +280,7 @@ class Check_password_popup extends Component
 			check_password,
 			reset_check_password_error,
 
-			is_open,
+			shown,
 			busy,
 
 			translate
@@ -284,7 +291,7 @@ class Check_password_popup extends Component
 		(
 			<Modal
 				title={translate(messages.password_check)}
-				is_open={is_open}
+				shown={shown}
 				close={this.close}
 				cancel={true}
 				busy={check_password_pending || busy}

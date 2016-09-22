@@ -78,10 +78,10 @@ export default class Sql_store
 		return this.users.update(user_id, { locale })
 	}
 
-	async is_unique_username(username)
+	async is_unique_username(username, self_id)
 	{
 		const user = await this.users.find({ username })
-		return exists(user)
+		return !user || user.id === self_id
 	}
 
 	validate_username(username)

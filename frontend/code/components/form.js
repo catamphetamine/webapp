@@ -2,11 +2,6 @@ import React, { Component, PropTypes } from 'react'
 
 export default class Form extends Component
 {
-	state =
-	{
-		indicate_invalid: {}
-	}
-
 	static propTypes =
 	{
 		action      : PropTypes.func,
@@ -44,9 +39,6 @@ export default class Form extends Component
 				noValidate>
 
 				{this.children(error && <div key="form-errors" className="form-error-message">{error}</div>)}
-
-				{/* Debug */}
-				{/* JSON.stringify(this.state.indicate_invalid) */}
 			</form>
 		)
 

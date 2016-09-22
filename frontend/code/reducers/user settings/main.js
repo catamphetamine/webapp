@@ -28,6 +28,18 @@ const handlers = asynchronous_handler
 			email : result
 		}
 	})
+},
+{
+	event  : 'user settings: change username',
+	result : (result, state) =>
+	({
+		...state,
+		user:
+		{
+			...state.user,
+			username : result
+		}
+	})
 })
 
 // applies a handler based on the action type

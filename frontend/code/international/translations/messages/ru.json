@@ -117,10 +117,14 @@
 
 	"user.settings.change_email.enter_new_email" : "Введите новую почту",
 	"user.settings.change_email.email_updated"   : "Почта изменена",
+	"user.settings.change_email.failed"          : "Не удалось изменить вашу почту",
 
-	"user.settings.username"          : "Адресное имя",
-	"user.settings.username.hint"     : "Адресное имя — это уникальный текстовый id пользователя, который используется в адресе страницы вашего профиля",
-	"user.settings.username.required" : "Введите адресное имя",
+	"user.settings.username"               : "Адресное имя",
+	"user.settings.username.hint"          : "Адресное имя — это уникальный текстовый id пользователя, который используется в адресе страницы вашего профиля",
+	"user.settings.username.required"      : "Введите адресное имя",
+	"user.settings.username.updated"       : "Адресное имя изменено",
+	"user.settings.username.already_taken" : "Это адресное имя уже занято",
+	"user.settings.username.invalid"       : "Такое адресное имя не разрешено",
 
 	"unauthenticated.header" : "Войдите, чтобы посмотреть эту страницу",
 	"unauthorized.header"    : "У вас нет доступа к странице",

@@ -21,7 +21,7 @@ export default class Dialog extends Component
 
 	render()
 	{
-		const markup = 
+		const markup =
 		(
 			<div>
 				{title("Dialog Showcase")}
@@ -35,7 +35,7 @@ export default class Dialog extends Component
 					<button style={style.button} onClick={this.toggle_dialog}>Show</button>
 
 					<Modal
-						is_open={this.state.show_dialog}
+						shown={this.state.show_dialog}
 						close={this.toggle_dialog}
 						style={style.modal}
 						title="Dialog"
@@ -66,7 +66,7 @@ export default class Dialog extends Component
 
 	toggle_dialog()
 	{
-		this.setState({ show_dialog: !this.state.show_dialog }) 
+		this.setState({ show_dialog: !this.state.show_dialog })
 	}
 }
 

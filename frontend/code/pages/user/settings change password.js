@@ -116,16 +116,17 @@ export default class Change_password extends Component
 		const markup =
 		(
 			<Editable_field
+				form_id="change-password"
 				key="editable_field"
 				name="password"
 				password={true}
 				label={translate(authentication_messages.password)}
-				on_edit={this.change_password}>
+				edit={this.change_password}>
 
 				{/* Change password popup */}
 				<Change_password_popup
 					key="popup"
-					is_open={changing_password}
+					shown={changing_password}
 					close={this.cancel_change_password}/>
 			</Editable_field>
 		)
@@ -183,8 +184,8 @@ class Change_password_popup extends Component
 
 	static propTypes =
 	{
-		is_open : PropTypes.bool,
-		close   : PropTypes.func.isRequired
+		shown : PropTypes.bool,
+		close : PropTypes.func.isRequired
 	}
 
 	constructor(props, context)
@@ -212,7 +213,7 @@ class Change_password_popup extends Component
 			change_password_error,
 			reset_change_password_error,
 
-			is_open,
+			shown,
 
 			translate
 		}
@@ -222,7 +223,7 @@ class Change_password_popup extends Component
 		(
 			<Modal
 				title={translate(messages.change_password)}
-				is_open={is_open}
+				shown={shown}
 				close={this.close}
 				cancel={true}
 				busy={check_current_password_pending || change_password_pending}

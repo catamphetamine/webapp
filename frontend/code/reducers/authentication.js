@@ -27,6 +27,18 @@ handlers['user: update user picture: done'] = (result, state) =>
 	}
 })
 
+// Updates username in the profile link in the user bar
+// when it is changed on the settings page
+handlers['user settings: change username: done'] = (result, state) =>
+({
+	...state,
+	user:
+	{
+		...state.user,
+		username: result
+	}
+})
+
 // Updates user name in the user bar when it is changed on the profile page
 handlers['user profile: update user info: done'] = (result, state) =>
 ({

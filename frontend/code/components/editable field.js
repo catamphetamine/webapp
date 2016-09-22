@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
-import styler from 'react-styling'
 import classNames from 'classnames'
+import Redux_form, { Field } from 'simpler-redux-form'
 
 import default_messages from './messages'
 import Form             from './form'
@@ -9,6 +9,7 @@ import Text_input       from './text input'
 
 import international from '../international/internationalize'
 
+@Redux_form()
 @international()
 export default class Editable_field extends Component
 {
@@ -20,9 +21,10 @@ export default class Editable_field extends Component
 		name        : PropTypes.string.isRequired,
 		value       : PropTypes.any,
 		hint        : PropTypes.string,
+		// error       : PropTypes.string,
 		saving      : PropTypes.bool,
 		editing     : PropTypes.bool,
-		on_edit     : PropTypes.func,
+		edit        : PropTypes.func,
 		save        : PropTypes.func,
 		validate    : PropTypes.func,
 		multiline   : PropTypes.bool,
@@ -39,8 +41,6 @@ export default class Editable_field extends Component
 		this.cancel       = this.cancel.bind(this)
 		this.save         = this.save.bind(this)
 		this.edit         = this.edit.bind(this)
-		this.update_value = this.update_value.bind(this)
-		this.focus        = this.focus.bind(this)
 	}
 
 	render()
@@ -51,6 +51,7 @@ export default class Editable_field extends Component
 			hint,
 			editing,
 			saving,
+			style,
 			className,
 			children
 		}
@@ -62,7 +63,7 @@ export default class Editable_field extends Component
 		(
 			<div
 				className={classNames('editable-field', className)}
-				style={this.props.style}>
+				style={style}>
 
 				{/* Field label */}
 				<label>{label}</label>
@@ -122,39 +123,40 @@ export default class Editable_field extends Component
 			label,
 			name,
 			value,
+			// error,
 			validate,
 			email,
 			password,
 			multiline,
-			saving
+			submit
 		}
 		= this.props
+
+		const { error } = this.state
+
+		const saving = this.props.saving || this.state.saving
 
 		const translate = this.props.intl.formatMessage
 
 		const markup =
 		(
 			<Form
-				focus={this.focus}
-				action={this.save}
+				action={submit(this.save)}
 				busy={saving}
 				cancel={this.cancel}>
 
 				{/* Editable text field */}
-				<Text_input
-					value={this.state.value}
-					ref={name}
+				<Field
+					component={Text_input}
 					name={name}
+					value={value}
 					email={email}
 					password={password}
 					multiline={multiline}
 					placeholder={label}
-					error={validate(this.state.value)}
-					disabled={saving}
-					on_change={this.update_value}/>
-
-				{/* Validation debugging */}
-				{/* JSON.stringify(this.state.valid) */}
+					error={error}
+					validate={validate}
+					disabled={saving}/>
 
 				{/* "Cancel" */}
 				<Button
@@ -178,20 +180,39 @@ export default class Editable_field extends Component
 
 	cancel()
 	{
-		this.setState({ value: undefined, edit: false }, () =>
+		this.setState({ edit: false }, () =>
 		{
 			this.refs.change_button.focus()
 		})
 	}
 
-	save()
+	async save(values)
 	{
-		const { save } = this.props
-		const { value } = this.state
+		const { name, save } = this.props
+		const value = values[name]
 
-		save(value)
+		this.setState({ saving: true, error: undefined })
 
-		this.setState({ edit : false }, () =>
+		// Save the new value (if it changed)
+		if (value !== this.props.value)
+		{
+			try
+			{
+				const result = save(value)
+
+				if (result && typeof result.then === 'function')
+				{
+					await result
+				}
+			}
+			catch (error)
+			{
+				return this.setState({ error: error.message, saving: false })
+			}
+		}
+
+		// Exit editing mode
+		this.setState({ edit: false, saving: false }, () =>
 		{
 			// If `save` didn't retain edit mode,
 			// then focus on the "Change" button.
@@ -204,40 +225,14 @@ export default class Editable_field extends Component
 
 	edit()
 	{
-		const { on_edit, name, validate, value } = this.props
+		const { edit, name, validate, value, focus, set } = this.props
 
-		// // Validate the input value the first time
-		// if (validate)
-		// {
-		// 	this.setState({ valid: is_valid(value) })
-		// }
-
-		if (on_edit)
+		if (edit)
 		{
-			return on_edit()
+			return edit()
 		}
 
-		this.setState({ value, edit: true }, () =>
-		{
-			this.refs[name].focus()
-		})
-	}
-
-	update_value(value)
-	{
-		this.setState({ value })
-	}
-
-	focus(name)
-	{
-		return this.refs[name].focus() // { preserve_validation: true }
+		set(name, value, validate(value))
+		this.setState({ edit: true }, () => focus(name))
 	}
 }
-
-const style = styler
-`
-	row_title
-		flex          : 0 0 8em
-		overflow      : hidden
-		text-overflow : ellipsis
-`

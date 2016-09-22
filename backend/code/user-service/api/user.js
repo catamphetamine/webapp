@@ -88,6 +88,32 @@ export default function(api)
 		await store.update_user(user.id, { email })
 	})
 
+	// Change user's `username`
+	api.patch('/username', async function({ username }, { user })
+	{
+		if (!user)
+		{
+			throw new errors.Unauthenticated()
+		}
+
+		if (!username)
+		{
+			throw new errors.Input_rejected('"username" is required', { field: 'username' })
+		}
+
+		if (!store.validate_username(username))
+		{
+			throw new errors.Input_rejected('Invalid username', { field: 'username' })
+		}
+
+		if (!await store.is_unique_username(username, user.id))
+		{
+			throw new errors.Conflict('Username is already taken', { field: 'username' })
+		}
+
+		await store.update_user(user.id, { username })
+	})
+
 	// Change user data
 	api.patch('/', async function(data, { user })
 	{

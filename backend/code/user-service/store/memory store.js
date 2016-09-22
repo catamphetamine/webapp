@@ -84,11 +84,11 @@ export default class Memory_store
 		return Promise.resolve()
 	}
 
-	async is_unique_username(username)
+	async is_unique_username(username, self_id)
 	{
 		for (let [id, user] of this.users)
 		{
-			if (user.username === username)
+			if (id !== self_id && user.username === username)
 			{
 				return false
 			}
