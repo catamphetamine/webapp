@@ -19,7 +19,7 @@ export default class Memory_store
 		return Promise.resolve(user.id)
 	}
 
-	// Finds user by `id` or `username`
+	// Finds user by `id` or `alias`
 	find_user(id)
 	{
 		// If `id` is numerical, then find user by id
@@ -28,10 +28,10 @@ export default class Memory_store
 			return this.find_user_by_id(id)
 		}
 
-		// Otherwise, find user by `username`
+		// Otherwise, find user by `alias`
 		for (let [id, user] of this.users)
 		{
-			if (user.username === id)
+			if (user.alias === id)
 			{
 				return user
 			}
@@ -84,11 +84,11 @@ export default class Memory_store
 		return Promise.resolve()
 	}
 
-	async is_unique_username(username, self_id)
+	async is_unique_alias(alias, self_id)
 	{
 		for (let [id, user] of this.users)
 		{
-			if (id !== self_id && user.username === username)
+			if (id !== self_id && user.alias === alias)
 			{
 				return false
 			}
@@ -97,8 +97,8 @@ export default class Memory_store
 		return true
 	}
 
-	validate_username(username)
+	validate_alias(alias)
 	{
-		return String(parseInt(username)) !== String(username)
+		return String(parseInt(alias)) !== String(alias)
 	}
 }

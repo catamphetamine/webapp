@@ -88,30 +88,30 @@ export default function(api)
 		await store.update_user(user.id, { email })
 	})
 
-	// Change user's `username`
-	api.patch('/username', async function({ username }, { user })
+	// Change user's `alias`
+	api.patch('/alias', async function({ alias }, { user })
 	{
 		if (!user)
 		{
 			throw new errors.Unauthenticated()
 		}
 
-		if (!username)
+		if (!alias)
 		{
-			throw new errors.Input_rejected('"username" is required', { field: 'username' })
+			throw new errors.Input_rejected('"alias" is required', { field: 'alias' })
 		}
 
-		if (!store.validate_username(username))
+		if (!store.validate_alias(alias))
 		{
-			throw new errors.Input_rejected('Invalid username', { field: 'username' })
+			throw new errors.Input_rejected('Invalid alias', { field: 'alias' })
 		}
 
-		if (!await store.is_unique_username(username, user.id))
+		if (!await store.is_unique_alias(alias, user.id))
 		{
-			throw new errors.Conflict('Username is already taken', { field: 'username' })
+			throw new errors.Conflict('Username is already taken', { field: 'alias' })
 		}
 
-		await store.update_user(user.id, { username })
+		await store.update_user(user.id, { alias })
 	})
 
 	// Change user data

@@ -230,7 +230,7 @@ export default class Authentication extends Component
 					alignment="right">
 
 					{/* Profile */}
-					<Link key="profile" to={`/user/${user.username || user.id}`}>
+					<Link key="profile" to={`/user/${user.alias || user.id}`}>
 						{/* Icon */}
 						<i className="material-icons dropdown-item__icon">account_box</i>
 						{/* Text */}

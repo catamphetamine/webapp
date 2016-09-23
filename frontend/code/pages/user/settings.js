@@ -16,7 +16,7 @@ import
 {
 	get_user,
 	get_user_authentication_tokens,
-	change_username
+	change_alias
 }
 from '../../actions/user settings/main'
 
@@ -57,47 +57,47 @@ const messages = defineMessages
 		description    : `Couldn't save new user's settings`,
 		defaultMessage : `Couldn't save your settings`
 	},
-	username:
+	alias:
 	{
-		id             : 'user.settings.username',
-		description    : `User's username, which is a unique human-readable identifier used in user's URL`,
+		id             : 'user.settings.alias',
+		description    : `User's alias, which is a unique human-readable identifier used in user's URL`,
 		defaultMessage : `Username`
 	},
-	username_hint:
+	alias_hint:
 	{
-		id             : 'user.settings.username.hint',
-		description    : `A hint on user's username, which is a unique human-readable identifier used in user's URL`,
-		defaultMessage : `A "username" is a unique textual identifier used as part of your profile page URL`
+		id             : 'user.settings.alias.hint',
+		description    : `A hint on user's alias, which is a unique human-readable identifier used in user's URL`,
+		defaultMessage : `A "alias" is a unique textual identifier used as part of your profile page URL`
 	},
-	enter_username:
+	enter_alias:
 	{
-		id             : 'user.settings.username.required',
-		description    : `An error message stating that new username hasn't been entered`,
-		defaultMessage : `Enter username`
+		id             : 'user.settings.alias.required',
+		description    : `An error message stating that new alias hasn't been entered`,
+		defaultMessage : `Enter alias`
 	},
-	username_updated:
+	alias_updated:
 	{
-		id             : 'user.settings.username.updated',
-		description    : `User's new username has been saved`,
+		id             : 'user.settings.alias.updated',
+		description    : `User's new alias has been saved`,
 		defaultMessage : `Username updated`
 	},
-	change_username_failed:
+	change_alias_failed:
 	{
-		id             : 'user.settings.username.update_failed',
-		description    : `An error stating that the user's username couldn't be changed to the new one`,
-		defaultMessage : `Couldn't update your username`
+		id             : 'user.settings.alias.update_failed',
+		description    : `An error stating that the user's alias couldn't be changed to the new one`,
+		defaultMessage : `Couldn't update your alias`
 	},
-	username_already_taken:
+	alias_already_taken:
 	{
-		id             : 'user.settings.username.already_taken',
-		description    : `An error stating that the desired username is already taken`,
-		defaultMessage : `This username is already taken`
+		id             : 'user.settings.alias.already_taken',
+		description    : `An error stating that the desired alias is already taken`,
+		defaultMessage : `This alias is already taken`
 	},
-	invalid_username:
+	invalid_alias:
 	{
-		id             : 'user.settings.username.invalid',
-		description    : `An error stating that the desired username is invalid (maybe is digits-only, or something else)`,
-		defaultMessage : `Not a valid username`
+		id             : 'user.settings.alias.invalid',
+		description    : `An error stating that the desired alias is invalid (maybe is digits-only, or something else)`,
+		defaultMessage : `Not a valid alias`
 	}
 })
 
@@ -125,7 +125,7 @@ const messages = defineMessages
 		...bind_action_creators
 		({
 			get_user_authentication_tokens,
-			change_username
+			change_alias
 		},
 		dispatch)
 	})
@@ -153,8 +153,8 @@ export default class Settings_page extends Component
 		super(props, context)
 
 		this.load_advanced_settings = this.load_advanced_settings.bind(this)
-		this.update_username        = this.update_username.bind(this)
-		this.validate_username      = this.validate_username.bind(this)
+		this.update_alias        = this.update_alias.bind(this)
+		this.validate_alias      = this.validate_alias.bind(this)
 	}
 
 	render()
@@ -195,13 +195,13 @@ export default class Settings_page extends Component
 
 							{/* Username */}
 							<Editable_field
-								form_id="change-username"
-								name="username"
-								label={translate(messages.username)}
-								hint={translate(messages.username_hint)}
-								value={user.username}
-								validate={this.validate_username}
-								save={this.update_username}/>
+								form_id="change-alias"
+								name="alias"
+								label={translate(messages.alias)}
+								hint={translate(messages.alias_hint)}
+								value={user.alias}
+								validate={this.validate_alias}
+								save={this.update_alias}/>
 
 							{/* User's email */}
 							<Change_email/>
@@ -247,38 +247,38 @@ export default class Settings_page extends Component
 		return markup
 	}
 
-	validate_username(value)
+	validate_alias(value)
 	{
 		if (!value)
 		{
-			return this.props.translate(messages.enter_username)
+			return this.props.translate(messages.enter_alias)
 		}
 	}
 
-	async update_username(username)
+	async update_alias(alias)
 	{
-		const { change_username, translate, dispatch } = this.props
+		const { change_alias, translate, dispatch } = this.props
 
 		try
 		{
-			await change_username(username)
+			await change_alias(alias)
 
-			dispatch({ type: 'snack', snack: translate(messages.username_updated) })
+			dispatch({ type: 'snack', snack: translate(messages.alias_updated) })
 		}
 		catch (error)
 		{
 			if (error.status === http_status_codes.Conflict)
 			{
-				throw new Error(translate(messages.username_already_taken))
+				throw new Error(translate(messages.alias_already_taken))
 			}
 
-			if (error.message === 'Invalid username')
+			if (error.message === 'Invalid alias')
 			{
-				throw new Error(translate(messages.invalid_username))
+				throw new Error(translate(messages.invalid_alias))
 			}
 
 			console.error(error)
-			throw new Error(translate(messages.change_username_failed))
+			throw new Error(translate(messages.change_alias_failed))
 		}
 	}
 

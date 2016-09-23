@@ -20,14 +20,14 @@ export const change_email = (email, password) =>
 	event   : 'user settings: change email'
 })
 
-export const change_username = (username) =>
+export const change_alias = (alias) =>
 ({
 	promise : async http =>
 	{
-		await http.patch(`/users/username`, { username })
-		return username
+		await http.patch(`/users/alias`, { alias })
+		return alias
 	},
-	event   : 'user settings: change username'
+	event   : 'user settings: change alias'
 })
 
 export const check_password = (password) =>

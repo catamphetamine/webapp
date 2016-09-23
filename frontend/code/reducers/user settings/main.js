@@ -30,14 +30,14 @@ const handlers = asynchronous_handler
 	})
 },
 {
-	event  : 'user settings: change username',
+	event  : 'user settings: change alias',
 	result : (result, state) =>
 	({
 		...state,
 		user:
 		{
 			...state.user,
-			username : result
+			alias : result
 		}
 	})
 })

@@ -1,7 +1,7 @@
 import { http, errors } from 'web-service'
 
 import store from '../store/store'
-import generate_username from '../username'
+import generate_alias from '../alias'
 
 export async function sign_in({ email, password }, { set_cookie })
 {
@@ -106,20 +106,20 @@ export async function register({ name, email, password, terms_of_service_accepte
 		...privileges
 	}
 
-	// Try to derive a unique username from email
+	// Try to derive a unique alias from email
 	try
 	{
-		const username = await generate_username(email, store.is_unique_username.bind(store))
+		const alias = await generate_alias(email, store.is_unique_alias.bind(store))
 
-		if (store.validate_username(username))
+		if (store.validate_alias(alias))
 		{
-			user.username = username
+			user.alias = alias
 		}
 	}
 	catch (error)
 	{
-		log.error(`Couldn't generate username for email ${email}`, error)
-		// `username` is not required
+		log.error(`Couldn't generate alias for email ${email}`, error)
+		// `alias` is not required
 	}
 
 	// Create user
@@ -153,7 +153,7 @@ function public_user(user)
 	[
 		'id',
 		'name',
-		'username',
+		'alias',
 		'place',
 		'country',
 		'picture',

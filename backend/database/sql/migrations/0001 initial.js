@@ -1,5 +1,5 @@
 const email_max_length = 254 // in bytes
-const username_max_length = 32
+const alias_max_length = 32
 const ip_address_max_length = 3 * 4 + 3
 
 exports.up = function(knex, Promise)
@@ -24,8 +24,8 @@ exports.up = function(knex, Promise)
 
 		table.text('name').notNullable()
 		table.string('email', email_max_length).notNullable().unique()
-		
-		table.string('username', username_max_length).unique()
+
+		table.string('alias', alias_max_length).unique()
 
 		table.string('place', 128)
 
@@ -42,8 +42,8 @@ exports.up = function(knex, Promise)
 		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
 		table.timestamp('was_online_at')
 
-		// Find user by username for username URLs
-		table.index('username')
+		// Find user by alias for aliased URLs
+		table.index('alias')
 
 		// Find user by email on sign in (and register)
 		table.index('email')

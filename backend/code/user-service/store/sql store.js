@@ -27,7 +27,7 @@ export default class Sql_store
 		return (await this.users.create(user)).id
 	}
 
-	// Finds user by `id` or `username`
+	// Finds user by `id` or `alias`
 	find_user(id)
 	{
 		// If `id` is numerical, then find user by id
@@ -36,8 +36,8 @@ export default class Sql_store
 			return this.find_user_by_id(id)
 		}
 
-		// Otherwise, find user by `username`
-		return this.users.find({ username: id })
+		// Otherwise, find user by `alias`
+		return this.users.find({ alias: id })
 	}
 
 	find_user_by_id(id)
@@ -78,14 +78,14 @@ export default class Sql_store
 		return this.users.update(user_id, { locale })
 	}
 
-	async is_unique_username(username, self_id)
+	async is_unique_alias(alias, self_id)
 	{
-		const user = await this.users.find({ username })
+		const user = await this.users.find({ alias })
 		return !user || user.id === self_id
 	}
 
-	validate_username(username)
+	validate_alias(alias)
 	{
-		return String(parseInt(username)) !== String(username)
+		return String(parseInt(alias)) !== String(alias)
 	}
 }

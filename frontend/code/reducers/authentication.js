@@ -27,15 +27,15 @@ handlers['user: update user picture: done'] = (result, state) =>
 	}
 })
 
-// Updates username in the profile link in the user bar
+// Updates alias in the profile link in the user bar
 // when it is changed on the settings page
-handlers['user settings: change username: done'] = (result, state) =>
+handlers['user settings: change alias: done'] = (result, state) =>
 ({
 	...state,
 	user:
 	{
 		...state.user,
-		username: result
+		alias: result
 	}
 })
 
