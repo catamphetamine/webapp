@@ -36,7 +36,7 @@ export default class Memory_store
 	{
 		for (let [id, user] of this.users)
 		{
-			if (user.alias === id)
+			if (user.alias === alias)
 			{
 				return user
 			}
