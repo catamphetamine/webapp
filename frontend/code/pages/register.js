@@ -25,6 +25,8 @@ const messages = defineMessages
 		error        : model.router.location.query.error,
 		// error_status : parseInt(model.router.location.query.error_status),
 
+		registration_pending : model.authentication.registration_pending,
+
 		name                      : model.router.location.query.name,
 		email                     : model.router.location.query.email,
 		password                  : model.router.location.query.password,
@@ -63,7 +65,17 @@ export default class Sign_in extends Component
 
 	render()
 	{
-		const { name, email, password, accept, terms_of_service_accepted, translate } = this.props
+		const
+		{
+			name,
+			email,
+			password,
+			accept,
+			terms_of_service_accepted,
+			registration_pending,
+			translate
+		}
+		= this.props
 
 		const markup =
 		(
@@ -72,6 +84,7 @@ export default class Sign_in extends Component
 
 				<Authentication_form
 					form_id="register_page_form"
+					busy={registration_pending}
 					registration={true}
 					initial_values={this.fields}
 					focus_on={this.get_focused_element()}

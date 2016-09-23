@@ -22,6 +22,11 @@ export default class Sql
 		return new this.model(example).fetch(options).then(x => x !== null ? Sql.json(x) : null)
 	}
 
+	count(example)
+	{
+		return this.model.where(example).count('id')
+	}
+
 	create(data)
 	{
 		return new this.model(data).save(null, { method: 'insert' })

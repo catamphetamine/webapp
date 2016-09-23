@@ -49,6 +49,19 @@ exports.up = function(knex, Promise)
 		table.index('email')
 	})
 
+	.createTable('user_alias_history', function(table)
+	{
+		table.bigIncrements('id').primary().unsigned()
+
+		table.bigint('user').notNullable().references('users.id')
+		table.string('alias', alias_max_length)
+
+		table.unique(['user', 'alias'])
+
+		// Find user by alias for aliased URLs
+		table.index(['user', 'alias'])
+	})
+
 	.createTable('authentication_data', function(table)
 	{
 		table.bigIncrements('id').primary().unsigned()

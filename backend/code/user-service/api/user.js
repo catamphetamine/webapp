@@ -106,12 +106,12 @@ export default function(api)
 			throw new errors.Input_rejected('Invalid alias', { field: 'alias' })
 		}
 
-		if (!await store.is_unique_alias(alias, user.id))
+		if (!await store.can_take_alias(alias, user.id))
 		{
-			throw new errors.Conflict('Username is already taken', { field: 'alias' })
+			throw new errors.Conflict('Alias is already taken', { field: 'alias' })
 		}
 
-		await store.update_user(user.id, { alias })
+		await store.change_alias(user.id, alias)
 	})
 
 	// Change user data

@@ -163,7 +163,9 @@ export default class Authentication extends Component
 					shown={exists(this.state.password) || (!user && this.state.show)}
 					close={this.hide}>
 
-					<Authentication_form form_id="authentication_form_popup"/>
+					<Authentication_form
+						form_id="authentication_form_popup"
+						busy={registration_pending || sign_in_pending}/>
 				</Modal>
 			</div>
 		)
@@ -199,14 +201,14 @@ export default class Authentication extends Component
 	{
 		const { translate, sign_out } = this.props
 
-		{/* Username and user picture */}
+		{/* User name and user picture */}
 		const user_info =
 		(
 			<Link
 				to={`/user/${user.id}`}
 				style={style.user_menu_toggler}>
 
-				{/* Username */}
+				{/* User name */}
 				<span
 					className="user-name">
 					{user.name}

@@ -61,7 +61,7 @@ const messages = defineMessages
 	{
 		id             : 'user.settings.alias',
 		description    : `User's alias, which is a unique human-readable identifier used in user's URL`,
-		defaultMessage : `Username`
+		defaultMessage : `Alias`
 	},
 	alias_hint:
 	{
@@ -79,7 +79,7 @@ const messages = defineMessages
 	{
 		id             : 'user.settings.alias.updated',
 		description    : `User's new alias has been saved`,
-		defaultMessage : `Username updated`
+		defaultMessage : `Alias updated`
 	},
 	change_alias_failed:
 	{
@@ -98,6 +98,12 @@ const messages = defineMessages
 		id             : 'user.settings.alias.invalid',
 		description    : `An error stating that the desired alias is invalid (maybe is digits-only, or something else)`,
 		defaultMessage : `Not a valid alias`
+	},
+	max_aliases_reached:
+	{
+		id             : 'user.settings.alias.max_aliases_reached',
+		description    : `An error stating that the user has occupied too much aliases and more aliases per user aren't allowed`,
+		defaultMessage : `You have already too many aliases`
 	}
 })
 
@@ -193,7 +199,7 @@ export default class Settings_page extends Component
 							title={translate(messages.header)}
 							busy={saving_settings}>
 
-							{/* Username */}
+							{/* Alias */}
 							<Editable_field
 								form_id="change-alias"
 								name="alias"
@@ -275,6 +281,11 @@ export default class Settings_page extends Component
 			if (error.message === 'Invalid alias')
 			{
 				throw new Error(translate(messages.invalid_alias))
+			}
+
+			if (error.message === 'Max aliases reached')
+			{
+				throw new Error(translate(messages.max_aliases_reached))
 			}
 
 			console.error(error)

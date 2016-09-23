@@ -109,7 +109,7 @@ export async function register({ name, email, password, terms_of_service_accepte
 	// Try to derive a unique alias from email
 	try
 	{
-		const alias = await generate_alias(email, store.is_unique_alias.bind(store))
+		const alias = await generate_alias(email, alias => store.can_take_alias(alias))
 
 		if (store.validate_alias(alias))
 		{

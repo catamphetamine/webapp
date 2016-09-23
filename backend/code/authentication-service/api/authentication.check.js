@@ -12,7 +12,7 @@ const The_hottest_allowed_temperature = 1000
 async function is_authentication_attempts_limit_exceeded(authentication_data)
 {
 	const Temperature_half_life = 15 * 60 // in seconds
-	
+
 	// If no login attempts failed so far
 	// then allow the next login attempt.
 	if (!authentication_data.authentication_attempt_failed_at)
@@ -20,13 +20,13 @@ async function is_authentication_attempts_limit_exceeded(authentication_data)
 		return
 	}
 
-	// Fast forward temperature cooldown 
+	// Fast forward temperature cooldown
 	// since the latest failed login attempt till now.
 
 	let temperature = authentication_data.authentication_attempt_temperature
 	let when        = authentication_data.authentication_attempt_failed_at.getTime()
 	const now       = Date.now()
-	
+
 	while (now >= when + Temperature_half_life * 1000)
 	{
 		// Cool down the temperature to a half of its value

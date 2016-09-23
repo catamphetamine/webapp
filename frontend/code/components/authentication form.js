@@ -152,13 +152,7 @@ export const messages = defineMessages
 	}
 })
 
-@Redux_form
-({
-	busy(state, props)
-	{
-		return state.authentication.registration_pending || state.authentication.sign_in_pending
-	}
-})
+@Redux_form()
 @connect
 (
 	model =>

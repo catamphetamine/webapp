@@ -30,6 +30,8 @@ const messages = defineMessages
 	({
 		user : model.authentication.user,
 
+		sign_in_pending : model.authentication.sign_in_pending,
+
 		error        : model.router.location.query.error,
 		error_status : parseInt(model.router.location.query.error_status),
 		email        : model.router.location.query.email
@@ -64,7 +66,7 @@ export default class Sign_in extends Component
 
 	render()
 	{
-		const { email, translate } = this.props
+		const { email, sign_in_pending, translate } = this.props
 
 		const markup =
 		(
@@ -73,6 +75,7 @@ export default class Sign_in extends Component
 
 				<Authentication_form
 					form_id="sign_in_page_form"
+					busy={sign_in_pending}
 					initial_values={this.fields}
 					focus_on={this.get_focused_element()}
 					style={style.form}

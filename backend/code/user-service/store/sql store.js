@@ -3,6 +3,8 @@ import Bookshelf from 'bookshelf'
 
 import Sql from '../../common/sql'
 
+const Max_aliases_in_history = 10
+
 export default class Sql_store
 {
 	ready()
@@ -12,6 +14,8 @@ export default class Sql_store
 
 	async connect()
 	{
+		const models = this
+
 		const bookshelf = Bookshelf(Knex(knexfile))
 
 		this.User = bookshelf.Model.extend
@@ -19,7 +23,18 @@ export default class Sql_store
 			tableName : 'users'
 		})
 
+		this.User_alias = bookshelf.Model.extend
+		({
+			tableName : 'user_alias_history',
+
+			user()
+			{
+				return this.belongsTo(models.User, 'user')
+			}
+		})
+
 		this.users = new Sql(this.User)
+		this.user_alias_history = new Sql(this.User_alias)
 	}
 
 	async create_user(user)
@@ -37,7 +52,7 @@ export default class Sql_store
 		}
 
 		// Otherwise, find user by `alias`
-		return this.users.find({ alias: id })
+		return this.find_user_by_alias(id)
 	}
 
 	find_user_by_id(id)
@@ -48,6 +63,27 @@ export default class Sql_store
 	find_user_by_email(email)
 	{
 		return this.users.find({ email })
+	}
+
+	async find_user_by_alias(alias)
+	{
+		// Search for a user with this alias
+		const user = await this.users.find({ alias })
+
+		if (user)
+		{
+			return user
+		}
+
+		// Check user alias history
+		const alias_history_entry = await this.user_alias_history.find({ alias })
+
+		// If this alias has been previously taken by another user,
+		// then this alias is reserved (forever).
+		if (alias_history_entry)
+		{
+			return await this.find_user_by_id(alias_history_entry.user)
+		}
 	}
 
 	update_user(id, data)
@@ -78,10 +114,67 @@ export default class Sql_store
 		return this.users.update(user_id, { locale })
 	}
 
-	async is_unique_alias(alias, self_id)
+	async can_take_alias(alias, self_id)
 	{
+		// Get current user alias
 		const user = await this.users.find({ alias })
-		return !user || user.id === self_id
+
+		// If there is a user with this alias
+		// and this user isn't self,
+		// then this alias is already taken.
+		if (user)
+		{
+			if (!self_id || user.id !== self_id)
+			{
+				return false
+			}
+		}
+
+		// Check user alias history
+		const alias_history_entry = await this.user_alias_history.find({ alias })
+
+		// If this alias has been previously taken by another user,
+		// then this alias is reserved (forever).
+		if (alias_history_entry && alias_history_entry.user !== self_id)
+		{
+			return false
+		}
+
+		// The alias is free
+		return true
+	}
+
+	async change_alias(user_id, alias)
+	{
+		// Get current alias
+		const user = await this.find_user_by_id(user_id)
+
+		// Check for max aliases in history threshold reached
+		const previous_aliases_count = await this.user_alias_history.count({ user: user_id })
+
+		if (previous_aliases_count > Max_aliases_in_history)
+		{
+			throw new Error(`Max aliases reached`)
+		}
+
+		// If there's current alias, move it to alias history
+		if (user.alias)
+		{
+			await this.user_alias_history.create({ user: user_id, alias: user.alias })
+		}
+
+		// Update user alias
+		await this.update_user(user_id, { alias })
+
+		// If this alias has been previously taken by this user,
+		// then remove it from history.
+
+		const alias_history_entry = await this.user_alias_history.find({ user: user_id, alias })
+
+		if (alias_history_entry)
+		{
+			await this.user_alias_history.remove(alias_history_entry.id)
+		}
 	}
 
 	validate_alias(alias)

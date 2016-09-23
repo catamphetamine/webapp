@@ -64,17 +64,6 @@ export default class Form extends Component
 			{
 				if (child.type === Form_actions)
 				{
-					// React children's children's props are protected,
-					// and this would throw "can't add property object is not extensible".
-					//
-					// // If the form is busy,
-					// // then mark all its action buttons as busy too.
-					// // (while retaining the original button business, if set)
-					// for (let form_action of child.props.children)
-					// {
-					// 	form_action.props.busy = form_action.props.busy === true || busy === true
-					// }
-
 					form_elements.insert_at(index, errors)
 					errors_inserted = true
 					break

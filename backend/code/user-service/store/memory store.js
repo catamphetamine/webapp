@@ -29,6 +29,11 @@ export default class Memory_store
 		}
 
 		// Otherwise, find user by `alias`
+		return this.find_user_by_alias(id)
+	}
+
+	async find_user_by_alias(alias)
+	{
 		for (let [id, user] of this.users)
 		{
 			if (user.alias === id)
@@ -84,17 +89,25 @@ export default class Memory_store
 		return Promise.resolve()
 	}
 
-	async is_unique_alias(alias, self_id)
+	async can_take_alias(alias, self_id)
 	{
 		for (let [id, user] of this.users)
 		{
-			if (id !== self_id && user.alias === alias)
+			if (user.alias === alias)
 			{
-				return false
+				if (!self_id || id !== self_id)
+				{
+					return false
+				}
 			}
 		}
 
 		return true
+	}
+
+	async change_alias(user_id, alias)
+	{
+		await this.update_user(user_id, { alias })
 	}
 
 	validate_alias(alias)
