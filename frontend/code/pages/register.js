@@ -83,8 +83,7 @@ export default class Sign_in extends Component
 				{title(translate(user_bar_messages.register))}
 
 				<Authentication_form
-					form_id="register_page_form"
-					busy={registration_pending}
+					register
 					registration={true}
 					initial_values={this.fields}
 					focus_on={this.get_focused_element()}

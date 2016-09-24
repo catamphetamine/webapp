@@ -74,8 +74,7 @@ export default class Sign_in extends Component
 				{title(translate(user_bar_messages.sign_in))}
 
 				<Authentication_form
-					form_id="sign_in_page_form"
-					busy={sign_in_pending}
+					sign_in
 					initial_values={this.fields}
 					focus_on={this.get_focused_element()}
 					style={style.form}

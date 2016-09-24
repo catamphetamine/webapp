@@ -123,7 +123,8 @@ const messages = defineMessages
 		load_advanced_settings_error   : model.user_settings.main.load_advanced_settings_error,
 		load_advanced_settings_pending : model.user_settings.main.load_advanced_settings_pending,
 
-		saving_settings                : model.user_settings.main.saving_settings
+		change_alias_pending : model.user_settings.main.change_alias_pending,
+		change_alias_error   : model.user_settings.main.change_alias_error
 	}),
 	dispatch =>
 	({
@@ -144,12 +145,8 @@ export default class Settings_page extends Component
 		user                  : PropTypes.object.isRequired,
 		authentication_tokens : PropTypes.array,
 
-		load_advanced_settings_pending : PropTypes.bool,
-		load_advanced_settings_error   : PropTypes.object,
-
-		get_user_authentication_tokens : PropTypes.func.isRequired,
-
-		saving_settings               : PropTypes.bool
+		change_alias_pending : PropTypes.bool,
+		change_alias_error   : PropTypes.object
 	}
 
 	state = {}
@@ -158,9 +155,42 @@ export default class Settings_page extends Component
 	{
 		super(props, context)
 
-		this.load_advanced_settings = this.load_advanced_settings.bind(this)
-		this.update_alias        = this.update_alias.bind(this)
-		this.validate_alias      = this.validate_alias.bind(this)
+		this.load_advanced_settings   = this.load_advanced_settings.bind(this)
+		this.update_alias             = this.update_alias.bind(this)
+		this.validate_alias           = this.validate_alias.bind(this)
+		this.reset_change_alias_error = this.reset_change_alias_error.bind(this)
+	}
+
+	reset_change_alias_error()
+	{
+		this.props.dispatch({ type: 'user settings: change alias: reset error' })
+	}
+
+	change_alias_error_message(error)
+	{
+		const { translate } = this.props
+
+		if (!error)
+		{
+			return
+		}
+
+		if (error.status === http_status_codes.Conflict)
+		{
+			return translate(messages.alias_already_taken)
+		}
+
+		if (error.message === 'Invalid alias')
+		{
+			return translate(messages.invalid_alias)
+		}
+
+		if (error.message === 'Max aliases reached')
+		{
+			return translate(messages.max_aliases_reached)
+		}
+
+		return translate(messages.change_alias_failed)
 	}
 
 	render()
@@ -170,7 +200,8 @@ export default class Settings_page extends Component
 			user,
 			authentication_tokens,
 			translate,
-			saving_settings,
+			change_alias_pending,
+			change_alias_error,
 			load_advanced_settings_pending,
 			load_advanced_settings_error,
 			revoking_authentication_token
@@ -196,8 +227,7 @@ export default class Settings_page extends Component
 
 						{/* "Settings" */}
 						<Content_section
-							title={translate(messages.header)}
-							busy={saving_settings}>
+							title={translate(messages.header)}>
 
 							{/* Alias */}
 							<Editable_field
@@ -207,7 +237,10 @@ export default class Settings_page extends Component
 								hint={translate(messages.alias_hint)}
 								value={user.alias}
 								validate={this.validate_alias}
-								save={this.update_alias}/>
+								save={this.update_alias}
+								cancel={this.reset_change_alias_error}
+								saving={change_alias_pending}
+								error={this.change_alias_error_message(change_alias_error)}/>
 
 							{/* User's email */}
 							<Change_email/>
@@ -265,32 +298,9 @@ export default class Settings_page extends Component
 	{
 		const { change_alias, translate, dispatch } = this.props
 
-		try
-		{
-			await change_alias(alias)
+		await change_alias(alias)
 
-			dispatch({ type: 'snack', snack: translate(messages.alias_updated) })
-		}
-		catch (error)
-		{
-			if (error.status === http_status_codes.Conflict)
-			{
-				throw new Error(translate(messages.alias_already_taken))
-			}
-
-			if (error.message === 'Invalid alias')
-			{
-				throw new Error(translate(messages.invalid_alias))
-			}
-
-			if (error.message === 'Max aliases reached')
-			{
-				throw new Error(translate(messages.max_aliases_reached))
-			}
-
-			console.error(error)
-			throw new Error(translate(messages.change_alias_failed))
-		}
+		dispatch({ type: 'snack', snack: translate(messages.alias_updated) })
 	}
 
 	async load_advanced_settings()

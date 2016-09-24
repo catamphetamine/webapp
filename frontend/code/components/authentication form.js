@@ -32,7 +32,7 @@ from '../actions/authentication'
 
 import { get_language_from_locale } from '../../../code/locale'
 
-import Redux_form, { Field } from 'simpler-redux-form'
+import Redux_form, { Field, Submit } from 'simpler-redux-form'
 
 export const messages = defineMessages
 ({
@@ -152,7 +152,24 @@ export const messages = defineMessages
 	}
 })
 
-@Redux_form()
+@Redux_form
+({
+	id: 'authentication_form',
+	submitting: (state, props) =>
+	{
+		if (props.sign_in)
+		{
+			return state.authentication.sign_in_pending
+		}
+
+		if (props.register)
+		{
+			return state.authentication.registration_pending
+		}
+
+		return state.authentication.sign_in_pending || state.authentication.registration_pending
+	}
+})
 @connect
 (
 	model =>
@@ -263,7 +280,7 @@ export default class Authentication_form extends Component
 			error,
 			initial_values,
 			submit,
-			busy
+			submitting
 		}
 		= this.props
 
@@ -274,7 +291,7 @@ export default class Authentication_form extends Component
 				className="authentication-form"
 				style={this.props.style ? { ...style.form, ...this.props.style } : style.form}
 				action={submit(this.reset_errors, this.sign_in)}
-				busy={busy}
+				busy={submitting}
 				focus={this.focus}
 				error={error || this.sign_in_error(sign_in_error)}
 				post="/users/legacy/sign-in">
@@ -337,12 +354,11 @@ export default class Authentication_form extends Component
 					</Button>
 
 					{/* "Sign in" button */}
-					<Button
-						submit={true}
-						busy={busy}>
-
+					<Submit
+						component={Button}
+						submit={true}>
 						{translate(user_bar_messages.sign_in)}
-					</Button>
+					</Submit>
 				</Form_actions>
 			</Form>
 		)
@@ -361,7 +377,7 @@ export default class Authentication_form extends Component
 			register_pending,
 			initial_values,
 			submit,
-			busy
+			submitting
 		}
 		= this.props
 
@@ -372,7 +388,7 @@ export default class Authentication_form extends Component
 				className="registration-form"
 				style={this.props.style ? { ...style.form, ...this.props.style } : style.form}
 				action={submit(this.register)}
-				busy={busy}
+				busy={submitting}
 				focus={this.focus}
 				error={error || this.registration_error(register_error)}
 				post="/users/legacy/register">
@@ -455,12 +471,11 @@ export default class Authentication_form extends Component
 
 				{/* "Register" button */}
 				<Form_actions style={style.register_buttons}>
-					<Button
-						submit={true}
-						busy={busy}>
-
+					<Submit
+						component={Button}
+						submit={true}>
 						{translate(user_bar_messages.register)}
-					</Button>
+					</Submit>
 				</Form_actions>
 			</Form>
 		)

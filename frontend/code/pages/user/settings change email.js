@@ -74,7 +74,8 @@ const messages = defineMessages
 	({
 		user : model.user_settings.main.user,
 
-		// change_email_pending : model.user_settings.main.change_email_pending,
+		change_email_pending : model.user_settings.main.change_email_pending,
+		change_email_error   : model.user_settings.main.change_email_error,
 	}),
 	dispatch =>
 	({
@@ -91,8 +92,10 @@ export default class Change_email extends Component
 {
 	static propTypes =
 	{
-		change_email         : PropTypes.func.isRequired,
-		// change_email_pending : PropTypes.bool
+		user : PropTypes.object.isRequired,
+
+		change_email_pending : PropTypes.bool,
+		change_email_error   : PropTypes.object
 	}
 
 	state = {}
@@ -105,7 +108,24 @@ export default class Change_email extends Component
 		this.dismiss_check_password      = this.dismiss_check_password.bind(this)
 		this.update_email                = this.update_email.bind(this)
 		this.save_new_email              = this.save_new_email.bind(this)
-		// this.cancel_change_email         = this.cancel_change_email.bind(this)
+		this.cancel_change_email         = this.cancel_change_email.bind(this)
+	}
+
+	reset_error()
+	{
+		this.props.dispatch({ type: 'user settings: change email: reset error'})
+	}
+
+	error_message(error)
+	{
+		const { translate } = this.props
+
+		if (!error)
+		{
+			return
+		}
+
+		return translate(messages.change_email_failed)
 	}
 
 	render()
@@ -114,15 +134,15 @@ export default class Change_email extends Component
 		{
 			user,
 			translate,
-			// change_email_pending
+			change_email_pending,
+			change_email_error
 		}
 		= this.props
 
 		const
 		{
 			new_email,
-			changing_email,
-			saving_email
+			changing_email
 		}
 		= this.state
 
@@ -137,8 +157,10 @@ export default class Change_email extends Component
 				value={new_email || user.email}
 				validate={this.validate_email}
 				save={this.save_new_email}
+				cancel={this.cancel_change_email}
 				editing={changing_email}
-				saving={saving_email}>
+				saving={change_email_pending}
+				error={this.error_message(change_email_error)}>
 
 				{/* Password check popup */}
 				<Check_password_popup
@@ -168,47 +190,33 @@ export default class Change_email extends Component
 	{
 		this.setState
 		({
-			check_password : false,
+			check_password : false
+		})
+
+		this.cancel_change_email()
+	}
+
+	cancel_change_email()
+	{
+		this.reset_error()
+
+		this.setState
+		({
 			changing_email : false,
 			new_email      : undefined
 		})
 	}
-
-	// cancel_change_email()
-	// {
-	// 	this.setState
-	// 	({
-	// 		changing_email : false,
-	// 		new_email      : undefined
-	// 	})
-	// }
 
 	async update_email(password)
 	{
 		const { change_email, translate, dispatch } = this.props
 		const { new_email } = this.state
 
-		try
-		{
-			this.setState({ saving_email: true })
+		await change_email(new_email, password)
 
-			await change_email(new_email, password)
+		dispatch({ type: 'snack', snack: translate(messages.email_updated) })
 
-			dispatch({ type: 'snack', snack: translate(messages.email_updated) })
-		}
-		catch (error)
-		{
-			console.error(error)
-			return alert(translate(messages.change_email_failed))
-		}
-		finally
-		{
-			this.setState
-			({
-				changing_email : false,
-				saving_email   : false
-			})
-		}
+		this.setState({ changing_email : false })
 	}
 
 	save_new_email(value)
@@ -250,10 +258,8 @@ class Check_password_popup extends Component
 	static propTypes =
 	{
 		shown   : PropTypes.bool,
-		busy    : PropTypes.bool,
 		close   : PropTypes.func.isRequired,
-
-		done : PropTypes.func.isRequired,
+		done    : PropTypes.func.isRequired,
 
 		check_password_pending : PropTypes.bool,
 		check_password_error   : PropTypes.object,
@@ -281,7 +287,6 @@ class Check_password_popup extends Component
 			reset_check_password_error,
 
 			shown,
-			busy,
 
 			translate
 		}
@@ -294,7 +299,7 @@ class Check_password_popup extends Component
 				shown={shown}
 				close={this.close}
 				cancel={true}
-				busy={check_password_pending || busy}
+				busy={check_password_pending}
 				actions=
 				{[{
 					text    : translate(default_messages.done),
@@ -304,10 +309,9 @@ class Check_password_popup extends Component
 				}]}>
 
 				<Check_password
-					form_id="change_email_check_password"
 					ref="check_password"
 					submit_form={this.done}
-					busy={check_password_pending}
+					submitting={check_password_pending}
 					action={check_password}
 					error={check_password_error}
 					reset_error={reset_check_password_error}/>
@@ -332,7 +336,10 @@ class Check_password_popup extends Component
 	}
 }
 
-@Redux_form()
+@Redux_form
+({
+	id: 'change_email_check_password'
+})
 class Check_password extends Component
 {
 	state = {}
@@ -340,7 +347,7 @@ class Check_password extends Component
 	static propTypes =
 	{
 		action      : PropTypes.func.isRequired,
-		busy        : PropTypes.bool,
+		submitting  : PropTypes.bool,
 		error       : PropTypes.object,
 		reset_error : PropTypes.func.isRequired
 	}
@@ -370,7 +377,7 @@ class Check_password extends Component
 
 	render()
 	{
-		const { error, busy, submit } = this.props
+		const { error, submitting, submit } = this.props
 
 		const translate = this.context.intl.formatMessage
 
@@ -378,7 +385,7 @@ class Check_password extends Component
 		(
 			<Form
 				ref="form"
-				busy={busy}
+				busy={submitting}
 				action={submit(this.reset_error, this.submit_form)}
 				error={error && this.error_message(error)}>
 
@@ -388,7 +395,6 @@ class Check_password extends Component
 					password={true}
 					description={translate(messages.enter_password)}
 					placeholder={translate(messages.password)}
-					disabled={busy}
 					error={this.password_error()}
 					validate={this.validate_password}/>
 			</Form>

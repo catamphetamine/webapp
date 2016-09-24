@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import classNames from 'classnames'
-import Redux_form, { Field } from 'simpler-redux-form'
+import Redux_form, { Field, Submit } from 'simpler-redux-form'
 
 import default_messages from './messages'
 import Form             from './form'
@@ -9,7 +9,10 @@ import Text_input       from './text input'
 
 import international from '../international/internationalize'
 
-@Redux_form()
+@Redux_form
+({
+	submitting: (state, props) => props.saving
+})
 @international()
 export default class Editable_field extends Component
 {
@@ -18,13 +21,15 @@ export default class Editable_field extends Component
 	static propTypes =
 	{
 		label       : PropTypes.string,
-		name        : PropTypes.string.isRequired,
+		name        : PropTypes.string,
 		value       : PropTypes.any,
 		hint        : PropTypes.string,
-		// error       : PropTypes.string,
+		error       : PropTypes.string,
 		saving      : PropTypes.bool,
+		submitting  : PropTypes.bool,
 		editing     : PropTypes.bool,
 		edit        : PropTypes.func,
+		cancel      : PropTypes.func,
 		save        : PropTypes.func,
 		validate    : PropTypes.func,
 		multiline   : PropTypes.bool,
@@ -38,9 +43,9 @@ export default class Editable_field extends Component
 	{
 		super(props, context)
 
-		this.cancel       = this.cancel.bind(this)
-		this.save         = this.save.bind(this)
-		this.edit         = this.edit.bind(this)
+		this.cancel = this.cancel.bind(this)
+		this.save   = this.save.bind(this)
+		this.edit   = this.edit.bind(this)
 	}
 
 	render()
@@ -50,7 +55,8 @@ export default class Editable_field extends Component
 			label,
 			hint,
 			editing,
-			saving,
+			submitting,
+			error,
 			style,
 			className,
 			children
@@ -72,7 +78,7 @@ export default class Editable_field extends Component
 				{ hint && <p>{hint}</p> }
 
 				{/* Field value and actions */}
-				{ (edit || editing || saving) ? this.render_editing() : this.render_not_editing() }
+				{ (edit || editing || submitting || error) ? this.render_editing() : this.render_not_editing() }
 
 				{/* Can be used for relevant <Modal/>s */}
 				{children}
@@ -84,12 +90,7 @@ export default class Editable_field extends Component
 
 	render_not_editing()
 	{
-		const
-		{
-			value,
-			saving
-		}
-		= this.props
+		const { value } = this.props
 
 		const translate = this.props.intl.formatMessage
 
@@ -107,8 +108,7 @@ export default class Editable_field extends Component
 			<Button
 				key="change"
 				ref="change_button"
-				action={this.edit}
-				disabled={saving}>
+				action={this.edit}>
 				{translate(default_messages.change).toLowerCase()}
 			</Button>
 		)
@@ -123,7 +123,8 @@ export default class Editable_field extends Component
 			label,
 			name,
 			value,
-			// error,
+			error,
+			submitting,
 			validate,
 			email,
 			password,
@@ -132,17 +133,13 @@ export default class Editable_field extends Component
 		}
 		= this.props
 
-		const { error } = this.state
-
-		const saving = this.props.saving || this.state.saving
-
 		const translate = this.props.intl.formatMessage
 
 		const markup =
 		(
 			<Form
 				action={submit(this.save)}
-				busy={saving}
+				busy={submitting}
 				cancel={this.cancel}>
 
 				{/* Editable text field */}
@@ -155,23 +152,22 @@ export default class Editable_field extends Component
 					multiline={multiline}
 					placeholder={label}
 					error={error}
-					validate={validate}
-					disabled={saving}/>
+					validate={validate}/>
 
 				{/* "Cancel" */}
 				<Button
 					action={this.cancel}
-					disabled={saving}>
+					disabled={submitting}>
 					{translate(default_messages.cancel).toLowerCase()}
 				</Button>
 
 				{/* "Save" */}
-				<Button
+				<Submit
+					component={Button}
 					submit={true}
-					busy={saving}
 					className="editable-field__button--subsequent">
 					{translate(default_messages.save).toLowerCase()}
-				</Button>
+				</Submit>
 			</Form>
 		)
 
@@ -180,6 +176,11 @@ export default class Editable_field extends Component
 
 	cancel()
 	{
+		if (this.props.cancel)
+		{
+			this.props.cancel()
+		}
+
 		this.setState({ edit: false }, () =>
 		{
 			this.refs.change_button.focus()
@@ -191,28 +192,14 @@ export default class Editable_field extends Component
 		const { name, save } = this.props
 		const value = values[name]
 
-		this.setState({ saving: true, error: undefined })
-
 		// Save the new value (if it changed)
 		if (value !== this.props.value)
 		{
-			try
-			{
-				const result = save(value)
-
-				if (result && typeof result.then === 'function')
-				{
-					await result
-				}
-			}
-			catch (error)
-			{
-				return this.setState({ error: error.message, saving: false })
-			}
+			save(value)
 		}
 
 		// Exit editing mode
-		this.setState({ edit: false, saving: false }, () =>
+		this.setState({ edit: false }, () =>
 		{
 			// If `save` didn't retain edit mode,
 			// then focus on the "Change" button.

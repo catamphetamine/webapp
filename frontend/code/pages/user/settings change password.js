@@ -91,11 +91,6 @@ export const messages = defineMessages
 @international()
 export default class Change_password extends Component
 {
-	static propTypes =
-	{
-
-	}
-
 	state = {}
 
 	constructor(props, context)
@@ -117,15 +112,11 @@ export default class Change_password extends Component
 		(
 			<Editable_field
 				form_id="change-password"
-				key="editable_field"
-				name="password"
-				password={true}
 				label={translate(authentication_messages.password)}
 				edit={this.change_password}>
 
 				{/* Change password popup */}
 				<Change_password_popup
-					key="popup"
 					shown={changing_password}
 					close={this.cancel_change_password}/>
 			</Editable_field>
@@ -461,7 +452,7 @@ class Change_password_step_2 extends Component
 
 	componentDidMount()
 	{
-		setTimeout(() => this.refs.step.focus(), 0)
+		setTimeout(this.refs.step.focus, 0)
 	}
 
 	render()
@@ -537,7 +528,7 @@ class Change_password_step_3 extends Component
 
 	componentDidMount()
 	{
-		setTimeout(() => this.refs.step.focus(), 0)
+		setTimeout(this.refs.step.focus, 0)
 	}
 
 	render()
