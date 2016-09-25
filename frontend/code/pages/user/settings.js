@@ -67,7 +67,7 @@ const messages = defineMessages
 	{
 		id             : 'user.settings.alias.hint',
 		description    : `A hint on user's alias, which is a unique human-readable identifier used in user's URL`,
-		defaultMessage : `A "alias" is a unique textual identifier used as part of your profile page URL`
+		defaultMessage : `An "alias" is a unique textual identifier used as part of your profile page URL`
 	},
 	enter_alias:
 	{
