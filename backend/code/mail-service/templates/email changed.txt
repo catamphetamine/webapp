@@ -1,0 +1,5 @@
+{% extends "base.txt" %}
+
+{% block content %}
+Your email has been changed to {{ email }}
+{% endblock %}

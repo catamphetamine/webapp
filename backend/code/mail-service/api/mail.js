@@ -9,14 +9,14 @@ import { send } from '../mailer'
 
 export default function(api)
 {
-	api.post('/', function({ to, subject, template, parameters }, { user })
+	api.post('/', async function({ to, subject, template, parameters, locale }, { user })
 	{
 		if (!user)
 		{
 			throw new errors.Unauthenticated()
 		}
 
-		send({ to, subject }, template, parameters)
+		await send({ to, subject }, template, parameters, locale)
 	})
 
 	// send

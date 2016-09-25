@@ -85,7 +85,18 @@ export default function(api)
 
 		await internal_http.get(`${address_book.authentication_service}/password/check`, { password })
 
+		user = await store.find_user_by_id(user.id)
+
 		await store.update_user(user.id, { email })
+
+		internal_http.post(`${address_book.mail_service}`,
+		{
+			to         : user.email,
+			subject    : 'mail.email_changed.title',
+			template   : 'email changed',
+			parameters : { email },
+			locale     : user.locale
+		})
 	})
 
 	// Change user's `alias`

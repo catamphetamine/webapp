@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-	Reset password
+	{{ translate('mail.email_changed.title') }}
 {% endblock %}
 
 {% block css %}
@@ -10,5 +10,8 @@
 {% endblock %}
 
 {% block content %}
-	<p><a class="button" href="http://google.ru/{{ token }}">Reset password</a></p>
+	<p>
+		{{ translate('mail.email_changed.email_changed_to') }}
+		<b>{{ email }}</b>
+	</p>
 {% endblock %}

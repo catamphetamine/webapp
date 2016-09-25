@@ -63,7 +63,7 @@ export async function sign_out({}, { user, authentication_token_id, destroy_cook
 	destroy_cookie('authentication')
 }
 
-export async function register({ name, email, password, terms_of_service_accepted })
+export async function register({ name, email, password, terms_of_service_accepted, locale })
 {
 	if (!exists(name))
 	{
@@ -85,6 +85,11 @@ export async function register({ name, email, password, terms_of_service_accepte
 		throw new errors.Input_rejected(`You must accept the terms of service`)
 	}
 
+	if (!exists(locale))
+	{
+		throw new errors.Input_rejected(`"locale" is required`)
+	}
+
 	if (await store.find_user_by_email(email))
 	{
 		throw new errors.Error(`User is already registered for this email`, { field: 'email' })
@@ -103,6 +108,7 @@ export async function register({ name, email, password, terms_of_service_accepte
 	{
 		name,
 		email,
+		locale,
 		...privileges
 	}
 

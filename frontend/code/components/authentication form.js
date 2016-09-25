@@ -463,6 +463,12 @@ export default class Authentication_form extends Component
 					&nbsp;<a target="_blank" href={require('../../assets/license-agreement/' + get_language_from_locale(this.props.locale) + '.html')}>{translate(messages.the_terms_of_service)}</a>
 				</Field>
 
+				{/* Send `locale` when javascript is disabled */}
+				<input
+					type="hidden"
+					name="locale"
+					value={this.props.locale}/>
+
 				{/* Support redirecting to the initial page when javascript is disabled */}
 				<input
 					type="hidden"
@@ -637,7 +643,8 @@ export default class Authentication_form extends Component
 				name                      : fields.name,
 				email                     : fields.email,
 				password                  : fields.password,
-				terms_of_service_accepted : true // is used when posting the <form/>
+				terms_of_service_accepted : true, // is used when posting the <form/>
+				locale                    : this.props.locale
 			})
 
 			// // Switch to sign in form

@@ -5,9 +5,20 @@
 		{% block css %}
 			<link rel="stylesheet" href="base.css">
 		{% endblock %}
+
+		<title>
+			{% block title %}
+				WebApp
+			{% endblock %}
+		</title>
 	</head>
 
 	<body>
+		<h1>
+			{% block title %}
+			{% endblock %}
+		</h1>
+
 		{% block content %}
 		{% endblock %}
 	</body>

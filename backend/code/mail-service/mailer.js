@@ -1,6 +1,7 @@
 import path from 'path'
 import nodemailer from 'nodemailer'
 import EmailTemplates from 'swig-email-templates'
+import translator from './translate'
 
 const templates = new EmailTemplates
 ({
@@ -97,8 +98,10 @@ else
 //     messageId: '1466966180973-163d30e0-385d833d-b4fd9ecf@blurdybloop.com'
 //   }
 
-export function send(options, template, parameters)
+export async function send(options, template, parameters, locale)
 {
+	const translate = await translator(locale)
+
 	if (!template)
 	{
 		if (!options.from)
@@ -125,6 +128,18 @@ export function send(options, template, parameters)
 		}
 	},
 	{ from: configuration.mail_service.mail.from })
+
+	options =
+	{
+		...options,
+		subject : translate(options.subject)
+	}
+
+	parameters =
+	{
+		...parameters,
+		translate
+	}
 
 	return send(options, parameters)
 }
