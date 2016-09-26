@@ -21,6 +21,7 @@
     "mongodb": "^2.1.7",
     "mongodb-migrate": "^2.0.0",
     "pg": "^6.1.0",
+    "uuid": "^2.0.3",
     "web-service": "^0.3.0"
   },
   "scripts": {

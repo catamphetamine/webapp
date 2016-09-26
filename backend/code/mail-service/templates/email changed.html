@@ -11,7 +11,10 @@
 
 {% block content %}
 	<p>
-		{{ translate('mail.email_changed.email_changed_to') }}
-		<b>{{ email }}</b>
+		{{ translate('mail.email_changed.email_changed_to', { email: '<strong>' + email + '</strong>' }, { escape: false }) }}
+	</p>
+
+	<p>
+		{{ translate('mail.email_changed.block_account', { block_account_link: '<a href="' + block_account_link + '">' + translate('mail.email_changed.block_account_link') + '</a>' }, { escape: false }) }}
 	</p>
 {% endblock %}

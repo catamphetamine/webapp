@@ -5,7 +5,14 @@ import { defineMessages }              from 'react-intl'
 import { connect }                     from 'react-redux'
 import { bindActionCreators as bind_action_creators } from 'redux'
 
-import { check_current_password, reset_check_current_password_error, change_password, reset_change_password_error } from '../../actions/user settings/change password'
+import
+{
+	check_current_password,
+	reset_check_current_password_error,
+	change_password,
+	reset_change_password_error
+}
+from '../../actions/user/settings/change password'
 
 import Editable_field  from '../../components/editable field'
 import Modal, { reset_modal } from '../../components/modal'

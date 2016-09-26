@@ -1,4 +1,6 @@
 {
 	"mail.email_changed.title": "Your email has been changed",
-	"mail.email_changed.email_changed_to": "Your email has been changed to"
+	"mail.email_changed.email_changed_to": "Your email has been changed to <strong>{email}</strong>",
+	"mail.email_changed.block_account_link": "block your account",
+	"mail.email_changed.block_account": "In case that wasn't you then it can possibly mean that you're being hacked. In that case you can temporarily {block_account_link}."
 }

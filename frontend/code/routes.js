@@ -41,6 +41,7 @@ import Home             from './pages/home'
 import Sign_in          from './pages/sign in'
 import Register         from './pages/register'
 import Menu             from './pages/menu'
+import Block_user       from './pages/user/block'
 import Profile          from './pages/user/profile'
 import Settings         from './pages/user/settings'
 import Showcase         from './pages/showcase'
@@ -75,6 +76,7 @@ export default function() // ({ dispatch, getState })
 			</Route>
 
 			<Route path="user">
+				<Route path="block/:id" component={Block_user}/>
 				<Route path=":id" component={Profile}/>
 			</Route>
 

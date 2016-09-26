@@ -4,10 +4,8 @@ const initial_state = {}
 
 const handlers = asynchronous_handler
 ({
-	event : 'user settings: change password: check current password'
-},
-{
-	event : 'user settings: change password: change password'
+	event  : 'block user: get user',
+	result : 'user'
 })
 
 // applies a handler based on the action type

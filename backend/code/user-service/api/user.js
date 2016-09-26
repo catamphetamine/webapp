@@ -89,12 +89,18 @@ export default function(api)
 
 		await store.update_user(user.id, { email })
 
+		const block_user_token = await store.generate_block_user_token(user.id)
+
 		internal_http.post(`${address_book.mail_service}`,
 		{
 			to         : user.email,
 			subject    : 'mail.email_changed.title',
 			template   : 'email changed',
-			parameters : { email },
+			parameters :
+			{
+				email,
+				block_account_link : `https://${configuration.website}/user/block/${block_user_token}`
+			},
 			locale     : user.locale
 		})
 	})
@@ -175,6 +181,35 @@ export default function(api)
 		}
 
 		return picture
+	})
+
+	api.get('/block-user-token/:token_id', async ({ token_id }, { user }) =>
+	{
+		const block_user_token = await store.get_block_user_token(token_id)
+
+		if (user.id !== block_user_token.user)
+		{
+			throw new errors.Unauthorized()
+		}
+
+		return await store.find_user_by_id(block_user_token.user)
+	})
+
+	api.post('/block', async ({ id, token_id }, { user }) =>
+	{
+		if (id !== user.id)
+		{
+			throw new errors.Unauthorized()
+		}
+
+		const block_user_token = await store.remove_block_user_token(token_id)
+
+		await store.update_user
+		({
+			blocked_at     : new Date(),
+			blocked_reason : 'self_block',
+			blocked_by     : user.id
+		})
 	})
 
 	// This pattern can potentially match other GET requests

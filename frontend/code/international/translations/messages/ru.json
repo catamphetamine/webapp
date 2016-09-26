@@ -127,6 +127,13 @@
 	"user.settings.alias.invalid"             : "Такое адресное имя не разрешено",
 	"user.settings.alias.max_aliases_reached" : "У вас уже слишком много адресных имён",
 
+	"user.block.header"        : "Блокировка пользователя",
+	"user.block.header_self"   : "Блокировка своей учётной записи",
+	"user.block.blocking_user" : "Блокировка пользователя {name}",
+	"user.block.blocking_self" : "Вы уверены что хотите временно заблокировать свою учётную запись?",
+	"user.block.reason"        : "Причина",
+	"user.block.submit"        : "Заблокировать",
+
 	"unauthenticated.header" : "Войдите, чтобы посмотреть эту страницу",
 	"unauthorized.header"    : "У вас нет доступа к странице",
 	"not_found.header"       : "Страница не найдена",

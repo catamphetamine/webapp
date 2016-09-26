@@ -1,6 +1,7 @@
 const email_max_length = 254 // in bytes
 const alias_max_length = 32
 const ip_address_max_length = 3 * 4 + 3
+const uuid_length = 32 + 4 // Section 3 of RFC4122 provides the formal definition of UUID string representations. It's 36 characters - 32 hex digits + 4 dashes.
 
 exports.up = function(knex, Promise)
 {
@@ -42,6 +43,10 @@ exports.up = function(knex, Promise)
 		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
 		table.timestamp('was_online_at')
 
+		table.timestamp('blocked_at')
+		table.text('blocked_reason')
+		table.bigint('blocked_by').references('users.id')
+
 		// Find user by alias for aliased URLs
 		table.index('alias')
 
@@ -60,6 +65,16 @@ exports.up = function(knex, Promise)
 
 		// Find user by alias for aliased URLs
 		table.index(['user', 'alias'])
+	})
+
+	.createTable('block_user_tokens', function(table)
+	{
+		// "block_user_tokens_uuid" constraint name
+		// is used in user-service sql store.
+		table.string('id', alias_max_length).primary('block_user_tokens_uuid')
+
+		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
+		table.bigint('user').notNullable().references('users.id')
 	})
 
 	.createTable('authentication_data', function(table)

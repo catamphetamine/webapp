@@ -1,6 +1,8 @@
 import Knex      from 'knex'
 import Bookshelf from 'bookshelf'
 
+import uuid from 'uuid'
+
 import Sql from '../../common/sql'
 
 const Max_aliases_in_history = 10
@@ -33,8 +35,19 @@ export default class Sql_store
 			}
 		})
 
+		this.Block_user_token = bookshelf.Model.extend
+		({
+			tableName : 'block_user_tokens',
+
+			user()
+			{
+				return this.belongsTo(models.User, 'user')
+			}
+		})
+
 		this.users = new Sql(this.User)
 		this.user_alias_history = new Sql(this.User_alias)
+		this.block_user_tokens = new Sql(this.Block_user_token)
 	}
 
 	async create_user(user)
@@ -180,5 +193,46 @@ export default class Sql_store
 	validate_alias(alias)
 	{
 		return String(parseInt(alias)) !== String(alias)
+	}
+
+	async generate_block_user_token(user_id, tries_made = 0)
+	{
+		try
+		{
+			const token_id = uuid.v4()
+			await this.block_user_tokens.create({ id: token_id, user: user_id })
+			return token_id
+		}
+		catch (error)
+		{
+			// If there already is a token with this id,
+			// then try to generate a UUID once again.
+			//
+			// "duplicate key value violates unique constraint
+			//  "block_user_tokens_uuid""
+			if (error.message.has('block_user_tokens_uuid'))
+			{
+				if (tries_made === 10)
+				{
+					throw error
+				}
+
+				return await this.generate_block_user_token(user_id, tries_made++)
+			}
+			else
+			{
+				throw error
+			}
+		}
+	}
+
+	get_block_user_token(id)
+	{
+		return this.block_user_tokens.find(id)
+	}
+
+	remove_block_user_token(id)
+	{
+		return this.block_user_tokens.remove(id)
 	}
 }

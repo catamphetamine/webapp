@@ -17,7 +17,7 @@ import
 	get_user_authentication_tokens,
 	revoke_authentication_token
 }
-from '../../actions/user settings/main'
+from '../../actions/user/settings/main'
 
 const messages = defineMessages
 ({

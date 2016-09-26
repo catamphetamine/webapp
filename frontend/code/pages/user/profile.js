@@ -7,7 +7,7 @@ import classNames                      from 'classnames'
 import { NativeTypes }                 from 'react-dnd-html5-backend'
 import { DropTarget }                  from 'react-dnd'
 
-import { defineMessages, FormattedRelative }          from 'react-intl'
+import { defineMessages } from 'react-intl'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
 
@@ -20,7 +20,7 @@ import
 	upload_user_picture,
 	update_user_picture
 }
-from '../../actions/user profile'
+from '../../actions/user/profile'
 
 import Form         from '../../components/form'
 import Text_input   from '../../components/text input'

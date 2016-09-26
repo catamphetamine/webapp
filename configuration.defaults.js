@@ -1,5 +1,6 @@
 module.exports =
 {
+	website: 'webapp.com',
 	api_service:
 	{
 		http:

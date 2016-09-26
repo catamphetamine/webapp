@@ -11,7 +11,7 @@ import
 	reset_check_password_error,
 	change_email
 }
-from '../../actions/user settings/main'
+from '../../actions/user/settings/main'
 
 import http_status_codes from '../../tools/http status codes'
 

@@ -1,4 +1,6 @@
 {
 	"mail.email_changed.title": "Ваша почта изменена",
-	"mail.email_changed.email_changed_to": "Ваша почта изменена на"
+	"mail.email_changed.email_changed_to": "Ваша почта изменена на {email}",
+	"mail.email_changed.block_account_link": "заблокировать свою учётную запись",
+	"mail.email_changed.block_account": "Если это были не вы, то возможно это означает, что вас пытаются взломать. В этом случае вы можете временно {block_account_link}."
 }

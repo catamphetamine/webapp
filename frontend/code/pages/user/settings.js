@@ -18,7 +18,7 @@ import
 	get_user_authentication_tokens,
 	change_alias
 }
-from '../../actions/user settings/main'
+from '../../actions/user/settings/main'
 
 import default_messages from '../../components/messages'
 

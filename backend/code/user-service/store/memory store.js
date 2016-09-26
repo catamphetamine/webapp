@@ -114,4 +114,19 @@ export default class Memory_store
 	{
 		return String(parseInt(alias)) !== String(alias)
 	}
+
+	async generate_block_user_token(user_id)
+	{
+		return
+	}
+
+	async get_block_user_token(id)
+	{
+		return
+	}
+
+	async remove_block_user_token(id)
+	{
+		return
+	}
 }
