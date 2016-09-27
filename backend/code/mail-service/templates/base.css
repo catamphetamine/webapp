@@ -1,7 +1,40 @@
+header
+{
+	font-size: 120%;
+	color: #A45E00; /* var(--base-color-darkest) */
+	font-weight: bold;
+}
+
+.logo
+{
+	display: inline-block;
+	width: 2em;
+	height: 2em;
+	vertical-align: bottom;
+	margin-right: 0.1em;
+}
+
 h1
 {
 	font-size: 140%;
-	margin-bottom: 1.4em;
+	margin-top: 1.0em;
+	margin-bottom: 1.2em;
+}
+
+a
+{
+	text-decoration: none;
+	color: #A45E00; /* var(--base-color-darkest) */
+}
+
+a:active
+{
+	color: #D07904; /* var(--base-color-darker) */
+}
+
+a:hover
+{
+	text-decoration: underline;
 }
 
 .button

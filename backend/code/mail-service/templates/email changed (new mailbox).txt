@@ -5,5 +5,5 @@
 {%- endblock -%}
 
 {%- block content -%}
-{{ translate('mail.email_changed.new.email_changed_to_this_mailbox') }}
+{{ translate('mail.email_changed.new.email_changed_to_this_mailbox') }}.
 {%- endblock -%}

@@ -5,7 +5,11 @@ import translator from './translate'
 
 const templates = new EmailTemplates
 ({
-	root: path.join(__dirname, 'templates')
+	root: path.join(__dirname, 'templates'),
+	swig:
+	{
+		cache: !_development_ // Don't cache swig templates in development mode
+	}
 })
 
 let transporter
@@ -127,7 +131,15 @@ export async function send(options, template, parameters, locale)
 			})
 		}
 	},
-	{ from: configuration.mail_service.mail.from })
+	{
+		from: configuration.mail_service.mail.from,
+		attachments:
+		[{
+			filename: 'logo.png',
+			path: path.join(__dirname, 'templates/assets/logo.png'),
+			cid: 'logo-content-id' // same cid value as in the html img src
+		}]
+	})
 
 	options =
 	{
