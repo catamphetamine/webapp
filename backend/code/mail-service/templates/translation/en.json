@@ -1,6 +1,11 @@
 {
 	"mail.email_changed.title": "Your email has been changed",
-	"mail.email_changed.email_changed_to": "Your email has been changed to <strong>{email}</strong>",
-	"mail.email_changed.block_account_link": "block your account",
-	"mail.email_changed.block_account": "In case that wasn't you then it can possibly mean that you're being hacked. In that case you can temporarily {block_account_link}."
+	"mail.email_changed.old.email_changed_to": "Your email has been changed to {email}",
+	"mail.email_changed.old.block_account_link": "block your account",
+	"mail.email_changed.old.block_account": "In case that wasn't you then it can possibly mean that you're being hacked. In that case you can temporarily {block_account_link}.",
+	"mail.email_changed.new.email_changed_to_this_mailbox": "Your email has been changed to this mailbox",
+
+	"mail.reset_password.title": "Password reset",
+	"mail.reset_password.invitation": "To reset your password go to the {password_reset_page}",
+	"mail.reset_password.password_reset_page": "password reset page"
 }

@@ -1,6 +1,11 @@
 {
 	"mail.email_changed.title": "Ваша почта изменена",
-	"mail.email_changed.email_changed_to": "Ваша почта изменена на {email}",
-	"mail.email_changed.block_account_link": "заблокировать свою учётную запись",
-	"mail.email_changed.block_account": "Если это были не вы, то возможно это означает, что вас пытаются взломать. В этом случае вы можете временно {block_account_link}."
+	"mail.email_changed.old.email_changed_to": "Ваша почта изменена на {email}",
+	"mail.email_changed.old.block_account_link": "заблокировать свою учётную запись",
+	"mail.email_changed.old.block_account": "Если это были не вы, то возможно это означает, что вас пытаются взломать. В этом случае вы можете временно {block_account_link}.",
+	"mail.email_changed.new.email_changed_to_this_mailbox": "Ваша почта изменена на этот ящик",
+
+	"mail.reset_password.title": "Сброс пароля",
+	"mail.reset_password.invitation": "Для того, чтобы сбросить пароль, пройдите на {password_reset_page}",
+	"mail.reset_password.password_reset_page": "страницу сброса пароля"
 }

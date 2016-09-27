@@ -119,7 +119,7 @@ module.exports =
 			// Allowed IP subnets.
 			// For more security set to local IPs only,
 			// excluding the router IP (exclusions start with an exclamation sign)
-			access_list: ['0.0.0.0/0']
+			access_list: ['127.0.0.1/32', '192.168.0.0/16']
 		}
 	},
 	mail_service:
@@ -131,8 +131,8 @@ module.exports =
 		},
 		// Allowed IP subnets.
 		// For more security set to local IPs only,
-		// excluding the router IP (exclusions start with an exclamation sign)
-		access_list: ['0.0.0.0/0'],
+		// excluding the router IP (exclusions start with an exclamation sign),
+		access_list: ['127.0.0.1/32', '192.168.0.0/16'],
 		mail:
 		{
 			from: 'Webapp Robot <robot@webapp.com>'

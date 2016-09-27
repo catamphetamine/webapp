@@ -1,18 +1,17 @@
-const initial_state =
-{
-	counter: 0
-}
+const initial_state = {}
 
 const handlers =
 {
 	'snack': (result, state) =>
 	({
 		...state,
-		snack : typeof result.snack === 'string' ? { text: result.snack } : result.snack,
-		// Since Redux won't rerender
-		// if the snack value is the same as the previous one,
-		// an explicit change detection variable is introduced.
-		counter : state.counter < Number.MAX_VALUE ? state.counter + 1 : 1
+		snack : typeof result.snack === 'string' ? { text: result.snack } : result.snack
+	}),
+
+	'snack: reset': (result, state) =>
+	({
+		...state,
+		snack : undefined
 	})
 }
 

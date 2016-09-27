@@ -11,9 +11,14 @@ export default function(api)
 {
 	api.post('/', async function({ to, subject, template, parameters, locale }, { user })
 	{
-		if (!user)
+		// if (!user)
+		// {
+		// 	throw new errors.Unauthenticated()
+		// }
+
+		if (!locale)
 		{
-			throw new errors.Unauthenticated()
+			throw new errors.Input_rejected(`"locale" is required`)
 		}
 
 		await send({ to, subject }, template, parameters, locale)

@@ -95,12 +95,20 @@ export default function(api)
 		{
 			to         : user.email,
 			subject    : 'mail.email_changed.title',
-			template   : 'email changed',
+			template   : 'email changed (old mailbox)',
 			parameters :
 			{
 				email,
 				block_account_link : `https://${configuration.website}/user/block/${block_user_token}`
 			},
+			locale     : user.locale
+		})
+
+		internal_http.post(`${address_book.mail_service}`,
+		{
+			to         : email,
+			subject    : 'mail.email_changed.title',
+			template   : 'email changed (new mailbox)',
 			locale     : user.locale
 		})
 	})

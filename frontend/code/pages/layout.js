@@ -38,9 +38,9 @@ const menu_transition_duration = 0 // 210 // milliseconds
 	model =>
 	({
 		locale : model.locale.locale,
-		snack  : model.snackbar.snack,
-		snack_counter : model.snackbar.counter
-	})
+		snack  : model.snackbar.snack
+	}),
+	dispatch => ({ dispatch })
 )
 @international()
 @DragDropContext(HTML5Backend)
@@ -73,8 +73,7 @@ export default class Layout extends Component
 		is_dragging : PropTypes.bool.isRequired,
 
 		locale : PropTypes.string.isRequired,
-		snack  : PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-		snack_counter : PropTypes.number.isRequired
+		snack  : PropTypes.oneOfType([PropTypes.string, PropTypes.object])
 	}
 
 	static defaultProps =
@@ -89,11 +88,17 @@ export default class Layout extends Component
 		this.hide_menu_on_click = this.hide_menu_on_click.bind(this)
 		this.toggle_menu        = this.toggle_menu.bind(this)
 		this.update_menu_width  = this.update_menu_width.bind(this)
+		this.reset_snack        = this.reset_snack.bind(this)
+	}
+
+	reset_snack()
+	{
+		this.props.dispatch({ type: 'snack: reset' })
 	}
 
 	render()
 	{
-		const { translate, is_dragging, snack, snack_counter, locale } = this.props
+		const { translate, is_dragging, snack, locale } = this.props
 
 		const title       = translate(messages.title)
 		const description = translate(messages.description)
@@ -146,7 +151,7 @@ export default class Layout extends Component
 				<Preloading/>
 
 				{/* An application-wide global snackbar */}
-				<Snackbar value={snack.text} counter={snack_counter}/>
+				<Snackbar value={snack.text} reset={this.reset_snack}/>
 
 				{/* webpage */}
 				{/* <StickyContainer className="page" style={style.page}> */}

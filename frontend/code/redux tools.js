@@ -49,7 +49,6 @@ function _asynchronous_hander(handlers, namespace, event, on_result)
 		// This will be the new Redux state
 		let new_state
 
-		console.log('@@@@@ done', result)
 		// If `on_result` is a reducer, then call it,
 		// and the returned object will be the new state.
 		if (typeof on_result === 'function')

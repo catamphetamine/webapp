@@ -1,0 +1,12 @@
+{%- extends "base.txt" -%}
+
+{%- block title -%}
+{{ translate('mail.email_changed.title') }}
+{%- endblock -%}
+
+{%- block content -%}
+{{ translate('mail.email_changed.old.email_changed_to', { email: email }) }}
+
+{{ translate('mail.email_changed.old.block_account', { block_account_link: translate('mail.email_changed.old.block_account_link') }) }}:
+{{ block_account_link }}
+{%- endblock -%}

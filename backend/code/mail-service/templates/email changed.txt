@@ -1,7 +1,0 @@
-{% extends "base.txt" %}
-
-{% block content %}
-Your email has been changed to {{ email }}.
-
-In case that wasn't you then it can possibly mean that you're being hacked. In that case you can temporarily block your account using this link: {{ block_account_link }}
-{% endblock %}

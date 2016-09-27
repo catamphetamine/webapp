@@ -9,7 +9,7 @@ export default class Snackbar extends Component
 		auto_hide_timeout : PropTypes.number,
 		hide_animation_duration : PropTypes.number.isRequired,
 		value : PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-		counter : PropTypes.number
+		reset : PropTypes.func.isRequired
 	}
 
 	static defaultProps =
@@ -34,10 +34,10 @@ export default class Snackbar extends Component
 		// Since Redux won't rerender
 		// if the snack value is the same as the previous one,
 		// an explicit change detection variable is introduced.
-		if (new_props.counter !== this.props.counter
-			|| new_props.value !== this.props.value)
+		if (new_props.value)
 		{
 			this.push(new_props.value)
+			this.props.reset()
 		}
 	}
 

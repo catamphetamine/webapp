@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}
+	{{ translate('mail.email_changed.title') }}
+{% endblock %}
+
+{% block css %}
+	{% parent %}
+	<link rel="stylesheet" href="email changed (new mailbox).css">
+{% endblock %}
+
+{% block content %}
+	<p>
+		{{ translate('mail.email_changed.new.email_changed_to_this_mailbox') }}
+	</p>
+{% endblock %}
