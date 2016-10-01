@@ -1,4 +1,5 @@
 import { http, errors } from 'web-service'
+import moment from 'moment'
 
 import store from '../store/store'
 import { get_user, sign_in, sign_out, register, own_user } from './user.base'
@@ -198,6 +199,12 @@ export default function(api)
 		if (!token)
 		{
 			throw new errors.Not_found()
+		}
+
+		// Check if the token expired (is valid for a week)
+		if (moment(token.created_at).add(1, 'weeks').isBefore(new Date()))
+		{
+			throw new errors.Not_found(`Token expired`)
 		}
 
 		if (user)
