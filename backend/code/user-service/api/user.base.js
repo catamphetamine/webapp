@@ -149,6 +149,7 @@ export async function register({ name, email, password, terms_of_service_accepte
 	return { id }
 }
 
+// May possibly add something like { alias } in the future
 export async function get_user({ id }, { user })
 {
 	const user_data = await store.find_user(id)
@@ -156,6 +157,11 @@ export async function get_user({ id }, { user })
 	if (!user_data)
 	{
 		throw new errors.Not_found(`User not found: ${id}`)
+	}
+
+	if (user_data.blocked_by)
+	{
+		user_data.blocked_by = await get_user({ id: user_data.blocked_by }, { user })
 	}
 
 	return (user && id === String(user.id)) ? own_user(user_data) : public_user(user_data)
@@ -172,7 +178,10 @@ function public_user(user)
 		'country',
 		'picture',
 		'picture_sizes',
-		'was_online_at'
+		'was_online_at',
+		'blocked_at',
+		'blocked_by',
+		'blocked_reason'
 	]
 
 	const result = {}

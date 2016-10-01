@@ -220,8 +220,24 @@ export default function(api)
 		await store.update_user(id,
 		{
 			blocked_at     : new Date(),
-			// blocked_reason : 'self_block',
 			blocked_by     : user.id
+		})
+	})
+
+	api.post('/unblock', async ({ id, token }, { user }) =>
+	{
+		if (user.role !== 'moderator')
+		{
+			throw new errors.Unauthorized()
+		}
+
+		log.info(`Unblocked user #${id} by moderator user #${user.id}`)
+
+		await store.update_user(id,
+		{
+			blocked_at     : null,
+			blocked_reason : null,
+			blocked_by     : null
 		})
 	})
 
