@@ -195,12 +195,19 @@ export default class Sql_store
 		return String(parseInt(alias)) !== String(alias)
 	}
 
-	async generate_block_user_token(user_id, tries_made = 0)
+	async generate_block_user_token(user_id, options = {}, tries_made = 0)
 	{
 		try
 		{
 			const token_id = uuid.v4()
-			await this.block_user_tokens.create({ id: token_id, user: user_id })
+			const token = { id: token_id, user: user_id }
+
+			if (options.self)
+			{
+				token.self = true
+			}
+
+			await this.block_user_tokens.create(token)
 			return token_id
 		}
 		catch (error)
@@ -217,7 +224,7 @@ export default class Sql_store
 					throw error
 				}
 
-				return await this.generate_block_user_token(user_id, tries_made++)
+				return await this.generate_block_user_token(user_id, options, tries_made++)
 			}
 			else
 			{

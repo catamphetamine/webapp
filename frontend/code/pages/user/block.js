@@ -14,7 +14,7 @@ import Redux_form, { Field } from 'simpler-redux-form'
 
 import
 {
-	get_blocked_user,
+	get_block_user_token,
 	block_user
 }
 from '../../actions/user/block'
@@ -81,15 +81,14 @@ const messages = defineMessages
 @Redux_form({ id: 'block_user' })
 @preload(({ dispatch, get_state, location, parameters }) =>
 {
-	return dispatch(get_blocked_user(parameters.id))
+	return dispatch(get_block_user_token(parameters.id))
 })
 @connect
 (
 	state =>
 	({
 		current_user : state.authentication.user,
-
-		user : state.block_user.user
+		block_user_token : state.block_user.token
 	}),
 	dispatch =>
 	({
@@ -107,7 +106,7 @@ export default class User_profile extends Component
 	static propTypes =
 	{
 		current_user : PropTypes.object,
-		user         : PropTypes.object
+		block_user_token : PropTypes.object.isRequired
 	}
 
 	constructor(props, context)
@@ -130,11 +129,13 @@ export default class User_profile extends Component
 
 	async submit(values)
 	{
-		const { user, params, block_user, dispatch, translate } = this.props
+		const { block_user_token, params, block_user, dispatch, translate } = this.props
+
+		const user = block_user_token.user
 
 		const token_id = params.id
 
-		await block_user(user.id, token_id)
+		await block_user(user.id, token_id, values.reason)
 
 		dispatch({ type: 'snack', snack: translate(messages.user_blocked) })
 
@@ -143,9 +144,11 @@ export default class User_profile extends Component
 
 	render()
 	{
-		const { current_user, user, submit, translate } = this.props
+		const { current_user, block_user_token, submit, translate } = this.props
 
-		const self = current_user.id === user.id
+		const user = block_user_token.user
+
+		const self = block_user_token.self
 
 		const markup =
 		(

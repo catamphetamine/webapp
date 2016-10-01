@@ -74,6 +74,7 @@ exports.up = function(knex, Promise)
 		table.string('id', alias_max_length).primary('block_user_tokens_uuid')
 
 		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
+		table.boolean('self').notNullable().defaultTo(false)
 		table.bigint('user').notNullable().references('users.id')
 	})
 

@@ -80,7 +80,7 @@ export default function() // ({ dispatch, getState })
 				<Route path=":id" component={Profile}/>
 			</Route>
 
-			<Route path="settings" component={authorize(Settings, 'administrator')}/>
+			<Route path="settings" component={authorize(Settings)}/>
 
 			<Route path="logs" component={authorize(Log, 'administrator')}/>
 

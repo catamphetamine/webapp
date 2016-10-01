@@ -3,7 +3,6 @@ import styler                          from 'react-styling'
 import classNames                      from 'classnames'
 import { defineMessages }              from 'react-intl'
 import { connect }                     from 'react-redux'
-import React_time_ago                  from 'react-time-ago'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
 
@@ -11,6 +10,7 @@ import international from '../../international/internationalize'
 
 import Button          from '../../components/button'
 import Content_section from '../../components/content section'
+import Time_ago        from '../../components/time ago'
 
 import
 {
@@ -161,9 +161,7 @@ export default class Authentication_tokens extends Component
 									{translate(messages.authentication_token_issued)}
 									{' '}
 									{/* when */}
-									<React_time_ago
-										date={token.created_at}
-										style={style.authentication_token.issued}/>
+									<Time_ago style={style.authentication_token.issued}>{token.created_at}</Time_ago>
 								</div>
 
 								{/* Token status (valid, revoked) */}
@@ -176,7 +174,7 @@ export default class Authentication_tokens extends Component
 												{translate(messages.authentication_token_revoked)}
 												{' '}
 												{/* when */}
-												<React_time_ago date={token.revoked_at}/>
+												<Time_ago>{token.revoked_at}</Time_ago>
 											</span>
 										}
 
@@ -217,7 +215,7 @@ export default class Authentication_tokens extends Component
 												{ activity.place && activity.place.city && `${activity.place.city}, ${activity.place.country}, ` }
 												{' '}
 												{/* Latest activity time */}
-												<React_time_ago date={activity.updated_at}/>
+												<Time_ago>{activity.updated_at}</Time_ago>
 											</li>
 										})}
 									</ul>

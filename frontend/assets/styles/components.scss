@@ -833,3 +833,22 @@ body.javascript-is-enabled .sign-out--fallback
 {
 	margin-bottom : calc(var(--modular-grid-unit) * 2);
 }
+
+.error-page
+{
+	text-align: center;
+
+	h1
+	{
+		margin-top: 4rem;
+	}
+}
+
+.error-page__page-link
+{
+	display    : inline-block;
+
+	max-width     : 100%;
+	text-overflow : ellipsis;
+	overflow      : hidden;
+}

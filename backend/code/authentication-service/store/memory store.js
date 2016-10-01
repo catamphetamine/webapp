@@ -29,6 +29,11 @@ export default class Memory_store
 		this.users.get(user_id).password = password
 	}
 
+	async get_all_valid_tokens(user_id)
+	{
+		return this.tokens.filter(token => token.user === user_id)
+	}
+
 	async find_token_by_id(token_id)
 	{
 		return this.tokens.filter(token => token.id === token_id)[0]
@@ -68,10 +73,10 @@ export default class Memory_store
 
 		this.tokens.push
 		({
-			id      : authentication_token_id,
+			id         : authentication_token_id,
 			created_at : now,
-			user : user_id,
-			history : [{ ip, updated_at: now }]
+			user       : user_id,
+			history    : [{ ip, updated_at: now }]
 		})
 
 		return authentication_token_id

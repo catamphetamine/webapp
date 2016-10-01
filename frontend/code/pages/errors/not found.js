@@ -22,13 +22,15 @@ export default class Page_not_found extends Component
 {
 	render()
 	{
+		const { translate } = this.props
+
 		const markup =
 		(
-			<section className="content">
-				{title(this.props.translate(messages.header))}
+			<section className="content error-page">
+				{title(translate(messages.header))}
 
-				<h1 style={style.header}>
-					{this.props.translate(messages.header)}
+				<h1>
+					{translate(messages.header)}
 				</h1>
 			</section>
 		)
@@ -39,7 +41,4 @@ export default class Page_not_found extends Component
 
 const style = styler
 `
-	header
-		margin-top: 4rem
-		text-align: center
 `

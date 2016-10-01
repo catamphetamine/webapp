@@ -6,6 +6,6 @@
 	"mail.email_changed.new.email_changed_to_this_mailbox": "Ваша почта изменена на этот ящик",
 
 	"mail.reset_password.title": "Сброс пароля",
-	"mail.reset_password.invitation": "Для того, чтобы сбросить пароль, пройдите на {password_reset_page}",
+	"mail.reset_password.invitation": "Для того, чтобы сбросить пароль, пройдите на {password_reset_page} (временно заблокировать свою учётную запись вы можете в течение недели с момента получения этого письма)",
 	"mail.reset_password.password_reset_page": "страницу сброса пароля"
 }

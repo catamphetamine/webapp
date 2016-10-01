@@ -16,7 +16,7 @@ export default function(api)
 		// Check the password
 		if (!await check_password(user.id, user.password))
 		{
-			throw new errors.Input_rejected(`Wrong password`, { field: 'password' }) 
+			throw new errors.Input_rejected(`Wrong password`, { field: 'password' })
 		}
 
 		// Add a new JWT token to the list of valid tokens for this user
@@ -36,7 +36,7 @@ export default function(api)
 		// Hashing a password is a CPU-intensive lengthy operation.
 		// takes about 60 milliseconds on my machine.
 		//
-		// Maybe could be offloaded from node.js 
+		// Maybe could be offloaded from node.js
 		// to some another multithreaded backend.
 		//
 		password = await hash_password(password)
@@ -96,7 +96,7 @@ export default function(api)
 			const valid = token && !token.revoked_at
 
 			// Cache access token validity.
-			// 
+			//
 			// Theoretically there could be a small race condition here,
 			// when a token validity is not cached, and that token is revoked
 			// between the token validity being read from the database
@@ -122,27 +122,43 @@ export default function(api)
 		return { valid: true }
 	})
 
-	api.post('/token/revoke', async function({ id }, { user })
+	api.post('/token/:id/revoke', async function({ id, block_user_token_id }, { user, authentication_token_id })
 	{
+		// Special case for "revoke all tokens".
+		// (e.g. when blocking a user)
+		if (id === '*')
+		{
+			if (!block_user_token_id)
+			{
+				throw new errors.Input_rejected(`"block_user_token_id" is required`)
+			}
+
+			const block_user_token = await http.get(`${address_book.user_service}/block-user-token/${block_user_token_id}`)
+
+			if (!block_user_token)
+			{
+				throw new errors.Not_found('Block user token not found')
+			}
+
+			for (let token of await store.get_all_valid_tokens(block_user_token.user.id))
+			{
+				await revoke_token(token.id, block_user_token.user.id)
+			}
+
+			return
+		}
+
 		if (!user)
 		{
 			throw new errors.Unauthenticated()
 		}
 
-		const token = await store.find_token_by_id(id)
-
-		if (!token)
+		if (id === 'current')
 		{
-			return new errors.Not_found()
+			id = authentication_token_id
 		}
 
-		if (token.user !== user.id)
-		{
-			return new errors.Unauthorized()
-		}
-
-		await store.revoke_token(id)
-		await online_status_store.clear_access_token_validity(user.id, id)
+		await revoke_token(id, user.id)
 	})
 
 	api.get('/password/check', async function({ password }, { user })
@@ -163,7 +179,7 @@ export default function(api)
 		// If the password is wrong, return an error
 		if (!matches)
 		{
-			throw new errors.Input_rejected(`Wrong password`, { field: 'password' }) 
+			throw new errors.Input_rejected(`Wrong password`, { field: 'password' })
 		}
 	})
 
@@ -190,7 +206,7 @@ export default function(api)
 		// If the old password is wrong, return an error
 		if (!matches)
 		{
-			throw new errors.Input_rejected(`Wrong password`) 
+			throw new errors.Input_rejected(`Wrong password`)
 		}
 
 		// Hashing a password is a CPU-intensive lengthy operation.
@@ -206,6 +222,24 @@ export default function(api)
 	{
 		return await online_status_store.get_latest_access_time(id)
 	})
+}
+
+async function revoke_token(id, revoking_user_id)
+{
+	const token = await store.find_token_by_id(id)
+
+	if (!token)
+	{
+		throw new errors.Not_found()
+	}
+
+	if (token.user !== revoking_user_id)
+	{
+		throw new errors.Unauthorized()
+	}
+
+	await store.revoke_token(id)
+	await online_status_store.clear_access_token_validity(token.user, id)
 }
 
 async function record_access(user_id, authentication_token_id, ip)

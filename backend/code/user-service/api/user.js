@@ -50,19 +50,7 @@ export default function(api)
 			return
 		}
 
-		// Get user info from the database
-		user = await store.find_user_by_id(user.id)
-
-		// If the user wasn't found in the databse
-		// (shouldn't happen in normal circumstances)
-		// then abort
-		if (!user)
-		{
-			return
-		}
-
-		// Return user info
-		return own_user(user)
+		return await get_user({ id: user.id }, { user })
 	})
 
 	// Change user's `email`
@@ -89,7 +77,7 @@ export default function(api)
 
 		await store.update_user(user.id, { email })
 
-		const block_user_token = await store.generate_block_user_token(user.id)
+		const block_user_token = await store.generate_block_user_token(user.id, { self: true })
 
 		internal_http.post(`${address_book.mail_service}`,
 		{
@@ -193,40 +181,70 @@ export default function(api)
 
 	api.get('/block-user-token/:token_id', async ({ token_id }, { user }) =>
 	{
-		const block_user_token = await store.get_block_user_token(token_id)
+		const token = await store.get_block_user_token(token_id)
+
+		if (!token)
+		{
+			throw new errors.Not_found()
+		}
+
+		if (user)
+		{
+			if (!(user.id === token.user || ['moderator', 'administrator'].has(user.role)))
+			{
+				throw new errors.Unauthorized()
+			}
+		}
+
+		if (token.user)
+		{
+			token.user = await get_user({ id: token.user })
+		}
+
+		return token
+	})
+
+	api.post('/block', async ({ token, reason }, { user }) =>
+	{
+		// Verify block user token
+
+		const block_user_token = await store.get_block_user_token(token)
 
 		if (!block_user_token)
 		{
 			throw new errors.Not_found()
 		}
 
-		if (user && !(user.id === block_user_token.user || user.role === 'moderator'))
-		{
-			throw new errors.Unauthorized()
-		}
-
-		return await store.find_user_by_id(block_user_token.user)
-	})
-
-	api.post('/block', async ({ id, token }, { user }) =>
-	{
-		if (!(id === user.id || user.role === 'moderator'))
-		{
-			throw new errors.Unauthorized()
-		}
-
-		const block_user_token = await store.remove_block_user_token(token)
-
-		await store.update_user(id,
+		// Block the user
+		await store.update_user(block_user_token.user,
 		{
 			blocked_at     : new Date(),
-			blocked_by     : user.id
+			blocked_by     : user ? user.id : block_user_token.user,
+			blocked_reason : reason
 		})
+
+		// Revoke all user's tokens
+		await http.post
+		(
+			`${address_book.authentication_service}/token/*/revoke`,
+			{ block_user_token_id : block_user_token.id }
+		)
+
+		// Consume block user token
+		await store.remove_block_user_token(token)
 	})
 
-	api.post('/unblock', async ({ id, token }, { user }) =>
+	api.post('/unblock', async ({ id }, { user }) =>
 	{
-		if (user.role !== 'moderator')
+		if (!user)
+		{
+			throw new errors.Unauthorized()
+		}
+
+		// Only `moderator` or `administrator` can unblock users.
+		// Also a poweruser can't unblock himself.
+		if (!['moderator', 'administrator'].has(user.role)
+			|| user.id === id)
 		{
 			throw new errors.Unauthorized()
 		}

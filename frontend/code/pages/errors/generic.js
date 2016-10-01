@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { title }            from 'react-isomorphic-render'
 import { connect }          from 'react-redux'
+import { Link }             from 'react-router'
 
 import styler from 'react-styling'
 
@@ -25,16 +26,23 @@ export default class Generic_error extends Component
 {
 	render()
 	{
+		const { translate, location } = this.props
+
 		const markup =
 		(
-			<section className="content" style={style.content}>
-				{title(this.props.translate(messages.header))}
+			<section className="content error-page">
+				{title(translate(messages.header))}
 
-				<h1 style={style.header}>
-					{this.props.translate(messages.header)}
+				<h1>
+					{translate(messages.header)}
 				</h1>
 
-				<a style={style.link} href={should_redirect_to(this.props.location)}>{new Url(should_redirect_to(this.props.location)).to_relative_url()}</a>
+				<Link
+					href={should_redirect_to(location)}
+					className="error-page__page-link">
+
+					{new Url(should_redirect_to(location)).to_relative_url()}
+				</Link>
 			</section>
 		)
 
@@ -44,14 +52,4 @@ export default class Generic_error extends Component
 
 const style = styler
 `
-	content
-		text-align : center
-
-	link
-		display    : inline-block
-		margin-top : 2em
-
-		max-width     : 100%
-		text-overflow : ellipsis
-		overflow      : hidden
 `

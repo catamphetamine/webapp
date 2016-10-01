@@ -24,15 +24,7 @@ export async function sign_in({ email, password }, { set_cookie })
 
 	if (user.blocked_at)
 	{
-		const self_block = user.blocked_by === user.id
-
-		throw new errors.Access_denied(`You are blocked`,
-		{
-			self_block,
-			blocked_by     : !self_block && public_user(await store.find_user_by_id(user.blocked_by)),
-			blocked_at     : user.blocked_at,
-			blocked_reason : user.blocked_reason
-		})
+		await user_is_blocked(user)
 	}
 
 	// Generate JWT authentication token
@@ -45,6 +37,24 @@ export async function sign_in({ email, password }, { set_cookie })
 		// Send only the neccessary fields required for JWT payload
 		role : user.role
 	})
+
+	// If there was an almost impossible race condition
+	// when the user was blocked while obtaining an access token,
+	// then immediately revoke that token.
+
+	const user_blocked_check = await store.find_user_by_email(email)
+
+	if (user_blocked_check.blocked_at)
+	{
+		await http.post
+		(
+			`${address_book.authentication_service}/token/current/revoke`,
+			{ bot: true },
+			{ headers: { Authorization: `Bearer ${token}` } }
+		)
+
+		await user_is_blocked(user_blocked_check)
+	}
 
 	// Write JWT token to a cookie
 	set_cookie('authentication', token, { signed: false })
@@ -62,10 +72,7 @@ export async function sign_out({}, { user, authentication_token_id, destroy_cook
 	}
 
 	// Revoke access token
-	await internal_http.post(`${address_book.authentication_service}/token/revoke`,
-	{
-		id : authentication_token_id
-	})
+	await internal_http.post(`${address_book.authentication_service}/token/${authentication_token_id}/revoke`)
 
 	// Clear authentcication cookie
 	destroy_cookie('authentication')
@@ -150,8 +157,10 @@ export async function register({ name, email, password, terms_of_service_accepte
 }
 
 // May possibly add something like { alias } in the future
-export async function get_user({ id }, { user })
+export async function get_user({ id }, options = {})
 {
+	const { user } = options
+
 	const user_data = await store.find_user(id)
 
 	if (!user_data)
@@ -161,7 +170,14 @@ export async function get_user({ id }, { user })
 
 	if (user_data.blocked_by)
 	{
-		user_data.blocked_by = await get_user({ id: user_data.blocked_by }, { user })
+		if (user_data.blocked_by === id)
+		{
+			user_data.blocked_by = public_user(user_data)
+		}
+		else
+		{
+			user_data.blocked_by = await get_user({ id: user_data.blocked_by }, { user })
+		}
 	}
 
 	return (user && id === String(user.id)) ? own_user(user_data) : public_user(user_data)
@@ -210,4 +226,17 @@ export function own_user(user)
 	}
 
 	return result
+}
+
+async function user_is_blocked(user)
+{
+	const self_block = user.blocked_by === user.id
+
+	throw new errors.Access_denied(`You are blocked`,
+	{
+		self_block,
+		blocked_by     : !self_block && public_user(await store.find_user_by_id(user.blocked_by)),
+		blocked_at     : user.blocked_at,
+		blocked_reason : user.blocked_reason
+	})
 }

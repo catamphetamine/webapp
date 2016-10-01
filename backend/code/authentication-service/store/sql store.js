@@ -91,6 +91,15 @@ export default class Sql_store
 		return this.authentication_data.update({ user: user_id }, { password })
 	}
 
+	get_all_valid_tokens(user_id)
+	{
+		return this.authentication_tokens.find_all
+		({
+			user       : user_id,
+			revoked_at : null
+		})
+	}
+
 	find_token_by_id(id)
 	{
 		return this.authentication_tokens.find(id)
@@ -173,7 +182,7 @@ export default class Sql_store
 		for (let token of excessive_tokens)
 		{
 			await this.authentication_tokens.remove(token.id)
-			
+
 			if (!token.revoked_at)
 			{
 				await online_status_store.clear_access_token_validity(user_id, token.id)

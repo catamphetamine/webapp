@@ -108,8 +108,8 @@ const messages = defineMessages
 	blocked:
 	{
 		id             : `user.profile.blocked`,
-		description    : `A note that the user is blocked`,
-		defaultMessage : `This user was blocked {blocked_at}`
+		description    : `A note that the user is temporarily blocked`,
+		defaultMessage : `This user was temporarily blocked {blocked_at}`
 	},
 	blocked_detailed:
 	{
@@ -223,14 +223,7 @@ export default class User_profile extends Component
 		upload_user_picture_pending : PropTypes.bool,
 		update_user_picture_pending : PropTypes.bool,
 
-		locale : PropTypes.string.isRequired,
-
-		update_user                    : PropTypes.func.isRequired,
-		update_user_reset_error        : PropTypes.func.isRequired,
-		upload_user_picture            : PropTypes.func.isRequired,
-		update_user_picture            : PropTypes.func.isRequired,
-		get_users_latest_activity_time : PropTypes.func.isRequired,
-		dispatch                       : PropTypes.func.isRequired
+		locale : PropTypes.string.isRequired
 	}
 
 	static contextTypes =
@@ -345,7 +338,7 @@ export default class User_profile extends Component
 						{/* User blocked notice */}
 						{ user.blocked_at &&
 							<div className="content-section__errors">
-								{ user.blocked_by === user.id
+								{ user.blocked_by.id === user.id
 									?
 									<FormattedMessage
 										{...messages.blocked}

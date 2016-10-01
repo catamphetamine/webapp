@@ -4,8 +4,8 @@ const initial_state = {}
 
 const handlers = asynchronous_handler
 ({
-	event  : 'block user: get user',
-	result : 'user'
+	event  : 'block user: get token',
+	result : 'token'
 })
 
 // applies a handler based on the action type
