@@ -14,6 +14,7 @@ import Button              from './button'
 import Form                from './form'
 import Modal               from './modal'
 import Authentication_form from './authentication form'
+import User                from './user'
 import User_picture        from './user picture'
 import Dropdown, { Dropdown_separator } from './dropdown'
 import Spinner             from './spinner'
@@ -205,7 +206,7 @@ export default class Authentication extends Component
 		const user_info =
 		(
 			<Link
-				to={`/user/${user.id}`}
+				to={User.url(user)}
 				style={style.user_menu_toggler}>
 
 				{/* User name */}
@@ -232,7 +233,7 @@ export default class Authentication extends Component
 					alignment="right">
 
 					{/* Profile */}
-					<Link key="profile" to={`/user/${user.alias || user.id}`}>
+					<Link key="profile" to={User.url(user)}>
 						{/* Icon */}
 						<i className="material-icons dropdown-item__icon">account_box</i>
 						{/* Text */}

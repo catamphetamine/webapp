@@ -5,7 +5,7 @@ import styler      from 'react-styling'
 
 import { redirect } from 'react-isomorphic-render/redux'
 
-import { Time_ago, Date_time_formatter } from 'react-time-ago'
+// import { Time_ago, Date_time_formatter } from 'react-time-ago'
 
 import { defineMessages, FormattedMessage } from 'react-intl'
 import international from '../international/internationalize'
@@ -14,7 +14,8 @@ import Text_input             from './form/text input'
 import Checkbox               from './form/checkbox'
 import Submit                 from './form/submit'
 import Button                 from './button'
-// import Time_ago               from './time ago'
+import User                   from './user'
+import Time_ago               from './time ago'
 import Form, { Form_error, Form_actions } from './form'
 
 import http_status_codes from '../tools/http status codes'
@@ -139,14 +140,26 @@ export const messages = defineMessages
 	user_is_self_blocked:
 	{
 		id             : 'authentication.error.user_is_self_blocked',
-		description    : 'This user has opted into temporarily blocking his own account for safety concerns',
-		defaultMessage : `You willingly temporarily blocked your account {blocked_at_relative} (on {blocked_at_full})`
+		description    : 'A note that this user has opted into temporarily blocking his own account for safety concerns',
+		defaultMessage : `You willingly temporarily blocked your account {details}`
+	},
+	user_is_self_blocked_details:
+	{
+		id             : 'authentication.error.user_is_self_blocked_details',
+		description    : 'Date when this user has opted into temporarily blocking his own account for safety concerns',
+		defaultMessage : `{blocked_at}`
 	},
 	user_is_blocked:
 	{
 		id             : 'authentication.error.user_is_blocked',
-		description    : 'This user is blocked',
-		defaultMessage : `Your account was blocked {blocked_at_relative} (on {blocked_at_full}) by {blocked_by} with reason: "{blocked_reason}"`
+		description    : 'A note that this user is blocked',
+		defaultMessage : `Your account was blocked {details}`
+	},
+	user_is_blocked_details:
+	{
+		id             : 'authentication.error.user_is_blocked_details',
+		description    : 'A date when this user was blocked along with the details',
+		defaultMessage : `{blocked_at} by {blocked_by} with reason: "{blocked_reason}"`
 	},
 	unblock_instructions:
 	{
@@ -713,23 +726,56 @@ export default class Authentication_form extends Component
 
 		if (error.status === http_status_codes.Access_denied)
 		{
-			const parameters =
+			let details_parameters =
 			{
-				blocked_at_relative : new Time_ago(locale).format(error.blocked_at),
-				blocked_at_full     : new Date_time_formatter(locale).format(error.blocked_at)
+				// blocked_at_relative : new Time_ago(locale).format(error.blocked_at),
+				// blocked_at_full     : new Date_time_formatter(locale).format(error.blocked_at),
+				blocked_at : <Time_ago>{error.blocked_at}</Time_ago>
 			}
 
 			if (error.self_block)
 			{
-				return translate(messages.user_is_self_blocked, parameters)
+				const parameters =
+				{
+					details : <span className="form__error-details">
+						<FormattedMessage
+							{...messages.user_is_self_blocked_details}
+							values={details_parameters}/>
+					</span>
+				}
+
+				return <FormattedMessage
+					{...messages.user_is_self_blocked}
+					values={parameters}/>
 			}
 
-			return translate(messages.user_is_blocked,
+			details_parameters =
 			{
-				...parameters,
-				blocked_by : <User>{error.blocked_by}</User>,
-				// blocked_at : <Time_ago>{error.blocked_at}</Time_ago>
-			})
+				...details_parameters,
+				blocked_by     : <User>{error.blocked_by}</User>,
+				blocked_reason : error.blocked_reason
+			}
+
+			const parameters =
+			{
+				details : <span className="form__error-details">
+					<FormattedMessage
+						{...messages.user_is_blocked_details}
+						values={details_parameters}/>
+				</span>
+			}
+
+			return <FormattedMessage
+				{...messages.user_is_blocked}
+				values={parameters}/>
+
+			// return translate(messages.user_is_blocked,
+			// {
+			// 	...parameters,
+			// 	// blocked_by     : <User>{error.blocked_by}</User>,
+			// 	blocked_by     : error.blocked_by.name,
+			// 	blocked_reason : error.blocked_reason
+			// })
 		}
 
 		return translate(messages.sign_in_error)

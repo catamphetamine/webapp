@@ -29,8 +29,9 @@ export async function sign_in({ email, password }, { set_cookie })
 		throw new errors.Access_denied(`You are blocked`,
 		{
 			self_block,
-			blocked_by : !self_block && public_user(await store.find_user_by_id(user.blocked_by)),
-			blocked_at : user.blocked_at
+			blocked_by     : !self_block && public_user(await store.find_user_by_id(user.blocked_by)),
+			blocked_at     : user.blocked_at,
+			blocked_reason : user.blocked_reason
 		})
 	}
 

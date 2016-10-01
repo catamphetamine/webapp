@@ -9,5 +9,10 @@ export default function Time_ago(props)
 
 function Wrapper({ verbose, children })
 {
-	return <Tooltip text={verbose} container={() => document.querySelector('.content')}>{children}</Tooltip>
+	// Not using `container` here because
+	// it wouldn't work on the document.body level
+	// (e.g. in a modal)
+
+	// container={() => document.querySelector('.content')}
+	return <Tooltip text={verbose}>{children}</Tooltip>
 }

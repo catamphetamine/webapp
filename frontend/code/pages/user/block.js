@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { title }                       from 'react-isomorphic-render'
-import { preload }                     from 'react-isomorphic-render/redux'
+import { preload, redirect }           from 'react-isomorphic-render/redux'
 import { connect }                     from 'react-redux'
 import styler                          from 'react-styling'
 import { Link }                        from 'react-router'
@@ -69,6 +69,12 @@ const messages = defineMessages
 		id             : `user.block.submit`,
 		description    : `Block user page submit button text`,
 		defaultMessage : `Block`
+	},
+	user_blocked:
+	{
+		id             : `user.block.done`,
+		description    : `An info message confirming the user has been blocked`,
+		defaultMessage : `User has been blocked`
 	}
 })
 
@@ -122,13 +128,17 @@ export default class User_profile extends Component
 		}
 	}
 
-	submit(values)
+	async submit(values)
 	{
-		const { user, params, block_user } = this.props
+		const { user, params, block_user, dispatch, translate } = this.props
 
 		const token_id = params.id
 
-		block_user(user.id, token_id)
+		await block_user(user.id, token_id)
+
+		dispatch({ type: 'snack', snack: translate(messages.user_blocked) })
+
+		dispatch(redirect(User.url(user)))
 	}
 
 	render()

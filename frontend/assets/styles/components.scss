@@ -430,6 +430,11 @@ body.javascript-is-enabled .sign-out--fallback
 	color         : var(--error-color-darker);
 }
 
+.form__error-details
+{
+	color : var(--black-color);
+}
+
 .modal-content
 {
 	.form__error

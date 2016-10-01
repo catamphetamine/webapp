@@ -37,8 +37,10 @@
 	"authentication.email_is_required"                   : "Введите вашу почту",
 	"authentication.password_is_required"                : "Введите ваш пароль",
 	"authentication.error"                               : "Не удалось войти",
-	"authentication.error.user_is_self_blocked"          : "Вы добровольно временно заблокировали свою учётную запись {blocked_at_relative} ({blocked_at_full})",
-	"authentication.error.user_is_blocked"               : "Ваша учётная запись была заблокирована {blocked_at_relative} ({blocked_at_full}) пользователем {blocked_by} по причине: «{blocked_reason}»",
+	"authentication.error.user_is_self_blocked"          : "Вы добровольно временно заблокировали свою учётную запись {details}",
+	"authentication.error.user_is_self_blocked_details"  : "{blocked_at}",
+	"authentication.error.user_is_blocked"               : "Ваша учётная запись была заблокирована {details}",
+	"authentication.error.user_is_blocked_details"       : "{blocked_at} пользователем {blocked_by} по причине: «{blocked_reason}»",
 	"authentication.unblock_instructions"                : "По вопросам разблокировки вы можете связаться со службой поддержки по адресу {support_email}",
 	"authentication.login_attempts_limit_exceeded_error" : "Превышено допустимое количество попыток входа. Попробуйте войти ещё раз чуть позже.",
 
@@ -137,6 +139,7 @@
 	"user.block.reason"          : "Причина",
 	"user.block.reason.required" : "Укажите причину блокировки пользователя",
 	"user.block.submit"          : "Заблокировать",
+	"user.block.done"            : "Пользователь заблокирован",
 
 	"unauthenticated.header" : "Войдите, чтобы посмотреть эту страницу",
 	"unauthorized.header"    : "У вас нет доступа к странице",
