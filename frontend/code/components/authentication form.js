@@ -5,13 +5,17 @@ import styler      from 'react-styling'
 
 import { redirect } from 'react-isomorphic-render/redux'
 
-import { defineMessages } from 'react-intl'
+import { Time_ago, Date_time_formatter } from 'react-time-ago'
+
+import { defineMessages, FormattedMessage } from 'react-intl'
 import international from '../international/internationalize'
 
-import Text_input             from './text input'
-import Checkbox               from './checkbox'
+import Text_input             from './form/text input'
+import Checkbox               from './form/checkbox'
+import Submit                 from './form/submit'
 import Button                 from './button'
-import Form, { Form_actions } from './form'
+// import Time_ago               from './time ago'
+import Form, { Form_error, Form_actions } from './form'
 
 import http_status_codes from '../tools/http status codes'
 
@@ -32,7 +36,7 @@ from '../actions/authentication'
 
 import { get_language_from_locale } from '../../../code/locale'
 
-import Redux_form, { Field, Submit } from 'simpler-redux-form'
+import Redux_form, { Field } from 'simpler-redux-form'
 
 export const messages = defineMessages
 ({
@@ -131,6 +135,24 @@ export const messages = defineMessages
 		id             : 'registration.email_already_registered',
 		description    : 'User with this email address is already registered',
 		defaultMessage : 'There already is a user account associated with this email address'
+	},
+	user_is_self_blocked:
+	{
+		id             : 'authentication.error.user_is_self_blocked',
+		description    : 'This user has opted into temporarily blocking his own account for safety concerns',
+		defaultMessage : `You willingly temporarily blocked your account {blocked_at_relative} (on {blocked_at_full})`
+	},
+	user_is_blocked:
+	{
+		id             : 'authentication.error.user_is_blocked',
+		description    : 'This user is blocked',
+		defaultMessage : `Your account was blocked {blocked_at_relative} (on {blocked_at_full}) by {blocked_by} with reason: "{blocked_reason}"`
+	},
+	unblock_instructions:
+	{
+		id             : 'authentication.unblock_instructions',
+		description    : 'Instructions on unblocking this blocked user',
+		defaultMessage : `To request unblocking your account you can contact support by email {support_email}"`
 	},
 	sign_in_error:
 	{
@@ -315,8 +337,7 @@ export default class Authentication_form extends Component
 				<div style={style.clearfix}></div>
 
 				{/* "Email" */}
-				<Field
-					component={Text_input}
+				<Text_input
 					name="email"
 					email={true}
 					focus={this.props.focus_on === 'email'}
@@ -324,12 +345,10 @@ export default class Authentication_form extends Component
 					error={this.sign_in_email_error(sign_in_error)}
 					validate={this.validate_email}
 					label={translate(messages.email)}
-					style={style.input}
 					input_style={style.input.input}/>
 
 				{/* "Password" */}
-				<Field
-					component={Text_input}
+				<Text_input
 					name="password"
 					password={true}
 					focus={this.props.focus_on === 'password'}
@@ -337,13 +356,22 @@ export default class Authentication_form extends Component
 					error={this.sign_in_password_error(sign_in_error)}
 					validate={this.validate_password_on_sign_in}
 					label={translate(messages.password)}
-					style={style.input}
 					input_style={style.input.input}/>
 
 				{/* Support redirecting to the initial page when javascript is disabled */}
 				<input type="hidden" name="request" value={should_redirect_to(this.props.location)}/>
 
-				<Form_actions style={style.sign_in_buttons}>
+				<Form_error/>
+
+				{/* Unblock user instructions */}
+				{ sign_in_error && sign_in_error.status === http_status_codes.Access_denied &&
+					<FormattedMessage
+						{...messages.unblock_instructions}
+						values={{ support_email: <a href={`mailto:${configuration.support.email}`}>{configuration.support.email}</a> }}
+						tagName="p"/>
+				}
+
+				<Form_actions className="form__actions--left-right">
 					{/* "Forgot password" */}
 					<Button
 						style={style.forgot_password}
@@ -412,19 +440,16 @@ export default class Authentication_form extends Component
 				<div style={style.clearfix}></div>
 
 				{/* "Name" */}
-				<Field
-					component={Text_input}
+				<Text_input
 					name="name"
 					focus={this.props.focus_on === 'name'}
 					value={initial_values.name}
 					validate={this.validate_name}
 					label={translate(messages.name)}
-					style={style.input}
 					input_style={style.input.input}/>
 
 				{/* "Email" */}
-				<Field
-					component={Text_input}
+				<Text_input
 					name="email"
 					email={true}
 					focus={this.props.focus_on === 'email'}
@@ -432,24 +457,20 @@ export default class Authentication_form extends Component
 					error={this.registration_email_error(register_error)}
 					validate={this.validate_email}
 					label={translate(messages.email)}
-					style={style.input}
 					input_style={style.input.input}/>
 
 				{/* "Password" */}
-				<Field
-					component={Text_input}
+				<Text_input
 					name="password"
 					password={true}
 					focus={this.props.focus_on === 'password'}
 					value={initial_values.password}
 					validate={this.validate_password_on_registration}
 					label={translate(messages.password)}
-					style={style.input}
 					input_style={style.input.input}/>
 
 				{/* "Accept terms of service" */}
-				<Field
-					component={Checkbox}
+				<Checkbox
 					name="terms_of_service_accepted"
 					focus={this.props.focus_on === 'terms_of_service_accepted'}
 					style={style.terms_of_service}
@@ -461,7 +482,7 @@ export default class Authentication_form extends Component
 
 					{/* Terms of service link */}
 					&nbsp;<a target="_blank" href={require('../../assets/license-agreement/' + get_language_from_locale(this.props.locale) + '.html')}>{translate(messages.the_terms_of_service)}</a>
-				</Field>
+				</Checkbox>
 
 				{/* Send `locale` when javascript is disabled */}
 				<input
@@ -476,10 +497,8 @@ export default class Authentication_form extends Component
 					value={should_redirect_to(this.props.location)}/>
 
 				{/* "Register" button */}
-				<Form_actions style={style.register_buttons}>
-					<Submit
-						component={Button}
-						submit={true}>
+				<Form_actions className="form__actions--right">
+					<Submit>
 						{translate(user_bar_messages.register)}
 					</Submit>
 				</Form_actions>
@@ -617,14 +636,9 @@ export default class Authentication_form extends Component
 				throw error
 			}
 
-			if (error.status === http_status_codes.Not_found)
-			{
-				// this.props.focus('email')
-			}
-			else if (error.status === http_status_codes.Input_rejected)
+			if (error.status === http_status_codes.Input_rejected)
 			{
 				this.props.clear('password', this.validate_password_on_sign_in())
-				// this.props.focus('password')
 			}
 		}
 	}
@@ -680,7 +694,7 @@ export default class Authentication_form extends Component
 
 	sign_in_error(error)
 	{
-		const { translate } = this.props
+		const { translate, locale } = this.props
 
 		if (!error)
 		{
@@ -695,6 +709,27 @@ export default class Authentication_form extends Component
 		if (error.message === `Login attempts limit exceeded`)
 		{
 			return translate(messages.login_attempts_limit_exceeded_error)
+		}
+
+		if (error.status === http_status_codes.Access_denied)
+		{
+			const parameters =
+			{
+				blocked_at_relative : new Time_ago(locale).format(error.blocked_at),
+				blocked_at_full     : new Date_time_formatter(locale).format(error.blocked_at)
+			}
+
+			if (error.self_block)
+			{
+				return translate(messages.user_is_self_blocked, parameters)
+			}
+
+			return translate(messages.user_is_blocked,
+			{
+				...parameters,
+				blocked_by : <User>{error.blocked_by}</User>,
+				// blocked_at : <Time_ago>{error.blocked_at}</Time_ago>
+			})
 		}
 
 		return translate(messages.sign_in_error)
@@ -785,22 +820,8 @@ const style = styler
 		clear : both
 
 	input
-		margin-bottom : 0.5em
-
 		input
 			width : 100%
-
-	sign_in_buttons
-		display         : flex
-		flex-direction  : row
-		justify-content : space-between
-
-		margin-top : 1.5em
-
-	register_buttons
-		display         : flex
-		flex-direction  : row
-		justify-content : flex-end
 
 		margin-top: 1em
 `

@@ -6,6 +6,6 @@ export const get_blocked_user = (token_id) =>
 
 export const block_user = (id, token_id) =>
 ({
-	promise : http => http.post(`/users/block`, { user: id, token: token_id }),
+	promise : http => http.post(`/users/block`, { id, token: token_id }),
 	event   : 'block user'
 })

@@ -1,10 +1,10 @@
 // This module has a lot of dependencies
 // because it `require()`s all the client side code,
-// and therefore it takes about 5 sec to start 
+// and therefore it takes about 5 sec to start
 // this webpage rendering webserver.
 //
-// Maybe it's because Babel on-the-fly code transformation 
-// is slow, or maybe Node.js require() is slow 
+// Maybe it's because Babel on-the-fly code transformation
+// is slow, or maybe Node.js require() is slow
 // (which I don't think could be the case).
 
 // import look from 'look'
@@ -32,6 +32,10 @@ const initializing_javascript =
 
 	window.configuration =
 	{
+		support:
+		{
+			email: ${JSON.stringify(configuration.support.email)}
+		},
 		image_service:
 		{
 			file_size_limit: ${file_size_parser(configuration.image_service.file_size_limit)}
@@ -51,7 +55,7 @@ const server = webpage_server
 		port: configuration.web_server.http.port
 	},
 
-	// Http Urls to javascripts and (optionally) CSS styles 
+	// Http Urls to javascripts and (optionally) CSS styles
 	// which will be insterted into the <head/> element of the resulting Html webpage
 	// (as <script src="..."/> and <link rel="style" href="..."/> respectively)
 	//
@@ -66,7 +70,7 @@ const server = webpage_server
 
 		const assets = webpack_isomorphic_tools.assets()
 
-		const result = 
+		const result =
 		{
 			entry      : 'main',
 
@@ -102,8 +106,8 @@ const server = webpage_server
 
 		const preferred_locales = []
 
-		if (store.getState().authentication 
-			&& store.getState().authentication.user 
+		if (store.getState().authentication
+			&& store.getState().authentication.user
 			&& store.getState().authentication.user.locale)
 		{
 			preferred_locales.push(store.getState().authentication.user.locale)
@@ -112,7 +116,7 @@ const server = webpage_server
 		preferred_locales.push(preferred_locale)
 		preferred_locales.push('en-US')
 
-		// Choose an appropriate locale and load the corresponding messages 
+		// Choose an appropriate locale and load the corresponding messages
 		// (prefer locales from the `preferred_locales` list)
 		let { locale, messages } = await load_locale_data(preferred_locales, { force_reload: _development_ })
 
@@ -139,7 +143,7 @@ const server = webpage_server
 			global.Intl = require('intl')
 		}
 
-		// These variables will be passed down 
+		// These variables will be passed down
 		// as `props` for the `markup_wrapper` React component
 		return { locale, messages }
 	},
@@ -148,7 +152,7 @@ const server = webpage_server
 	html:
 	{
 		// (optional)
-		// this CSS will be inserted into server rendered webpage <head/> <style/> tag 
+		// this CSS will be inserted into server rendered webpage <head/> <style/> tag
 		// (when in development mode only - removes rendering flicker)
 		head: () =>
 		{
@@ -158,11 +162,11 @@ const server = webpage_server
 				`
 					document.addEventListener('DOMContentLoaded', function(event)
 					{
-						// The style-loader has already added <link/>s 
+						// The style-loader has already added <link/>s
 						// to its dynamic hot-reloadable styles,
 						// so remove the <style/> with the static CSS bundle
 						// inserted during server side page rendering.
-						
+
 						var stylesheet = document.getElementById('flash-of-unstyled-content-fix')
 
 						// Waits a "magical" time amount of one second
@@ -182,7 +186,7 @@ const server = webpage_server
 				]
 			}
 		},
-		
+
 		// returns an array of React elements.
 		// allows adding arbitrary React components to the start of the <body/>
 		// (use `key`s to prevent React warning when returning an array of React elements)
@@ -195,7 +199,7 @@ const server = webpage_server
 					<script key="2" src="/assets/vendor.dll.js"/>
 				]
 			}
-			
+
 			return <script dangerouslySetInnerHTML={{__html: initializing_javascript}}/>
 		}
 	},

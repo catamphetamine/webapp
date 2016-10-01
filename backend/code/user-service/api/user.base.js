@@ -24,7 +24,14 @@ export async function sign_in({ email, password }, { set_cookie })
 
 	if (user.blocked_at)
 	{
-		throw new errors.Access_denied(`You are blocked`)
+		const self_block = user.blocked_by === user.id
+
+		throw new errors.Access_denied(`You are blocked`,
+		{
+			self_block,
+			blocked_by : !self_block && public_user(await store.find_user_by_id(user.blocked_by)),
+			blocked_at : user.blocked_at
+		})
 	}
 
 	// Generate JWT authentication token

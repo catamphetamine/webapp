@@ -501,7 +501,7 @@ export default class User_profile extends Component
 								{/* Icon */}
 								<i className="material-icons">schedule</i>
 								{/* "an hour ago" */}
-								<Time_ago date={latest_activity_time}/>
+								<Time_ago>{latest_activity_time}</Time_ago>
 							</div>
 						}
 					</section>

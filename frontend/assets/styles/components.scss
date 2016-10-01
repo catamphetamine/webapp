@@ -423,7 +423,7 @@ body.javascript-is-enabled .sign-out--fallback
 	background-color : var(--base-color-darker);
 }
 
-.form-error-message
+.form__error
 {
 	margin-top    : calc(var(--modular-grid-unit) * 4);
 	margin-bottom : calc(var(--modular-grid-unit) * 4);
@@ -432,7 +432,7 @@ body.javascript-is-enabled .sign-out--fallback
 
 .modal-content
 {
-	.form-error-message
+	.form__error
 	{
 		margin-bottom : 0;
 	}
@@ -803,4 +803,28 @@ body.javascript-is-enabled .sign-out--fallback
 	padding-right  : calc(var(--modular-grid-unit) * 3);
 	padding-top    : calc(var(--modular-grid-unit) * 2);
 	padding-bottom : calc(var(--modular-grid-unit) * 2);
+}
+
+.form__actions
+{
+	margin-top : calc(var(--modular-grid-unit) * 4);
+}
+
+.form__actions--right
+{
+	display         : flex;
+	flex-direction  : row;
+	justify-content : flex-end;
+}
+
+.form__actions--left-right
+{
+	display         : flex;
+	flex-direction  : row;
+	justify-content : space-between;
+}
+
+.form__field
+{
+	margin-bottom : calc(var(--modular-grid-unit) * 2);
 }

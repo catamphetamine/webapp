@@ -195,7 +195,12 @@ export default function(api)
 	{
 		const block_user_token = await store.get_block_user_token(token_id)
 
-		if (user.id !== block_user_token.user)
+		if (!block_user_token)
+		{
+			throw new errors.Not_found()
+		}
+
+		if (user && !(user.id === block_user_token.user || user.role === 'moderator'))
 		{
 			throw new errors.Unauthorized()
 		}
@@ -203,19 +208,19 @@ export default function(api)
 		return await store.find_user_by_id(block_user_token.user)
 	})
 
-	api.post('/block', async ({ id, token_id }, { user }) =>
+	api.post('/block', async ({ id, token }, { user }) =>
 	{
-		if (id !== user.id)
+		if (!(id === user.id || user.role === 'moderator'))
 		{
 			throw new errors.Unauthorized()
 		}
 
-		const block_user_token = await store.remove_block_user_token(token_id)
+		const block_user_token = await store.remove_block_user_token(token)
 
-		await store.update_user
-		({
+		await store.update_user(id,
+		{
 			blocked_at     : new Date(),
-			blocked_reason : 'self_block',
+			// blocked_reason : 'self_block',
 			blocked_by     : user.id
 		})
 	})

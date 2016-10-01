@@ -1,6 +1,10 @@
 module.exports =
 {
 	website: 'webapp.com',
+	support:
+	{
+		email: 'robot@webapp.com'
+	},
 	api_service:
 	{
 		http:

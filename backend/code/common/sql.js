@@ -47,7 +47,7 @@ export default class Sql
 
 		if (!data)
 		{
-			throw new Error(`No new properties supplied for SQL update`)
+			throw new Error(`No properties supplied for SQL update`)
 		}
 
 		return model.save(data, { method: 'update', patch: true })
@@ -55,6 +55,11 @@ export default class Sql
 
 	remove(id)
 	{
+		if (!id)
+		{
+			throw new Error(`"id" not supplied for SQL .remove()`)
+		}
+
 		return new this.model({ id }).destroy()
 	}
 }

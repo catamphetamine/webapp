@@ -10,7 +10,7 @@ import { defineMessages, FormattedMessage } from 'react-intl'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
 
-import Redux_form, { Field, Submit } from 'simpler-redux-form'
+import Redux_form, { Field } from 'simpler-redux-form'
 
 import
 {
@@ -19,8 +19,10 @@ import
 }
 from '../../actions/user/block'
 
-import Button       from '../../components/button'
-import Text_input   from '../../components/text input'
+import Form, { Form_actions } from '../../components/form'
+import Submit                 from '../../components/form/submit'
+import Text_input             from '../../components/form/text input'
+import User                   from '../../components/user'
 
 import international from '../../international/internationalize'
 
@@ -56,6 +58,12 @@ const messages = defineMessages
 		description    : `A title of a text input with description of the reason why the user is being blocked`,
 		defaultMessage : `Reason`
 	},
+	reason_required:
+	{
+		id             : `user.block.reason.required`,
+		description    : `A hint that blocking reason is required`,
+		defaultMessage : `Specify a reason for blocking this user`
+	},
 	submit:
 	{
 		id             : `user.block.submit`,
@@ -71,11 +79,11 @@ const messages = defineMessages
 })
 @connect
 (
-	model =>
+	state =>
 	({
-		current_user : model.authentication.user,
+		current_user : state.authentication.user,
 
-		user : model.block_user.user
+		user : state.block_user.user
 	}),
 	dispatch =>
 	({
@@ -92,18 +100,40 @@ export default class User_profile extends Component
 {
 	static propTypes =
 	{
-		current_user : PropTypes.object.isRequired,
+		current_user : PropTypes.object,
 		user         : PropTypes.object
 	}
 
 	constructor(props, context)
 	{
 		super(props, context)
+
+		this.validate_reason = this.validate_reason.bind(this)
+		this.submit = this.submit.bind(this)
+	}
+
+	validate_reason(value)
+	{
+		const { translate } = this.props
+
+		if (!value)
+		{
+			return translate(messages.reason_required)
+		}
+	}
+
+	submit(values)
+	{
+		const { user, params, block_user } = this.props
+
+		const token_id = params.id
+
+		block_user(user.id, token_id)
 	}
 
 	render()
 	{
-		const { current_user, user, translate } = this.props
+		const { current_user, user, submit, translate } = this.props
 
 		const self = current_user.id === user.id
 
@@ -119,23 +149,27 @@ export default class User_profile extends Component
 					{/* "Blocking user ..." */}
 					<FormattedMessage
 						{...(self ? messages.blocking_self : messages.blocking_user)}
-						values={{ name: <Link to={`/user/${user.alias || user.id}`}>{user.name}</Link> }}
+						values={{ name: <User>{user}</User> }}
 						tagName="p"/>
 
-					{/* "Reason" */}
-					{ !self &&
-						<Field
-							component={Text_input}
-							name="reason"
-							label={translate(messages.reason)}/>
-					}
+					<Form
+						action={submit(this.submit)}>
 
-					{/* "Submit" */}
-					<Submit
-						component={Button}
-						style={styles.submit}>
-						{translate(messages.submit)}
-					</Submit>
+						{/* "Reason" */}
+						{ !self &&
+							<Text_input
+								name="reason"
+								label={translate(messages.reason)}
+								validate={this.validate_reason}/>
+						}
+
+						<Form_actions>
+							{/* "Submit" */}
+							<Submit>
+								{translate(messages.submit)}
+							</Submit>
+						</Form_actions>
+					</Form>
 				</section>
 			</div>
 		)
@@ -146,6 +180,4 @@ export default class User_profile extends Component
 
 const styles = styler
 `
-	submit
-		margin-top: 1em
 `

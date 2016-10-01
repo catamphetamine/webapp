@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import classNames from 'classnames'
 
 export default class Form extends Component
 {
@@ -8,7 +9,7 @@ export default class Form extends Component
 		cancel      : PropTypes.func,
 		// `error` can be passed for non-javascript
 		// web 1.0 forms error rendering support
-		error       : PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+		error       : PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.node]),
 		post        : PropTypes.string,
 		className   : PropTypes.string,
 		style       : PropTypes.object
@@ -38,7 +39,7 @@ export default class Form extends Component
 				style={style}
 				noValidate>
 
-				{this.children(error && <div key="form-errors" className="form-error-message">{error}</div>)}
+				{this.children(error)}
 			</form>
 		)
 
@@ -62,18 +63,26 @@ export default class Form extends Component
 			let index = 0
 			for (let child of form_elements)
 			{
-				if (child.type === Form_actions)
+				if (child.type === Form_error)
 				{
-					form_elements.insert_at(index, errors)
+					form_elements[index] = React.cloneElement(child, { key: 'form-errors' }, errors)
 					errors_inserted = true
 					break
 				}
+
+				if (child.type === Form_actions)
+				{
+					form_elements.insert_at(index, <Form_error key="form-errors">{errors}</Form_error>)
+					errors_inserted = true
+					break
+				}
+
 				index++
 			}
 
 			if (!errors_inserted)
 			{
-				form_elements.push(errors)
+				form_elements.push(<Form_error key="form-errors">{errors}</Form_error>)
 			}
 		}
 
@@ -120,9 +129,14 @@ export default class Form extends Component
 	}
 }
 
+export function Form_error({ children })
+{
+	return <div className="form__error">{children}</div>
+}
+
 export function Form_actions(props, context)
 {
 	const { children, className, style } = props
 
-	return <div className={className} style={style}>{children}</div>
+	return <div className={classNames('form__actions', className)} style={style}>{children}</div>
 }
