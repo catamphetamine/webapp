@@ -81,7 +81,7 @@ const messages = defineMessages
 @Redux_form({ id: 'block_user' })
 @preload(({ dispatch, get_state, location, parameters }) =>
 {
-	return dispatch(get_block_user_token(parameters.id))
+	return dispatch(get_block_user_token(parameters.token_id))
 })
 @connect
 (
@@ -133,7 +133,7 @@ export default class User_profile extends Component
 
 		const user = block_user_token.user
 
-		const token_id = params.id
+		const token_id = params.token_id
 
 		await block_user(user.id, token_id, values.reason)
 

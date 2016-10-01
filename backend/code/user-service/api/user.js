@@ -3,6 +3,8 @@ import { http, errors } from 'web-service'
 import store from '../store/store'
 import { get_user, sign_in, sign_out, register, own_user } from './user.base'
 
+import can from '../../../../code/permissions'
+
 export default function(api)
 {
 	api.post('/sign-in', sign_in)
@@ -179,6 +181,16 @@ export default function(api)
 		return picture
 	})
 
+	api.post('/block-user-token', async ({ user_id }, { user }) =>
+	{
+		if (!can('block user', user))
+		{
+			throw new errors.Unauthorized()
+		}
+
+		return await store.generate_block_user_token(user_id)
+	})
+
 	api.get('/block-user-token/:token_id', async ({ token_id }, { user }) =>
 	{
 		const token = await store.get_block_user_token(token_id)
@@ -190,7 +202,7 @@ export default function(api)
 
 		if (user)
 		{
-			if (!(user.id === token.user || ['moderator', 'administrator'].has(user.role)))
+			if (!(user.id === token.user || can('block user', user)))
 			{
 				throw new errors.Unauthorized()
 			}
@@ -243,8 +255,7 @@ export default function(api)
 
 		// Only `moderator` or `administrator` can unblock users.
 		// Also a poweruser can't unblock himself.
-		if (!['moderator', 'administrator'].has(user.role)
-			|| user.id === id)
+		if (!can('unblock user', user) || user.id === id)
 		{
 			throw new errors.Unauthorized()
 		}

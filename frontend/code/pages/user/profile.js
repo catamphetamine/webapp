@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { title }                       from 'react-isomorphic-render'
-import { preload }                     from 'react-isomorphic-render/redux'
+import { preload, redirect }           from 'react-isomorphic-render/redux'
 import { connect }                     from 'react-redux'
 import styler                          from 'react-styling'
 import classNames                      from 'classnames'
@@ -23,6 +23,13 @@ import
 }
 from '../../actions/user/profile'
 
+import
+{
+	generate_block_user_token,
+	unblock_user
+}
+from '../../actions/user/block'
+
 import Form         from '../../components/form'
 import Text_input   from '../../components/form/text input'
 import Submit       from '../../components/form/submit'
@@ -37,6 +44,8 @@ import Spinner      from '../../components/spinner'
 import Time_ago     from '../../components/time ago'
 
 import { get_preferred_size, url } from '../../components/image'
+
+import can from '../../../../code/permissions'
 
 import international from '../../international/internationalize'
 
@@ -117,6 +126,12 @@ const messages = defineMessages
 		description    : `A detailed note that the user is blocked`,
 		defaultMessage : `This user was blocked {blocked_at} by {blocked_by} with reason: "{blocked_reason}"`
 	},
+	user_unblocked:
+	{
+		id             : `user.profile.unblocked`,
+		description    : `A note that the user has been unblocked`,
+		defaultMessage : `User unblocked`
+	},
 	update_error:
 	{
 		id             : `user.profile.update_error`,
@@ -146,6 +161,18 @@ const messages = defineMessages
 		id             : `user.profile.name_is_required`,
 		description    : `The user tried to save his profile with a blank "name" field`,
 		defaultMessage : `Enter your name`
+	},
+	block_user:
+	{
+		id             : `user.profile.block`,
+		description    : `An action to block this user`,
+		defaultMessage : `Block`
+	},
+	unblock_user:
+	{
+		id             : `user.profile.unblock`,
+		description    : `An action to unblock this user`,
+		defaultMessage : `Unblock`
 	}
 })
 
@@ -191,11 +218,14 @@ const Latest_activity_time_refresh_interval = 60 * 1000 // once in a minute
 		dispatch,
 		...bind_action_creators
 		({
+			get_user,
 			update_user,
 			update_user_reset_error,
 			upload_user_picture,
 			update_user_picture,
-			get_users_latest_activity_time
+			get_users_latest_activity_time,
+			generate_block_user_token,
+			unblock_user
 		},
 		dispatch)
 	})
@@ -240,6 +270,9 @@ export default class User_profile extends Component
 		this.save_profile_edits   = this.save_profile_edits.bind(this)
 
 		this.validate_name        = this.validate_name.bind(this)
+
+		this.block_user           = this.block_user.bind(this)
+		this.unblock_user         = this.unblock_user.bind(this)
 
 		this.send_message = this.send_message.bind(this)
 		this.subscribe    = this.subscribe.bind(this)
@@ -435,6 +468,32 @@ export default class User_profile extends Component
 								</div>
 							}
 
+							{/* Block this other user */}
+							{ !is_own_profile &&
+								<div style={style.own_profile_actions} className="user-profile__actions">
+
+									{/* "Block user" */}
+									{ !user.blocked_at && can('block user', current_user) &&
+										<Button
+											style={style.own_profile_actions.action}
+											button_style={style.own_profile_actions.action.button}
+											action={this.block_user}>
+											{translate(messages.block_user)}
+										</Button>
+									}
+
+									{/* "Unblock user" */}
+									{ user.blocked_at && can('unblock user', current_user) &&
+										<Button
+											style={style.own_profile_actions.action}
+											button_style={style.own_profile_actions.action.button}
+											action={this.unblock_user}>
+											{translate(messages.unblock_user)}
+										</Button>
+									}
+								</div>
+							}
+
 							{/* User picture */}
 							<Uploadable_user_picture
 								ref="user_picture"
@@ -604,14 +663,36 @@ export default class User_profile extends Component
 		this.props.dispatch({ type: 'user profile: upload user picture: error: unsupported file: reset' })
 	}
 
+	async block_user()
+	{
+		const { user, get_user, generate_block_user_token, dispatch } = this.props
+
+		const token_id = await generate_block_user_token(user.id)
+
+		await get_user(user.id)
+
+		dispatch(redirect(`/user/block/${token_id}`))
+	}
+
+	async unblock_user()
+	{
+		const { user, get_user, unblock_user, translate, dispatch } = this.props
+
+		await unblock_user(user.id)
+
+		await get_user(user.id)
+
+		dispatch({ type: 'snack', snack: translate(messages.user_unblocked) })
+	}
+
 	send_message()
 	{
-
+		const { user } = this.props
 	}
 
 	subscribe()
 	{
-
+		const { user } = this.props
 	}
 
 	async upload_user_picture(file)

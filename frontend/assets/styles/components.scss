@@ -852,3 +852,16 @@ body.javascript-is-enabled .sign-out--fallback
 	text-overflow : ellipsis;
 	overflow      : hidden;
 }
+
+.content-section
+{
+	p:first-child
+	{
+		margin-top: 0;
+	}
+
+	p:last-child
+	{
+		margin-bottom: 0;
+	}
+}

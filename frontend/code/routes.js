@@ -76,7 +76,7 @@ export default function() // ({ dispatch, getState })
 			</Route>
 
 			<Route path="user">
-				<Route path="block/:id" component={Block_user}/>
+				<Route path="block/:token_id" component={Block_user}/>
 				<Route path=":id" component={Profile}/>
 			</Route>
 
