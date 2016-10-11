@@ -48,9 +48,9 @@ configuration.plugins = configuration.plugins.concat
 	// faster code reload on changes
 	new webpack.HotModuleReplacementPlugin(),
 
-	// // webpack.NoErrorsPlugin is an optional plugin 
-	// // that tells the reloader to not reload if there is a syntax error in your code. 
-	// // The error is simply printed in the console, and the component will reload 
+	// // webpack.NoErrorsPlugin is an optional plugin
+	// // that tells the reloader to not reload if there is a syntax error in your code.
+	// // The error is simply printed in the console, and the component will reload
 	// // when you fix the error.
 	// new webpack.NoErrorsPlugin(),
 
@@ -58,7 +58,7 @@ configuration.plugins = configuration.plugins.concat
 )
 
 // enable webpack development server
-configuration.entry.main = 
+configuration.entry.main =
 [
 	// `webpack-dev-server/client?http://${application_configuration.development.webpack.development_server.host}:${application_configuration.development.webpack.development_server.port}`,
 	// 'webpack/hot/only-dev-server',
@@ -101,7 +101,7 @@ else
 	([[
 		'react-transform',
 		{
-			transforms: 
+			transforms:
 			[{
 				transform : 'react-transform-catch-errors',
 				imports   : ['react', 'redbox-react']
@@ -118,7 +118,7 @@ else
 // run `webpack-dev-server`
 
 // http://webpack.github.io/docs/webpack-dev-server.html
-const development_server_options = 
+const development_server_options =
 {
 	quiet       : true, // don’t output anything to the console
 	noInfo      : true, // suppress boring information
@@ -128,7 +128,7 @@ const development_server_options =
 	// You can use it in two modes:
 	// watch mode (default): The compiler recompiles on file change.
 	// lazy mode: The compiler compiles on every request to the entry point.
-	lazy        : false, 
+	lazy        : false,
 
 	// network path for static files: fetch all statics from webpack development server
 	publicPath  : configuration.output.publicPath,
@@ -148,7 +148,7 @@ development_server.use(webpack_hot_middleware(compiler))
 
 development_server.listen(application_configuration.development.webpack.development_server.port, (error) =>
 {
-	if (error) 
+	if (error)
 	{
 		console.error(error.stack || error)
 		throw error

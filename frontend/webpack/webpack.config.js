@@ -39,7 +39,7 @@ const configuration =
 		main: './code/application.entry.js'
 	},
 
-	output: 
+	output:
 	{
 		// filesystem path for static files
 		path: path.resolve(frontend_root_folder, 'build/assets'),
@@ -58,7 +58,7 @@ const configuration =
 
 	module:
 	{
-		loaders: 
+		loaders:
 		[
 			{
 				test   : /\.json$/,
@@ -90,7 +90,7 @@ const configuration =
 			{
 				test    : regular_expressions.styles,
 				include : assets_source_folder,
-				loaders : 
+				loaders :
 				[
 					'style-loader',
 					'css-loader?importLoaders=2&sourceMap',
@@ -101,7 +101,7 @@ const configuration =
 			// {
 			// 	test    : Webpack_isomorphic_tools_plugin.regular_expression(['woff', 'woff2', 'eot', 'ttf'].concat(webpack_isomorphic_tools_configuration.assets.images.extensions)),
 			// 	include : assets_source_folder,
-			// 	loaders : 
+			// 	loaders :
 			// 	[
 			// 		'url-loader?limit=10240' // Any png-image or woff-font below or equal to 10K will be converted to inline base64 instead
 			// 	]
@@ -109,7 +109,7 @@ const configuration =
 			{
 				test    : webpack_isomorphic_tools_plugin.regular_expression('fonts'),
 				include : assets_source_folder,
-				loaders : 
+				loaders :
 				[
 					'url-loader?limit=10240' // Any png-image or woff-font below or equal to 10K will be converted to inline base64 instead
 				]
@@ -117,7 +117,7 @@ const configuration =
 			{
 				test    : webpack_isomorphic_tools_plugin.regular_expression('images'),
 				include : assets_source_folder,
-				loaders : 
+				loaders :
 				[
 					'url-loader?limit=10240' // Any png-image or woff-font below or equal to 10K will be converted to inline base64 instead
 				]
@@ -145,9 +145,9 @@ const configuration =
 		// you can now require('file') instead of require('file.coffee')
 		extensions: ['', '.json', '.js'],
 
-		// An array of directory names to be resolved to the current directory 
-		// as well as its ancestors, and searched for modules. 
-		// This functions similarly to how node finds “node_modules” directories. 
+		// An array of directory names to be resolved to the current directory
+		// as well as its ancestors, and searched for modules.
+		// This functions similarly to how node finds “node_modules” directories.
 		modulesDirectories: ['node_modules']
 	},
 
