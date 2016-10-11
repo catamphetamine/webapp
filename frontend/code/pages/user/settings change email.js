@@ -17,10 +17,10 @@ import http_status_codes from '../../tools/http status codes'
 
 import international from '../../international/internationalize'
 
-import Editable_field  from '../../components/editable field'
-import Modal, { reset_modal } from '../../components/modal'
-import Form from '../../components/form'
-import Text_input from '../../components/text input'
+import Editable_field from '../../components/editable field'
+import Modal          from '../../components/modal'
+import Form           from '../../components/form'
+import Text_input     from '../../components/text input'
 
 import Redux_form, { Field } from 'simpler-redux-form'
 
@@ -273,7 +273,6 @@ class Check_password_popup extends Component
 		super(props, context)
 
 		this.done  = this.done.bind(this)
-		this.close = this.close.bind(this)
 	}
 
 	render()
@@ -287,6 +286,7 @@ class Check_password_popup extends Component
 			reset_check_password_error,
 
 			shown,
+			close,
 
 			translate
 		}
@@ -297,7 +297,8 @@ class Check_password_popup extends Component
 			<Modal
 				title={translate(messages.password_check)}
 				shown={shown}
-				close={this.close}
+				close={close}
+				reset={reset_check_password_error}
 				cancel={true}
 				busy={check_password_pending}
 				actions=
@@ -321,18 +322,10 @@ class Check_password_popup extends Component
 		return markup
 	}
 
-	// Cleanup
-	close()
-	{
-		this.props.close()
-
-		reset_modal(this.props.reset_check_password_error)
-	}
-
 	done(password)
 	{
 		this.props.done(password)
-		this.close()
+		this.props.close()
 	}
 }
 

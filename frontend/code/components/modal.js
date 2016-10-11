@@ -95,6 +95,22 @@ export default class Modal extends Component
 		}
 	}
 
+	componentWillReceiveProps(next_props)
+	{
+		if (this.props.shown && !next_props.shown)
+		{
+			const { reset, close_timeout } = this.props
+
+			// Reset modal after its closing animation finishes
+			// (to avoid weird content jumping)
+			// https://github.com/reactjs/react-modal/issues/214
+			if (reset)
+			{
+				setTimeout(reset, close_timeout || default_close_timeout)
+			}
+		}
+	}
+
 	render()
 	{
 		const { busy, shown, close_timeout, title, cancel, actions, scroll, children } = this.props
@@ -209,6 +225,12 @@ export default class Modal extends Component
 		}
 	}
 
+	// Public API method
+	close()
+	{
+		this.close_if_not_busy()
+	}
+
 	on_request_close(event)
 	{
 		const { cancel } = this.props
@@ -216,7 +238,7 @@ export default class Modal extends Component
 		// If the modal has an explicit "Cancel" button,
 		// allow closing it by hitting "Escape" key,
 		// then don't close it on a click outside.
-		if (cancel && event.type !== 'keydown')
+		if (cancel && event && event.type !== 'keydown')
 		{
 			return this.indicate_cannot_close()
 		}
@@ -226,7 +248,7 @@ export default class Modal extends Component
 
 	close_if_not_busy()
 	{
-		const { busy, close } = this.props
+		const { busy, close, close_timeout, reset } = this.props
 
 		// Don't close the modal if it's busy
 		if (busy)
@@ -293,14 +315,6 @@ export default class Modal extends Component
 	{
 		event.stopPropagation()
 	}
-}
-
-// Reset modal after its closing animation finishes
-// (to avoid weird content jumping)
-// https://github.com/reactjs/react-modal/issues/214
-export function reset_modal(reset, close_timeout)
-{
-	setTimeout(reset, close_timeout || default_close_timeout)
 }
 
 // https://material.google.com/components/dialogs.html

@@ -3,6 +3,9 @@ import nodemailer from 'nodemailer'
 import EmailTemplates from 'swig-email-templates'
 import translator from './translate'
 
+// Can use `nunjucks` templates instead of `swig` ones,
+// because `swig` is no longer maintained.
+
 const templates = new EmailTemplates
 ({
 	root: path.join(__dirname, 'templates'),

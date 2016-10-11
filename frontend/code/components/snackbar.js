@@ -83,7 +83,8 @@ export default class Snackbar extends Component
 		if (this.state.height === undefined && this.state.value)
 		{
 			const height = ReactDOM.findDOMNode(this.refs.snackbar).offsetHeight
-			this.setState({ height }, () => setTimeout(() => this.setState({ show: true }), 0))
+			const anti_lag_timeout = 100 // Otherwise it would jump to fully shown in Chrome when there's a queue of snacks waiting to be shown
+			this.setState({ height }, () => setTimeout(() => this.setState({ show: true }), anti_lag_timeout))
 		}
 	}
 

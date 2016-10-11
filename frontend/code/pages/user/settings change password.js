@@ -15,7 +15,7 @@ import
 from '../../actions/user/settings/change password'
 
 import Editable_field  from '../../components/editable field'
-import Modal, { reset_modal } from '../../components/modal'
+import Modal from '../../components/modal'
 import Steps, { Text_input_step } from '../../components/steps'
 import default_messages from '../../components/messages'
 import { messages as authentication_messages } from '../../components/authentication form'
@@ -193,8 +193,8 @@ class Change_password_popup extends Component
 		this.change_password_steps_actions = this.change_password_steps_actions.bind(this)
 
 		this.set_last_step = this.set_last_step.bind(this)
-		this.close         = this.close.bind(this)
 		this.finished      = this.finished.bind(this)
+		this.reset_modal   = this.reset_modal.bind(this)
 	}
 
 	render()
@@ -212,6 +212,7 @@ class Change_password_popup extends Component
 			reset_change_password_error,
 
 			shown,
+			close,
 
 			translate
 		}
@@ -222,7 +223,8 @@ class Change_password_popup extends Component
 			<Modal
 				title={translate(messages.change_password)}
 				shown={shown}
-				close={this.close}
+				close={close}
+				reset={this.reset_modal}
 				cancel={true}
 				busy={check_current_password_pending || change_password_pending}
 				actions={this.change_password_steps_actions()}>
@@ -282,17 +284,12 @@ class Change_password_popup extends Component
 		this.setState({ is_last_step })
 	}
 
-	close()
+	reset_modal()
 	{
-		this.props.close()
+		this.props.reset_check_current_password_error()
+		this.props.reset_change_password_error()
 
-		reset_modal(() =>
-		{
-			this.props.reset_check_current_password_error()
-			this.props.reset_change_password_error()
-
-			this.setState({ is_last_step: false })
-		})
+		this.setState({ is_last_step: false })
 	}
 
 	finished()
