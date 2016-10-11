@@ -11,7 +11,6 @@ global._disable_server_side_rendering_ = false
 global.log = log
 
 global.webpack_isomorphic_tools = new Webpack_isomorphic_tools(webpack_isomorphic_tools_configuration)
-.development(global._development_)
 .server(webpack_configuration.context, function()
 {
 	require('./main')

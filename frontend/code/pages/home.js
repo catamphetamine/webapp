@@ -25,7 +25,7 @@ export default class Home extends Component
 	{
 		const husky = require('../../assets/images/husky.jpg')
 
-		const markup = 
+		const markup =
 		(
 			<section className="content" style={style.content}>
 				{title(this.props.translate(layout_messages.title))}

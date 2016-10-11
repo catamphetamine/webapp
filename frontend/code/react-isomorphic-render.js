@@ -2,7 +2,7 @@ import routes  from './routes'
 import wrapper from './wrapper'
 
 import create_logger from 'redux-logger'
-import on_error      from './helpers/error handler'
+import error_handler from './helpers/error handler'
 
 export default
 {
@@ -26,7 +26,7 @@ export default
 
 	preload:
 	{
-		on_error
+		catch: error_handler
 	},
 
 	on_store_created({ reload_reducer })

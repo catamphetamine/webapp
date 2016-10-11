@@ -18,7 +18,7 @@ import file_size_parser from 'filesize-parser'
 
 import common         from '../code/react-isomorphic-render'
 import html_assets    from '../code/html assets'
-import on_error       from '../code/helpers/error handler'
+import error_handler  from '../code/helpers/error handler'
 
 import load_locale_data from './locale'
 
@@ -206,7 +206,7 @@ const server = webpage_server
 
 	// (optional)
 	// handles miscellaneous errors
-	on_error,
+	catch: error_handler,
 
 	// (optional)
 	// `print-error` options

@@ -59,10 +59,10 @@ international.load().then(() =>
 		development: _development_,
 
 		// enable/disable Redux dev-tools (true/false)
-		development_tools: _development_tools_ ? require('./devtools') : false,
+		devtools: _development_tools_ ? require('./devtools') : undefined,
 
 		// internationalization
-		load_translation: international.load_translation
+		translation: international.load_translation
 	},
 	common)
 	.then(({ component, store, rerender }) =>
