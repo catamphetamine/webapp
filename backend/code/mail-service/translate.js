@@ -41,7 +41,7 @@ const escaped_symbols =
 	'/' : '&#x2F;'
 }
 
-function escape_html(text)
+export function escape_html(text)
 {
 	return String(text).replace(/[&<>"'\/]/g, symbol => escaped_symbols[symbol])
 }

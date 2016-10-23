@@ -151,7 +151,7 @@ export default class Form_showcase extends Component
 					<h2 style={style.form.label}>Snackbar</h2>
 
 					<button onClick={() => this.setState({ snack: `Current time: ${Date.now()}` })}>Show a snack</button>
-					<Snackbar value={this.state.snack}/>
+					<Snackbar reset={() => this.setState({ snack: undefined })} value={this.state.snack}/>
 
 					<h2 style={style.form.label}>Date picker (part of Material UI)</h2>
 					<p><i>You may see a "React attempted to reuse markup in a container" warning in the console because of this 3rd party component</i></p>

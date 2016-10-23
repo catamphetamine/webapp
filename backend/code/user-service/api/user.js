@@ -38,9 +38,14 @@ export default function(api)
 	})
 
 	// Update user's "was online at" time
-	api.patch('/was-online-at/:id', async ({ id, date }) =>
+	api.post('/was-online-at', async ({ date }, { user }) =>
 	{
-		await store.update_user(id, { was_online_at: date })
+		if (!user)
+		{
+			throw new errors.Unauthenticated()
+		}
+
+		await store.update_user(user.id, { was_online_at: date })
 	})
 
 	// Get currently logged in user (if any)

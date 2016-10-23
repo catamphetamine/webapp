@@ -15,7 +15,7 @@ import application_configuration from '../../code/configuration'
 const configuration = Object.clone(base_configuration)
 
 // configuration.devtool = 'inline-source-map'
-configuration.devtool = 'inline-eval-cheap-source-map'
+// configuration.devtool = 'inline-eval-cheap-source-map'
 // configuration.devtool = 'eval-source-map'
 // configuration.devtool = 'eval-cheap-module-source-map'
 

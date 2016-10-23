@@ -15,6 +15,6 @@
 	</p>
 
 	<p>
-		{{ translate('mail.email_changed.old.block_account', { block_account_link: '<a href="' + block_account_link + '">' + translate('mail.email_changed.old.block_account_link') + '</a>' }, { escape: false }) }}
+		{{ translate('mail.email_changed.old.block_account', { block_account_link: '<a href="' + unescaped.block_account_link + '">' + translate('mail.email_changed.old.block_account_link') + '</a>' }, { escape: false }) }}
 	</p>
 {% endblock %}

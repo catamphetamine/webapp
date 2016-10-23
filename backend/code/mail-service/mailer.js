@@ -1,7 +1,7 @@
 import path from 'path'
 import nodemailer from 'nodemailer'
 import EmailTemplates from 'swig-email-templates'
-import translator from './translate'
+import translator, { escape_html } from './translate'
 
 // Can use `nunjucks` templates instead of `swig` ones,
 // because `swig` is no longer maintained.
@@ -150,9 +150,18 @@ export async function send(options, template, parameters, locale)
 		subject : translate(options.subject)
 	}
 
+	const original_parameters = parameters
+
+	const escaped_parameters = { ...parameters }
+	for (let key of Object.keys(escaped_parameters))
+	{
+		escaped_parameters[key] = escape_html(escaped_parameters[key])
+	}
+
 	parameters =
 	{
-		...parameters,
+		...escaped_parameters,
+		unescaped: original_parameters,
 		translate
 	}
 

@@ -416,10 +416,34 @@ CREATE CONTINUOUS QUERY emails_in_a_day ON webapp BEGIN SELECT mean(website) AS 
 
 For production the password is set in `/opt/influxdb/current/config.toml`.
 
-StatsD
-======
+Telegraf (StatsD)
+=================
 
-...
+```
+brew update
+brew install telegraf
+```
+
+```
+telegraf --sample-config -input-filter statsd -output-filter influxdb > /usr/local/etc/telegraf.conf
+nano /usr/local/etc/telegraf.conf
+brew services start telegraf
+# telegraf -config /usr/local/etc/telegraf.conf
+```
+
+```
+[[outputs.influxdb]]
+  urls = ["http://localhost:8086"]
+  database = "telegraf"
+  retention_policy = ""
+  username = "telegraf"
+  password = "metricsmetricsmetricsmetrics"
+
+# Statsd Server
+[[inputs.statsd]]
+  ## Address and port to host UDP listener on
+  service_address = ":8125"
+```
 
 Grafana
 =======
@@ -650,6 +674,26 @@ Troubleshooting
 To do
 ====================
 
+т.к. разметка будет кешироваться, убрать можно будет preload, например (для страниц, на которых не ограничен доступ).
+
+или, альтернативно, кешировать можно разметку отдельно, а к ней потом добавлять содержимое store, и вот содержимое store у каждого будет своё подставляться.
+
+
+
+
+
+
+form_errors - показывать наверху формы, (мб) на сером фоне, в плашке
+
+https://material-design.storage.googleapis.com/publish/material_v_9/0Bzhp5Z4wHba3dEZTUF9idzBHMWc/patterns_errors_userinput19.png
+
+при такой ошибке - скроллить форму наверх (плавно)
+
+
+
+
+
+
 сделать письмо восстановления (то есть сброса = смены) пароля (форма входа + настройки) - то же самое, токен писать в коллекцию (уже другую), и сделать страницу сброса пароля на новый.
 
 два токена на смену пароля: один с request: true, а второй - нормальный, от техподдержки
@@ -659,6 +703,9 @@ To do
 
 нагрузочное тестирование на рендеринг страницы (пользователя, например)
 
+
+
+писать логи через Кафку в отдельную базу Postgresql
 
 
 
@@ -693,6 +740,9 @@ rabbitmq для писем
 
 в мониторинге показывать график "горячих запросов" (url, method, логгировать параметры)
 
+
+сделать таблицу "долгих URL-ов" с помощью Navigation Timing API
+https://developer.mozilla.org/ru/docs/Web/API/Navigation_timing_API
 
 
 

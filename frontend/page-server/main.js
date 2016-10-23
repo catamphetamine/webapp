@@ -204,6 +204,11 @@ const server = webpage_server
 		}
 	},
 
+	authentication:
+	{
+		cookie: 'authentication'
+	},
+
 	// (optional)
 	// handles miscellaneous errors
 	catch: error_handler,

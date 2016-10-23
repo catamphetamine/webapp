@@ -66,7 +66,7 @@ export default function(api)
 		return tokens
 	})
 
-	api.get('/token/valid', async function({ bot }, { ip, authentication_token_id, user })
+	api.get('/token/valid', async function({ bot }, { ip, authentication_token_id, user, internal_http })
 	{
 		// The user will be populated inside `common/web server`
 		// out of the token data if the token is valid.
@@ -115,7 +115,7 @@ export default function(api)
 		// then update this authentication token's last access IP and time
 		if (!bot)
 		{
-			record_access(user.id, authentication_token_id, ip)
+			record_access(user.id, authentication_token_id, ip, internal_http)
 		}
 
 		// The token is considered valid
@@ -242,7 +242,7 @@ async function revoke_token(id, revoking_user_id)
 	await online_status_store.clear_access_token_validity(token.user, id)
 }
 
-async function record_access(user_id, authentication_token_id, ip)
+async function record_access(user_id, authentication_token_id, ip, internal_http)
 {
 	try
 	{
@@ -268,7 +268,7 @@ async function record_access(user_id, authentication_token_id, ip)
 			await store.record_access(user_id, authentication_token_id, ip, was_online_at)
 
 			// Also update the redundant `was_online_at` field in the `users` table
-			await http.patch(`${address_book.user_service}/was-online-at/${user_id}`, { date: was_online_at })
+			await internal_http.post(`${address_book.user_service}/was-online-at`, { date: was_online_at })
 		}
 	}
 	catch (error)
