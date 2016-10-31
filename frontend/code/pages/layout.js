@@ -24,15 +24,9 @@ import Snackbar        from '../components/snackbar'
 import HTML5Backend                   from 'react-dnd-html5-backend'
 import { DragDropContext, DragLayer } from 'react-dnd'
 
-// import { authenticate } from '../actions/authentication'
-
 // when adjusting this transition time also adjust it in styles/xs-m.scss
 const menu_transition_duration = 0 // 210 // milliseconds
 
-// @preload
-// ({
-// 	blocking: (dispatch, get_model) => dispatch(authenticate())
-// })
 @connect
 (
 	model =>

@@ -22,6 +22,8 @@ import error_handler  from '../code/helpers/error handler'
 
 import load_locale_data from './locale'
 
+import Spinner from '../code/components/spinner'
+
 // A faster way to load all the localization data for Node.js
 // (`intl-messageformat` will load everything automatically when run in Node.js)
 require('javascript-time-ago/load-all-locales')
@@ -89,23 +91,33 @@ const server = webpage_server
 	{
 		const user = await http.get(`/users/current`)
 
-		const model =
+		const state =
 		{
 			authentication: { user },
 			// Is used by "material-ui" for CSS autoprefixing
 			navigator: { userAgent: request.headers['user-agent'] }
 		}
 
-		return model
+		return state
 	},
 
+	// statsd:
+	// {
+	// 	host: 'localhost',
+	// 	port: 8125,
+	// 	prefix: 'render'
+	// },
+
 	// internationalization
-	localize: async (store, preferred_locale) =>
+	localize: async (store, _preferred_locales) =>
 	{
 		// Determine preferred locales
 
-		const preferred_locales = []
+		let preferred_locales = []
 
+		// If the user is logged in,
+		// then the most preferred locale is
+		// the one he configured in the settings.
 		if (store.getState().authentication
 			&& store.getState().authentication.user
 			&& store.getState().authentication.user.locale)
@@ -113,18 +125,22 @@ const server = webpage_server
 			preferred_locales.push(store.getState().authentication.user.locale)
 		}
 
-		preferred_locales.push(preferred_locale)
+		// Add preferred locales from HTTP parameter, cookie and header.
+		preferred_locales = preferred_locales.concat(_preferred_locales)
+
+		// Use 'en-US' locale by default (if no other locale is preferred)
 		preferred_locales.push('en-US')
 
-		// Choose an appropriate locale and load the corresponding messages
-		// (prefer locales from the `preferred_locales` list)
+		// Choose the most preferred locale from all available locales
+		// (the ones having messages translated)
 		let { locale, messages } = await load_locale_data(preferred_locales, { force_reload: _development_ })
 
-		// Store the locale in Redux store
+		// Store the chosen locale in Redux store
 		store.dispatch({ type: 'locale', locale })
 
-		// Check if the Intl object supports the chosen locale.
-		// If not then load Intl polyfill instead.
+		// Check if the Node.js `Intl` object exists (it does)
+		// and that it supports the chosen locale
+		// (only 'en-US' is supported by default).
 		if (global.Intl)
 		{
 			// Determine if the built-in `Intl` has the locale data we need.
@@ -139,12 +155,12 @@ const server = webpage_server
 		}
 		else
 		{
-			// No `Intl`, so use and load the polyfill.
+			// No `Intl` (which is unlikely), so use the polyfill.
 			global.Intl = require('intl')
 		}
 
 		// These variables will be passed down
-		// as `props` for the `markup_wrapper` React component
+		// as `props` for the `wrapper` React component
 		return { locale, messages }
 	},
 
@@ -152,7 +168,7 @@ const server = webpage_server
 	html:
 	{
 		// (optional)
-		// this CSS will be inserted into server rendered webpage <head/> <style/> tag
+		// This CSS will be inserted into server rendered webpage <head/> <style/> tag
 		// (when in development mode only - removes rendering flicker)
 		head: () =>
 		{
@@ -215,7 +231,17 @@ const server = webpage_server
 
 	// (optional)
 	// `print-error` options
-	print_error: { font_size: '20pt' }
+	print_error: { font_size: '20pt' },
+
+	// (testing)
+	// Disables server-side rendering (e.g. as a performance optimization)
+	// disable: true,
+
+	// (optional)
+	// A React element for "loading" page (when server-side rendering is disabled)
+	loading: <div className="loading"><Spinner style={{ opacity: 0.1 }}/></div>,
+
+	log
 },
 common)
 

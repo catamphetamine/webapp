@@ -22,7 +22,7 @@ export default async function load_locale_data(locales, locale_data_path, option
 		fs_exists_cache[locale_data_path] = cache
 	}
 
-	// For each suitable locale
+	// For each preferred locale
 	// search for an appropriate *.json file
 	// containing translation.
 	for (let locale of locales)
@@ -76,6 +76,7 @@ async function locale_data(locale, locale_data_path, options)
 		delete require.cache[file_path]
 	}
 
+	// Is retrieved from cache in production mode
 	return require(file_path)
 }
 

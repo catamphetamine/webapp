@@ -183,7 +183,7 @@ const Latest_activity_time_refresh_interval = 60 * 1000 // once in a minute
 	id   : 'edit_user_profile',
 	busy : (state, props) => state.update_user_picture_pending || state.update_user_info_pending
 })
-@preload(({ dispatch, get_state, location, parameters }) =>
+@preload(({ dispatch, getState, location, parameters }) =>
 {
 	return Promise.all
 	([

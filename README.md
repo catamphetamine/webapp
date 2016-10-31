@@ -425,7 +425,7 @@ brew install telegraf
 ```
 
 ```
-telegraf --sample-config -input-filter statsd -output-filter influxdb > /usr/local/etc/telegraf.conf
+telegraf -input-filter statsd -output-filter influxdb config > /usr/local/etc/telegraf.conf
 nano /usr/local/etc/telegraf.conf
 brew services start telegraf
 # telegraf -config /usr/local/etc/telegraf.conf
@@ -673,14 +673,6 @@ Troubleshooting
 
 To do
 ====================
-
-authentication_token вставлять в HTML через параметр ${authentication_token}
-то же самое для preload, видимо, и там делать какой-то deep_extend(preloaded, store_additional)
-
-
-
-
-
 
 т.к. разметка будет кешироваться, убрать можно будет preload, например (для страниц, на которых не ограничен доступ).
 

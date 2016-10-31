@@ -11,7 +11,7 @@ const templates = new EmailTemplates
 	root: path.join(__dirname, 'templates'),
 	swig:
 	{
-		cache: !_development_ // Don't cache swig templates in development mode
+		cache: process.env.NODE_ENV === 'production' ? 'memory' : undefined // Don't cache swig templates in development mode
 	}
 })
 

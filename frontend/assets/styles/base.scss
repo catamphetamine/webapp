@@ -20,7 +20,7 @@ body
 // // http://caniuse.com/#search=css%20var
 // set_css_variable_font_size(var(--font-size));
 
-// just background on .page is not enough 
+// just background on .page is not enough
 // because it won't stretch to fill all the height
 // https://github.com/philipwalton/solved-by-flexbox/issues/79
 .page, body
@@ -72,7 +72,7 @@ select,
 .date-picker
 {
 	display : block;
-	
+
 	padding-top    : var(--input-padding);
 	padding-bottom : var(--input-padding);
 
@@ -265,4 +265,20 @@ th
 .sticky
 {
 	z-index: 1;
+}
+
+.loading
+{
+	display         : flex;
+	align-items     : center;
+	justify-content : center;
+
+	position : fixed;
+	left     : 0;
+	top      : 0;
+
+	width    : 100vw;
+	height   : 100vh;
+
+	background-color : white;
 }

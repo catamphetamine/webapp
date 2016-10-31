@@ -9,6 +9,11 @@ const role_permissions =
 
 export default function can(action, user)
 {
+	if (!user)
+	{
+		return false
+	}
+
 	if (user.role === 'administrator')
 	{
 		return true
