@@ -235,7 +235,7 @@ const server = webpage_server
 
 	// (testing)
 	// Disables server-side rendering (e.g. as a performance optimization)
-	// disable: true,
+	// render: false,
 
 	// (optional)
 	// A React element for "loading" page (when server-side rendering is disabled)
