@@ -105,9 +105,9 @@ else
 //     messageId: '1466966180973-163d30e0-385d833d-b4fd9ecf@blurdybloop.com'
 //   }
 
-export async function send(options, template, parameters, locale)
+export function send(options, template, parameters, locale)
 {
-	const translate = await translator(locale)
+	const translate = translator(locale)
 
 	if (!template)
 	{

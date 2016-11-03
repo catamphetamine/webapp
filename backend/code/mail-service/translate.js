@@ -6,9 +6,9 @@ const locale_data_path = path.resolve(Root_folder, 'backend/code/mail-service/te
 
 const default_translate_options = { escape: true }
 
-export default async function translator(locale)
+export default function translator(locale)
 {
-	const translation = await load_locale_data([locale], locale_data_path, { force_reload: _development_ })
+	const translation = load_locale_data([locale], locale_data_path, { force_reload: _development_ })
 
 	return function translate(key, parameters, options = {})
 	{

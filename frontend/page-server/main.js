@@ -45,6 +45,8 @@ const initializing_javascript =
 	}
 `
 
+const messagesJSON = {}
+
 // starts webpage rendering server
 const server = webpage_server
 ({
@@ -101,15 +103,26 @@ const server = webpage_server
 		return state
 	},
 
-	// statsd:
-	// {
-	// 	host: 'localhost',
-	// 	port: 8125,
-	// 	prefix: 'render'
-	// },
+	profile:
+	{
+		report({ url, route, time: { preload, render, total } })
+		{
+			if (total > 1000)
+			{
+				log.warn(`Long page rendering time`, { url, route, time: { preload, render, total } })
+			}
+		},
+
+		statsd:
+		{
+			host: 'localhost',
+			port: 8125,
+			prefix: 'webpage'
+		}
+	},
 
 	// internationalization
-	localize: async (store, _preferred_locales) =>
+	localize: (store, _preferred_locales) =>
 	{
 		// Determine preferred locales
 
@@ -133,7 +146,14 @@ const server = webpage_server
 
 		// Choose the most preferred locale from all available locales
 		// (the ones having messages translated)
-		let { locale, messages } = await load_locale_data(preferred_locales, { force_reload: _development_ })
+		let { locale, messages } = load_locale_data(preferred_locales, { force_reload: _development_ })
+
+		// Cache messages JSON
+		// (a tiny optimization)
+		if (!messagesJSON[locale])
+		{
+			messagesJSON[locale] = JSON.stringify(messages)
+		}
 
 		// Store the chosen locale in Redux store
 		store.dispatch({ type: 'locale', locale })
@@ -161,7 +181,7 @@ const server = webpage_server
 
 		// These variables will be passed down
 		// as `props` for the `wrapper` React component
-		return { locale, messages }
+		return { locale, messages, messagesJSON: messagesJSON[locale] }
 	},
 
 	// (optional)

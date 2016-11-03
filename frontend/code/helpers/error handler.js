@@ -20,6 +20,10 @@ export default function(error, { url, redirect })
 		log.error(`Rendering error while executing an http request for url "${url}"`)
 		log.error(error)
 	}
+	else
+	{
+		// to do: report the error on the client-side
+	}
 
 	// some kind of server error happened
 

@@ -21,7 +21,7 @@ export default function(api)
 			throw new errors.Input_rejected(`"locale" is required`)
 		}
 
-		await send({ to, subject }, template, parameters, locale)
+		send({ to, subject }, template, parameters, locale)
 	})
 
 	// send

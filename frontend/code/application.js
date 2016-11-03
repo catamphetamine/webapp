@@ -62,7 +62,8 @@ international.load().then(() =>
 		devtools: _development_tools_ ? require('./devtools') : undefined,
 
 		// internationalization
-		translation: international.load_translation
+		// (this is here solely for Webpack HMR in dev mode)
+		translation: _development_ ? international.load_translation : undefined
 	},
 	common)
 	.then(({ component, store, rerender }) =>

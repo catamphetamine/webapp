@@ -10,15 +10,15 @@ import is_intl_locale_supported from 'intl-locales-supported'
 
 import { get_language_from_locale } from '../../../code/locale'
 
-// `react-intl` is already used in the project, 
+// `react-intl` is already used in the project,
 // so it initialized its internal `intl-messageformat`
 // during `add_locale_data()` function call.
 //
 // https://github.com/yahoo/react-intl/blob/54d40377e1f6c2daf27030a8a5cda4cd2530060e/src/locale-data-registry.js#L15
 //
-// However, I guess, that's just 
+// However, I guess, that's just
 // the internal instance of `intl-messageformat`
-// that gets localized, so a global instance 
+// that gets localized, so a global instance
 // of `intl-messageformat` is initialized here too.
 //
 require('javascript-time-ago/intl-messageformat-global')
@@ -114,8 +114,8 @@ const international =
 		// this require here, when loadIntlPolyfill is supposed to be present
 		require('expose?ReactIntl!react-intl')
 
-		// The require.ensure function accepts an additional 3rd parameter. 
-		// This must be a string. 
+		// The require.ensure function accepts an additional 3rd parameter.
+		// This must be a string.
 		// If two split point pass the same string they use the same chunk.
 
 		return new Promise(resolve =>
@@ -137,10 +137,10 @@ const international =
 					{
 						add_locale_data(require('react-intl/locale-data/ru'))
 						debug(`ReactIntl locale-data for "${locale}" has been downloaded`)
-						
+
 						require('intl-messageformat/dist/locale-data/ru')
 						javascript_time_ago.locale(require('javascript-time-ago/locales/ru'))
-						
+
 						resolve()
 					},
 					'locale-ru')
@@ -162,10 +162,10 @@ const international =
 						// (is hardcoded into `react-intl`)
 						// add_locale_data(require('react-intl/locale-data/en'))
 						// debug(`ReactIntl locale-data for "${locale}" has been downloaded`)
-						
+
 						require('intl-messageformat/dist/locale-data/en')
 						javascript_time_ago.locale(require('javascript-time-ago/locales/en'))
-						
+
 						resolve()
 					},
 					'locale-en-with-intl')
@@ -173,6 +173,7 @@ const international =
 		})
 	},
 
+	// This is purely for Webpack HMR in dev mode
 	load_translation: locale =>
 	{
 		// makes Webpack HMR work for this locale for now

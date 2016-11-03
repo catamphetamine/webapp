@@ -1,25 +1,34 @@
+import path from 'path'
 import fs from 'fs-extra'
 
 import { get_language_from_locale } from './locale'
 
 const fs_exists_cache = {}
 
-export default async function load_locale_data(locales, locale_data_path, options = {})
+export default function cache_locale_data(locale_data_path)
+{
+	const cache = []
+
+	for (let file of fs.readdirSync(locale_data_path))
+	{
+		if (file.ends_with('.json') || file.ends_with('.js'))
+		{
+			cache.push(file)
+
+			// Cache it in Node.js's internal `require.cache`
+			require(path.join(locale_data_path, file))
+		}
+	}
+
+	fs_exists_cache[locale_data_path] = cache
+}
+
+export default function load_locale_data(locales, locale_data_path, options = {})
 {
 	// Cache all existing *.json files in the directory
 	if (!fs_exists_cache[locale_data_path] || options.force_reload)
 	{
-		const cache = []
-
-		for (let file of await fs.readdirAsync(locale_data_path))
-		{
-			if (file.ends_with('.json') || file.ends_with('.js'))
-			{
-				cache.push(file)
-			}
-		}
-
-		fs_exists_cache[locale_data_path] = cache
+		cache_locale_data(locale_data_path)
 	}
 
 	// For each preferred locale
@@ -28,7 +37,7 @@ export default async function load_locale_data(locales, locale_data_path, option
 	for (let locale of locales)
 	{
 		// The *.json file containing translation for this exact locale
-		const _locale_data = await locale_data(locale, locale_data_path, options)
+		const _locale_data = locale_data(locale, locale_data_path, options)
 
 		if (_locale_data)
 		{
@@ -39,7 +48,7 @@ export default async function load_locale_data(locales, locale_data_path, option
 		const language = get_language_from_locale(locale)
 
 		// The *.json file containing translation for the language of this locale
-		const locale_language_data = await locale_data(language, locale_data_path, options)
+		const locale_language_data = locale_data(language, locale_data_path, options)
 
 		if (locale_language_data)
 		{
@@ -51,7 +60,7 @@ export default async function load_locale_data(locales, locale_data_path, option
 }
 
 // Reads translation *.json file for this exact locale
-async function locale_data(locale, locale_data_path, options)
+function locale_data(locale, locale_data_path, options)
 {
 	const cache = fs_exists_cache[locale_data_path]
 
