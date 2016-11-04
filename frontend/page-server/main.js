@@ -24,6 +24,8 @@ import load_locale_data from './locale'
 
 import Spinner from '../code/components/spinner'
 
+import start_monitoring from '../../code/monitoring'
+
 // A faster way to load all the localization data for Node.js
 // (`intl-messageformat` will load everything automatically when run in Node.js)
 require('javascript-time-ago/load-all-locales')
@@ -45,7 +47,10 @@ const initializing_javascript =
 	}
 `
 
+// Messages JSON cache
 const messagesJSON = {}
+
+const monitoring = start_monitoring(configuration)
 
 // starts webpage rendering server
 const server = webpage_server
@@ -103,21 +108,16 @@ const server = webpage_server
 		return state
 	},
 
-	profile:
+	stats({ url, route, time: { preload, render, total } })
 	{
-		report({ url, route, time: { preload, render, total } })
-		{
-			if (total > 1000)
-			{
-				log.warn(`Long page rendering time`, { url, route, time: { preload, render, total } })
-			}
-		},
+		monitoring.increment(`count`)
+		monitoring.time('preload', Math.round(preload))
+		monitoring.time('render', Math.round(render))
+		monitoring.time('total', Math.round(total))
 
-		statsd:
+		if (total > 0)
 		{
-			host: 'localhost',
-			port: 8125,
-			prefix: 'webpage'
+			log.info(`Page rendering time`, { url, route, time: { preload, render, total } })
 		}
 	},
 
