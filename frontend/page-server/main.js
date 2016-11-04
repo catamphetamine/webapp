@@ -117,7 +117,7 @@ const server = webpage_server
 
 		if (total > 0)
 		{
-			log.info(`Page rendering time`, { url, route, time: { preload, render, total } })
+			log.info(`Page rendering time`, { url, route, time: { preload: Math.round(preload), render: Math.round(render), total: Math.round(total) } })
 		}
 	},
 
