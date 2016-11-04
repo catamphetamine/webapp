@@ -16,6 +16,8 @@ import webpage_server from 'react-isomorphic-render/server'
 import is_intl_locale_supported from 'intl-locales-supported'
 import file_size_parser from 'filesize-parser'
 
+import Intl_polyfill from 'intl'
+
 import common         from '../code/react-isomorphic-render'
 import html_assets    from '../code/html assets'
 import error_handler  from '../code/helpers/error handler'
@@ -46,6 +48,10 @@ const initializing_javascript =
 		}
 	}
 `
+
+// Since Node.js's Intl by default supports
+// only US English, use the Intl polyfill instead.
+global.Intl = Intl_polyfill
 
 // Messages JSON cache
 const messagesJSON = {}
@@ -108,6 +114,20 @@ const server = webpage_server
 		return state
 	},
 
+	// Rendering a typical React page with ~1000 components
+	// takes about 200ms, which is a lot, but that's how
+	// React Server Side Rendering is at the moment.
+	//
+	// For more info see:
+	// https://github.com/halt-hammerzeit/react-isomorphic-render/blob/master/CACHING.md
+	//
+	// (in development mode `assets` aren't cached,
+	//  so `time.render` can be up to 600ms,
+	//  but it's just because of `webpack-isomorphic-tools`
+	//  being run in development mode.
+	//  when `webpack-isomorphic-tools` are run in production mode,
+	//  then rendering times are back to normal)
+	//
 	stats({ url, route, time: { preload, render, total } })
 	{
 		monitoring.increment(`count`)
@@ -122,11 +142,9 @@ const server = webpage_server
 	},
 
 	// internationalization
-	localize: (store, _preferred_locales) =>
+	localize: (store, preferred_locales) =>
 	{
 		// Determine preferred locales
-
-		let preferred_locales = []
 
 		// If the user is logged in,
 		// then the most preferred locale is
@@ -135,11 +153,9 @@ const server = webpage_server
 			&& store.getState().authentication.user
 			&& store.getState().authentication.user.locale)
 		{
-			preferred_locales.push(store.getState().authentication.user.locale)
+			// Add it to the preferred locales from HTTP parameter, cookie and header.
+			preferred_locales.unshift(store.getState().authentication.user.locale)
 		}
-
-		// Add preferred locales from HTTP parameter, cookie and header.
-		preferred_locales = preferred_locales.concat(_preferred_locales)
 
 		// Use 'en-US' locale by default (if no other locale is preferred)
 		preferred_locales.push('en-US')
@@ -158,26 +174,14 @@ const server = webpage_server
 		// Store the chosen locale in Redux store
 		store.dispatch({ type: 'locale', locale })
 
-		// Check if the Node.js `Intl` object exists (it does)
-		// and that it supports the chosen locale
-		// (only 'en-US' is supported by default).
-		if (global.Intl)
-		{
-			// Determine if the built-in `Intl` has the locale data we need.
-			if (!is_intl_locale_supported(locale))
-			{
-				// `Intl` exists, but it doesn't have the data we need, so load the
-				// polyfill and patch the constructors we need with the polyfill's.
-				const Intl_polyfill = require('intl')
-				Intl.NumberFormat   = Intl_polyfill.NumberFormat
-				Intl.DateTimeFormat = Intl_polyfill.DateTimeFormat
-			}
-		}
-		else
-		{
-			// No `Intl` (which is unlikely), so use the polyfill.
-			global.Intl = require('intl')
-		}
+		// // Check if the Node.js built-in `Intl` has the locale data needed.
+		// if (!is_intl_locale_supported(locale))
+		// {
+		// 	// `Intl` exists, but it doesn't have the data needed, so load the
+		// 	// polyfill and patch the formatters with the polyfill's ones.
+		// 	Intl.NumberFormat   = Intl_polyfill.NumberFormat
+		// 	Intl.DateTimeFormat = Intl_polyfill.DateTimeFormat
+		// }
 
 		// These variables will be passed down
 		// as `props` for the `wrapper` React component
