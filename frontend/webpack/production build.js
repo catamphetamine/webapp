@@ -67,7 +67,7 @@ configuration.plugins = configuration.plugins.concat
 // find the styles loader
 const scss_loader = configuration.module.loaders.filter(loader =>
 {
-	return loader.test.toString() === configuration.regular_expressions.styles.toString()
+	return loader.test.toString() === /\.scss$/.toString()
 })
 .first()
 

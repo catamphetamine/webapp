@@ -73,7 +73,7 @@ configuration.output.publicPath = `http://${application_configuration.developmen
 
 const javascript_loader = configuration.module.loaders.filter(loader =>
 {
-	return loader.test.toString() === configuration.regular_expressions.javascript.toString()
+	return loader.test.toString() === /\.js$/.toString()
 })
 .first()
 

@@ -43,7 +43,7 @@
     "react-dnd-html5-backend": "^2.1.2",
     "react-dom": "^15.3.1",
     "react-intl": "^2.1.2",
-    "react-isomorphic-render": "^7.1.5",
+    "react-isomorphic-render": "^7.1.9",
     "react-modal": "^1.1.1",
     "react-phone-number-input": "^0.3.2",
     "react-redux": "^4.0.0",
@@ -58,7 +58,7 @@
     "simpler-redux-form": "^0.2.2",
     "style-loader": "^0.12.4",
     "url-loader": "^0.5.5",
-    "webpack": "^2.1.0-beta.20",
+    "webpack": "^2.1.0-beta.25",
     "webpack-isomorphic-tools": "^2.5.8"
   },
   "devDependencies": {

@@ -23,12 +23,6 @@ Object.keys(global_variables).forEach(function(key)
 	define_plugin_global_variables[key] = JSON.stringify(global_variables[key])
 })
 
-const regular_expressions =
-{
-	javascript : /\.js$/,
-	styles     : /\.scss$/
-}
-
 const configuration =
 {
 	// resolve all relative paths from the project root folder
@@ -66,7 +60,7 @@ const configuration =
 			},
 			// This loader will be enhanced with `react-transform-hmr`
 			{
-				test    : regular_expressions.javascript,
+				test    : /\.js$/,
 				include :
 				[
 					path.resolve(frontend_root_folder, 'code')
@@ -80,7 +74,7 @@ const configuration =
 			},
 			// This loader won't be enhanced with `react-transform-hmr`
 			{
-				test    : regular_expressions.javascript,
+				test    : /\.js$/,
 				include :
 				[
 					path.resolve(root_folder, 'code')
@@ -88,7 +82,7 @@ const configuration =
 				loader: 'babel-loader'
 			},
 			{
-				test    : regular_expressions.styles,
+				test    : /\.scss$/,
 				include : assets_source_folder,
 				loaders :
 				[
@@ -130,25 +124,12 @@ const configuration =
 		]
 	},
 
-	// maybe some kind of a progress bar during compilation
-	progress: true,
-
-	postcss: () =>
-	([
-		autoprefixer({ browsers: 'last 2 version' }),
-		css_custom_properties(),
-		postcss_calc()
-	]),
-
 	resolve:
 	{
-		// you can now require('file') instead of require('file.coffee')
-		extensions: ['', '.json', '.js'],
-
 		// An array of directory names to be resolved to the current directory
 		// as well as its ancestors, and searched for modules.
 		// This functions similarly to how node finds “node_modules” directories.
-		modulesDirectories: ['node_modules']
+		modules: ['node_modules']
 	},
 
 	plugins:
@@ -162,7 +143,38 @@ const configuration =
 	]
 }
 
-module.exports = configuration
+configuration.plugins.push
+(
+	new webpack.LoaderOptionsPlugin
+	({
+		test: /\.scss$/,
+		debug: true,
+		options:
+		{
+			// A temporary workaround for `scss-loader`
+			// https://github.com/jtangelder/sass-loader/issues/298
+			output:
+			{
+				path: configuration.output.path
+			},
 
-// will be used in development and production configurations
-configuration.regular_expressions = regular_expressions
+			postcss:
+			[
+				autoprefixer({ browsers: 'last 2 version' }),
+				css_custom_properties(),
+				postcss_calc()
+			],
+
+			// A temporary workaround for `css-loader`.
+			// Can also supply `query.context` parameter.
+			context: configuration.context,
+
+			// output:
+			// {
+			// 	path: path.join(__dirname, 'dist'),
+			// }
+		}
+	})
+)
+
+module.exports = configuration

@@ -166,7 +166,7 @@ export default class Log extends Component
 		(
 			<tr key={index} style={style.log.entry[(log_levels[entry.level] || 'generic').toLowerCase()]}>
 				<td>{entry.pid}</td>
-				<td>{entry.hostname}</td>
+				<td>{entry.hostname || entry.ip}</td>
 				<td>{entry.name}</td>
 				<td>
 					<FormattedDate

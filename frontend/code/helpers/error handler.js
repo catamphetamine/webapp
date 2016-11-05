@@ -1,6 +1,7 @@
 import { add_redirect } from '../helpers/redirection'
+import { error as log_error } from '../actions/log'
 
-export default function(error, { url, redirect })
+export default function(error, { url, redirect, dispatch })
 {
 	// not authenticated
 	if (error.status === 401)
@@ -22,7 +23,8 @@ export default function(error, { url, redirect })
 	}
 	else
 	{
-		// to do: report the error on the client-side
+		console.error(error)
+		dispatch(log_error(error))
 	}
 
 	// some kind of server error happened
