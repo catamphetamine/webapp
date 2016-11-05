@@ -52,6 +52,14 @@ configuration.plugins = configuration.plugins.concat
 	// omit duplicate modules
 	new webpack.optimize.DedupePlugin(),
 
+	// For production mode
+	// https://moduscreate.com/webpack-2-tree-shaking-configuration/
+	new webpack.LoaderOptionsPlugin
+	({
+		minimize: true,
+		debug: false
+	}),
+
 	// Compresses javascript files
 	new webpack.optimize.UglifyJsPlugin
 	({

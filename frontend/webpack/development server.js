@@ -48,6 +48,13 @@ configuration.plugins = configuration.plugins.concat
 	// faster code reload on changes
 	new webpack.HotModuleReplacementPlugin(),
 
+	// For development mode
+	// https://moduscreate.com/webpack-2-tree-shaking-configuration/
+	new webpack.LoaderOptionsPlugin
+	({
+		debug: true
+	}),
+
 	// // webpack.NoErrorsPlugin is an optional plugin
 	// // that tells the reloader to not reload if there is a syntax error in your code.
 	// // The error is simply printed in the console, and the component will reload
