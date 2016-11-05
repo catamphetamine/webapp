@@ -674,10 +674,6 @@ Troubleshooting
 To do
 ====================
 
-// to do: report the error on the client-side
-
-
-
 Мониторить time.preload на клиенте тоже - слать в monitoring service (в statsd)
 
 Посмотреть, что в профиле так долго рендерит

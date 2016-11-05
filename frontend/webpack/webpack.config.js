@@ -167,12 +167,7 @@ configuration.plugins.push
 
 			// A temporary workaround for `css-loader`.
 			// Can also supply `query.context` parameter.
-			context: configuration.context,
-
-			// output:
-			// {
-			// 	path: path.join(__dirname, 'dist'),
-			// }
+			context: configuration.context
 		}
 	})
 )
