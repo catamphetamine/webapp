@@ -4,7 +4,7 @@ import Url from '../../../code/url'
 // (e.g. a "redirect_to_original_url_after_sign_in=..." parameter in the URL)
 export function should_redirect_to(location)
 {
-	return redirection_target(location) || '/'
+	return redirection_target(location) || (location.pathname + (location.search || '') + (location.hash || ''))
 }
 
 // gets the `request` parameter from the url
@@ -21,7 +21,7 @@ export function add_redirect(base_url, location)
 
 	if (is_object(location))
 	{
-		// if `location` is an object, then 
+		// if `location` is an object, then
 		// `request` parameter is supposed to be passed on further
 
 		if (location.query.request)
@@ -50,10 +50,10 @@ export function add_redirect(base_url, location)
 	}
 	else
 	{
-		// if `location` is a string, then 
-		// `request` parameter is supposed to be set initially	
+		// if `location` is a string, then
+		// `request` parameter is supposed to be set initially
 
-		// (don't set the `request` parameter 
+		// (don't set the `request` parameter
 		//  if it's gonna be a Sign-in or Register page)
 		//
 		const location_url = new Url(location)

@@ -1,6 +1,3 @@
-import Knex      from 'knex'
-import Bookshelf from 'bookshelf'
-
 import uuid from 'uuid'
 
 import Sql from '../../common/sql'
@@ -16,38 +13,9 @@ export default class Sql_store
 
 	async connect()
 	{
-		const models = this
-
-		const bookshelf = Bookshelf(Knex(knexfile))
-
-		this.User = bookshelf.Model.extend
-		({
-			tableName : 'users'
-		})
-
-		this.User_alias = bookshelf.Model.extend
-		({
-			tableName : 'user_alias_history',
-
-			user()
-			{
-				return this.belongsTo(models.User, 'user')
-			}
-		})
-
-		this.Block_user_token = bookshelf.Model.extend
-		({
-			tableName : 'block_user_tokens',
-
-			user()
-			{
-				return this.belongsTo(models.User, 'user')
-			}
-		})
-
-		this.users = new Sql(this.User)
-		this.user_alias_history = new Sql(this.User_alias)
-		this.block_user_tokens = new Sql(this.Block_user_token)
+		this.users = new Sql('users')
+		this.user_alias_history = new Sql('user_alias_history')
+		this.block_user_tokens = new Sql('block_user_tokens')
 	}
 
 	async create_user(user)

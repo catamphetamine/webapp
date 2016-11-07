@@ -109,6 +109,9 @@ export default class Redis_online_status_store
 
 	set_latest_access_time_persisted_at(access_token_id, ip, now)
 	{
-		return this.redis.set(`token/${access_token_id}/ip/${ip}/latest-access-time/persisted-at`, now)
+		return this.redis.multi()
+			.set   (`token/${access_token_id}/ip/${ip}/latest-access-time/persisted-at`, now)
+			.expire(`token/${access_token_id}/ip/${ip}/latest-access-time/persisted-at`, Redis_online_status_store.ttl)
+			.exec()
 	}
 }

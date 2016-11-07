@@ -1,6 +1,3 @@
-import Knex      from 'knex'
-import Bookshelf from 'bookshelf'
-
 import Sql from '../../common/sql'
 
 export default class Sql_store
@@ -12,14 +9,8 @@ export default class Sql_store
 
 	async connect()
 	{
-		const bookshelf = Bookshelf(Knex(knexfile))
-
-		this.Image = bookshelf.Model.extend
-		({
-			tableName : 'images'
-		})
-
-		this.images = new Sql(this.Image)
+		this.images = new Sql('images')
+		this.users = new Sql('users')
 	}
 
 	get_batch(skip, amount)
@@ -27,9 +18,11 @@ export default class Sql_store
 		throw new Error('Not implemented')
 	}
 
-	get_with_user(id)
+	async get_with_user(id)
 	{
-		return this.images.find(id, { withRelated: 'user' })
+		const image = await this.images.find(id)
+		image.user = await this.users.find(image.user)
+		return image
 	}
 
 	async create({ user, type, sizes, files_size, coordinates, taken_at, taken_at_utc0, info })

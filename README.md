@@ -12,7 +12,7 @@ Features
 * Internationalization with React-intl
 * User authentication (JSON Web Token) & authorization (roles)
 * REST API
-* SQL ORM (PostgreSQL + Bookshelf)
+* SQL ORM (PostgreSQL + Knex)
 * MongoDB
 * Microservice architecture
 * Responsive web design

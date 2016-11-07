@@ -20,7 +20,6 @@ import Intl_polyfill from 'intl'
 
 import common         from '../code/react-isomorphic-render'
 import html_assets    from '../code/html assets'
-import error_handler  from '../code/helpers/error handler'
 
 import load_locale_data from './locale'
 
@@ -61,8 +60,6 @@ const monitoring = start_monitoring(configuration)
 // starts webpage rendering server
 const server = webpage_server
 ({
-	disable_server_side_rendering : _disable_server_side_rendering_,
-
 	// Http host and port for executing all client-side ajax requests on server-side
 	application:
 	{
@@ -100,7 +97,7 @@ const server = webpage_server
 
 	// user info preloading
 	// (will be added to Redux store)
-	preload: async (http, { request }) =>
+	initialize: async (http, { request }) =>
 	{
 		const user = await http.get(`/users/current`)
 
@@ -124,20 +121,23 @@ const server = webpage_server
 	// (in development mode `assets` aren't cached,
 	//  so `time.render` can be up to 600ms,
 	//  but it's just because of `webpack-isomorphic-tools`
-	//  being run in development mode.
+	//  being run in development mode
+	//  (refreshing assets + using `port` setting).
 	//  when `webpack-isomorphic-tools` are run in production mode,
-	//  then rendering times are back to normal)
+	//  then rendering times are back to normal 200ms)
 	//
-	stats({ url, route, time: { preload, render, total } })
+	stats({ url, route, time: { initialize, preload, render, total } })
 	{
 		monitoring.increment(`count`)
+
+		monitoring.time('initialize', Math.round(initialize))
 		monitoring.time('preload', Math.round(preload))
 		monitoring.time('render', Math.round(render))
 		monitoring.time('total', Math.round(total))
 
 		if (total > 0)
 		{
-			log.info(`Page rendering time`, { url, route, time: { preload: Math.round(preload), render: Math.round(render), total: Math.round(total) } })
+			log.info(`Page rendering time`, { url, route, time: { initialize: Math.round(initialize), preload: Math.round(preload), render: Math.round(render), total: Math.round(total) } })
 		}
 	},
 
@@ -250,16 +250,12 @@ const server = webpage_server
 	},
 
 	// (optional)
-	// handles miscellaneous errors
-	catch: error_handler,
-
-	// (optional)
 	// `print-error` options
 	print_error: { font_size: '20pt' },
 
 	// (testing)
 	// Disables server-side rendering (e.g. as a performance optimization)
-	// render: false,
+	render: _disable_server_side_rendering_ ? false : true,
 
 	// (optional)
 	// A React element for "loading" page (when server-side rendering is disabled)

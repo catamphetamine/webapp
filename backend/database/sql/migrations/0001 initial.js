@@ -58,7 +58,7 @@ exports.up = function(knex, Promise)
 	{
 		table.bigIncrements('id').primary().unsigned()
 
-		table.bigint('user').notNullable().references('users.id')
+		table.bigint('user').notNullable().references('users.id').onDelete('CASCADE')
 		table.string('alias', alias_max_length)
 
 		table.unique(['user', 'alias'])
@@ -75,7 +75,7 @@ exports.up = function(knex, Promise)
 
 		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
 		table.boolean('self').notNullable().defaultTo(false)
-		table.bigint('user').notNullable().references('users.id')
+		table.bigint('user').notNullable().references('users.id').onDelete('CASCADE')
 	})
 
 	.createTable('authentication_data', function(table)
@@ -87,7 +87,7 @@ exports.up = function(knex, Promise)
 		table.timestamp('authentication_attempt_failed_at')
 		table.integer('authentication_attempt_temperature')
 
-		table.bigint('user').notNullable().unique().references('users.id')
+		table.bigint('user').notNullable().unique().references('users.id').onDelete('CASCADE')
 	})
 
 	.createTable('authentication_tokens', function(table)
@@ -97,7 +97,7 @@ exports.up = function(knex, Promise)
 		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
 		table.timestamp('revoked_at')
 
-		table.bigint('user').notNullable().references('users.id')
+		table.bigint('user').notNullable().references('users.id').onDelete('CASCADE')
 	})
 
 	.createTable('authentication_token_access_history', function(table)
@@ -109,7 +109,7 @@ exports.up = function(knex, Promise)
 
 		table.jsonb('place')
 
-		table.bigint('token').notNullable().references('authentication_tokens.id')
+		table.bigint('token').notNullable().references('authentication_tokens.id').onDelete('CASCADE')
 
 		// "authentication_token_access_history_token_ip_unique" constraint name
 		// is used in authentication sql store.

@@ -631,14 +631,20 @@ export default class Authentication_form extends Component
 
 			const { location, dispatch } = this.props
 
+			// Refresh the page so that `authentication_token`
+			// is applied to the `http` tool.
+
 			// Redirect to a page
-			if (redirection_target(location)
+			if (location.pathname === '/unauthenticated'
+				|| location.pathname === '/unauthorized'
 				|| location.pathname === '/sign-in'
 				|| location.pathname === '/register')
 			{
-				// Revisit current URL now being logged in
-				dispatch(redirect(should_redirect_to(location)))
+				return window.location = should_redirect_to(location)
 			}
+
+			// Refresh the current page after login
+			window.location = location.pathname + (location.search || '') + (location.hash || '')
 		}
 		catch (error)
 		{

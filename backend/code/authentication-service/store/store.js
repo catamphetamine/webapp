@@ -4,7 +4,7 @@ import Sql_store     from './sql store'
 
 function create_store()
 {
-	if (!knexfile) 
+	if (!knexfile)
 	{
 		log.info('PostgreSQL connection is not configured. Using in-memory store.')
 		return new Memory_store()

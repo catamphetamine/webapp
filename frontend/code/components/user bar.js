@@ -121,6 +121,7 @@ export default class Authentication extends Component
 
 		this.hide = this.hide.bind(this)
 		this.show = this.show.bind(this)
+		this.sign_out = this.sign_out.bind(this)
 
 		extend(this.state, this.pristine_form_state)
 	}
@@ -200,7 +201,7 @@ export default class Authentication extends Component
 
 	render_user_info(user)
 	{
-		const { translate, sign_out } = this.props
+		const { translate } = this.props
 
 		{/* User name and user picture */}
 		const user_info =
@@ -268,7 +269,7 @@ export default class Authentication extends Component
 					<Dropdown_separator/>
 
 					{/* Sign out */}
-					<div key="sign_out" onClick={sign_out}>
+					<div key="sign_out" onClick={this.sign_out}>
 						{/* Icon */}
 						<i className="material-icons material-icons--empty dropdown-item__icon"></i>
 						{/* Text */}
@@ -283,6 +284,14 @@ export default class Authentication extends Component
 		)
 
 		return markup
+	}
+
+	async sign_out()
+	{
+		await this.props.sign_out()
+
+		// Refresh the current page after logout
+		window.location = location.pathname + (location.search || '') + (location.hash || '')
 	}
 
 	change_user_picture()

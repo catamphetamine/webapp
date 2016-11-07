@@ -15,65 +15,10 @@ export default class Sql_store
 
 	async connect()
 	{
-		const models = this
-
-		const bookshelf = Sql.bookshelf()
-
-		this.knex = bookshelf.knex
-
-		this.User = bookshelf.Model.extend
-		({
-			tableName : 'users',
-
-			authentication_tokens()
-			{
-				return this.hasMany(models.Authentication_token, 'user')
-			}
-		})
-
-		this.Authentication_data = bookshelf.Model.extend
-		({
-			tableName : 'authentication_data',
-
-			user()
-			{
-				return this.belongsTo(models.User, 'user')
-			}
-		})
-
-		this.Authentication_token = bookshelf.Model.extend
-		({
-			tableName : 'authentication_tokens',
-
-			user()
-			{
-				return this.belongsTo(models.User, 'user')
-			},
-
-			history()
-			{
-				return this.hasMany(models.Authentication_token_access_history, 'token')
-			}
-		},
-		{
-			// Used for cascade drop
-			dependents: ['history']
-		})
-
-		this.Authentication_token_access_history = bookshelf.Model.extend
-		({
-			tableName : authentication_token_access_history_table_name,
-
-			token()
-			{
-				return this.belongsTo(models.Authentication_token, 'token')
-			}
-		})
-
-		this.users = new Sql(this.User)
-		this.authentication_data = new Sql(this.Authentication_data)
-		this.authentication_tokens = new Sql(this.Authentication_token)
-		this.authentication_token_access_history = new Sql(this.Authentication_token_access_history)
+		this.users = new Sql('users')
+		this.authentication_data = new Sql('authentication_data')
+		this.authentication_tokens = new Sql('authentication_tokens')
+		this.authentication_token_access_history = new Sql(authentication_token_access_history_table_name)
 	}
 
 	create_authentication_data(user_id, data)
@@ -121,7 +66,7 @@ export default class Sql_store
 	{
 		const now = new Date()
 
-		const authentication_token = await this.authentication_tokens.create
+		const authentication_token_id = await this.authentication_tokens.create
 		({
 			created_at : now,
 			user       : user_id
@@ -131,7 +76,7 @@ export default class Sql_store
 		{
 			ip,
 			updated_at : now,
-			token      : authentication_token.id
+			token      : authentication_token_id
 		}
 
 		// Since there previously was no access history entry for the token for this IP,
@@ -146,12 +91,12 @@ export default class Sql_store
 			history_entry.place = place
 		}
 
-		const access_history_entry = await this.authentication_token_access_history.create(history_entry)
+		await this.authentication_token_access_history.create(history_entry)
 
 		// If there's too much tokens, then remove excessive revoked ones
 		await this.remove_excessive_tokens(user_id)
 
-		return authentication_token.id
+		return authentication_token_id
 	}
 
 	async remove_excessive_tokens(user_id)
@@ -160,11 +105,16 @@ export default class Sql_store
 		const user_token_limit = 10
 
 		// Get a list of all authentication tokens for this user
-		let tokens = await new this.User({ id: user_id })
-			.authentication_tokens()
-			.fetch({ withRelated: ['history'] })
 
-		tokens = Sql.json(tokens)
+		// let tokens = await new this.User({ id: user_id })
+		// 	.authentication_tokens()
+		// 	.fetch({ withRelated: ['history'] })
+
+		let tokens = await this.authentication_tokens.find_all({ user: user_id })
+		for (let token of tokens)
+		{
+			token.history = await this.authentication_token_access_history.find_all({ token: token.id })
+		}
 
 		sort_tokens_by_relevance(tokens)
 
@@ -198,74 +148,67 @@ export default class Sql_store
 
 		// Try to update access token history entry for this IP address
 		// with the new access time.
-		try
+		if (!await this.authentication_token_access_history.update
+		({
+			token: authentication_token_id,
+			ip
+		},
 		{
-			await this.authentication_token_access_history.update
-			({
-				token: authentication_token_id,
-				ip
-			},
-			{
-				updated_at: time
-			})
-		}
-		catch (error)
+			updated_at: time
+		}))
 		{
-			// If there was no access token history entry for this IP address,
-			// then create it
-			if (error instanceof this.Authentication_token_access_history.NoRowsUpdatedError)
+			try
 			{
-				try
+				// Create access token history entry for this IP address
+				const history_entry_id = await this.authentication_token_access_history.create
+				({
+					token: authentication_token_id,
+					ip,
+					updated_at: time
+				})
+
+				// Since there previously was no access history entry for the token for this IP,
+				// then also set the place on this history entry.
+
+				// Gather info about the place of access
+				const place = await get_place_for_ip(ip)
+
+				// Log the place info
+				if (place && place.city)
 				{
-					// Create access token history entry for this IP address
-					const history_entry = await this.authentication_token_access_history.create
-					({
-						token: authentication_token_id,
-						ip,
-						updated_at: time
-					})
-
-					// Since there previously was no access history entry for the token for this IP,
-					// then also set the place on this history entry.
-
-					// Gather info about the place of access
-					const place = await get_place_for_ip(ip)
-
-					// Log the place info
-					if (place && place.city)
-					{
-						await history_entry.save({ place })
-					}
-				}
-				catch (error)
-				{
-					// If there was a concurrent insertion for the same (token, ip) pair,
-					// then it's ok, because the inserted access time is in fact the same.
-					//
-					// "duplicate key value violates unique constraint
-					//  "authentication_token_access_history_token_ip_unique""
-					if (error.message.has('authentication_token_access_history_token_ip_unique'))
-					{
-						// ok
-					}
-					else
-					{
-						throw error
-					}
+					await this.authentication_token_access_history.update(history_entry_id, { place })
 				}
 			}
-			else
+			catch (error)
 			{
-				throw error
+				// If there was a concurrent insertion for the same (token, ip) pair,
+				// then it's ok, because the inserted access time is in fact the same.
+				//
+				// "duplicate key value violates unique constraint
+				//  "authentication_token_access_history_token_ip_unique""
+				if (error.message.has('authentication_token_access_history_token_ip_unique'))
+				{
+					// ok
+				}
+				else
+				{
+					throw error
+				}
 			}
 		}
 	}
 
 	async get_tokens(user_id)
 	{
-		const tokens = Sql.json(await new this.User({ id: user_id })
-			.authentication_tokens()
-			.fetch({ withRelated: 'history' }))
+		// const tokens = Sql.json(await new this.User({ id: user_id })
+		// 	.authentication_tokens()
+		// 	.fetch({ withRelated: 'history' }))
+
+		let tokens = await this.authentication_tokens.find_all({ user: user_id })
+		for (let token of tokens)
+		{
+			token.history = await this.authentication_token_access_history.find_all({ token: token.id })
+		}
 
 		sort_tokens_by_relevance(tokens)
 

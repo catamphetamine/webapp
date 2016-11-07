@@ -1,54 +1,61 @@
 import Knex from 'knex'
 import knex_postgis_plugin from 'knex-postgis'
-import Bookshelf from 'bookshelf'
-import cascade_delete from 'bookshelf-cascade-delete'
 
 export default class Sql
 {
-	constructor(model)
+	constructor(table)
 	{
-		this.model = model
-		this.collection = Sql.bookshelf().Collection.extend({ model })
+		this.table = table
 	}
 
 	// Finds a single record
-	find(example, options)
+	async find(example, options)
 	{
 		if (!is_object(example))
 		{
 			return this.find({ id: example }) // , { require: true })
 		}
 
-		return new this.model(example).fetch(options).then(x => x !== null ? Sql.json(x) : null)
+		const result = await knex.select('*')
+			.from(this.table)
+			.where(example)
+			.limit(1)
+			.map(Sql.json)
+
+		if (result.length === 0)
+		{
+			return null
+		}
+
+		return result[0]
 	}
 
 	// Finds matching records
 	find_all(example)
 	{
-		return this.model.where(example).fetchAll().then(collection => collection.toJSON())
+		return knex.select('*')
+			.from(this.table)
+			.where(example)
+			.map(Sql.json)
 	}
 
-	count(example)
+	async count(example)
 	{
-		return this.model.where(example).count('id')
+		return parseInt(await knex(this.table).count(example))
 	}
 
-	create(data)
+	async create(data, options = {})
 	{
-		return new this.model(data).save(null, { method: 'insert' })
+		const ids = await knex.insert(data).into(this.table).returning(options.id || 'id')
+
+		return ids[0]
 	}
 
-	update(where, data)
+	async update(where, data)
 	{
-		let model
-
 		if (!is_object(where))
 		{
-			model = new this.model({ id: where })
-		}
-		else
-		{
-			model = this.model.where(where)
+			where = { id: where }
 		}
 
 		if (!data)
@@ -56,7 +63,9 @@ export default class Sql
 			throw new Error(`No properties supplied for SQL update`)
 		}
 
-		return model.save(data, { method: 'update', patch: true })
+		const count = await knex(this.table).where(where).update(data)
+
+		return count > 0
 	}
 
 	remove(id)
@@ -66,46 +75,31 @@ export default class Sql
 			throw new Error(`"id" not supplied for SQL .remove()`)
 		}
 
-		return new this.model({ id }).destroy()
+		return knex(this.table).where({ id }).del()
 	}
 }
 
-let knex_postgis
-let bookshelf
+const knex = Knex(knexfile)
+const knex_postgis = knex_postgis_plugin(knex)
 
-Sql.bookshelf = () =>
+knex.postgisDefineExtras(function(knex, formatter)
 {
-	if (!bookshelf)
+	const extras =
 	{
-		const knex = Knex(knexfile)
-
-		knex_postgis = knex_postgis_plugin(knex)
-
-		knex.postgisDefineExtras(function(knex, formatter)
+		longitude_latitude(longitude, latitude)
 		{
-			const extras =
-			{
-				longitude_latitude(longitude, latitude)
-				{
-					return knex.raw('ST_SetSRID(ST_MakePoint(?, ?), 4326)', [longitude, latitude])
-				}
-			}
-
-			return extras
-		})
-
-		bookshelf = Bookshelf(knex)
-		bookshelf.plugin(cascade_delete)
+			return knex.raw('ST_SetSRID(ST_MakePoint(?, ?), 4326)', [longitude, latitude])
+		}
 	}
 
-	return bookshelf
-}
+	return extras
+})
 
 Sql.knex_postgis = () => knex_postgis
 
 Sql.json = (model) =>
 {
-	return parse_dates(model.toJSON())
+	return parse_dates(model)
 }
 
 // JSON date deserializer.
