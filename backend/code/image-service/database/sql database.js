@@ -21,6 +21,12 @@ export default class Sql_store
 	async get_with_user(id)
 	{
 		const image = await this.images.find(id)
+
+		if (!image)
+		{
+			return
+		}
+
 		image.user = await this.users.find(image.user)
 		return image
 	}

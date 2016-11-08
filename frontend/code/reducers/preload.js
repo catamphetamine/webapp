@@ -7,8 +7,9 @@ const handlers =
 	[Preload_started]: (result, state) =>
 	({
 		...state,
-		pending : true,
-		error   : false
+		pending   : true,
+		error     : false,
+		immediate : result.immediate
 	}),
 
 	[Preload_finished]: (result, state) =>

@@ -22,6 +22,7 @@ import Spinner             from './spinner'
 import { bindActionCreators as bind_action_creators } from 'redux'
 
 import { sign_out } from '../actions/authentication'
+import { preload_started } from '../actions/preload'
 
 export const messages = defineMessages
 ({
@@ -82,7 +83,8 @@ export const messages = defineMessages
 	{
 		const props = bind_action_creators
 		({
-			sign_out
+			sign_out,
+			preload_started
 		},
 		dispatch)
 
@@ -289,6 +291,8 @@ export default class Authentication extends Component
 	async sign_out()
 	{
 		await this.props.sign_out()
+
+		this.props.preload_started()
 
 		// Refresh the current page after logout
 		window.location = location.pathname + (location.search || '') + (location.hash || '')

@@ -525,6 +525,11 @@ body.javascript-is-enabled .sign-out--fallback
 	transition-delay    : 500ms;
 }
 
+.preloading--immediate
+{
+	transition-delay : 0ms;
+}
+
 .preloading-spinner-container
 {
 	display: inline-block;

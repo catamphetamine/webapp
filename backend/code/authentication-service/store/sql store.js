@@ -4,7 +4,7 @@ import { sort_tokens_by_relevance } from './store'
 import online_status_store from './online/online store'
 import Sql from '../../common/sql'
 
-const authentication_token_access_history_table_name = 'authentication_token_access_history'
+// const authentication_token_access_history_table_name = 'authentication_token_access_history'
 
 export default class Sql_store
 {
@@ -17,8 +17,12 @@ export default class Sql_store
 	{
 		this.users = new Sql('users')
 		this.authentication_data = new Sql('authentication_data')
-		this.authentication_tokens = new Sql('authentication_tokens')
-		this.authentication_token_access_history = new Sql(authentication_token_access_history_table_name)
+		this.authentication_token_access_history = new Sql('authentication_token_access_history')
+		this.authentication_tokens = new Sql('authentication_tokens',
+		{
+			history: Sql.has_many(this.authentication_token_access_history, 'token'),
+			user: Sql.belong_to(this.users)
+		})
 	}
 
 	create_authentication_data(user_id, data)
@@ -105,16 +109,9 @@ export default class Sql_store
 		const user_token_limit = 10
 
 		// Get a list of all authentication tokens for this user
+		const tokens = await this.authentication_tokens.find_all({ user: user_id }, { including: ['history'] })
 
-		// let tokens = await new this.User({ id: user_id })
-		// 	.authentication_tokens()
-		// 	.fetch({ withRelated: ['history'] })
-
-		let tokens = await this.authentication_tokens.find_all({ user: user_id })
-		for (let token of tokens)
-		{
-			token.history = await this.authentication_token_access_history.find_all({ token: token.id })
-		}
+		console.log('@@@@@@', tokens)
 
 		sort_tokens_by_relevance(tokens)
 
@@ -200,15 +197,7 @@ export default class Sql_store
 
 	async get_tokens(user_id)
 	{
-		// const tokens = Sql.json(await new this.User({ id: user_id })
-		// 	.authentication_tokens()
-		// 	.fetch({ withRelated: 'history' }))
-
-		let tokens = await this.authentication_tokens.find_all({ user: user_id })
-		for (let token of tokens)
-		{
-			token.history = await this.authentication_token_access_history.find_all({ token: token.id })
-		}
+		const tokens = await this.authentication_tokens.find_all({ user: user_id }, { including: ['history'] })
 
 		sort_tokens_by_relevance(tokens)
 

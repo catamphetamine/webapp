@@ -35,6 +35,8 @@ import
 }
 from '../actions/authentication'
 
+import { preload_started } from '../actions/preload'
+
 import { get_language_from_locale } from '../../../code/locale'
 
 import Redux_form, { Field } from 'simpler-redux-form'
@@ -226,7 +228,8 @@ export const messages = defineMessages
 			sign_in,
 			sign_in_reset_error,
 			register,
-			register_reset_error
+			register_reset_error,
+			preload_started
 		},
 		dispatch)
 	})
@@ -633,6 +636,8 @@ export default class Authentication_form extends Component
 
 			// Refresh the page so that `authentication_token`
 			// is applied to the `http` tool.
+
+			this.props.preload_started()
 
 			// Redirect to a page
 			if (location.pathname === '/unauthenticated'

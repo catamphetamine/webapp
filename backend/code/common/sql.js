@@ -3,17 +3,19 @@ import knex_postgis_plugin from 'knex-postgis'
 
 export default class Sql
 {
-	constructor(table)
+	constructor(table, model)
 	{
+		this.id = 'id'
 		this.table = table
+		this.model = model
 	}
 
-	// Finds a single record
+	// Finds a single record by example object (or id)
 	async find(example, options)
 	{
 		if (!is_object(example))
 		{
-			return this.find({ id: example }) // , { require: true })
+			return this.find({ [this.id]: example })
 		}
 
 		const result = await knex.select('*')
@@ -24,16 +26,113 @@ export default class Sql
 
 		if (result.length === 0)
 		{
-			return null
+			return undefined
 		}
 
 		return result[0]
 	}
 
 	// Finds matching records
-	find_all(example)
+	async find_all(example, options = {})
 	{
-		return knex.select('*')
+		if (options.including)
+		{
+			// Validate `including`
+
+			for (let relation of options.including)
+			{
+				if (!this.model)
+				{
+					throw new Error('`model` not supplied for this SQL helper')
+				}
+
+				if (!this.model[relation])
+				{
+					throw new Error(`Unknown relation "${relation}"`)
+				}
+			}
+
+			let query = knex.select([knex.raw(`to_json(${this.table}.*) as ${this.table}`)].concat(options.including.map(relation =>
+			{
+				return knex.raw(`to_json(${this.model[relation].sql.table}.*) as ${relation}`)
+			})))
+			.from(this.table)
+
+			let join = 'leftOuterJoin'
+
+			for (let relation of options.including)
+			{
+				const backreference = this.model[relation].key
+
+				query = query[join]
+				(
+					this.model[relation].sql.table,
+					`${this.model[relation].sql.table}.${backreference ? this.model[relation].key : this.model[relation].sql.id}`,
+					`${this.table}.${backreference ? this.id : relation}`
+				)
+
+				if (join === 'leftOuterJoin')
+				{
+					join = 'join'
+				}
+			}
+
+			const results = await query.where(example).map(Sql.json)
+
+			const entities_by_id = {}
+			const entities_array = []
+
+			for (let result of results)
+			{
+				const entity = result[this.table]
+				let entity_by_id = entities_by_id[entity.id]
+				if (!entity_by_id)
+				{
+					entity_by_id = entity
+					entities_by_id[entity.id] = entity_by_id
+					entities_array.push(entity_by_id)
+				}
+
+				for (let key of Object.keys(result))
+				{
+					if (key === this.table)
+					{
+						continue
+					}
+
+					// In case of multiple one-to-many relations
+					// this code should check for the same "id" existence
+					// before adding to the array.
+					if (this.model[key].many)
+					{
+						if (!entity_by_id[key])
+						{
+							entity_by_id[key] = []
+						}
+
+						if (result[key])
+						{
+							const related_entity = result[key]
+							const related_entities = entity_by_id[key]
+							const related_entity_primary_key = this.model[key].sql.id
+							const already_added = related_entities.filter(_ => _[related_entity_primary_key] === related_entity[related_entity_primary_key]).length > 0
+							if (!already_added)
+							{
+								related_entities.push(related_entity)
+							}
+						}
+					}
+					else
+					{
+						entity_by_id[key] = result[key] === null ? undefined : result[key]
+					}
+				}
+			}
+
+			return entities_array
+		}
+
+		return await knex.select('*')
 			.from(this.table)
 			.where(example)
 			.map(Sql.json)
@@ -44,9 +143,9 @@ export default class Sql
 		return parseInt(await knex(this.table).count(example))
 	}
 
-	async create(data, options = {})
+	async create(data)
 	{
-		const ids = await knex.insert(data).into(this.table).returning(options.id || 'id')
+		const ids = await knex.insert(data).into(this.table).returning(this.id)
 
 		return ids[0]
 	}
@@ -55,7 +154,7 @@ export default class Sql
 	{
 		if (!is_object(where))
 		{
-			where = { id: where }
+			where = { [this.id]: where }
 		}
 
 		if (!data)
@@ -72,10 +171,10 @@ export default class Sql
 	{
 		if (!id)
 		{
-			throw new Error(`"id" not supplied for SQL .remove()`)
+			throw new Error(`"${this.id}" not supplied for SQL .remove()`)
 		}
 
-		return knex(this.table).where({ id }).del()
+		return knex(this.table).where({ [this.id]: id }).del()
 	}
 }
 
@@ -99,8 +198,30 @@ Sql.knex_postgis = () => knex_postgis
 
 Sql.json = (model) =>
 {
-	return parse_dates(model)
+	// Not using this one-liner because of
+	// the `anonymous` constructor issue
+	// https://github.com/tgriesser/knex/issues/1774
+	// return parse_dates(model)
+
+	for (let key of Object.keys(model))
+	{
+		model[key] = parse_dates(model[key])
+	}
+
+	return model
 }
+
+Sql.has_many = (to_sql, key) =>
+({
+	sql: to_sql,
+	key,
+	many: true
+})
+
+Sql.belong_to = (to_sql, key) =>
+({
+	sql: to_sql
+})
 
 // JSON date deserializer.
 //
@@ -141,6 +262,7 @@ function parse_dates(object)
 			const value = object[key]
 			if (typeof value === 'string' && ISO.test(value))
 			{
+				console.log('Found date: ', key, value)
 				object[key] = new Date(value)
 			}
 			else

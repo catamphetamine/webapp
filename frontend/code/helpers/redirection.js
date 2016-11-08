@@ -4,7 +4,7 @@ import Url from '../../../code/url'
 // (e.g. a "redirect_to_original_url_after_sign_in=..." parameter in the URL)
 export function should_redirect_to(location)
 {
-	return redirection_target(location) || (location.pathname + (location.search || '') + (location.hash || ''))
+	return redirection_target(location) || '/'
 }
 
 // gets the `request` parameter from the url
@@ -69,4 +69,9 @@ export function add_redirect(base_url, location)
 	}
 
 	return url.print()
+}
+
+function location_url(location)
+{
+	return location.pathname + (location.search || '') + (location.hash || '')
 }

@@ -3,16 +3,20 @@ import { asynchronous_handler } from '../redux tools'
 const initial_state = {}
 
 const handlers = asynchronous_handler
-({
-	event  : 'user: sign in',
-	result : 'user'
-},
+(
+// Not handling these events
+// to prevent a sense of "lagging"
+// (the page will be refreshed anyway)
+//{
+// 	event  : 'user: sign in',
+// 	result : 'user'
+// },
+// {
+// 	event  : 'user: sign out',
+// 	result : (result, state) => ({ ...state, user: undefined })
+// },
 {
 	event  : 'user: register'
-},
-{
-	event  : 'user: sign out',
-	result : (result, state) => ({ ...state, user: undefined })
 })
 
 // Updates user picture in the user bar when it is changed on the profile page
