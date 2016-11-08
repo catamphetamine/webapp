@@ -39,7 +39,6 @@ export default class Sql
 		if (options.including)
 		{
 			// Validate `including`
-
 			for (let relation of options.including)
 			{
 				if (!this.model)
@@ -53,7 +52,10 @@ export default class Sql
 				}
 			}
 
-			// Construct the select part of the query:
+			// Construct the select part of the query.
+			// Using JOINs for preloading relations (dependencies)
+			// https://github.com/tgriesser/knex/issues/61#issuecomment-259252127
+
 			// SELECT to_json(a.*) as a, to_json(b.*) as b
 			let query = knex.select([knex.raw(`to_json(${this.table}.*) as ${this.table}`)].concat(options.including.map(relation =>
 			{
