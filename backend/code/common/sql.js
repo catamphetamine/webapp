@@ -35,6 +35,7 @@ export default class Sql
 	// Finds matching records
 	async find_all(example, options = {})
 	{
+		// Complex fetch: preload relations (dependencies)
 		if (options.including)
 		{
 			// Validate `including`
@@ -52,18 +53,25 @@ export default class Sql
 				}
 			}
 
+			// Construct the select part of the query:
+			// SELECT to_json(a.*) as a, to_json(b.*) as b
 			let query = knex.select([knex.raw(`to_json(${this.table}.*) as ${this.table}`)].concat(options.including.map(relation =>
 			{
 				return knex.raw(`to_json(${this.model[relation].sql.table}.*) as ${relation}`)
 			})))
+			// ... FROM x
 			.from(this.table)
 
+			// Use left outer join for the first join
+			// to not loose the main entity
+			// in case all its dependencies are `null`
 			let join = 'leftOuterJoin'
 
 			for (let relation of options.including)
 			{
 				const backreference = this.model[relation].key
 
+				// ... LEFT OUTER JOIN a ON a.key = x.id
 				query = query[join]
 				(
 					this.model[relation].sql.table,
@@ -71,67 +79,98 @@ export default class Sql
 					`${this.table}.${backreference ? this.id : relation}`
 				)
 
+				// Use inner join for all subsequent joins
 				if (join === 'leftOuterJoin')
 				{
 					join = 'join'
 				}
 			}
 
+			// ... WHERE example
 			const results = await query.where(example).map(Sql.json)
 
-			const entities_by_id = {}
+			// Now we have an array of flattened results
+			// (containing duplicates all over it),
+			// so the results must be unflattened
+			// back to a structure.
+
+			// The results list
 			const entities_array = []
+
+			// Already encountered main entity register
+			const entities_by_id = {}
 
 			for (let result of results)
 			{
+				// The main entity
 				const entity = result[this.table]
+
+				// If this main entity hasn't been
+				// encountered before, then mark it
+				// as an "encountered" one.
 				let entity_by_id = entities_by_id[entity.id]
 				if (!entity_by_id)
 				{
 					entity_by_id = entity
+					// Register this entity as an "encountered" one
 					entities_by_id[entity.id] = entity_by_id
+					// Add this main entity to the results list
 					entities_array.push(entity_by_id)
 				}
 
+				// Fill in the main entity's relations (dependencies)
 				for (let key of Object.keys(result))
 				{
+					// Skip oneself
 					if (key === this.table)
 					{
 						continue
 					}
 
-					// In case of multiple one-to-many relations
-					// this code should check for the same "id" existence
-					// before adding to the array.
+					// If this relation is an array
+					// (one-to-many)
 					if (this.model[key].many)
 					{
+						// If there's no array property for this relation,
+						// then create it.
 						if (!entity_by_id[key])
 						{
 							entity_by_id[key] = []
 						}
 
+						// If a related entity exists,
+						// add it to the array property.
 						if (result[key])
 						{
+							// In case of multiple one-to-many relations
+							// this code should check for the same "id" existence
+							// before adding to the array
+							// to avoid duplicates.
 							const related_entity = result[key]
-							const related_entities = entity_by_id[key]
+							const added_entities = entity_by_id[key]
 							const related_entity_primary_key = this.model[key].sql.id
-							const already_added = related_entities.filter(_ => _[related_entity_primary_key] === related_entity[related_entity_primary_key]).length > 0
+							const already_added = added_entities.filter(_ => _[related_entity_primary_key] === related_entity[related_entity_primary_key]).length > 0
 							if (!already_added)
 							{
-								related_entities.push(related_entity)
+								added_entities.push(related_entity)
 							}
 						}
 					}
+					// If this relation is simple
+					// (one-to-one)
 					else
 					{
+						// `knex` returns `null` for `nothing`
 						entity_by_id[key] = result[key] === null ? undefined : result[key]
 					}
 				}
 			}
 
+			// Return the results list
 			return entities_array
 		}
 
+		// Simple fetch
 		return await knex.select('*')
 			.from(this.table)
 			.where(example)
@@ -262,7 +301,6 @@ function parse_dates(object)
 			const value = object[key]
 			if (typeof value === 'string' && ISO.test(value))
 			{
-				console.log('Found date: ', key, value)
 				object[key] = new Date(value)
 			}
 			else

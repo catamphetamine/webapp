@@ -111,8 +111,6 @@ export default class Sql_store
 		// Get a list of all authentication tokens for this user
 		const tokens = await this.authentication_tokens.find_all({ user: user_id }, { including: ['history'] })
 
-		console.log('@@@@@@', tokens)
-
 		sort_tokens_by_relevance(tokens)
 
 		// If the token limit hasn't been exceeded, then remove no tokens
