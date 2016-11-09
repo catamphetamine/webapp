@@ -4,17 +4,20 @@ const initial_state = {}
 
 const handlers = asynchronous_handler
 (
-// Not handling these events
-// to prevent a sense of "lagging"
-// (the page will be refreshed anyway)
-//{
-// 	event  : 'user: sign in',
-// 	result : 'user'
-// },
-// {
-// 	event  : 'user: sign out',
-// 	result : (result, state) => ({ ...state, user: undefined })
-// },
+{
+	event  : 'user: sign in',
+	// Not updating user data in Redux state
+	// to prevent a sense of "lagging"
+	// (the page will be refreshed anyway)
+	// result : 'user'
+},
+{
+	event  : 'user: sign out',
+	// Not updating user data in Redux state
+	// to prevent a sense of "lagging"
+	// (the page will be refreshed anyway)
+	// result : (result, state) => ({ ...state, user: undefined })
+},
 {
 	event  : 'user: register'
 })
