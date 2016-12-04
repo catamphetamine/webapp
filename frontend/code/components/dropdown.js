@@ -21,7 +21,6 @@ const show_selected_item_in_list = true
 //
 // https://material.google.com/components/menus.html
 
-@input()
 export default class Dropdown extends Component
 {
 	static propTypes =

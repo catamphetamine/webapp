@@ -162,7 +162,7 @@ export default class Form_showcase extends Component
 						style={style.form.checkbox}
 						concise
 						name="dropdown"
-						value={this.state.selected}
+						value={this.state.selected_with_icon}
 						options={[{
 							value: 'A',
 							label: 'Afghanistan',
@@ -179,9 +179,9 @@ export default class Form_showcase extends Component
 							icon: <img style={style.dropdown_icon_style} src="https://lipis.github.io/flag-icon-css/flags/4x3/ca.svg"/>
 						}]}
 						label="Choose"
-						on_change={ selected => this.setState({ selected }) }/>
+						on_change={ selected_with_icon => this.setState({ selected_with_icon }) }/>
 
-					You selected: {this.state.selected ? this.state.selected : 'nothing'}
+					You selected: {this.state.selected_with_icon ? this.state.selected_with_icon : 'nothing'}
 
 					<h2 style={style.form.label}>Checkbox</h2>
 
