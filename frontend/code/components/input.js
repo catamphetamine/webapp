@@ -11,7 +11,8 @@ export default function()
 		{
 			static propTypes =
 			{
-				on_change : PropTypes.func
+				on_change : PropTypes.func,
+				onChange  : PropTypes.func
 			}
 
 			constructor(props, context)
@@ -24,14 +25,22 @@ export default function()
 
 			render()
 			{
-				return <Wrapped ref="input" {...this.props} on_change={this.on_change}/>
+				return <Wrapped
+					ref="input"
+					{...this.props}
+					on_change={this.on_change}
+					onChange={this.on_change}/>
 			}
 
+			// Provides `.focus()` method on input components
 			focus()
 			{
 				ReactDOM.findDOMNode(this.refs.input.refs.input).focus()
 			}
 
+			// Unwraps the `value` from the event,
+			// so that `this.props.onChange` is passed
+			// the `value`, not the `event`.
 			on_change(value)
 			{
 				// If it's an event then extract the input value from it
@@ -41,18 +50,13 @@ export default function()
 					value = value.target.value
 				}
 
-				// // Check if the input value has actually changed
-				// if (this.props.value === value)
-				// {
-				// 	console.log('on change the same:', value)
-				// 	return // input value actually didn't change
-				// }
+				const on_change = this.props.on_change || this.props.onChange
 
 				// Input value changed, call the method
 				// which was passed as a property (on_change={...})
-				if (this.props.on_change)
+				if (on_change)
 				{
-					this.props.on_change(value)
+					on_change(value)
 				}
 			}
 		}

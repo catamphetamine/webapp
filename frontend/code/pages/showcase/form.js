@@ -80,6 +80,10 @@ export default class Form_showcase extends Component
 					<Dropdown style={style.form.checkbox} name="dropdown" value={this.state.selected} options={[{ value: 'A', label: 'Apple' }, { value: 'B', label: 'Banana' }, { value: 'C', label: 'Cranberry' }, { value: 'D', label: 'Date' }, { value: 'E', label: 'Elderberry' }, { value: 'F', label: 'Fig' }, { value: 'G', label: 'Garlic' }]} label="Choose" on_change={ selected => this.setState({ selected }) }/>
 					You selected: {this.state.selected ? this.state.selected : 'nothing'}
 
+					<h2 style={style.form.label}>Dropdown (autocomplete)</h2>
+					<Dropdown autocomplete style={style.form.checkbox} name="dropdown" value={this.state.selected} options={[{ value: 'A', label: 'Apple' }, { value: 'B', label: 'Banana' }, { value: 'C', label: 'Cranberry' }, { value: 'D', label: 'Date' }, { value: 'E', label: 'Elderberry' }, { value: 'F', label: 'Fig' }, { value: 'G', label: 'Garlic' }]} label="Choose" on_change={ selected => this.setState({ selected }) }/>
+					You selected: {this.state.selected ? this.state.selected : 'nothing'}
+
 					<h2 style={style.form.label}>Checkbox</h2>
 					<Checkbox style={style.form.checkbox} name="checkbox" value={this.state.checked} on_change={ checked => this.setState({ checked: checked }) }>Checkbox</Checkbox>
 					You checked: {this.state.checked ? 'checked' : 'unchecked'}

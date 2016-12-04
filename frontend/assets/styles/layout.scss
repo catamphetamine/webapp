@@ -46,7 +46,7 @@
 // // http://caniuse.com/#search=css%20var
 // @include set_css_variable_header_height(var(--header-height));
 
-.card, .dropdown-item-list-expanded
+.card, .dropdown-item-list--expanded
 {
 	box-shadow: var(--shadow);
 }
@@ -80,7 +80,7 @@ header
 			color: var(--base-color-lightest);
 		}
 	}
-	
+
 	.logo
 	{
 		color: var(--white-color);

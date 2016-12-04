@@ -11,11 +11,13 @@ const show_selected_item_in_list = true
 
 // Possible enhancements:
 //
-//  * Show menu above the toggler (Material design)
+//  * Scroll the list scrollbar when navigating with Up/Down keys
 //  * Position the selected element on top
 //    (scroll the list upon opening until it's positioned on top)
 //  * If the menu is close to a screen edge,
 //    automatically reposition it so that it fits on the screen
+//  * Maybe show menu immediately above the toggler
+//    (like in Material design), not below it.
 //
 // https://material.google.com/components/menus.html
 
@@ -39,6 +41,8 @@ export default class Dropdown extends Component
 		on_change  : PropTypes.func,
 		validate   : PropTypes.func,
 
+		autocomplete : PropTypes.bool,
+
 		alignment  : PropTypes.string,
 		menu       : PropTypes.bool,
 		toggler    : PropTypes.element,
@@ -51,7 +55,7 @@ export default class Dropdown extends Component
 		// transition_duration_max : PropTypes.number
 	}
 
-	static defaultProps = 
+	static defaultProps =
 	{
 		alignment : 'left',
 
@@ -73,6 +77,18 @@ export default class Dropdown extends Component
 		this.toggle           = this.toggle.bind(this)
 		this.document_clicked = this.document_clicked.bind(this)
 		this.on_key_down      = this.on_key_down.bind(this)
+
+		this.on_autocomplete_input_change = this.on_autocomplete_input_change.bind(this)
+
+		if (props.autocomplete)
+		{
+			if (!props.options)
+			{
+				throw new Error(`"options" property is required for an "autocomplete" dropdown`)
+			}
+
+			this.state.filtered_options = props.options
+		}
 
 		if (props.children && !props.menu)
 		{
@@ -128,7 +144,9 @@ export default class Dropdown extends Component
 
 	render()
 	{
-		const { options, upward, scroll, children, menu, toggler, alignment } = this.props
+		const { upward, scroll, children, menu, toggler, alignment, autocomplete } = this.props
+		const { filtered_options } = this.state
+		const options = autocomplete ? filtered_options : this.props.options
 
 		let list_style = upward ? style.list.upward : style.list.downward
 
@@ -172,17 +190,19 @@ export default class Dropdown extends Component
 
 		const wrapper_style = merge(style.wrapper, { textAlign: alignment })
 
-		const markup = 
+		const markup =
 		(
 			<div
+				ref="dropdown"
 				style={ this.props.style ? { ...wrapper_style, ...this.props.style } : wrapper_style }
 				className={classNames
 				(
-					"rich dropdown",
+					'rich',
+					'dropdown',
 					{
-						"dropdown-upward"    : upward,
-						"dropdown-expanded"  : this.state.expanded,
-						"dropdown-collapsed" : !this.state.expanded
+						'dropdown--upward'    : upward,
+						'dropdown--expanded'  : this.state.expanded,
+						'dropdown--collapsed' : !this.state.expanded
 					}
 				)}>
 
@@ -199,7 +219,7 @@ export default class Dropdown extends Component
 						</div>
 					}
 
-					{/* A list to select from */}
+					{/* The list of selectable options */}
 					{/* Math.max(this.state.height, this.props.max_height) */}
 					<ul
 						ref="list"
@@ -208,9 +228,9 @@ export default class Dropdown extends Component
 						(
 							'dropdown-item-list',
 							{
-								'dropdown-item-list-expanded'             : this.state.expanded,
-								'dropdown-item-list-simple-left-aligned'  : !children && alignment === 'left',
-								'dropdown-item-list-simple-right-aligned' : !children && alignment === 'right'
+								'dropdown-item-list--expanded'             : this.state.expanded,
+								'dropdown-item-list--simple-left-aligned'  : !children && alignment === 'left',
+								'dropdown-item-list--simple-right-aligned' : !children && alignment === 'right'
 							}
 						)}>
 						{list_items}
@@ -227,6 +247,9 @@ export default class Dropdown extends Component
 
 	render_list_item({ element, value, label, overflow }) // , first, last
 	{
+		const { disabled } = this.props
+		const { selected } = this.state
+
 		// If a list of options is supplied as a set of child React elements,
 		// then extract values from their props.
 		if (element)
@@ -234,9 +257,9 @@ export default class Dropdown extends Component
 			value = element.props.value
 		}
 
-		const is_selected = this.props.value !== undefined && value === this.props.value
+		const is_selected = value === selected
 
-		let list_item_style = { textAlign: 'left' } 
+		let list_item_style = { textAlign: 'left' }
 
 		if (!show_selected_item_in_list && is_selected)
 		{
@@ -291,6 +314,8 @@ export default class Dropdown extends Component
 		{
 			button = <button
 				onClick={event => this.item_clicked(value, event)}
+				disabled={disabled}
+				tabIndex="-1"
 				className={classNames
 				(
 					'dropdown-item',
@@ -309,7 +334,7 @@ export default class Dropdown extends Component
 				key={value}
 				className={classNames
 				({
-					'dropdown-list-item--separator' : element && element.type === Dropdown_separator
+					'dropdown-item-list__separator' : element && element.type === Dropdown_separator
 				})}
 				style={list_item_style}>
 				{button}
@@ -321,41 +346,49 @@ export default class Dropdown extends Component
 
 	render_selected_item()
 	{
-		const { options, children, value, label } = this.props
+		const { options, children, value, label, disabled, autocomplete } = this.props
+		const { expanded, autocomplete_width, autocomplete_input_value } = this.state
 
-		let selected_label
+		const selected_label = this.get_selected_item_label()
 
-		if (options)
+		if (autocomplete && expanded)
 		{
-			const selected = options.filter(x => x.value === value).first()
-			if (selected)
-			{
-				selected_label = selected.label
-			}
-		}
-		else
-		{
-			React.Children.forEach(children, function(child)
-			{
-				if (child.props.value === value)
-				{
-					selected_label = child.props.label
-				}
-			})
+			const markup =
+			(
+				<input
+					type="text"
+					ref="autocomplete"
+					placeholder={selected_label || label}
+					value={autocomplete_input_value}
+					onChange={this.on_autocomplete_input_change}
+					onKeyDown={this.on_key_down}
+					style={{ width: autocomplete_width + 'px' }}
+					className={classNames
+					(
+						"dropdown-item-selected",
+						"dropdown-item-selected--autocomplete",
+						{
+							"dropdown-item-selected--nothing" : !selected_label
+						}
+					)}/>
+			)
+
+			return markup
 		}
 
 		const markup =
 		(
 			<button
 				ref="selected"
+				type="button"
+				disabled={disabled}
 				onClick={this.toggle}
 				onKeyDown={this.on_key_down}
-				style={style.selected_item_label}
 				className={classNames
 				(
 					"dropdown-item-selected",
 					{
-						"dropdown-item-selected-nothing" : !selected_label
+						"dropdown-item-selected--nothing" : !selected_label
 					}
 				)}>
 
@@ -365,7 +398,7 @@ export default class Dropdown extends Component
 				{/* an arrow */}
 				<div
 					className="dropdown-arrow"
-					style={ this.state.expanded ? style.arrow.expanded : style.arrow }/>
+					style={ expanded ? style.arrow.expanded : style.arrow }/>
 			</button>
 		)
 
@@ -421,6 +454,33 @@ export default class Dropdown extends Component
 		return markup
 	}
 
+	get_selected_item_label()
+	{
+		const { options, value, children } = this.props
+
+		if (options)
+		{
+			const selected = options.filter(x => x.value === value).first()
+
+			if (selected)
+			{
+				return selected.label
+			}
+		}
+
+		let label
+
+		React.Children.forEach(children, function(child)
+		{
+			if (child.props.value === value)
+			{
+				label = child.props.label
+			}
+		})
+
+		return label
+	}
+
 	overflown()
 	{
 		return this.props.options.length > this.props.max_items
@@ -445,42 +505,110 @@ export default class Dropdown extends Component
 			// Don't navigate away when clicking links
 			event.preventDefault()
 
-			// Discard the click event so that it won't reach `document` click listener
+			// Not discarding the click event because
+			// other expanded dropdowns may be listening to it.
+			// // Discard the click event so that it won't reach `document` click listener
 			// event.stopPropagation() // doesn't work
 			// event.nativeEvent.stopImmediatePropagation()
 		}
 
-		const { disabled } = this.props
+		const { disabled, autocomplete, options, value } = this.props
 
 		if (disabled)
 		{
 			return
 		}
 
-		this.setState({ expanded: !this.state.expanded })
+		const { expanded } = this.state
+
+		if (!expanded && autocomplete)
+		{
+			this.setState
+			({
+				autocomplete_input_value: '',
+				filtered_options: options
+			})
+
+			if (!this.state.autocomplete_width)
+			{
+				this.setState({ autocomplete_width: this.get_widest_label_width() })
+			}
+		}
+
+		// Deferring expanding the dropdown upon click
+		// because document.onClick should finish first,
+		// otherwise `event.target` may be detached from the DOM
+		// and it would immediately toggle back to collapsed state.
+		setTimeout(() =>
+		{
+			this.setState
+			({
+				expanded: !expanded
+			})
+
+			if (!expanded && options)
+			{
+				this.setState
+				({
+					selected: value || options[0].value
+				})
+			}
+
+			if (autocomplete)
+			{
+				setTimeout(() =>
+				{
+					if (expanded)
+					{
+						this.refs.selected.focus()
+					}
+					else
+					{
+						this.refs.autocomplete.focus()
+					}
+				},
+				0)
+			}
+		},
+		0)
 	}
 
 	item_clicked(value, event)
 	{
-		event.preventDefault()
+		if (event)
+		{
+			event.preventDefault()
+		}
 
-		const { disabled, on_change } = this.props
+		const { disabled, on_change, autocomplete } = this.props
 
 		if (disabled)
 		{
 			return
 		}
 
-		this.refs.selected.focus()
+		if (autocomplete)
+		{
+			this.refs.autocomplete.focus()
+		}
+		else
+		{
+			this.refs.selected.focus()
+		}
 
 		on_change(value)
 	}
 
 	document_clicked(event)
 	{
-		// Don't close the dropdown if its expander button has been clicked
-		if (event.target === ReactDOM.findDOMNode(this.refs.selected)
-			|| is_descendant(event.target, ReactDOM.findDOMNode(this.refs.selected)))
+		const autocomplete = ReactDOM.findDOMNode(this.refs.autocomplete)
+		const selected_value_node = ReactDOM.findDOMNode(this.refs.selected)
+
+		// Don't close the dropdown if its expander button has been clicked,
+		// or if autocomplete has been clicked.
+		if (event.target === selected_value_node
+			|| is_descendant(event.target, selected_value_node)
+			|| event.target === autocomplete)
 		{
 			return
 		}
@@ -511,11 +639,8 @@ export default class Dropdown extends Component
 			return
 		}
 
-		// Maybe add support for "Escape" key in future
-		// (hiding the item list, cancelling current item selection process
-		//  and restoring the selection present before the item list was toggled)
-
 		const { options, value, on_change } = this.props
+		const { expanded, selected } = this.state
 
 		// Maybe add support for `children` arrow navigation in future
 		if (options)
@@ -526,42 +651,84 @@ export default class Dropdown extends Component
 				case 38:
 					event.preventDefault()
 
-					if (this.previous_value())
+					const previous = this.previous_selected_value()
+
+					if (previous !== undefined)
 					{
-						on_change(this.previous_value())
+						return this.setState({ selected: previous })
 					}
-					else if (value === undefined)
-					{
-						on_change(options.first().value)
-					}
+
 					return
 
 				// Select the next option (if present) on down arrow
 				case 40:
 					event.preventDefault()
 
-					if (this.next_value())
+					const next = this.next_selected_value()
+
+					if (next !== undefined)
 					{
-						return this.next_value() && on_change(this.next_value())
+						return this.setState({ selected: next })
 					}
-					else if (value === undefined)
+
+					return
+
+				// Collapse on Escape
+				//
+				// Maybe add this kind of support for "Escape" key in some future:
+				//  hiding the item list, cancelling current item selection process
+				//  and restoring the selection present before the item list was toggled.
+				//
+				case 27:
+					// Collapse the list if it's expanded
+					if (this.state.expanded)
 					{
-						on_change(options.first().value)
+						this.toggle()
+
+						// Restore focus when the list is collapsed
+						setTimeout
+						(() =>
+						{
+							this.refs.selected.focus()
+						},
+						0)
 					}
+
+					return
+
+				// Choose the selected item on Enter
+				case 13:
+					if (expanded)
+					{
+						event.preventDefault()
+
+						if (selected)
+						{
+							this.item_clicked(selected)
+							this.toggle()
+						}
+					}
+
 					return
 			}
 		}
 	}
 
-	// Get the previous value (relative to the currently selected value)
-	previous_value()
+	select(value)
 	{
-		const { options, value } = this.props
+		this.setState({ selected: value })
+	}
+
+	// Get the previous value (relative to the currently selected value)
+	previous_selected_value()
+	{
+		const { options } = this.props
+		const { selected } = this.state
 
 		let i = 0
 		while (i < options.length)
 		{
-			if (options[i].value === value)
+			if (options[i].value === selected)
 			{
 				if (i - 1 >= 0)
 				{
@@ -573,14 +740,15 @@ export default class Dropdown extends Component
 	}
 
 	// Get the next value (relative to the currently selected value)
-	next_value()
+	next_selected_value()
 	{
-		const { options, value } = this.props
+		const { options } = this.props
+		const { selected } = this.state
 
 		let i = 0
 		while (i < options.length)
 		{
-			if (options[i].value === value)
+			if (options[i].value === selected)
 			{
 				if (i + 1 < options.length)
 				{
@@ -615,6 +783,38 @@ export default class Dropdown extends Component
 		}
 
 		this.setState(state)
+	}
+
+	get_widest_label_width()
+	{
+		// <ul/> -> <li/> -> <button/>
+		const label = ReactDOM.findDOMNode(this.refs.list).firstChild.firstChild
+
+		const style = getComputedStyle(label)
+
+		const width = parseFloat(style.width)
+		const side_padding = parseFloat(style.paddingLeft)
+
+		return width - 2 * side_padding
+	}
+
+	on_autocomplete_input_change(event)
+	{
+		const input = event.target.value
+
+		const { options } = this.props
+
+		const filtered_options = options.filter(({ value, label, verbose, icon }) =>
+		{
+			return (verbose || label).toLowerCase().indexOf(input.toLowerCase()) !== -1
+		})
+
+		this.setState
+		({
+			autocomplete_input_value: input,
+			filtered_options,
+			selected: filtered_options.length > 0 ? filtered_options[0].value : undefined
+		})
 	}
 
 	// // https://github.com/daviferreira/react-sanfona/blob/master/src/AccordionItem/index.jsx#L54
@@ -672,10 +872,6 @@ const style = styler
 
 		&expanded
 
-	selected_item_label
-		// width      : 100%
-		// display: inline-block
-
 	arrow
 		display  : inline-block
 
@@ -689,7 +885,7 @@ const style = styler
 
 		transition: opacity 100ms ease-out
 
-		border-width : ${arrow_height}em ${arrow_width / 2}em 0 ${arrow_width / 2}em 
+		border-width : ${arrow_height}em ${arrow_width / 2}em 0 ${arrow_width / 2}em
 
 		border-style       : solid
 		border-left-color  : transparent
@@ -697,7 +893,7 @@ const style = styler
 
 		&expanded
 			opacity: 0.3
-  
+
 	list
 		position : absolute
 
