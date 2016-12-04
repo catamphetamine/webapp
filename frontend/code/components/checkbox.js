@@ -189,11 +189,14 @@ export default class Checkbox extends Component
 
 	toggle(event)
 	{
-		// If a link was clicked - don't treat it as a checkbox label click
+		// If a link was clicked - don't treat it as a checkbox label click.
+		// (is used for things like "✓ Read and accepted the <a>licence agreement</a>")
 		if (event.target.tagName.toLowerCase() === 'a')
 		{
 			return
 		}
+
+		ReactDOM.findDOMNode(this.refs.input).focus()
 
 		const { disabled, on_change, value } = this.props
 

@@ -58,6 +58,7 @@ export default class Form_showcase extends Component
 				{title("Form UI Showcase")}
 
 				<Form
+					action={() => alert('on submit')}
 					style={style.form}>
 
 					<h2 style={style.form.label}>{'Text input field'}</h2>
@@ -77,26 +78,145 @@ export default class Form_showcase extends Component
 					You selected: {this.state.select_value}
 
 					<h2 style={style.form.label}>Dropdown</h2>
-					<Dropdown style={style.form.checkbox} name="dropdown" value={this.state.selected} options={[{ value: 'A', label: 'Apple' }, { value: 'B', label: 'Banana' }, { value: 'C', label: 'Cranberry' }, { value: 'D', label: 'Date' }, { value: 'E', label: 'Elderberry' }, { value: 'F', label: 'Fig' }, { value: 'G', label: 'Garlic' }]} label="Choose" on_change={ selected => this.setState({ selected }) }/>
+
+					<Dropdown
+						style={style.form.checkbox}
+						name="dropdown"
+						value={this.state.selected}
+						options={[{
+							value: 'A',
+							label: 'Apple'
+						},
+						{
+							value: 'B',
+							label: 'Banana'
+						},
+						{
+							value: 'C',
+							label: 'Cranberry'
+						},
+						{
+							value: 'D',
+							label: 'Date'
+						},
+						{
+							value: 'E',
+							label: 'Elderberry'
+						},
+						{
+							value: 'F',
+							label: 'Fig'
+						},
+						{
+							value: 'G',
+							label: 'Garlic'
+						}]}
+						label="Choose"
+						on_change={ selected => this.setState({ selected }) }/>
+
 					You selected: {this.state.selected ? this.state.selected : 'nothing'}
 
 					<h2 style={style.form.label}>Dropdown (autocomplete)</h2>
-					<Dropdown autocomplete style={style.form.checkbox} name="dropdown" value={this.state.selected} options={[{ value: 'A', label: 'Apple' }, { value: 'B', label: 'Banana' }, { value: 'C', label: 'Cranberry' }, { value: 'D', label: 'Date' }, { value: 'E', label: 'Elderberry' }, { value: 'F', label: 'Fig' }, { value: 'G', label: 'Garlic' }]} label="Choose" on_change={ selected => this.setState({ selected }) }/>
+
+					<Dropdown
+						style={style.form.checkbox}
+						autocomplete
+						name="dropdown"
+						value={this.state.selected}
+						options={[{
+							value: 'A',
+							label: 'Apple'
+						},
+						{
+							value: 'B',
+							label: 'Banana'
+						},
+						{
+							value: 'C',
+							label: 'Cranberry'
+						},
+						{
+							value: 'D',
+							label: 'Date'
+						},
+						{
+							value: 'E',
+							label: 'Elderberry'
+						},
+						{
+							value: 'F',
+							label: 'Fig'
+						},
+						{
+							value: 'G',
+							label: 'Garlic'
+						}]}
+						label="Choose"
+						on_change={ selected => this.setState({ selected }) }/>
+
+					You selected: {this.state.selected ? this.state.selected : 'nothing'}
+
+					<h2 style={style.form.label}>Dropdown (icons)</h2>
+
+					<Dropdown
+						style={style.form.checkbox}
+						concise
+						name="dropdown"
+						value={this.state.selected}
+						options={[{
+							value: 'A',
+							label: 'Afghanistan',
+							icon: <img style={style.dropdown_icon_style} src="https://lipis.github.io/flag-icon-css/flags/4x3/af.svg"/>
+						},
+						{
+							value: 'B',
+							label: 'Barbados',
+							icon: <img style={style.dropdown_icon_style} src="https://lipis.github.io/flag-icon-css/flags/4x3/bb.svg"/>
+						},
+						{
+							value: 'C',
+							label: 'Canada',
+							icon: <img style={style.dropdown_icon_style} src="https://lipis.github.io/flag-icon-css/flags/4x3/ca.svg"/>
+						}]}
+						label="Choose"
+						on_change={ selected => this.setState({ selected }) }/>
+
 					You selected: {this.state.selected ? this.state.selected : 'nothing'}
 
 					<h2 style={style.form.label}>Checkbox</h2>
-					<Checkbox style={style.form.checkbox} name="checkbox" value={this.state.checked} on_change={ checked => this.setState({ checked: checked }) }>Checkbox</Checkbox>
+
+					<Checkbox
+						style={style.form.checkbox}
+						name="checkbox"
+						value={this.state.checked}
+						on_change={ checked => this.setState({ checked: checked }) }>
+						Checkbox
+					</Checkbox>
+
 					You checked: {this.state.checked ? 'checked' : 'unchecked'}
 
 					<h2 style={style.form.label}>Switch</h2>
+
 					<div style={style.form.switch_container}>
 						<label style={style.form.switch_label}>iOS style switch</label>
-						<Switch style={style.form.switch} name="switch" value={this.state.switched} on_change={ switched => this.setState({ switched: switched }) }/>
+						<Switch
+							style={style.form.switch}
+							name="switch"
+							value={this.state.switched}
+							on_change={ switched => this.setState({ switched: switched }) }/>
 					</div>
+
 					You switched: {this.state.switched ? 'on' : 'off'}
 
 					<h2 style={style.form.label}>Button group</h2>
-					<Button_group style={style.form.checkbox} name="button_group" options={[{ value: 'A', label: 'Apple' }, { value: 'B', label: 'Banana' }, { value: 'C', label: 'Cranberry' }]} value={this.state.button_group} on_change={ value => this.setState({ button_group: value }) }/>
+
+					<Button_group
+						style={style.form.checkbox}
+						name="button_group"
+						options={[{ value: 'A', label: 'Apple' }, { value: 'B', label: 'Banana' }, { value: 'C', label: 'Cranberry' }]}
+						value={this.state.button_group}
+						on_change={ value => this.setState({ button_group: value }) }/>
+
 					You selected: {this.state.button_group ? this.state.button_group : 'nothing'}
 
 					<h2 style={style.form.label}>File upload</h2>
@@ -173,6 +293,8 @@ export default class Form_showcase extends Component
 							hintStyle={style.form.date_picker.hint}
 							underlineShow={false}/>
 					</div>
+
+					<button type="submit">Submit</button>
 				</Form>
 			</div>
 		)
@@ -253,4 +375,9 @@ const style = styler
 		phone
 			display: inline-block
 			margin-left: 0.3em
+
+	dropdown_icon_style
+		width: 1em
+		margin-bottom: -0.05em
+		border: 1px solid #5f5f5f
 `

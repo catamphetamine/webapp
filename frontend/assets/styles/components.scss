@@ -173,6 +173,11 @@
 	background-color: var(--gray-color-lighter);
 }
 
+.dropdown-item__icon
+{
+	margin-right: 0.5em
+}
+
 .dropdown-item-list
 {
 	> li:first-child

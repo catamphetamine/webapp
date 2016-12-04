@@ -30,8 +30,9 @@ export default class Dropdown extends Component
 		(
 			PropTypes.shape
 			({
-				value: React.PropTypes.string.isRequired,
-				label: React.PropTypes.string.isRequired
+				value : React.PropTypes.string.isRequired,
+				label : React.PropTypes.string.isRequired,
+				icon  : React.PropTypes.node
 			})
 		),
 		name       : PropTypes.string,
@@ -40,6 +41,7 @@ export default class Dropdown extends Component
 		value      : PropTypes.any,
 		on_change  : PropTypes.func,
 		validate   : PropTypes.func,
+		concise    : PropTypes.bool,
 
 		autocomplete : PropTypes.bool,
 
@@ -79,6 +81,7 @@ export default class Dropdown extends Component
 		this.on_key_down      = this.on_key_down.bind(this)
 
 		this.on_autocomplete_input_change = this.on_autocomplete_input_change.bind(this)
+		this.on_key_down_in_container = this.on_key_down_in_container.bind(this)
 
 		if (props.autocomplete)
 		{
@@ -179,7 +182,7 @@ export default class Dropdown extends Component
 		// then transform those elements to <buttons/>
 		if (options)
 		{
-			list_items = options.map(({ value, label, icon }, index) => this.render_list_item({ value, label, overflow }))
+			list_items = options.map(({ value, label, icon }, index) => this.render_list_item({ value, label, icon, overflow }))
 		}
 		// Else, if a list of options is supplied as a set of child React elements,
 		// then render those elements.
@@ -194,6 +197,7 @@ export default class Dropdown extends Component
 		(
 			<div
 				ref="dropdown"
+				onKeyDown={this.on_key_down_in_container}
 				style={ this.props.style ? { ...wrapper_style, ...this.props.style } : wrapper_style }
 				className={classNames
 				(
@@ -245,7 +249,7 @@ export default class Dropdown extends Component
 		return markup
 	}
 
-	render_list_item({ element, value, label, overflow }) // , first, last
+	render_list_item({ element, value, label, icon, overflow }) // , first, last
 	{
 		const { disabled } = this.props
 		const { selected } = this.state
@@ -313,18 +317,17 @@ export default class Dropdown extends Component
 		else
 		{
 			button = <button
+				type="button"
 				onClick={event => this.item_clicked(value, event)}
 				disabled={disabled}
 				tabIndex="-1"
-				className={classNames
-				(
-					'dropdown-item',
-					{
-						'dropdown-item--selected-in-list' : is_selected
-					}
-				)}
+				className={classNames('dropdown-item',
+				{
+					'dropdown-item--selected-in-list' : is_selected
+				})}
 				style={item_style}>
-				{label}
+				{ icon && React.cloneElement(icon, { className: icon.props.className + ' dropdown-item__icon' }) }
+				{ label }
 			</button>
 		}
 
@@ -346,7 +349,7 @@ export default class Dropdown extends Component
 
 	render_selected_item()
 	{
-		const { options, children, value, label, disabled, autocomplete } = this.props
+		const { options, children, value, label, disabled, autocomplete, concise } = this.props
 		const { expanded, autocomplete_width, autocomplete_input_value } = this.state
 
 		const selected_label = this.get_selected_item_label()
@@ -376,6 +379,8 @@ export default class Dropdown extends Component
 			return markup
 		}
 
+		const selected = this.get_selected_item()
+
 		const markup =
 		(
 			<button
@@ -393,7 +398,7 @@ export default class Dropdown extends Component
 				)}>
 
 				{/* the label */}
-				{selected_label || label}
+				{ (concise && selected && selected.icon) ? selected.icon : (selected_label || label) }
 
 				{/* an arrow */}
 				<div
@@ -454,31 +459,43 @@ export default class Dropdown extends Component
 		return markup
 	}
 
-	get_selected_item_label()
+	get_selected_item()
 	{
 		const { options, value, children } = this.props
 
 		if (options)
 		{
-			const selected = options.filter(x => x.value === value).first()
-
-			if (selected)
-			{
-				return selected.label
-			}
+			return options.filter(x => x.value === value).first()
 		}
 
-		let label
+		let selected
 
 		React.Children.forEach(children, function(child)
 		{
 			if (child.props.value === value)
 			{
-				label = child.props.label
+				selected = child
 			}
 		})
 
-		return label
+		return selected
+	}
+
+	get_selected_item_label()
+	{
+		const { options } = this.props
+
+		const selected = this.get_selected_item()
+
+		if (selected)
+		{
+			if (options)
+			{
+				return selected.label
+			}
+
+			return selected.props.label
+		}
 	}
 
 	overflown()
@@ -498,7 +515,7 @@ export default class Dropdown extends Component
 		// return this.props.options.length >= this.props.transition_item_count_min
 	}
 
-	toggle(event)
+	toggle(event, toggle_options = {})
 	{
 		if (event)
 		{
@@ -554,7 +571,7 @@ export default class Dropdown extends Component
 				})
 			}
 
-			if (autocomplete)
+			if (autocomplete && !toggle_options.dont_focus_after_toggle)
 			{
 				setTimeout(() =>
 				{
@@ -632,6 +649,27 @@ export default class Dropdown extends Component
 		this.setState({ expanded: false })
 	}
 
+	on_key_down_in_container(event)
+	{
+		if (event.ctrlKey || event.altKey || event.shiftKey || event.metaKey)
+		{
+			return
+		}
+
+		const { expanded, selected } = this.state
+
+		switch (event.keyCode)
+		{
+			// Toggle on Tab out
+			case 9:
+				if (expanded)
+				{
+					this.toggle(undefined, { dont_focus_after_toggle: true })
+				}
+				return
+		}
+	}
+
 	on_key_down(event)
 	{
 		if (event.ctrlKey || event.altKey || event.shiftKey || event.metaKey)
@@ -639,7 +677,7 @@ export default class Dropdown extends Component
 			return
 		}
 
-		const { options, value, on_change } = this.props
+		const { options, value, on_change, autocomplete } = this.props
 		const { expanded, selected } = this.state
 
 		// Maybe add support for `children` arrow navigation in future
@@ -696,17 +734,73 @@ export default class Dropdown extends Component
 
 					return
 
-				// Choose the selected item on Enter
+				// on Enter
 				case 13:
+					// Choose the selected item on Enter
 					if (expanded)
 					{
 						event.preventDefault()
 
+						// If an item is selected
+						// (which may not be a case
+						//  when autocomplete is matching no items)
 						if (selected)
 						{
+							// Choose the selected item
 							this.item_clicked(selected)
+							// And collapse the dropdown
 							this.toggle()
 						}
+					}
+					// Else it should have just submitted the form on Enter,
+					// but it wouldn't because the dropdown element activator is a <button/>
+					// therefore hitting Enter while being focused on it just pushes that button.
+					// So submit the enclosing form manually.
+					else
+					{
+						let node = ReactDOM.findDOMNode(this.refs.dropdown)
+						while (node.parentElement)
+						{
+							node = node.parentElement
+							if (node.tagName.toLowerCase() === 'form')
+							{
+								event.preventDefault()
+								// Won't use `node.submit()` because it bypasses `onSubmit`.
+								// Will click the submit button instead.
+								const submit = node.querySelector('button[type=submit]')
+								if (submit)
+								{
+									submit.click()
+								}
+								break
+							}
+						}
+					}
+
+					return
+
+				// Open on Spacebar
+				case 32:
+					// Choose the selected item on Enter
+					if (expanded)
+					{
+						// ... only if it's not an autocomplete
+						if (!autocomplete)
+						{
+							event.preventDefault()
+
+							if (selected)
+							{
+								this.item_clicked(selected)
+								this.toggle()
+							}
+						}
+					}
+					// Expand the dropdown otherwise
+					else
+					{
+						event.preventDefault()
+						this.toggle()
 					}
 
 					return
