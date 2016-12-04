@@ -325,7 +325,7 @@ export default class Dropdown extends Component
 					'dropdown-item--selected-in-list' : is_selected
 				})}
 				style={item_style}>
-				{ icon && React.cloneElement(icon, { className: icon.props.className + ' dropdown-item__icon' }) }
+				{ icon && React.cloneElement(icon, { className: classNames(icon.props.className, 'dropdown-item__icon') }) }
 				{ label }
 			</button>
 		}
