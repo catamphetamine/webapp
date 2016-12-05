@@ -13,14 +13,14 @@ export default class Switch extends Component
 		value     : PropTypes.bool,
 		disabled  : PropTypes.bool,
 		// label     : PropTypes.string.isRequired,
-		on_change : PropTypes.func.isRequired,
+		onChange  : PropTypes.func.isRequired,
 		style     : PropTypes.object
 	}
 
 	constructor(props, context)
 	{
 		super(props, context)
-		
+
 		this.toggle = this.toggle.bind(this)
 	}
 
@@ -38,9 +38,9 @@ export default class Switch extends Component
 		(
 			<label className="rich switch" style={ this.props.style ? { ...style.switch, ...this.props.style } : style.switch}>
 				<input
-					type="checkbox" 
-					style={style.input} 
-					value={value} 
+					type="checkbox"
+					style={style.input}
+					value={value}
 					onChange={this.toggle}/>
 
 				<span className="switch-groove" style={value ? style.groove.when_checked : style.groove}/>
@@ -74,14 +74,14 @@ export default class Switch extends Component
 
 	toggle(event)
 	{
-		const { on_change, disabled, value } = this.props
+		const { onChange, disabled, value } = this.props
 
 		if (disabled)
 		{
 			return
 		}
 
-		on_change(!value)
+		onChange(!value)
 	}
 }
 

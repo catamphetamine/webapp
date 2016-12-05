@@ -62,11 +62,26 @@ export default class Form_showcase extends Component
 					style={style.form}>
 
 					<h2 style={style.form.label}>{'Text input field'}</h2>
-					<Text_input style={style.form.input} name="text_input" value={this.state.text_value} on_change={value => this.setState({ text_value: value })} label="Enter text"/>
+
+					<Text_input
+						style={style.form.input}
+						name="text_input"
+						value={this.state.text_value}
+						onChange={value => this.setState({ text_value: value })}
+						label="Enter text"/>
+
 					You entered: {this.state.text_value}
 
 					<h2 style={style.form.label}>{'Textarea'}</h2>
-					<Text_input multiline={true} name="description" style={style.form.textarea} value={this.state.textarea_value} on_change={value => this.setState({ textarea_value: value })} label="Enter text"/>
+
+					<Text_input
+						multiline={true}
+						name="description"
+						style={style.form.textarea}
+						value={this.state.textarea_value}
+						onChange={value => this.setState({ textarea_value: value })}
+						label="Enter text"/>
+
 					You entered: {this.state.textarea_value}
 
 					<h2 style={style.form.label}>{'Select'}</h2>
@@ -112,7 +127,7 @@ export default class Form_showcase extends Component
 							label: 'Garlic'
 						}]}
 						label="Choose"
-						on_change={ selected => this.setState({ selected }) }/>
+						onChange={ selected => this.setState({ selected }) }/>
 
 					You selected: {this.state.selected ? this.state.selected : 'nothing'}
 
@@ -152,7 +167,7 @@ export default class Form_showcase extends Component
 							label: 'Garlic'
 						}]}
 						label="Choose"
-						on_change={ selected => this.setState({ selected }) }/>
+						onChange={ selected => this.setState({ selected }) }/>
 
 					You selected: {this.state.selected ? this.state.selected : 'nothing'}
 
@@ -179,7 +194,7 @@ export default class Form_showcase extends Component
 							icon: <img style={style.dropdown_icon_style} src="https://lipis.github.io/flag-icon-css/flags/4x3/ca.svg"/>
 						}]}
 						label="Choose"
-						on_change={ selected_with_icon => this.setState({ selected_with_icon }) }/>
+						onChange={ selected_with_icon => this.setState({ selected_with_icon }) }/>
 
 					You selected: {this.state.selected_with_icon ? this.state.selected_with_icon : 'nothing'}
 
@@ -189,7 +204,7 @@ export default class Form_showcase extends Component
 						style={style.form.checkbox}
 						name="checkbox"
 						value={this.state.checked}
-						on_change={ checked => this.setState({ checked: checked }) }>
+						onChange={ checked => this.setState({ checked: checked }) }>
 						Checkbox
 					</Checkbox>
 
@@ -203,7 +218,7 @@ export default class Form_showcase extends Component
 							style={style.form.switch}
 							name="switch"
 							value={this.state.switched}
-							on_change={ switched => this.setState({ switched: switched }) }/>
+							onChange={ switched => this.setState({ switched: switched }) }/>
 					</div>
 
 					You switched: {this.state.switched ? 'on' : 'off'}
@@ -215,7 +230,7 @@ export default class Form_showcase extends Component
 						name="button_group"
 						options={[{ value: 'A', label: 'Apple' }, { value: 'B', label: 'Banana' }, { value: 'C', label: 'Cranberry' }]}
 						value={this.state.button_group}
-						on_change={ value => this.setState({ button_group: value }) }/>
+						onChange={ value => this.setState({ button_group: value }) }/>
 
 					You selected: {this.state.button_group ? this.state.button_group : 'nothing'}
 
@@ -274,7 +289,7 @@ export default class Form_showcase extends Component
 
 					<h2 style={style.form.label}>Snackbar</h2>
 
-					<button onClick={() => this.setState({ snack: `Current time: ${Date.now()}` })}>Show a snack</button>
+					<button type="button" onClick={() => this.setState({ snack: `Current time: ${Date.now()}` })}>Show a snack</button>
 					<Snackbar reset={() => this.setState({ snack: undefined })} value={this.state.snack}/>
 
 					<h2 style={style.form.label}>Date picker (part of Material UI)</h2>

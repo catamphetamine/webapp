@@ -20,8 +20,15 @@ export default class Button_group extends Component
 		name         : PropTypes.string,
 		value        : PropTypes.any,
 		disabled     : PropTypes.bool,
-		on_change    : PropTypes.func.isRequired,
+		onChange     : PropTypes.func.isRequired,
 		style        : PropTypes.object
+	}
+
+	constructor(props)
+	{
+		super(props)
+
+		this.on_key_down = this.on_key_down.bind(this)
 	}
 
 	// Client side rendering, javascript is enabled
@@ -34,9 +41,13 @@ export default class Button_group extends Component
 	{
 		const { options } = this.props
 
-		const markup = 
+		const markup =
 		(
-			<div className="rich button-group" style={ this.props.style ? { ...style.container, ...this.props.style } : style.container }>
+			<div
+				onKeyDown={this.on_key_down}
+				className="rich button-group"
+				style={ this.props.style ? { ...style.container, ...this.props.style } : style.container }>
+
 				{options.map((option, index) => this.render_button(option, index))}
 
 				{!this.state.javascript && this.render_static()}
@@ -52,11 +63,13 @@ export default class Button_group extends Component
 
 		const selected = value === option.value
 
-		const markup = 
+		const markup =
 		(
 			<button
 				key={option.value}
+				ref={index === 0 ? ref => this.first_button = ref : undefined}
 				type="button"
+				tabIndex={index === 0 ? undefined : "-1"}
 				onClick={this.chooser(option.value)}
 				className={classNames('button-group-button',
 				{
@@ -74,10 +87,12 @@ export default class Button_group extends Component
 	// supports disabled javascript
 	render_static()
 	{
+		const { options } = this.props
+
 		const markup =
 		(
 			<div className="rich-fallback">
-				{this.props.options.map((option, index) => this.render_static_option(option, index))}
+				{options.map((option, index) => this.render_static_option(option, index))}
 			</div>
 		)
 
@@ -86,16 +101,15 @@ export default class Button_group extends Component
 
 	render_static_option(option, index)
 	{
-		const selected = this.props.value === option.value
+		const { name, value } = this.props
 
 		const markup =
 		(
 			<span key={option.value} className='button-group-button' style={this.option_style(option, index)}>
 				<input
 					type="radio"
-					name={this.props.name}
-					checked={selected}
-					style={{}}/>
+					name={name}
+					checked={value === option.value}/>
 
 				{option.label}
 			</span>
@@ -137,14 +151,96 @@ export default class Button_group extends Component
 	{
 		return event =>
 		{
-			const { disabled, on_change } = this.props
+			const { disabled, onChange } = this.props
 
 			if (disabled)
 			{
 				return
 			}
 
-			on_change(value)
+			onChange(value)
+		}
+	}
+
+	focus()
+	{
+		ReactDOM.findDOMNode(this.first_button).focus()
+	}
+
+	on_key_down(event)
+	{
+		if (event.ctrlKey || event.altKey || event.shiftKey || event.metaKey)
+		{
+			return
+		}
+
+		const { onChange } = this.props
+
+		switch (event.keyCode)
+		{
+			// Select the previous option (if present) on left arrow
+			case 37:
+				event.preventDefault()
+
+				const previous = this.previous_value()
+
+				if (previous !== undefined)
+				{
+					return onChange(previous)
+				}
+
+				return
+
+			// Select the next option (if present) on right arrow
+			case 39:
+				event.preventDefault()
+
+				const next = this.next_value()
+
+				if (next !== undefined)
+				{
+					return onChange(next)
+				}
+
+				return
+		}
+	}
+
+	// Get the previous value (relative to the currently selected value)
+	previous_value()
+	{
+		const { options, value } = this.props
+
+		let i = 0
+		while (i < options.length)
+		{
+			if (options[i].value === value)
+			{
+				if (i - 1 >= 0)
+				{
+					return options[i - 1].value
+				}
+			}
+			i++
+		}
+	}
+
+	// Get the next value (relative to the currently selected value)
+	next_value()
+	{
+		const { options, value } = this.props
+
+		let i = 0
+		while (i < options.length)
+		{
+			if (options[i].value === value)
+			{
+				if (i + 1 < options.length)
+				{
+					return options[i + 1].value
+				}
+			}
+			i++
 		}
 	}
 }

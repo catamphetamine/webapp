@@ -18,7 +18,7 @@ import { defineMessages } from 'react-intl'
 import international from '../international/internationalize'
 
 // брать с сервера, из i18n файлов (key - имя, label - из файла этого считывать)
-const locales = 
+const locales =
 [
 	{ value: 'en', label: 'English' },
 	{ value: 'ru', label: 'Русский' },
@@ -48,7 +48,7 @@ const messages = defineMessages
 
 @connect
 (
-	model => 
+	model =>
 	({
 		locale   : model.locale.locale,
 		location : model.router.location
@@ -88,11 +88,11 @@ export default class Locale_switcher extends Component
 					post="/users/legacy/locale">
 
 					{/* language list */}
-					<Dropdown 
+					<Dropdown
 						name="locale"
-						label={translate(messages.language)} 
-						value={locale} 
-						on_change={this.set_locale} 
+						label={translate(messages.language)}
+						value={locale}
+						onChange={this.set_locale}
 						title={translate(messages.language)}
 						alignment={alignment}
 						upward={upward}>
@@ -112,18 +112,18 @@ export default class Locale_switcher extends Component
 					</Dropdown>
 
 					{/* submit */}
-					<Button 
-						className="rich-fallback" 
-						style={style.locale.form.button} 
+					<Button
+						className="rich-fallback"
+						style={style.locale.form.button}
 						submit={true}>
 
 						{translate(messages.apply)}
 					</Button>
 
 					{/* this page url for back redirection */}
-					<input 
-						type="hidden" 
-						name="from_url" 
+					<input
+						type="hidden"
+						name="from_url"
 						value={new Url(location).to_relative_url()}/>
 				</Form>
 			</div>
@@ -185,7 +185,7 @@ const style = styler
 			display : inline-block
 			vertical-align : bottom
 
-			button	
+			button
 				margin-left   : 0.5em
 				margin-bottom : 0.2em
 

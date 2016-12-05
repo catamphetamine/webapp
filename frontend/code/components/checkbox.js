@@ -3,11 +3,8 @@ import ReactDOM from 'react-dom'
 import styler from 'react-styling'
 import classNames from 'classnames'
 
-import input from './input'
-
 // http://tympanus.net/codrops/2013/10/15/animated-checkboxes-and-radio-buttons-with-svg/
 
-@input()
 export default class Checkbox extends Component
 {
 	state = {}
@@ -18,7 +15,7 @@ export default class Checkbox extends Component
 		value     : PropTypes.bool,
 		disabled  : PropTypes.bool,
 		// label     : PropTypes.string.isRequired,
-		on_change : PropTypes.func.isRequired,
+		onChange  : PropTypes.func.isRequired,
 		validate  : PropTypes.func,
 		focus     : PropTypes.bool,
 		style     : PropTypes.object
@@ -69,7 +66,7 @@ export default class Checkbox extends Component
 				style={ this.props.style ? { ...style.container, ...this.props.style } : style.container}>
 
 				<input
-					ref="input"
+					ref={ref => this.checkbox = ref}
 					type="checkbox"
 					disabled={disabled}
 					onChange={this.toggle}
@@ -108,14 +105,17 @@ export default class Checkbox extends Component
 			strokeLinejoin : 'round'
 		}
 
-		if (!_server_)
+		// For a web browser
+		if (typeof window !== 'undefined')
 		{
-			return <path ref="path" d={path} style={this.state.path_style || path_style}></path>
+			return <path
+				ref={ref => this.path = ref}
+				d={path}
+				style={this.state.path_style || path_style}/>
 		}
-		else
-		{
-			return <path d={path} style={path_style}></path>
-		}
+
+		// For Node.js
+		return <path d={path} style={path_style}/>
 	}
 
 	// supports disabled javascript
@@ -149,7 +149,7 @@ export default class Checkbox extends Component
 
 		const i = 0
 
-		const path_element = ReactDOM.findDOMNode(this.refs.path)
+		const path_element = ReactDOM.findDOMNode(this.path)
 
 		const animation = { speed : .1, easing : 'ease-in-out' }
 
@@ -187,6 +187,11 @@ export default class Checkbox extends Component
 		this.setState({ path_style: extend(path_style, style.svg_path) })
 	}
 
+	focus()
+	{
+		ReactDOM.findDOMNode(this.checkbox).focus()
+	}
+
 	toggle(event)
 	{
 		// If a link was clicked - don't treat it as a checkbox label click.
@@ -196,9 +201,9 @@ export default class Checkbox extends Component
 			return
 		}
 
-		ReactDOM.findDOMNode(this.refs.input).focus()
+		this.focus()
 
-		const { disabled, on_change, value } = this.props
+		const { disabled, onChange, value } = this.props
 
 		if (disabled)
 		{
@@ -213,7 +218,7 @@ export default class Checkbox extends Component
 			this.setState({ path_style: undefined })
 		}
 
-		on_change(!value)
+		onChange(!value)
 	}
 }
 

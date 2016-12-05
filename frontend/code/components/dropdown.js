@@ -3,8 +3,6 @@ import ReactDOM from 'react-dom'
 import styler from 'react-styling'
 import classNames from 'classnames'
 
-import input from './input'
-
 const scrollbar_width = '17px'
 const add_padding_for_scrollbar = true
 const show_selected_item_in_list = true
@@ -38,7 +36,7 @@ export default class Dropdown extends Component
 		label      : PropTypes.string,
 		disabled   : PropTypes.bool,
 		value      : PropTypes.any,
-		on_change  : PropTypes.func,
+		onChange   : PropTypes.func,
 		validate   : PropTypes.func,
 		concise    : PropTypes.bool,
 
@@ -113,9 +111,9 @@ export default class Dropdown extends Component
 			throw new Error(`Supply a "toggler" component when enabling "menu" in <Dropdown/>`)
 		}
 
-		if (!props.menu && !props.on_change)
+		if (!props.menu && !props.onChange)
 		{
-			throw new Error(`"on_change" property must be specified for <Dropdown/>`)
+			throw new Error(`"onChange" property must be specified for <Dropdown/>`)
 		}
 	}
 
@@ -596,7 +594,7 @@ export default class Dropdown extends Component
 			event.preventDefault()
 		}
 
-		const { disabled, on_change, autocomplete } = this.props
+		const { disabled, onChange, autocomplete } = this.props
 
 		if (disabled)
 		{
@@ -612,7 +610,7 @@ export default class Dropdown extends Component
 			this.refs.selected.focus()
 		}
 
-		on_change(value)
+		onChange(value)
 	}
 
 	document_clicked(event)
@@ -676,7 +674,7 @@ export default class Dropdown extends Component
 			return
 		}
 
-		const { options, value, on_change, autocomplete } = this.props
+		const { options, value, autocomplete } = this.props
 		const { expanded, selected } = this.state
 
 		// Maybe add support for `children` arrow navigation in future

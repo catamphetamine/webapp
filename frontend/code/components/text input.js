@@ -3,9 +3,6 @@ import ReactDOM from 'react-dom'
 import styler from 'react-styling'
 import classNames from 'classnames'
 
-import input from './input'
-
-@input()
 export default class Text_input extends Component
 {
 	state = {}
@@ -17,7 +14,7 @@ export default class Text_input extends Component
 		value            : PropTypes.any,
 		disabled         : PropTypes.bool,
 		description      : PropTypes.string,
-		on_change        : PropTypes.func.isRequired,
+		onChange         : PropTypes.func.isRequired,
 		error            : PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
 		indicate_invalid : PropTypes.bool,
 		placeholder      : PropTypes.string,
@@ -42,7 +39,7 @@ export default class Text_input extends Component
 	{
 		if (this.props.multiline)
 		{
-			this.setState({ autoresize: autoresize_measure(ReactDOM.findDOMNode(this.refs.input)) })
+			this.setState({ autoresize: autoresize_measure(ReactDOM.findDOMNode(this.input)) })
 		}
 
 		this.setState({ javascript: true })
@@ -128,7 +125,7 @@ export default class Text_input extends Component
 	render_input(options = {})
 	{
 		const { placeholder, ref, name } = options
-		const { value, multiline, email, password, focus, on_change, disabled } = this.props
+		const { value, multiline, email, password, focus, onChange, disabled } = this.props
 
 		let type
 
@@ -154,10 +151,10 @@ export default class Text_input extends Component
 		const properties =
 		{
 			name        : name === false ? undefined : this.props.name,
-			ref         : ref === false ? undefined : 'input',
+			ref         : ref === false ? undefined : ref => this.input = ref,
 			value       : (value === undefined || value === null) ? '' : value,
 			placeholder : placeholder || this.props.placeholder,
-			onChange    : on_change,
+			onChange    : event => onChange(event.target.value),
 			disabled,
 			// onFocus     : this.props.on_focus,
 			// onBlur      : this.props.on_blur,
@@ -226,6 +223,11 @@ export default class Text_input extends Component
 		window.scroll(window.pageXOffset, current_scroll_position)
 	}
 
+	focus()
+	{
+		ReactDOM.findDOMNode(this.input).focus()
+	}
+
 	/*
 	// if this is ever implemented then also add these styles:
 	//
@@ -238,7 +240,7 @@ export default class Text_input extends Component
 	// https://github.com/Dogfalo/materialize/blob/master/js/forms.js#L118
 	autoresize()
 	{
-		const textarea = ReactDOM.findDOMNode(this.refs.input)
+		const textarea = ReactDOM.findDOMNode(this.input)
 
 		// Set font properties of hidden_div
 
