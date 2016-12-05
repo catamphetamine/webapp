@@ -3,7 +3,7 @@ import shallow_not_equal from 'react-addons-shallow-compare'
 
 export default class Image extends React.Component
 {
-	static propTypes = 
+	static propTypes =
 	{
 		src           : PropTypes.string,
 		type          : PropTypes.string,
@@ -23,7 +23,7 @@ export default class Image extends React.Component
 	constructor(props, context)
 	{
 		super(props, context)
-		
+
 		if (props.sizes)
 		{
 			this.state.size = get_preferred_size(props.sizes, props.default_width)
@@ -111,7 +111,7 @@ export default class Image extends React.Component
 		const { src, style, className } = this.props
 
 		return <img
-			ref="image"
+			ref={ref => this.image = ref}
 			src={src || this.url()}
 			style={style}
 			className={className}/>
@@ -123,7 +123,7 @@ export default class Image extends React.Component
 		const preferred_size = this.get_preferred_size(sizes)
 
 		if (force ||
-			!size || 
+			!size ||
 			preferred_size.width > size.width)
 		{
 			this.setState({ size: preferred_size })
@@ -132,7 +132,7 @@ export default class Image extends React.Component
 
 	width()
 	{
-		return this.refs.image.offsetWidth
+		return this.image.offsetWidth
 	}
 
 	get_preferred_size(sizes)
@@ -172,7 +172,7 @@ export function get_preferred_size(sizes, width, max_width)
 	{
 		return sizes.first()
 	}
-	
+
 	let device_pixel_ratio = 1
 
 	if (typeof(window) !== 'undefined' && window.devicePixelRatio !== undefined)

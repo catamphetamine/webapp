@@ -496,7 +496,7 @@ export default class User_profile extends Component
 
 							{/* User picture */}
 							<Uploadable_user_picture
-								ref="user_picture"
+								ref={ref => this.user_picture = ref}
 								edit={edit}
 								user={user}
 								uploaded_picture={uploaded_picture}
@@ -727,7 +727,7 @@ export default class User_profile extends Component
 		image.onload  = () => dispatch({ type: 'user profile: upload user picture: prefetch: done', result: uploaded_picture })
 		image.onerror = () => dispatch({ type: 'user profile: upload user picture: prefetch: failed' })
 
-		image.src = url(get_preferred_size(uploaded_picture.sizes, this.refs.user_picture.decoratedComponentInstance.width()))
+		image.src = url(get_preferred_size(uploaded_picture.sizes, this.user_picture.decoratedComponentInstance.width()))
 	}
 
 	// User's [place, country]
@@ -816,7 +816,7 @@ class Uploadable_user_picture extends React.Component
 
 				{/* The picture itself */}
 				<User_picture
-					ref="user_picture"
+					ref={ref => this.user_picture = ref}
 					style={style.user_picture.element.image}
 					user={user}
 					picture={edit ? uploaded_picture : undefined}/>
@@ -864,7 +864,7 @@ class Uploadable_user_picture extends React.Component
 
 	width()
 	{
-		return this.refs.user_picture.width()
+		return this.user_picture.width()
 	}
 }
 

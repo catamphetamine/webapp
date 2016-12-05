@@ -80,7 +80,7 @@ export default class Tooltip extends Component
 		const width  = this.tooltip.offsetWidth
 		const height = this.tooltip.offsetHeight
 
-		const origin = ReactDOM.findDOMNode(this.refs.origin)
+		const origin = ReactDOM.findDOMNode(this.origin)
 
 		const origin_width  = origin.offsetWidth
 		// const origin_height = origin.offsetHeight
@@ -224,7 +224,7 @@ export default class Tooltip extends Component
 		const markup =
 		(
 			<div
-				ref="origin"
+				ref={ref => this.origin = ref}
 				onMouseEnter={this.on_mouse_enter}
 				onMouseLeave={this.on_mouse_leave}
 				onTouchStart={this.on_touch_start}

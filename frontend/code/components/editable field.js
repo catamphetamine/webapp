@@ -107,7 +107,7 @@ export default class Editable_field extends Component
 		(
 			<Button
 				key="change"
-				ref="change_button"
+				ref={ref => this.change_button = ref}
 				action={this.edit}>
 				{translate(default_messages.change).toLowerCase()}
 			</Button>
@@ -183,7 +183,7 @@ export default class Editable_field extends Component
 
 		this.setState({ edit: false }, () =>
 		{
-			this.refs.change_button.focus()
+			this.change_button.focus()
 		})
 	}
 
@@ -203,9 +203,9 @@ export default class Editable_field extends Component
 		{
 			// If `save` didn't retain edit mode,
 			// then focus on the "Change" button.
-			if (this.refs.change_button)
+			if (this.change_button)
 			{
-				this.refs.change_button.focus()
+				this.change_button.focus()
 			}
 		})
 	}

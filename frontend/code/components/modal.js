@@ -121,7 +121,6 @@ export default class Modal extends Component
 		const markup =
 		(
 			<React_modal
-				ref="modal"
 				isOpen={shown}
 				onAfterOpen={this.on_after_open}
 				onRequestClose={this.on_request_close}

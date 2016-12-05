@@ -10,7 +10,7 @@ export default class Menu extends Component
 {
 	state = {}
 
-	static propTypes = 
+	static propTypes =
 	{
 		show         : PropTypes.bool,
 		show_while   : PropTypes.bool,
@@ -97,7 +97,7 @@ export default class Menu extends Component
 						</svg>
 					</button>*/}
 
-					<ul ref="menu" style={menu_style} className={classNames('menu', 'menu-collapsible', { 'menu-shown': this.props.show_while })}>
+					<ul ref={ref => this.menu = ref} style={menu_style} className={classNames('menu', 'menu-collapsible', { 'menu-shown': this.props.show_while })}>
 						{this.render_menu_items()}
 					</ul>
 				</nav>
@@ -135,21 +135,21 @@ export default class Menu extends Component
 
 	// calculate_height()
 	// {
-	// 	const dom_node = ReactDOM.findDOMNode(this.refs.menu)
+	// 	const dom_node = ReactDOM.findDOMNode(this.menu)
 	//
 	// 	this.setState({ height: this.props.show ? dom_node.scrollHeight : 0 })
 	// }
 
 	calculate_width()
 	{
-		const dom_node = ReactDOM.findDOMNode(this.refs.menu)
+		const dom_node = ReactDOM.findDOMNode(this.menu)
 
 		this.props.update_width(dom_node.offsetWidth)
 	}
 
 	// document_clicked(event)
 	// {
-	// 	if (event.target.className === 'menu-icon' 
+	// 	if (event.target.className === 'menu-icon'
 	// 		|| event.target.className === 'menu-item'
 	// 		|| event.target.className === 'menu-button')
 	// 	{

@@ -82,7 +82,7 @@ export default class Snackbar extends Component
 		// so that the slide-from-bottom animation could be played.
 		if (this.state.height === undefined && this.state.value)
 		{
-			const height = ReactDOM.findDOMNode(this.refs.snackbar).offsetHeight
+			const height = ReactDOM.findDOMNode(this.snackbar).offsetHeight
 			const anti_lag_timeout = 100 // Otherwise it would jump to fully shown in Chrome when there's a queue of snacks waiting to be shown
 			this.setState({ height }, () => setTimeout(() => this.setState({ show: true }), anti_lag_timeout))
 		}
@@ -129,7 +129,7 @@ export default class Snackbar extends Component
 		const markup =
 		(
 			<div style={container_style} className="snackbar__container">
-				<div ref="snackbar" style={snackbar_style} className="snackbar">
+				<div ref={ref => this.snackbar = ref} style={snackbar_style} className="snackbar">
 					<div style={snackbar_text_style} className="snackbar__text">
 						{value}
 					</div>

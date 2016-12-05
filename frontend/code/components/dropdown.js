@@ -193,7 +193,7 @@ export default class Dropdown extends Component
 		const markup =
 		(
 			<div
-				ref="dropdown"
+				ref={ref => this.dropdown = ref}
 				onKeyDown={this.on_key_down_in_container}
 				style={ this.props.style ? { ...wrapper_style, ...this.props.style } : wrapper_style }
 				className={classNames
@@ -215,7 +215,7 @@ export default class Dropdown extends Component
 
 					{/* Menu toggler */}
 					{menu &&
-						<div ref="menu_toggler" style={style.menu_toggler}>
+						<div ref={ref => this.menu_toggler} style={style.menu_toggler}>
 							{React.cloneElement(toggler, { onClick : this.toggle })}
 						</div>
 					}
@@ -223,7 +223,7 @@ export default class Dropdown extends Component
 					{/* The list of selectable options */}
 					{/* Math.max(this.state.height, this.props.max_height) */}
 					<ul
-						ref="list"
+						ref={ref => this.list = ref}
 						style={list_style}
 						className={classNames
 						(
@@ -258,7 +258,7 @@ export default class Dropdown extends Component
 			value = element.props.value
 		}
 
-		const is_selected = value === selected
+		const is_selected = value !== undefined && value === selected
 
 		let list_item_style = { textAlign: 'left' }
 
@@ -357,7 +357,7 @@ export default class Dropdown extends Component
 			(
 				<input
 					type="text"
-					ref="autocomplete"
+					ref={ref => this.autocomplete = ref}
 					placeholder={selected_label || label}
 					value={autocomplete_input_value}
 					onChange={this.on_autocomplete_input_change}
@@ -381,7 +381,7 @@ export default class Dropdown extends Component
 		const markup =
 		(
 			<button
-				ref="selected"
+				ref={ref => this.selected = ref}
 				type="button"
 				disabled={disabled}
 				onClick={this.toggle}
@@ -574,11 +574,11 @@ export default class Dropdown extends Component
 				{
 					if (expanded)
 					{
-						this.refs.selected.focus()
+						this.selected.focus()
 					}
 					else
 					{
-						this.refs.autocomplete.focus()
+						this.autocomplete.focus()
 					}
 				},
 				0)
@@ -603,11 +603,11 @@ export default class Dropdown extends Component
 
 		if (autocomplete)
 		{
-			this.refs.autocomplete.focus()
+			this.autocomplete.focus()
 		}
 		else
 		{
-			this.refs.selected.focus()
+			this.selected.focus()
 		}
 
 		onChange(value)
@@ -615,8 +615,8 @@ export default class Dropdown extends Component
 
 	document_clicked(event)
 	{
-		const autocomplete = ReactDOM.findDOMNode(this.refs.autocomplete)
-		const selected_value_node = ReactDOM.findDOMNode(this.refs.selected)
+		const autocomplete = ReactDOM.findDOMNode(this.autocomplete)
+		const selected_value_node = ReactDOM.findDOMNode(this.selected)
 
 		// Don't close the dropdown if its expander button has been clicked,
 		// or if autocomplete has been clicked.
@@ -628,13 +628,13 @@ export default class Dropdown extends Component
 		}
 
 		// Don't close the dropdown if menu toggler has been clicked
-		if (this.props.menu && is_descendant(event.target, ReactDOM.findDOMNode(this.refs.menu_toggler)))
+		if (this.props.menu && is_descendant(event.target, ReactDOM.findDOMNode(this.menu_toggler)))
 		{
 			return
 		}
 
 		// Don't close the dropdown if a blank spot in the list was clicked
-		if (is_descendant(event.target, ReactDOM.findDOMNode(this.refs.list)))
+		if (is_descendant(event.target, ReactDOM.findDOMNode(this.list)))
 		{
 			if (!event.target.classList.contains('dropdown-item')
 				&& !find_ancestor_by_class(event.target, 'dropdown-item'))
@@ -724,7 +724,7 @@ export default class Dropdown extends Component
 						setTimeout
 						(() =>
 						{
-							this.refs.selected.focus()
+							this.selected.focus()
 						},
 						0)
 					}
@@ -755,7 +755,7 @@ export default class Dropdown extends Component
 					// So submit the enclosing form manually.
 					else
 					{
-						let node = ReactDOM.findDOMNode(this.refs.dropdown)
+						let node = ReactDOM.findDOMNode(this.dropdown)
 						while (node.parentElement)
 						{
 							node = node.parentElement
@@ -853,7 +853,7 @@ export default class Dropdown extends Component
 	// Calculates height of the expanded item list
 	calculate_height()
 	{
-		const list_dom_node = ReactDOM.findDOMNode(this.refs.list)
+		const list_dom_node = ReactDOM.findDOMNode(this.list)
 		const border = parseInt(window.getComputedStyle(list_dom_node).borderTopWidth)
 		const height = list_dom_node.scrollHeight // + 2 * border // inner height + 2 * border
 
@@ -879,7 +879,7 @@ export default class Dropdown extends Component
 	get_widest_label_width()
 	{
 		// <ul/> -> <li/> -> <button/>
-		const label = ReactDOM.findDOMNode(this.refs.list).firstChild.firstChild
+		const label = ReactDOM.findDOMNode(this.list).firstChild.firstChild
 
 		const style = getComputedStyle(label)
 

@@ -304,13 +304,13 @@ class Check_password_popup extends Component
 				actions=
 				{[{
 					text    : translate(default_messages.done),
-					action  : () => this.refs.check_password.ref().submit(),
+					action  : () => this.check_password.ref().submit(),
 					primary : true,
 					busy    : check_password_pending
 				}]}>
 
 				<Check_password
-					ref="check_password"
+					ref={ref => this.check_password = ref}
 					submit_form={this.done}
 					submitting={check_password_pending}
 					action={check_password}
@@ -377,7 +377,7 @@ class Check_password extends Component
 		const markup =
 		(
 			<Form
-				ref="form"
+				ref={ref => this.form = ref}
 				busy={submitting}
 				action={submit(this.reset_error, this.submit_form)}
 				error={error && this.error_message(error)}>
@@ -399,7 +399,7 @@ class Check_password extends Component
 	// Public API
 	submit()
 	{
-		this.refs.form.submit()
+		this.form.submit()
 	}
 
 	// Reset form error before running form field validation

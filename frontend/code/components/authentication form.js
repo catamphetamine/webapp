@@ -325,7 +325,6 @@ export default class Authentication_form extends Component
 		const markup =
 		(
 			<Form
-				ref="form"
 				className="authentication-form"
 				style={this.props.style ? { ...style.form, ...this.props.style } : style.form}
 				action={submit(this.reset_errors, this.sign_in)}
@@ -428,7 +427,6 @@ export default class Authentication_form extends Component
 		const markup =
 		(
 			<Form
-				ref="form"
 				className="registration-form"
 				style={this.props.style ? { ...style.form, ...this.props.style } : style.form}
 				action={submit(this.register)}

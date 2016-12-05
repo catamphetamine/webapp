@@ -231,7 +231,7 @@ class Change_password_popup extends Component
 
 				{/* Change password steps */}
 				<Steps
-					ref="change_password_steps"
+					ref={ref => this.change_password_steps = ref}
 					set_last_step={this.set_last_step}
 					on_finished={this.finished}>
 
@@ -271,7 +271,7 @@ class Change_password_popup extends Component
 		const result =
 		[{
 			text    : this.state.is_last_step ? translate(default_messages.done) : translate(default_messages.next),
-			action  : () => this.refs.change_password_steps.submit(),
+			action  : () => this.change_password_steps.submit(),
 			primary : true,
 			busy    : check_current_password_pending || change_password_pending
 		}]
@@ -295,7 +295,7 @@ class Change_password_popup extends Component
 	finished()
 	{
 		this.props.dispatch({ type: 'snack', snack: this.props.translate(messages.password_updated) })
-		this.close()
+		this.props.close()
 	}
 }
 
@@ -332,7 +332,7 @@ class Change_password_step_1 extends Component
 		// Because the first step is mounted before
 		// the react-modal contents are mounted,
 		// focus after the modal has been mounted.
-		setTimeout(this.refs.step.focus, 0)
+		setTimeout(this.step.focus, 0)
 	}
 
 	render()
@@ -346,7 +346,7 @@ class Change_password_step_1 extends Component
 		(
 			<Text_input_step
 				form_id="change_password_step_1"
-				ref="step"
+				ref={ref => this.step = ref}
 				password={true}
 				description={translate(messages.enter_current_password)}
 				error={error && !this.wrong_password(error) && this.error_message(error)}
@@ -364,7 +364,7 @@ class Change_password_step_1 extends Component
 	// Public API
 	submit()
 	{
-		this.refs.step.submit()
+		this.step.submit()
 	}
 
 	async submit_step(values)
@@ -392,8 +392,8 @@ class Change_password_step_1 extends Component
 			// Focus password input field on wrong password
 			if (error.status === http_status_codes.Input_rejected)
 			{
-				this.refs.step.clear('input', this.validate_password())
-				this.refs.step.focus()
+				this.step.clear('input', this.validate_password())
+				this.step.focus()
 			}
 		}
 	}
@@ -456,7 +456,7 @@ class Change_password_step_2 extends Component
 
 	componentDidMount()
 	{
-		setTimeout(this.refs.step.focus, 0)
+		setTimeout(this.step.focus, 0)
 	}
 
 	render()
@@ -467,7 +467,7 @@ class Change_password_step_2 extends Component
 		(
 			<Text_input_step
 				form_id="change_password_step_2"
-				ref="step"
+				ref={ref => this.step = ref}
 				password={true}
 				description={translate(messages.enter_new_password)}
 				validate={this.validate_password}
@@ -481,7 +481,7 @@ class Change_password_step_2 extends Component
 	// Public API
 	submit()
 	{
-		this.refs.step.submit()
+		this.step.submit()
 	}
 
 	submit_step(values)
@@ -532,7 +532,7 @@ class Change_password_step_3 extends Component
 
 	componentDidMount()
 	{
-		setTimeout(this.refs.step.focus, 0)
+		setTimeout(this.step.focus, 0)
 	}
 
 	render()
@@ -545,7 +545,7 @@ class Change_password_step_3 extends Component
 		(
 			<Text_input_step
 				form_id="change_password_step_3"
-				ref="step"
+				ref={ref => this.step = ref}
 				password={true}
 				description={translate(messages.enter_new_password_again)}
 				error={error && this.error_message(error)}
@@ -563,7 +563,7 @@ class Change_password_step_3 extends Component
 	// Public API
 	submit()
 	{
-		this.refs.step.submit()
+		this.step.submit()
 	}
 
 	async submit_step(values)
@@ -579,7 +579,7 @@ class Change_password_step_3 extends Component
 		if (value !== state.new_password)
 		{
 			this.setState({ value: '', error: translate(messages.new_password_misspelled) })
-			this.refs.step.focus()
+			this.step.focus()
 			return
 		}
 

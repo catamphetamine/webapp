@@ -24,7 +24,7 @@ export default class Button extends Component
 	{
 		const { busy, primary, submit, className } = this.props
 
-		const markup = 
+		const markup =
 		(
 			<div
 				className={classNames('button', className,
@@ -47,7 +47,7 @@ export default class Button extends Component
 	{
 		const { link, busy, primary, disabled, action, submit, className } = this.props
 
-		let button_style = busy ? style.button.hide : style.button.show 
+		let button_style = busy ? style.button.hide : style.button.show
 
 		if (this.props.button_style)
 		{
@@ -56,19 +56,19 @@ export default class Button extends Component
 
 		if (link)
 		{
-			const markup = 
+			const markup =
 			(
 				<a
-					ref="button"
+					ref={ref => this.button = ref}
 					href={link}
 					onClick={event =>
 					{
 						// Ignore mouse wheel clicks
 						// and clicks with a modifier key pressed
 						if (event.nativeEvent.which === 2
-							|| event.shiftKey 
-							|| event.altKey 
-							|| event.ctrlKey 
+							|| event.shiftKey
+							|| event.altKey
+							|| event.ctrlKey
 							|| event.metaKey)
 						{
 							return
@@ -93,10 +93,10 @@ export default class Button extends Component
 			return markup
 		}
 
-		const markup = 
+		const markup =
 		(
 			<button
-				ref="button"
+				ref={ref => this.button = ref}
 				type={submit ? 'submit' : 'button'}
 				disabled={busy || disabled}
 				onClick={action}
@@ -111,7 +111,7 @@ export default class Button extends Component
 
 	focus()
 	{
-		ReactDOM.findDOMNode(this.refs.button).focus()
+		ReactDOM.findDOMNode(this.button).focus()
 	}
 }
 

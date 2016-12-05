@@ -170,7 +170,7 @@ export class Text_input_step extends Component
 		const markup =
 		(
 			<Form
-				ref="form"
+				ref={ref => this.form = ref}
 				busy={busy}
 				action={submit(reset_error, action)}
 				error={error}>
@@ -195,6 +195,6 @@ export class Text_input_step extends Component
 	// Public API
 	submit()
 	{
-		this.refs.form.submit()
+		this.form.submit()
 	}
 }

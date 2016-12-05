@@ -51,7 +51,7 @@ export default class User_picture extends React.Component
 		}
 
 		return <Image
-			ref="image"
+			ref={ref => this.image = ref}
 			style={style}
 			className={classNames('user-picture', className)}
 			type={picture ? undefined : "user_picture"}
@@ -62,6 +62,6 @@ export default class User_picture extends React.Component
 
 	width()
 	{
-		return this.refs.image.width()
+		return this.image.width()
 	}
 }

@@ -33,7 +33,7 @@ export default class File_upload extends React.Component
 
 				<input
 					type="file"
-					ref="file_upload"
+					ref={ref => this.file_upload = ref}
 					key="file_input"
 					style={{ display: 'none' }}
 					onClick={event => event.stopPropagation()}
@@ -44,35 +44,6 @@ export default class File_upload extends React.Component
 		)
 
 		return markup
-
-		// const file_input =
-		// 	<input
-		// 		type="file"
-		// 		ref="file_upload"
-		// 		key="file_input"
-		// 		style={{ display: 'none' }}
-		// 		onClick={event => event.stopPropagation()}
-		// 		onChange={event => this.on_file_selected(event)}/>
-
-		// let children = this.props.children.props.children
-
-		// if (!Array.isArray(children))
-		// {
-		// 	if (typeof children === 'string')
-		// 	{
-		// 		children = React.createElement('span', { key: 'content' }, children)
-		// 	}
-		// 	else
-		// 	{
-		// 		children = React.cloneElement(children, { key: 'content' })
-		// 	}
-
-		// 	children = [children]
-		// }
-
-		// children.push(file_input)
-
-		// return React.cloneElement(this.props.children, { onClick: this.on_click }, children)
 	}
 
 	on_file_selected(event)
@@ -106,6 +77,6 @@ export default class File_upload extends React.Component
 			this.props.on_choose()
 		}
 
-		this.refs.file_upload.click()
+		this.file_upload.click()
 	}
 }
