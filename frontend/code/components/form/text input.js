@@ -1,12 +1,12 @@
 import React from 'react'
 import classNames from 'classnames'
 import { Field } from 'simpler-redux-form'
-import Text_input from '../text input'
+import { TextInput } from 'react-responsive-ui'
 
-export default function TextInput(props)
+export default function Text_input(props)
 {
 	return <Field
 		{...props}
-		component={Text_input}
-		className={classNames('form__field', props.className)}/>
+		component={TextInput}
+		className={classNames('rrui__form__field', props.className)}/>
 }

@@ -8,7 +8,7 @@ import international from '../international/internationalize'
 
 import { menu_entries } from './layout'
 
-import Menu from '../components/menu'
+import { Menu } from 'react-responsive-ui'
 
 const messages = defineMessages
 ({
@@ -27,7 +27,7 @@ export default class Menu_page extends Component
 	{
 		const { translate } = this.props
 
-		const markup = 
+		const markup =
 		(
 			<section className="content menu-page" style={{ padding: '1.6em' }}>
 				{title(translate(messages.title))}

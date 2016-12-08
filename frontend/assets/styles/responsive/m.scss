@@ -51,7 +51,7 @@
 
 .user-profile__actions
 {
-	.button
+	.rrui__button
 	{
 		// overwrites inline css
 		display: block !important;
@@ -68,7 +68,7 @@
 	font-size: 1rem;
 }
 
-.button-group-button
+.rrui__segmented-control__option
 {
 	padding-left  : calc(var(--modular-grid-unit) * 2);
 	padding-right : calc(var(--modular-grid-unit) * 2);

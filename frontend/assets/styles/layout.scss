@@ -46,7 +46,7 @@
 // // http://caniuse.com/#search=css%20var
 // @include set_css_variable_header_height(var(--header-height));
 
-.card, .dropdown-item-list--expanded
+.card, .rrui__select__options--expanded
 {
 	box-shadow: var(--shadow);
 }
@@ -71,7 +71,11 @@ header
 	// border-bottom : 1px solid $header-border-color;
 	// box-sizing    : border-box;
 
-	.sign-out--fallback, .button__link, a, .button button, .dropdown-item-selected
+	.sign-out--fallback,
+	a,
+	.rrui__button__link,
+	.rrui__button__button,
+	.rrui__select__selected
 	{
 		color: var(--white-color);
 
@@ -118,18 +122,6 @@ footer
 	flex-grow   : 1;
 	flex-shrink : 0;
 	flex-basis  : auto;
-}
-
-.nav-collapsible
-{
-	transform  : translate3d(-100%, 0, 0);
-	transition : transform 120ms ease-out;
-	opacity    : 0.9;
-}
-
-.menu-item-selected
-{
-	color : var(--base-color-lightest);
 }
 
 // This technique drops IE10-11 support.

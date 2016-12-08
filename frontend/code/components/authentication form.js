@@ -13,10 +13,9 @@ import international from '../international/internationalize'
 import Text_input             from './form/text input'
 import Checkbox               from './form/checkbox'
 import Submit                 from './form/submit'
-import Button                 from './button'
+import { Form, Button }       from 'react-responsive-ui'
 import User                   from './user'
 import Time_ago               from './time ago'
-import Form, { Form_error, Form_actions } from './form'
 
 import http_status_codes from '../tools/http status codes'
 
@@ -341,7 +340,7 @@ export default class Authentication_form extends Component
 					<span>{translate(messages.or)}&nbsp;</span>
 					<Button
 						link={add_redirect('/register', this.props.location)}
-						button_style={style.or_register.register}
+						buttonStyle={style.or_register.register}
 						action={this.start_registration}
 						disabled={sign_in_pending}>
 
@@ -360,7 +359,7 @@ export default class Authentication_form extends Component
 					error={this.sign_in_email_error(sign_in_error)}
 					validate={this.validate_email}
 					label={translate(messages.email)}
-					input_style={style.input.input}/>
+					inputStyle={style.input.input}/>
 
 				{/* "Password" */}
 				<Text_input
@@ -371,12 +370,12 @@ export default class Authentication_form extends Component
 					error={this.sign_in_password_error(sign_in_error)}
 					validate={this.validate_password_on_sign_in}
 					label={translate(messages.password)}
-					input_style={style.input.input}/>
+					inputStyle={style.input.input}/>
 
 				{/* Support redirecting to the initial page when javascript is disabled */}
 				<input type="hidden" name="request" value={should_redirect_to(this.props.location)}/>
 
-				<Form_error/>
+				<Form.Error/>
 
 				{/* Unblock user instructions */}
 				{ sign_in_error && sign_in_error.status === http_status_codes.Access_denied &&
@@ -386,7 +385,7 @@ export default class Authentication_form extends Component
 						tagName="p"/>
 				}
 
-				<Form_actions className="form__actions--left-right">
+				<Form.Actions className="rrui__form__actions--left-right">
 					{/* "Forgot password" */}
 					<Button
 						style={style.forgot_password}
@@ -402,7 +401,7 @@ export default class Authentication_form extends Component
 						submit={true}>
 						{translate(user_bar_messages.sign_in)}
 					</Submit>
-				</Form_actions>
+				</Form.Actions>
 			</Form>
 		)
 
@@ -443,7 +442,7 @@ export default class Authentication_form extends Component
 					<span>{translate(messages.or)}&nbsp;</span>
 					<Button
 						link={add_redirect('/sign-in', this.props.location)}
-						button_style={style.or_register.register}
+						buttonStyle={style.or_register.register}
 						action={this.cancel_registration}
 						disabled={sign_in_pending || register_pending}>
 
@@ -460,7 +459,7 @@ export default class Authentication_form extends Component
 					value={initial_values.name}
 					validate={this.validate_name}
 					label={translate(messages.name)}
-					input_style={style.input.input}/>
+					inputStyle={style.input.input}/>
 
 				{/* "Email" */}
 				<Text_input
@@ -471,7 +470,7 @@ export default class Authentication_form extends Component
 					error={this.registration_email_error(register_error)}
 					validate={this.validate_email}
 					label={translate(messages.email)}
-					input_style={style.input.input}/>
+					inputStyle={style.input.input}/>
 
 				{/* "Password" */}
 				<Text_input
@@ -481,7 +480,7 @@ export default class Authentication_form extends Component
 					value={initial_values.password}
 					validate={this.validate_password_on_registration}
 					label={translate(messages.password)}
-					input_style={style.input.input}/>
+					inputStyle={style.input.input}/>
 
 				{/* "Accept terms of service" */}
 				<Checkbox
@@ -511,11 +510,11 @@ export default class Authentication_form extends Component
 					value={should_redirect_to(this.props.location)}/>
 
 				{/* "Register" button */}
-				<Form_actions className="form__actions--right">
+				<Form.Actions className="rrui__form__actions--right">
 					<Submit>
 						{translate(user_bar_messages.register)}
 					</Submit>
-				</Form_actions>
+				</Form.Actions>
 			</Form>
 		)
 

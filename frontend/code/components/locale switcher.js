@@ -7,10 +7,8 @@ import { connect } from 'react-redux'
 import styler from 'react-styling'
 
 import Flag     from './flag'
-import Dropdown from './dropdown'
-import Spinner  from './spinner'
-import Form     from './form'
-import Button   from './button'
+
+import { Form, Button, ActivityIndicator, Select } from 'react-responsive-ui'
 
 import Url from '../../../code/url'
 
@@ -79,7 +77,7 @@ export default class Locale_switcher extends Component
 		(
 			<div className="language" style={ this.props.style ? extend({ display: 'inline-block' }, this.props.style) : { display: 'inline-block' } }>
 				{/* loading */}
-				<Spinner style={ this.state.setting_locale ? style.spinner.show : style.spinner.hide }/>
+				<ActivityIndicator style={ this.state.setting_locale ? style.spinner.show : style.spinner.hide }/>
 
 				{/* Apply button for javascriptless users */}
 				<Form
@@ -88,7 +86,7 @@ export default class Locale_switcher extends Component
 					post="/users/legacy/locale">
 
 					{/* language list */}
-					<Dropdown
+					<Select
 						name="locale"
 						label={translate(messages.language)}
 						value={locale}
@@ -109,11 +107,11 @@ export default class Locale_switcher extends Component
 
 							return markup
 						})}
-					</Dropdown>
+					</Select>
 
 					{/* submit */}
 					<Button
-						className="rich-fallback"
+						className="rrui__rich__fallback"
 						style={style.locale.form.button}
 						submit={true}>
 

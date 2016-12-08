@@ -1,6 +1,6 @@
 import React from 'react'
 import React_time_ago from 'react-time-ago'
-import Tooltip from './tooltip'
+import { Tooltip } from 'react-responsive-ui'
 
 export default function Time_ago(props)
 {

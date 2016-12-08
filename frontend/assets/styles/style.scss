@@ -4,11 +4,8 @@
 @import "colors.scss";
 @import "fonts.scss";
 @import "base.scss";
-@import "modifiers.scss";
 @import "layout.scss";
 @import "components.scss";
-
-// https://github.com/sass/libsass/issues/1766
 
 @media all                                                { @import "responsive/xs.scss"; }
 @media all and (min-width: $small-screen-min-width)       { @import "responsive/s.scss";  }

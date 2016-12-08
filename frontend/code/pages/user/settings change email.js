@@ -17,10 +17,11 @@ import http_status_codes from '../../tools/http status codes'
 
 import international from '../../international/internationalize'
 
-import Editable_field from '../../components/editable field'
 import Modal          from '../../components/modal'
-import Form           from '../../components/form'
-import Text_input     from '../../components/text input'
+import Editable_field from '../../components/editable field'
+import TextInput      from '../../components/form/text input'
+
+import { Form } from 'react-responsive-ui'
 
 import Redux_form, { Field } from 'simpler-redux-form'
 
@@ -382,8 +383,7 @@ class Check_password extends Component
 				action={submit(this.reset_error, this.submit_form)}
 				error={error && this.error_message(error)}>
 
-				<Field
-					component={Text_input}
+				<TextInput
 					name="input"
 					password={true}
 					description={translate(messages.enter_password)}

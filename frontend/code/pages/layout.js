@@ -10,22 +10,16 @@ import { defineMessages }  from 'react-intl'
 import { head }            from 'react-isomorphic-render'
 import classNames          from 'classnames'
 
-// import autoprefixer from 'autoprefixer'
-
 import international   from '../international/internationalize'
 
-import Menu            from '../components/menu'
-import Menu_button     from '../components/menu button'
+import { PageAndMenu, Page, Menu, MenuButton, Snackbar } from 'react-responsive-ui'
+
 import Locale_switcher from '../components/locale switcher'
 import User_bar        from '../components/user bar'
 import Preloading      from '../components/preloading'
-import Snackbar        from '../components/snackbar'
 
 import HTML5Backend                   from 'react-dnd-html5-backend'
 import { DragDropContext, DragLayer } from 'react-dnd'
-
-// when adjusting this transition time also adjust it in styles/xs-m.scss
-const menu_transition_duration = 0 // 210 // milliseconds
 
 @connect
 (
@@ -47,14 +41,6 @@ const menu_transition_duration = 0 // 210 // milliseconds
 }))
 export default class Layout extends Component
 {
-	state =
-	{
-		show_menu  : false,
-		menu_width : 0,
-
-		page_moved_aside : false
-	}
-
 	static propTypes =
 	{
 		// item: PropTypes.object,
@@ -64,6 +50,7 @@ export default class Layout extends Component
 		// 	x: PropTypes.number.isRequired,
 		// 	y: PropTypes.number.isRequired
 		// }),
+
 		is_dragging : PropTypes.bool.isRequired,
 
 		locale : PropTypes.string.isRequired,
@@ -79,10 +66,7 @@ export default class Layout extends Component
 	{
 		super(props, context)
 
-		this.hide_menu_on_click = this.hide_menu_on_click.bind(this)
-		this.toggle_menu        = this.toggle_menu.bind(this)
-		this.update_menu_width  = this.update_menu_width.bind(this)
-		this.reset_snack        = this.reset_snack.bind(this)
+		this.reset_snack = this.reset_snack.bind(this)
 	}
 
 	reset_snack()
@@ -119,19 +103,9 @@ export default class Layout extends Component
 			{ property: 'og:description', content: description }
 		]
 
-		// Slideout menu pushes the page to the right
-		// const page_style_with_menu_expanded = { transform: `translate3d(${this.state.menu_width}px, 0px, 0px)` }
-		//
-		// style={ this.state.show_menu ? { ...style.page, ...page_style_with_menu_expanded } : style.page }
-		//
-		// `translate3d` animation won't work:
-		// http://stackoverflow.com/questions/14732403/position-fixed-not-working-for-header/14732712#14732712
-
 		const markup =
 		(
-			<div
-				onTouchStart={this.hide_menu_on_click}
-				onMouseDown={this.hide_menu_on_click}
+			<PageAndMenu
 				className={classNames('layout', { 'layout--dragging': is_dragging })}>
 
 				{/* <head/> */}
@@ -139,7 +113,7 @@ export default class Layout extends Component
 
 				{/* navigation for small screens (will slide out) */}
 				{/* main menu */}
-				<Menu show={this.state.show_menu} show_while={this.state.page_moved_aside} toggle={this.toggle_menu} update_width={this.update_menu_width} items={menu_entries(translate)}/>
+				<Menu slideout items={menu_entries(translate)}/>
 
 				{/* "page is preloading" spinner */}
 				<Preloading/>
@@ -149,13 +123,13 @@ export default class Layout extends Component
 
 				{/* webpage */}
 				{/* <StickyContainer className="page" style={style.page}> */}
-				<div className="page" style={style.page}>
+				<Page className="page">
 					{/* header */}
 					{/* <Sticky> */}
 						<header className="card">
 							{/* menu button for small screens */}
 							<div className="menu-button-container">
-								<Menu_button toggle={this.toggle_menu}/>
+								<MenuButton link="/menu"/>
 							</div>
 
 							{/* home page link */}
@@ -185,47 +159,12 @@ export default class Layout extends Component
 							<Locale_switcher alignment="right" upward={true} style={style.locale_switcher}/>
 						</div>
 					</footer>
-				</div>
+				</Page>
 				{/* </StickyContainer> */}
-			</div>
+			</PageAndMenu>
 		)
 
 		return markup
-	}
-
-	toggle_menu()
-	{
-		if (!this.state.show_menu)
-		{
-			return this.setState({ show_menu: !this.state.show_menu, page_moved_aside: !this.state.page_moved_aside })
-		}
-
-		this.setState({ show_menu: !this.state.show_menu }, () =>
-		{
-			setTimeout(() =>
-			{
-				this.setState({ page_moved_aside: this.state.show_menu })
-			},
-			menu_transition_duration)
-		})
-	}
-
-	update_menu_width(width)
-	{
-		this.setState({ menu_width: width })
-	}
-
-	hide_menu_on_click(event)
-	{
-		if (event.target.classList.contains('menu-item'))
-		{
-			return
-		}
-
-		if (this.state.show_menu)
-		{
-			this.toggle_menu()
-		}
 	}
 }
 
@@ -265,11 +204,6 @@ export const messages = defineMessages
 
 const style = styler
 `
-	page
-		position : relative
-		z-index  : 0
-		transition-duration : ${menu_transition_duration}ms
-
 	home
 		text-decoration : none
 
@@ -285,7 +219,7 @@ export function menu_entries(translate)
 		link: '/example/simple'
 	}, {
 		name: translate(messages.menu_components_showcase),
-		link: '/showcase/form'
+		link: '/showcase'
 	}, {
 		name: translate(messages.menu_log),
 		link: '/logs'

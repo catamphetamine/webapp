@@ -119,13 +119,13 @@ export default class Log extends Component
 					shown={this.state.show_stack_trace}
 					close={this.hide_stack_trace}
 					style={style.stack_trace_modal}
-					scroll={true}
+					scroll
 					title={this.state.error_message}
 					actions=
 					{[{
 						action       : this.hide_stack_trace,
 						text         : translate(messages.hide_stack_trace),
-						button_style : style.stack_trace_modal.button
+						buttonStyle  : style.stack_trace_modal.button
 					}]}>
 
 					{this.state.stack_trace && this.state.stack_trace.map((stack, stack_index) =>

@@ -3,9 +3,8 @@ import classNames from 'classnames'
 import Redux_form, { Field, Submit } from 'simpler-redux-form'
 
 import default_messages from './messages'
-import Form             from './form'
-import Button           from './button'
-import Text_input       from './text input'
+
+import { Form, Button, TextInput } from 'react-responsive-ui'
 
 import international from '../international/internationalize'
 
@@ -144,7 +143,7 @@ export default class Editable_field extends Component
 
 				{/* Editable text field */}
 				<Field
-					component={Text_input}
+					component={TextInput}
 					name={name}
 					value={value}
 					email={email}

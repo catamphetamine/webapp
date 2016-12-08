@@ -23,7 +23,7 @@ import html_assets    from '../code/html assets'
 
 import load_locale_data from './locale'
 
-import Spinner from '../code/components/spinner'
+import { ActivityIndicator } from 'react-responsive-ui'
 
 import start_monitoring from '../../code/monitoring'
 
@@ -56,6 +56,17 @@ global.Intl = Intl_polyfill
 const messagesJSON = {}
 
 const monitoring = start_monitoring(configuration)
+
+// A workaround for `react-modal` bug
+// https://github.com/reactjs/react-modal/pull/273
+if (typeof document === 'undefined')
+{
+	global.document =
+	{
+		body: null,
+		querySelectorAll: () => []
+	}
+}
 
 // starts webpage rendering server
 const server = webpage_server
@@ -259,7 +270,7 @@ const server = webpage_server
 
 	// (optional)
 	// A React element for "loading" page (when server-side rendering is disabled)
-	loading: <div className="loading"><Spinner style={{ opacity: 0.1 }}/></div>,
+	loading: <div className="loading"><ActivityIndicator style={{ opacity: 0.1 }}/></div>,
 
 	log
 },

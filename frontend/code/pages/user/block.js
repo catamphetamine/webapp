@@ -19,7 +19,8 @@ import
 }
 from '../../actions/user/block'
 
-import Form, { Form_actions } from '../../components/form'
+import { Form } from 'react-responsive-ui'
+
 import Submit                 from '../../components/form/submit'
 import Text_input             from '../../components/form/text input'
 import User                   from '../../components/user'
@@ -176,12 +177,12 @@ export default class User_profile extends Component
 								validate={this.validate_reason}/>
 						}
 
-						<Form_actions>
+						<Form.Actions>
 							{/* "Submit" */}
 							<Submit>
 								{translate(messages.submit)}
 							</Submit>
-						</Form_actions>
+						</Form.Actions>
 					</Form>
 				</section>
 			</div>

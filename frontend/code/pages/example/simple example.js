@@ -9,7 +9,7 @@ import { bindActionCreators as bind_action_creators } from 'redux'
 
 import { get as get_users, add as add_user, remove as delete_user, upload_picture } from '../../actions/example users'
 
-import Button from '../../components/button'
+import { Button } from 'react-responsive-ui'
 
 @preload(({ dispatch }) => dispatch(get_users()))
 @connect

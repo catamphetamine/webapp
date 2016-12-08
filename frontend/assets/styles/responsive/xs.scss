@@ -13,7 +13,7 @@
 {
 	margin-left  : 1.2em;
 	margin-right : 1.2em;
-	
+
 	margin-top : var(--header-vertically-centered-text-margin-top);
 }
 
@@ -21,15 +21,6 @@
 {
 	font-size : 14pt
 }
-
-// .modal-content
-// {
-// 	// overwrites inline css
-// 	padding-left   : 1em !important;
-// 	padding-right  : 1em !important;
-// 	padding-top    : 1em !important;
-// 	padding-bottom : 1em !important;
-// }
 
 .user-bar
 {
@@ -58,7 +49,7 @@
 
 .authentication-form
 {
-	.button--primary
+	.rrui__button--primary
 	{
 		// overwrites inline css
 		display: block !important;
@@ -69,14 +60,6 @@
 .sign-in
 {
 	margin-right: calc(var(--modular-grid-unit) * 2);
-}
-
-.button-group-button
-{
-	padding-top    : var(--modular-grid-unit);
-	padding-bottom : var(--modular-grid-unit);
-	padding-left   : calc(var(--modular-grid-unit) * 1.5);
-	padding-right  : calc(var(--modular-grid-unit) * 1.5);
 }
 
 header
@@ -90,53 +73,16 @@ header
 	display: block;
 }
 
-.menu
-{
-	margin: 0;
-
-	> li
-	{
-		&:first-child
-		{
-			padding-top    : calc(2 * var(--modular-grid-unit));
-		}
-
-		&:last-child
-		{
-			padding-bottom : calc(2 * var(--modular-grid-unit));
-		}
-	}
-}
-
-.nav-widescreen
+// Show collapsible menu instead of full-sized menu (for small screens)
+.rrui__menu
 {
 	display: none;
 }
 
-.menu-page .nav-widescreen
+// But at the same time the "Menu" page still has its widescreen menu shown
+.menu-page .rrui__menu
 {
 	display: block;
-}
-
-.menu-item
-{
-	// overrides inline css
-	display : block !important;
-	border  : none;
-
-	margin : 0;
-
-	padding-top    : var(--modular-grid-unit);
-	padding-bottom : var(--modular-grid-unit);
-
-	padding-left  : calc(var(--modular-grid-unit) * 2);
-	padding-right : calc(var(--modular-grid-unit) * 3);
-}
-
-.nav-collapsible-shown
-{
-	transform  : translate3d(0, 0, 0);
-	box-shadow : 0 0 0.2em rgba(0, 0, 0, 0.4);
 }
 
 .language
@@ -144,18 +90,18 @@ header
 	margin-top   : 0.25em;
 	margin-right : 1em;
 
-	&, .dropdown-item-list li, .dropdown-item, .dropdown-item-selected
+	&, .rrui__select__options li, .rrui__select__option, .rrui__select__selected
 	{
 		// line-height: 0;
 	}
 
-	.dropdown-item
+	.rrui__select__option
 	{
 		padding-top: 0;
 		padding-bottom: 0;
 	}
 
-	.dropdown-arrow
+	.rrui__select__arrow
 	{
 		// overrides inline css
 		margin-bottom : 0.25em !important;
@@ -175,93 +121,10 @@ header
 	align-items    : center;
 }
 
-.menu-button
-{
-	display : inline-block;
-
-	padding: calc(var(--modular-grid-unit) * 1.5);
-
-	line-height: 0;
-}
-
-.menu-icon, .menu-close
-{
-	width  : calc(var(--modular-grid-unit) * 5);
-	height : calc(var(--modular-grid-unit) * 5);
-}
-
-.menu-close
-{
-	svg
-	{
-		width  : 100%;
-		height : 100%;
-	}
-}
-
-.menu-icon
-{
-	display : block;
-
-	path
-	{
-		// overrides inline css
-		fill: var(--gray-color-lighter) !important;
-	}
-}
-
-.menu-button a:active .menu-icon
-{
-	path
-	{
-		// overrides inline css
-		fill: var(--gray-color-lighter) !important;
-	}
-}
-
-.menu-close
-{
-	position : absolute;
-	right    : 0;
-	top      : 0;
-
-	svg path
-	{
-		// overrides inline css
-		stroke: #eeeeee !important;
-	}
-
-	&:active
-	{
-		svg path
-		{
-		// overrides inline css
-			stroke: #ffffff !important;
-		}
-	}
-}
-
-/*
-// non-svg menu icon
-.menu-icon:before
-{
-	content: "";
-
-	position: absolute;
-
-	top  : 0.2em;
-	left : 0;
-
-	width: 1em;
-	height: 0.125em;
-
-	border-top    : 0.375em double;
-	border-bottom : 0.125em solid;
-}
-*/
-
 .page
 {
+	min-width: 100%;
+
 	// box-shadow will show a bug if declared here
 	// https://github.com/philipwalton/solved-by-flexbox/issues/79
 	// box-shadow : 0 0 0.35em rgba(0, 0, 0, 1);
@@ -272,38 +135,6 @@ header
 
 	// breaks <header/> position fixed
 	// transform  : translate3d(0px, 0px, 0px);
-}
-
-.nav-collapsible
-{
-	display: inline-block;
-
-	min-height: 100%;
-
-	position : fixed;
-	left     : 0;
-	top      : 0;
-	bottom   : 0;
-	z-index  : 1;
-
-	overflow-y: auto;
-
-	background: var(--black-color);
-
-	.menu-item
-	{
-		color: var(--gray-color-lighter);
-
-		&:active
-		{
-			color: var(--base-color-lighter);
-		}
-	}
-}
-
-.page
-{
-	min-width: 100%;
 }
 
 .user-profile .user-picture

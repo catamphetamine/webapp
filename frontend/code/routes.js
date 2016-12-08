@@ -45,8 +45,6 @@ import Block_user       from './pages/user/block'
 import Profile          from './pages/user/profile'
 import Settings         from './pages/user/settings'
 import Showcase         from './pages/showcase'
-import Dialog_showcase  from './pages/showcase/dialog'
-import Form_showcase    from './pages/showcase/form'
 import Example          from './pages/example'
 import Simple_example   from './pages/example/simple example'
 import Database_example from './pages/example/database example'
@@ -70,10 +68,7 @@ export default function() // ({ dispatch, getState })
 				<Route path="graphql"  component={Simple_graphQL_example}/>
 			</Route>
 
-			<Route path="showcase" component={Showcase}>
-				<Route path="dialog" component={Dialog_showcase}/>
-				<Route path="form"   component={Form_showcase}/>
-			</Route>
+			<Route path="showcase" component={Showcase}/>
 
 			<Route path="user">
 				<Route path="block/:token_id" component={Block_user}/>

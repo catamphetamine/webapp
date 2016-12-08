@@ -1,0 +1,789 @@
+@import "constants.scss";
+
+/*===========================================================
+= Buttons                                                   =
+===========================================================*/
+
+.rrui__button--primary .rrui__button__button,
+.rrui__button--primary .rrui__button__link
+{
+	color : var(--accent-color);
+}
+
+.rrui__button--primary .rrui__button__button:active,
+.rrui__button--primary .rrui__button__link:active
+{
+	color: var(--accent-color-lighter);
+}
+
+.rrui__button__button,
+.rrui__button__link
+{
+	background : none;
+	border     : none;
+	outline    : none;
+	padding    : 0;
+
+	white-space : nowrap;
+
+	color : var(--base-color-darker);
+
+	transition : color 30ms ease-out;
+}
+
+.rrui__button__button:active,
+.rrui__button__link:active
+{
+	color : var(--base-color);
+}
+
+/*===========================================================
+= Activity indicator                                        =
+===========================================================*/
+
+.rrui__activity-indicator
+{
+	width  : 2em;
+	height : 2em;
+
+	stroke : var(--black-color);
+}
+
+.rrui__activity-indicator svg
+{
+	animation: spinner-rotate 2s linear infinite;
+	transform-origin: center center;
+}
+
+.rrui__activity-indicator circle
+{
+	stroke-dasharray  : 1,200;
+	stroke-dashoffset : 0;
+	animation: spinner-extent 1.5s ease-in-out infinite;
+	stroke-linecap: round;
+}
+
+@keyframes spinner-rotate
+{
+	100%
+	{
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes spinner-extent
+{
+	0%
+	{
+		stroke-dasharray  : 1,200;
+		stroke-dashoffset : 0;
+	}
+
+	50%
+	{
+		stroke-dasharray  : 89,200;
+		stroke-dashoffset : -35;
+	}
+
+	100%
+	{
+		stroke-dasharray  : 89,200;
+		stroke-dashoffset : -124;
+	}
+}
+
+/*===========================================================
+= Select                                                    =
+===========================================================*/
+
+.rrui__select
+{
+	color: var(--black-color);
+}
+
+.rrui__select__options
+{
+	transition-property        : max-height, border-color, box-shadow, opacity;
+	transition-duration        : 0ms; /* don't animate short lists */
+	transition-timing-function : ease-out;
+
+	opacity: 0;
+
+	/* prevent white background showing through the transparent border */
+	/* http://stackoverflow.com/questions/7473200/transparent-border-expands-background-color-image */
+	background-clip         : padding-box;
+	-webkit-background-clip : padding-box;
+
+	overflow-y: auto;
+}
+
+.rrui__select__options--simple-left-aligned
+{
+	left: calc(var(--modular-grid-unit) * var(--dropdown-item-side-padding) * -1) !important;
+}
+
+.rrui__select__options--simple-right-aligned
+{
+	right : calc(var(--modular-grid-unit) * var(--dropdown-item-side-padding) * -1) !important;
+}
+
+.rrui__select__options--expanded
+{
+	opacity: 1;
+}
+
+.rrui__select__option
+{
+	width: 100%;
+
+	padding-left  : calc(var(--modular-grid-unit) * var(--dropdown-item-side-padding));
+	padding-right : calc(var(--modular-grid-unit) * var(--dropdown-item-side-padding));
+
+	padding-top    : calc(var(--modular-grid-unit) * 1);
+	padding-bottom : calc(var(--modular-grid-unit) * 1);
+
+	box-sizing: border-box;
+
+	text-align: left;
+}
+
+.rrui__select__option:active
+{
+	background-color: var(--gray-color-lighter);
+}
+
+.rrui__select__option-icon
+{
+	margin-right : calc(var(--modular-grid-unit) * 3);
+}
+
+.rrui__select__separator
+{
+	height           : var(--input-separator-width);
+	background-color : var(--gray-color);
+}
+
+.rrui__select__separator-option
+{
+	padding-top      : calc(var(--modular-grid-unit) * 2);
+	padding-bottom   : calc(var(--modular-grid-unit) * 2);
+}
+
+.rrui__select__options
+{
+	transform: scaleY(0);
+	transform-origin: 50% top 0px;
+
+	/* 250ms - too slow for short lists */
+	transition: all 150ms cubic-bezier(.76,.04,.46,.75) 0ms;
+}
+
+.rrui__select__options li
+{
+	opacity: 0;
+
+	/* mitigates list labels overlapping with the underlying text creating a feeling of a mess */
+	transition: opacity 150ms ease-out;
+}
+
+.rrui__select--upward .rrui__select__options
+{
+	transform-origin: 50% bottom 0px;
+}
+
+.rrui__select__options--expanded
+{
+	transform: scaleY(1);
+	transform-origin: 50% top 0px;
+
+	transition: all 150ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+}
+
+.rrui__select__options--expanded li
+{
+	opacity: 1;
+}
+
+.rrui__select__option--selected
+{
+	background-color: var(--gray-color-lighter);
+}
+
+.rrui__select__option-icon
+{
+	margin-right: 0.5em
+}
+
+.rrui__select__options > li:first-child
+{
+	padding-top    : calc(2 * var(--modular-grid-unit));
+}
+
+.rrui__select__options > li:last-child
+{
+	padding-bottom : calc(2 * var(--modular-grid-unit));
+}
+
+.rrui__select__selected
+{
+	padding-left   : 0;
+	padding-right  : 0;
+	padding-top    : var(--input-padding);
+	padding-bottom : var(--input-padding);
+
+	border: none;
+	border-bottom: var(--input-border-width) solid var(--gray-color-light);
+	transition: border 0.1s;
+}
+
+.rrui__select__option, .rrui__select__selected
+{
+	color: inherit;
+	font-weight: normal;
+}
+
+.rrui__select__option:active, .rrui__select__selected:active
+{
+	color: var(--base-color-darker);
+}
+
+.rrui__select--expanded .rrui__select__selected
+{
+	color: var(--base-color-darker);
+}
+
+.rrui__select__selected--nothing,
+/* For CSS rule specificity */
+.rrui__select--expanded .rrui__select__selected--nothing
+{
+	color: var(--gray-color-darker);
+}
+
+.rrui__select--expanded .rrui__select__selected--autocomplete
+{
+	color: var(--black-color);
+}
+
+.rrui__select__arrow
+{
+	color: var(--gray-color);
+}
+
+/*===========================================================
+= Checkbox                                                  =
+===========================================================*/
+
+/* http://tympanus.net/codrops/2013/10/15/animated-checkboxes-and-radio-buttons-with-svg/ */
+
+/* Checkmark color */
+.rrui__checkbox path
+{
+	stroke: var(--base-color-darker) !important;
+	stroke-width: 0.6em !important;
+}
+
+/* Checkbox border color */
+.rrui__checkbox input:active + .rrui__checkbox__border
+{
+	border-color: var(--base-color-darker) !important;
+}
+
+/* Checkbox label color */
+.rrui__checkbox__label:active
+{
+	color: var(--base-color-darker) !important;
+}
+
+/* Invalid checkbox border color */
+.rrui__checkbox--invalid .rrui__checkbox__border
+{
+	border-color: var(--error-color) !important;
+}
+
+/* Checkbox error message */
+.rrui__checkbox__error
+{
+	padding-top: var(--input-padding);
+	color: var(--error-color-darker);
+}
+
+/*===========================================================
+= Segmented control                                         =
+===========================================================*/
+
+.rrui__segmented-control__option
+{
+	padding-top    : var(--modular-grid-unit);
+	padding-bottom : var(--modular-grid-unit);
+	padding-left   : calc(var(--modular-grid-unit) * 1.5);
+	padding-right  : calc(var(--modular-grid-unit) * 1.5);
+
+	color            : var(--black-color);
+	background-color : transparent;
+	border           : 0.1em solid var(--base-color-darker);
+	border-radius    : 0.2em;
+	outline          : none;
+}
+
+.rrui__segmented-control__option:active
+{
+	color            : var(--white-color);
+	background-color : var(--base-color);
+
+	transition : none !important;
+}
+
+.rrui__rich__fallback .rrui__segmented-control__option:active
+{
+	color            : black;
+	background-color : transparent;
+}
+
+.rrui__rich__fallback .rrui__segmented-control__option input
+{
+	margin-left: 0;
+}
+
+.rrui__segmented-control__option--selected
+{
+	color            : var(--white-color);
+	background-color : var(--base-color-darker);
+}
+
+/*===========================================================
+= `react-modal`                                             =
+===========================================================*/
+
+/*
+when changing css transition times here
+also change `default_close_timeout` in ./modal.js accordingly
+*/
+
+.ReactModal__Overlay
+{
+	opacity: 0;
+	/* "auto" introduces a vertical scrollbar when "bouncing" (animation) */
+	/* overflow: auto; */
+	overflow: hidden;
+}
+
+.ReactModal__Overlay--after-open
+{
+	opacity: 1;
+}
+
+.ReactModal__Overlay--before-close
+{
+	opacity: 0;
+}
+
+.ReactModal__Overlay--after-open,
+.ReactModal__Overlay--before-close
+{
+	transition: opacity 100ms ease-out;
+}
+
+.ReactModal__Content
+{
+	outline: none;
+}
+
+.ReactModal__Content
+{
+	transform: scale(0.8);
+}
+
+.ReactModal__Content--after-open
+{
+	transform: scale(1);
+}
+
+.ReactModal__Content--before-close
+{
+	transform: scale(0.8);
+}
+
+.ReactModal__Content--after-open,
+.ReactModal__Content--before-close
+{
+	transition: transform 120ms ease-out;
+}
+
+/* hides `react-modal` scrollbar when closing the modal */
+.ReactModal__Overlay--before-close
+{
+	overflow: hidden;
+}
+
+/*
+disables page scrolling when modal is presented,
+but introduces page width jumps.
+.ReactModal__Body--open
+{
+	height: 100%;
+	overflow: hidden;
+}
+*/
+
+/*===========================================================
+= Modal                                                     =
+===========================================================*/
+
+.rrui__modal__header
+{
+	padding-left   : calc(4 * var(--modular-grid-unit));
+	padding-right  : calc(4 * var(--modular-grid-unit));
+	padding-top    : calc(3 * var(--modular-grid-unit));
+	padding-bottom : calc(3 * var(--modular-grid-unit));
+
+	border-top-left-radius  : var(--card-border-radius);
+	border-top-right-radius : var(--card-border-radius);
+}
+
+.rrui__modal__actions
+{
+	padding-left   : calc(4 * var(--modular-grid-unit));
+	padding-right  : calc(2 * var(--modular-grid-unit));
+	padding-top    : calc(1.5 * var(--modular-grid-unit));
+	padding-bottom : calc(1.5 * var(--modular-grid-unit));
+
+	border-bottom-left-radius  : var(--card-border-radius);
+	border-bottom-right-radius : var(--card-border-radius);
+}
+
+.rrui__modal__actions .rrui__button
+{
+	margin-right : calc(2 * var(--modular-grid-unit));
+}
+
+.rrui__modal__actions .rrui__button:last-child
+{
+	margin-right : 0;
+}
+
+.rrui__modal__header--separated
+{
+	border-bottom: 1px solid #e0e0e0;
+}
+
+.rrui__modal__actions--separated
+{
+	border-top: 1px solid #e0e0e0;
+}
+
+.rrui__modal__content--no-bars
+{
+	padding-top   : calc(4 * var(--modular-grid-unit));
+	border-radius : var(--card-border-radius);
+}
+
+.rrui__modal--could-not-close-because-busy
+{
+	animation: bounce_z 0.6s;
+	transform: translate3d(0, 0, 0);
+}
+
+/* https://daneden.github.io/animate.css/ */
+/* https://github.com/daneden/animate.css/blob/master/source/bouncing_entrances/bounceIn.css */
+@keyframes bounce_z
+{
+	from, 25%, 47%, 72%, to
+	{
+		animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+	}
+
+	0%
+	{
+		transform: scale3d(1, 1, 1);
+	}
+
+	25%
+	{
+		transform: scale3d(.97, .97, .97);
+	}
+
+	47%
+	{
+		transform: scale3d(1.025, 1.025, 1.025);
+	}
+
+	72%
+	{
+		transform: scale3d(0.99, 0.99, 0.99);
+	}
+
+	to
+	{
+		transform: scale3d(1, 1, 1);
+	}
+}
+
+.rrui__modal__content .rrui__form__error
+{
+	margin-bottom : 0;
+}
+
+/*===========================================================
+= Form                                                      =
+===========================================================*/
+
+.rrui__form__actions
+{
+	margin-top : calc(var(--modular-grid-unit) * 4);
+}
+
+.rrui__form__actions--right
+{
+	display         : flex;
+	flex-direction  : row;
+	justify-content : flex-end;
+}
+
+.rrui__form__actions--left-right
+{
+	display         : flex;
+	flex-direction  : row;
+	justify-content : space-between;
+}
+
+.rrui__form__field
+{
+	margin-bottom : calc(var(--modular-grid-unit) * 2);
+}
+
+/*===========================================================
+= Text input                                                =
+===========================================================*/
+
+.rrui__text-input
+{
+	/*
+	"flex" is for the <label/> which goes after the <input/> in markup
+	but is then placed before the <input/> using "order".
+
+	The reason for this is "input:focus + label" selector,
+	which highlights the <label/> when the input is focused.
+	(there's no CSS selector for "label [before] input:focus")
+	*/
+
+	display        : flex;
+	flex-direction : column;
+
+	/*
+	When changing this label color
+	also change "input" and "textarea" placeholder color.
+	*/
+}
+
+.rrui__text-input label
+{
+	order : -2;
+
+	margin-top : -0.6em;
+
+	padding-top    : var(--input-padding);
+
+	color : var(--gray-color-dark);
+
+	transform        : scale(0.8) translateY(0.6em);
+	transform-origin : left top;
+	transition       : color 0.1s ease-out, transform 0.1s ease-out;
+	pointer-events   : none;
+}
+
+/* Either label or description */
+.rrui__text-input p
+{
+	order: -2;
+
+	margin-top    : 0;
+	margin-bottom : 0;
+}
+
+.rrui__text-input input,
+.rrui__text-input textarea
+{
+	order: -1;
+}
+
+.rrui__text-input input:focus + label,
+.rrui__text-input textarea:focus + label
+{
+	color: var(--accent-color);
+}
+
+.rrui__text-input--invalid label
+{
+	color: var(--error-color-darker);
+}
+
+.rrui__text-input--invalid .rrui__text-input__field
+{
+	border-bottom-color: var(--error-color) !important;
+}
+
+.rrui__text-input--empty label
+{
+	color     : var(--gray-color-darker);
+	transform : translateY(1.4em) scale(1);
+}
+
+.rrui__text-input--empty input:focus + label,
+.rrui__text-input--empty textarea:focus + label
+{
+	color: var(--gray-color-darker);
+}
+
+.rrui__text-input__error
+{
+	padding-top: calc(2 * var(--input-padding));
+
+	color: var(--error-color-darker);
+}
+
+/*===========================================================
+= Tooltip                                                   =
+===========================================================*/
+
+.rrui__tooltip
+{
+	color: var(--white-color);
+	background: var(--black-color);
+
+	border-radius: var(--border-radius);
+
+	padding-left   : calc(var(--modular-grid-unit) * 2);
+	padding-right  : calc(var(--modular-grid-unit) * 2);
+	padding-top    : calc(var(--modular-grid-unit) * 1);
+	padding-bottom : calc(var(--modular-grid-unit) * 1);
+
+	margin-top : -0.3em;
+	opacity    : 0;
+	/* transform  : scale(0.8); */
+	transform  : translateY(0.5em);
+}
+
+.rrui__tooltip--after-show
+{
+	opacity: 1;
+	/* transform: scale(1); */
+	transform: translateY(0);
+}
+
+.rrui__tooltip--before-hide
+{
+	opacity: 0;
+	/* transform: scale(0.8); */
+	transform: translateY(0.5em);
+}
+
+.rrui__tooltip--after-show,
+.rrui__tooltip--before-hide
+{
+	transition: opacity 120ms ease-out, transform 120ms ease-out;
+}
+
+/*===========================================================
+= Snackbar                                                  =
+===========================================================*/
+
+.rrui__snackbar__container
+{
+	z-index : 1;
+}
+
+.rrui__snackbar
+{
+	background : var(--black-color);
+	color      : var(--white-color);
+
+	border-top-left-radius  : var(--border-radius);
+	border-top-right-radius : var(--border-radius);
+
+	padding-left   : calc(var(--modular-grid-unit) * 3);
+	padding-right  : calc(var(--modular-grid-unit) * 3);
+	padding-top    : calc(var(--modular-grid-unit) * 2);
+	padding-bottom : calc(var(--modular-grid-unit) * 2);
+}
+
+/*===========================================================
+= Menu                                                      =
+===========================================================*/
+
+.rrui__menu,
+.rrui__slideout-menu
+{
+	margin          : 0;
+	padding         : 0;
+	list-style-type : none;
+}
+
+.rrui__slideout-menu li:first-child
+{
+	padding-top    : calc(2 * var(--modular-grid-unit));
+}
+
+.rrui__slideout-menu li:last-child
+{
+	padding-bottom : calc(2 * var(--modular-grid-unit));
+}
+
+.rrui__slideout-menu
+{
+	background: var(--black-color);
+}
+
+.rrui__slideout-menu .rrui__menu__item
+{
+	color: var(--gray-color-lighter);
+}
+
+.rrui__slideout-menu .rrui__menu__item:active
+{
+	color: var(--base-color-lighter);
+}
+
+.rrui__menu__item
+{
+	margin : 0;
+
+	padding-top    : var(--modular-grid-unit);
+	padding-bottom : var(--modular-grid-unit);
+
+	padding-left  : calc(var(--modular-grid-unit) * 2);
+	padding-right : calc(var(--modular-grid-unit) * 3);
+}
+
+.rrui__menu__item--selected
+{
+	color : var(--base-color-lightest);
+}
+
+.rrui__slideout-menu-button
+{
+	display     : inline-block;
+	padding     : calc(var(--modular-grid-unit) * 1.5);
+	line-height : 0;
+}
+
+.rrui__slideout-menu-button__icon
+{
+	display : block;
+	width   : calc(var(--modular-grid-unit) * 5);
+	height  : calc(var(--modular-grid-unit) * 5);
+}
+
+.rrui__slideout-menu-button__icon path
+{
+	fill: var(--gray-color-lighter);
+}
+
+/*
+.rrui__slideout-menu-button a:active .rrui__slideout-menu-button__icon
+{
+	path
+	{
+		fill: var(--gray-color-lighter);
+	}
+}
+*/

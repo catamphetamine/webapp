@@ -8,7 +8,8 @@ import { bindActionCreators as bind_action_creators } from 'redux'
 
 import international from '../../international/internationalize'
 
-import Button          from '../../components/button'
+import { Button } from 'react-responsive-ui'
+
 import Content_section from '../../components/content section'
 import Time_ago        from '../../components/time ago'
 

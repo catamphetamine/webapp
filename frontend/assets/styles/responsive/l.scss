@@ -29,13 +29,25 @@ header
 	font-size   : 22pt;
 }
 
-.menu
+.rrui__menu
 {
 	display: inline-block;
+
+	margin: 0;
 
 	li
 	{
 		display: inline-block;
+
+		&:first-child
+		{
+			padding-top: 0;
+		}
+
+		&:last-child
+		{
+			padding-bottom: 0;
+		}
 	}
 
 	li:not(:last-child)
@@ -44,7 +56,7 @@ header
 	}
 }
 
-.menu-item
+.rrui__menu__item
 {
 	padding-left    : calc(var(--modular-grid-unit) * 2);
 	padding-right   : calc(var(--modular-grid-unit) * 2);
@@ -59,7 +71,8 @@ header
 	// border-bottom-style : solid;
 }
 
-.nav-collapsible
+.rrui__slideout-menu,
+.rrui__slideout-menu-button
 {
 	// overwrites XS size settings
 	display: none !important;
@@ -72,24 +85,24 @@ header
 	margin-top   : 0.25em;
 	margin-right : 0.5em;
 
-	.dropdown-item-selected
+	.rrui__select__selected
 	{
 		text-align : right;
 		border     : none;
 	}
 
-	&, .dropdown-item-list li, .dropdown-item, .dropdown-item-selected
+	&, .rrui__select__options li, .rrui__select__option, .rrui__select__selected
 	{
 		line-height : normal;
 	}
 
-	.dropdown-arrow
+	.rrui__select__arrow
 	{
 		// overwrites inline css
 		margin-bottom : 0.1em !important;
 	}
 
-	.dropdown-item
+	.rrui__select__option
 	{
 		padding-top    : 0.2em;
 		padding-bottom : 0.2em;
@@ -101,7 +114,7 @@ header
 	width : calc(var(--modular-grid-unit) * 84);
 }
 
-header > .nav-widescreen
+header > .rrui__menu
 {
 	display: inline-block;
 }
@@ -110,31 +123,6 @@ header
 {
 	text-align: left;
 	justify-content : flex-start;
-}
-
-.menu-icon
-{
-	display : none;
-}
-
-.menu
-{
-	margin: 0;
-
-	> li
-	{
-		display: inline-block;
-
-		&:first-child
-		{
-			padding-top: 0;
-		}
-
-		&:last-child
-		{
-			padding-bottom: 0;
-		}
-	}
 }
 
 .user-profile
@@ -147,7 +135,7 @@ header
 
 .user-profile__actions
 {
-	.button
+	.rrui__button
 	{
 		// overwrites M size settings
 		display: inline-block !important;

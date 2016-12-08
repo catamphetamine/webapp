@@ -2,9 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import styler from 'react-styling'
 import classNames from 'classnames'
 
-import Form       from './form'
-import Text_input from './text input'
-
+import { Form, TextInput } from 'react-responsive-ui'
 import Redux_form, { Field } from 'simpler-redux-form'
 
 export default class Steps extends Component
@@ -176,7 +174,7 @@ export class Text_input_step extends Component
 				error={error}>
 
 				<Field
-					component={Text_input}
+					component={TextInput}
 					name="input"
 					email={email}
 					password={password}

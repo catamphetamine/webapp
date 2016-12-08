@@ -30,17 +30,16 @@ import
 }
 from '../../actions/user/block'
 
-import Form         from '../../components/form'
+import { Form } from 'react-responsive-ui'
+
 import Text_input   from '../../components/form/text input'
 import Submit       from '../../components/form/submit'
-// import Text_input   from '../../components/text input'
-import Button       from '../../components/button'
-// import Dropdown     from '../../components/dropdown'
-import Dropdown     from '../../components/form/dropdown'
-import File_upload  from '../../components/file upload'
+import Select       from '../../components/form/select'
+
+import { Button, FileUpload, ActivityIndicator } from 'react-responsive-ui'
+
 import User         from '../../components/user'
 import User_picture from '../../components/user picture'
-import Spinner      from '../../components/spinner'
 import Time_ago     from '../../components/time ago'
 
 import { get_preferred_size, url } from '../../components/image'
@@ -439,7 +438,7 @@ export default class User_profile extends Component
 									{ !edit &&
 										<Button
 											style={style.own_profile_actions.action}
-											button_style={style.own_profile_actions.action.button}
+											buttonStyle={style.own_profile_actions.action.button}
 											action={this.edit_profile}>
 											{translate(messages.edit_profile)}
 										</Button>
@@ -449,7 +448,7 @@ export default class User_profile extends Component
 									{  edit &&
 										<Button
 											style={style.own_profile_actions.action}
-											button_style={style.own_profile_actions.action.button}
+											buttonStyle={style.own_profile_actions.action.button}
 											action={this.cancel_profile_edits}
 											disabled={update_user_info_pending || upload_user_picture_pending}>
 											{translate(messages.cancel_profile_edits)}
@@ -460,7 +459,7 @@ export default class User_profile extends Component
 									{  edit &&
 										<Submit
 											style={style.own_profile_actions.action}
-											button_style={style.own_profile_actions.action.button}
+											buttonStyle={style.own_profile_actions.action.button}
 											disabled={upload_user_picture_pending}>
 											{translate(messages.save_profile_edits)}
 										</Submit>
@@ -476,7 +475,7 @@ export default class User_profile extends Component
 									{ !user.blocked_at && can('block user', current_user) &&
 										<Button
 											style={style.own_profile_actions.action}
-											button_style={style.own_profile_actions.action.button}
+											buttonStyle={style.own_profile_actions.action.button}
 											action={this.block_user}>
 											{translate(messages.block_user)}
 										</Button>
@@ -486,7 +485,7 @@ export default class User_profile extends Component
 									{ user.blocked_at && can('unblock user', current_user) &&
 										<Button
 											style={style.own_profile_actions.action}
-											button_style={style.own_profile_actions.action.button}
+											buttonStyle={style.own_profile_actions.action.button}
 											action={this.unblock_user}>
 											{translate(messages.unblock_user)}
 										</Button>
@@ -512,8 +511,8 @@ export default class User_profile extends Component
 									name="name"
 									label={translate(messages.name)}
 									style={style.user_name_field}
-									input_style={style.user_name}
-									label_style={style.user_name}
+									inputStyle={style.user_name}
+									labelStyle={style.user_name}
 									value={user.name}
 									validate={this.validate_name}/>
 							}
@@ -532,7 +531,7 @@ export default class User_profile extends Component
 							{/* Edit user's country (e.g. "Russia") */}
 							{ edit &&
 								// Country
-								<Dropdown
+								<Select
 									name="country"
 									label={translate(messages.country)}
 									disabled={update_user_info_pending}
@@ -844,19 +843,19 @@ class Uploadable_user_picture extends React.Component
 
 				{/* "Change user picture" file uploader */}
 				{ edit &&
-					<File_upload
+					<FileUpload
 						className="user-profile__picture__change__label"
 						style={style.user_picture.element.overlay.label}
 						disabled={uploading_picture}
-						on_choose={choosing_user_picture}
+						onClick={choosing_user_picture}
 						action={upload_user_picture}>
 
 						{/* "Change user picture" label */}
 						{!uploaded_picture && !uploading_picture && translate(messages.change_user_picture)}
 
 						{/* "Uploading picture" spinner */}
-						{uploading_picture && <Spinner style={style.user_picture.element.spinner}/>}
-					</File_upload>
+						{uploading_picture && <ActivityIndicator style={style.user_picture.element.spinner}/>}
+					</FileUpload>
 				}
 			</div>
 		)

@@ -22,8 +22,8 @@ from '../../actions/user/settings/main'
 
 import default_messages from '../../components/messages'
 
-// import Text_input      from '../../components/text input'
-import Button          from '../../components/button'
+import { Button } from 'react-responsive-ui'
+
 import Content_section from '../../components/content section'
 import Editable_field  from '../../components/editable field'
 

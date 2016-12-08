@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import { connect }          from 'react-redux'
 import classNames           from 'classnames'
 
-import Spinner from './spinner'
+import { ActivityIndicator } from 'react-responsive-ui'
 
 @connect(state =>
 ({
@@ -28,7 +28,7 @@ export default class Preloading extends React.Component
 				'preloading--shown' : pending,
 				'preloading--immediate' : immediate
 			})}>
-				{pending && <div className="preloading-spinner-container"><Spinner/></div>}
+				{pending && <div className="preloading-spinner-container"><ActivityIndicator/></div>}
 			</div>
 		)
 

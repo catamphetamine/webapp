@@ -1,71 +1,136 @@
-import React, { Component, PropTypes } from 'react'
-import { title } from 'react-isomorphic-render'
-import { connect } from 'react-redux'
+import React, { Component } from 'react'
+import { title }            from 'react-isomorphic-render'
+import styler               from 'react-styling'
+import { connect }          from 'react-redux'
+import Phone, { phone_number_format, is_valid_phone_number } from 'react-phone-number-input'
 
-import { Link } from 'react-router'
-import styler from 'react-styling'
+import Date_picker from 'material-ui/DatePicker/DatePicker'
+import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
-import { messages as layout_messages } from './layout'
-
-import international from '../international/internationalize'
-
-@connect()
-@international()
-export default class Page extends Component
+@connect(model => ({ navigator: model.navigator }))
+export default class Form_showcase extends Component
 {
+	state = {}
+
+	static childContextTypes =
+	{
+		muiTheme: React.PropTypes.object
+	}
+
+	getChildContext()
+	{
+		return {
+			muiTheme: getMuiTheme({ userAgent: this.props.navigator.userAgent })
+		}
+	}
+
+	constructor(props, context)
+	{
+		super(props, context)
+
+		this.on_selection_changed = this.on_selection_changed.bind(this)
+	}
+
 	render()
 	{
-		const markup = 
+		const markup =
 		(
 			<section className="content" style={{ padding: '1.6em' }}>
-				{title(this.props.translate(layout_messages.menu_components_showcase))}
+				{title("Form UI Showcase")}
 
-				<ul style={style.menu}>
-					<li style={style.menu.item}><Link to="/showcase/dialog" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Dialog'}</Link></li>
-					<li style={style.menu.item}><Link to="/showcase/form" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'Form'}</Link></li>
-				</ul>
-				
-        		{this.props.children}
+				<br/>
 
-				<div style={{ marginTop: '3em' }}>Ещё какие-то компоненты из интернета:</div>
+				See <a target="_blank" href="https://halt-hammerzeit.github.io/react-responsive-ui/"><code>react-responsive-ui</code></a>
 
-				<ul>
-					<li><a href="http://www.material-ui.com/">Material UI</a></li>
-					<li><a href="http://www.materializecss.com/">Materialize CSS</a></li>
-					<li><a href="http://victory.formidable.com/">Victory for D3</a></li>
-					<li><a href="https://github.com/gaearon/react-dnd">React D'n'D</a></li>
-					<li><a href="https://github.com/felixrieseberg/React-Dropzone-Component">File drop zone</a></li>
-					<li><a href="https://github.com/AnSavvides/d3act">D3 + React</a></li>
-					<li><a href="http://blog.siftscience.com/blog/2015/4/6/d-threeact-how-sift-science-made-d3-react-besties">Ещё что-то про графики D3</a></li>
-					<li><a href="http://balloob.github.io/react-sidebar/example/">Sidebar</a></li>
-					<li><a href="http://labs.voronianski.com/react-soundplayer/">Sound Player</a></li>
-				</ul>
+				<h2 style={style.label}>Date picker (part of Material UI)</h2>
+				<p><a href="https://github.com/callemall/material-ui/issues/4219">has calendar positioning issue</a></p>
+				<div className="date-picker">
+					{/* `id` is a workaround for a randomly generated UID issue */}
+					{/* https://github.com/callemall/material-ui/issues/3757#issuecomment-239170710 */}
+					<Date_picker
+						id="date_picker"
+						style={style.date_picker}
+						hintText="Portrait Dialog"
+						autoOk={true}
+						container="inline"
+						textFieldStyle={style.date_picker.input}
+						hintStyle={style.date_picker.hint}
+						underlineShow={false}/>
+				</div>
 			</section>
 		)
 
 		return markup
 	}
+
+	on_selection_changed(event)
+	{
+		const value = event.target.value
+    	this.setState({ select_value: value })
+	}
 }
 
 const style = styler
 `
-	menu
-		margin-top: 0
+	form
+		margin-top : 2em
 
-		item
-			display: inline-block
+	input
+		margin-top    : 1em
+		margin-right  : 1em
+		margin-bottom : 1em
 
-			link
-				display         : inline-block
-				text-decoration : none
-				color           : #000000
+	select
+		margin-top    : 0em
+		margin-right  : 1em
+		margin-bottom : 1em
 
-				padding-left    : 0.4em
-				padding-right   : 0.4em
-				padding-top     : 0.2em
-				padding-bottom  : 0.2em
+	textarea
+		margin-top    : 0em
+		margin-right  : 1em
+		margin-bottom : 1em
 
-				&current
-					color            : #ffffff
-					background-color : #73C9FF
+	label
+		display       : block
+		margin-top    : 1.6em
+		margin-bottom : 0.8em
+		font-size     : 1.4em
+
+	checkbox
+		display       : block
+		margin-top    : 1em
+		margin-bottom : 1em
+
+	switch_container
+		margin-bottom : 1em
+
+	switch_label
+		display       : inline-block
+		margin-bottom : 0.14em
+
+	switch
+		margin-left    : 1.5em
+		vertical-align : bottom
+
+	date_picker
+		input
+			height : auto
+			width  : auto
+
+			font-size   : inherit
+			font-family : inherit
+			line-height : inherit
+
+		hint
+			bottom     : 0
+			transition : none
+
+	phone
+		display     : inline-block
+		margin-left : 0.3em
+
+	dropdown_icon_style
+		width         : 1em
+		margin-bottom : -0.05em
+		border        : 1px solid #5f5f5f
 `

@@ -8,16 +8,11 @@ import { defineMessages } from 'react-intl'
 
 import international from '../international/internationalize'
 
-import Text_input          from './text input'
-import Checkbox            from './checkbox'
-import Button              from './button'
-import Form                from './form'
-import Modal               from './modal'
+import { Form, Button, Modal, Select } from 'react-responsive-ui'
+
 import Authentication_form from './authentication form'
 import User                from './user'
 import User_picture        from './user picture'
-import Dropdown, { Dropdown_separator } from './dropdown'
-import Spinner             from './spinner'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
 
@@ -189,7 +184,7 @@ export default class Authentication extends Component
 				post="/users/legacy/sign-out">
 
 				<Button
-					submit={true}
+					submit
 					className="sign-out sign-out--fallback"
 					style={style.sign_out}>
 
@@ -230,7 +225,7 @@ export default class Authentication extends Component
 			<div className="user-info">
 
 				{/* Dropdown */}
-				<Dropdown
+				<Select
 					menu={true}
 					toggler={user_info}
 					alignment="right">
@@ -268,7 +263,7 @@ export default class Authentication extends Component
 					</Link>
 
 					{/* Separator */}
-					<Dropdown_separator/>
+					<Select.Separator/>
 
 					{/* Sign out */}
 					<div key="sign_out" onClick={this.sign_out}>
@@ -281,7 +276,7 @@ export default class Authentication extends Component
 							{translate(messages.sign_out)}
 						</Button>
 					</div>
-				</Dropdown>
+				</Select>
 			</div>
 		)
 

@@ -149,23 +149,6 @@ textarea
 	}
 }
 
-.date-picker
-{
-	padding-bottom: 0;
-
-	input
-	{
-		padding-bottom: var(--input-padding);
-	}
-}
-
-// uncomment these in case of "autoresize" feature implemented for <textarea/>
-// textarea
-// {
-// 	overflow-y: hidden;
-//	resize: none;
-// }
-
 select
 {
 	&:focus
@@ -174,15 +157,6 @@ select
 
 		border-bottom: var(--input-border-width) solid var(--base-color-darker);
 	}
-}
-
-img
-{
-	// `max-width: 100%` broke the locale switcher dropdown autowidth,
-	// because the containing <li/> width is `auto`,
-	// therefore the <img/> was displayed but its layout height was considered 0.
-	// max-width: 100%;
-    // height: auto;
 }
 
 h1, h2
@@ -201,7 +175,9 @@ a
 	}
 }
 
-button, .button__link
+// When changing styles for <button/>
+// then also change styles for .rrui__button__link
+button
 {
 	background : none;
 	border     : none;
@@ -210,8 +186,7 @@ button, .button__link
 
 	white-space: nowrap;
 
-	// font-weight : bold;
-	color       : var(--base-color-darker);
+	color: var(--base-color-darker);
 
 	transition: color 30ms ease-out;
 
@@ -219,24 +194,6 @@ button, .button__link
 	{
 		color: var(--base-color);
 	}
-}
-
-.button--primary
-{
-	button, .button__link
-	{
-		color : var(--accent-color);
-
-		&:active
-		{
-			color: var(--accent-color-lighter);
-		}
-	}
-}
-
-a, button
-{
-	outline : 0;
 }
 
 table
