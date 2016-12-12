@@ -5,7 +5,6 @@ import 'babel-polyfill'
 import language       from '../../code/language'
 
 import React          from 'react'
-import ReactDOM       from 'react-dom'
 
 import { render }     from 'react-isomorphic-render/redux'
 import common         from './react-isomorphic-render'

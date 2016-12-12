@@ -5,8 +5,6 @@ import styler      from 'react-styling'
 
 import { redirect } from 'react-isomorphic-render/redux'
 
-// import { Time_ago, Date_time_formatter } from 'react-time-ago'
-
 import { defineMessages, FormattedMessage } from 'react-intl'
 import international from '../international/internationalize'
 
@@ -868,7 +866,7 @@ const style = styler
 		font-weight: normal
 
 		float   : left
-		z-index : 1
+		z-index : 0
 
 	clearfix
 		clear : both

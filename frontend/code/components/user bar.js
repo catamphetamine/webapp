@@ -8,8 +8,9 @@ import { defineMessages } from 'react-intl'
 
 import international from '../international/internationalize'
 
-import { Form, Button, Modal, Select } from 'react-responsive-ui'
+import { Form, Button, Select } from 'react-responsive-ui'
 
+import Modal               from './modal'
 import Authentication_form from './authentication form'
 import User                from './user'
 import User_picture        from './user picture'

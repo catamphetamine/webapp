@@ -57,17 +57,6 @@ const messagesJSON = {}
 
 const monitoring = start_monitoring(configuration)
 
-// A workaround for `react-modal` bug
-// https://github.com/reactjs/react-modal/pull/273
-if (typeof document === 'undefined')
-{
-	global.document =
-	{
-		body: null,
-		querySelectorAll: () => []
-	}
-}
-
 // starts webpage rendering server
 const server = webpage_server
 ({
