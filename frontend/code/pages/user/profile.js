@@ -770,8 +770,7 @@ const drop_file_target =
 
 		props.choosing_user_picture()
 
-		const file = monitor.getItem().files[0]
-		props.upload_user_picture(file)
+		props.upload_user_picture(monitor.getItem())
 	}
 }
 

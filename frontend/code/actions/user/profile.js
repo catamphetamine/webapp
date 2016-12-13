@@ -25,12 +25,7 @@ export const upload_user_picture = (file) =>
 ({
 	promise: async (http) =>
 	{
-		const data = new FormData()
-
-		data.append('type', 'user_picture')
-		data.append('image', file)
-
-		return http.post(`/images/upload`, data)
+		return http.post(`/images/upload`, { type: 'user_picture', image: file })
 	},
 	event: 'user profile: upload user picture'
 })

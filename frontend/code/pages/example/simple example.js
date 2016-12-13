@@ -252,8 +252,7 @@ export default class Page extends Component
 
 	on_picture_file_selected(event, user_id)
 	{
-		const file = event.target.files[0]
-		this.upload_picture(file, user_id)
+		this.upload_picture(event.target, user_id)
 
 		// reset the selected file
 		// so that onChange would trigger again

@@ -28,14 +28,9 @@ export const rename = () =>
 
 export const upload_picture = (user_id, file, old_picture) =>
 ({
-	promise: async (http) => 
+	promise: async (http) =>
 	{
-		const data = new FormData()
-
-		data.append('type', 'user_picture')
-		data.append('image', file)
-
-		const picture = await http.post(`/images/upload`, data)
+		const picture = await http.post(`/images/upload`, { type: 'user_picture', image: file })
 		await http.post(`/api/example/users/${user_id}/picture`, picture)
 		return { user_id, picture }
 	},
