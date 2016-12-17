@@ -35,7 +35,7 @@ export default class memory_database
 		return Promise.resolve(result)
 	}
 
-	get_with_user(id)
+	get(id)
 	{
 		return Promise.resolve(this.db[id])
 	}

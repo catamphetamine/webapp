@@ -18,18 +18,23 @@ export default class Sql_store
 		throw new Error('Not implemented')
 	}
 
-	async get_with_user(id)
+	async get(id)
 	{
-		const image = await this.images.find(id)
-
-		if (!image)
-		{
-			return
-		}
-
-		image.user = await this.users.find(image.user)
-		return image
+		return await this.images.find(id)
 	}
+
+	// async get_with_user(id)
+	// {
+	// 	const image = await this.images.find(id)
+	//
+	// 	if (!image)
+	// 	{
+	// 		return
+	// 	}
+	//
+	// 	image.user = await this.users.find(image.user)
+	// 	return image
+	// }
 
 	async create({ user, type, sizes, files_size, coordinates, taken_at, taken_at_utc0, info })
 	{
@@ -44,9 +49,6 @@ export default class Sql_store
 			created_at : new Date()
 		}
 
-		console.log('taken_at', taken_at)
-		console.log('taken_at_utc0', taken_at_utc0)
-
 		if (coordinates)
 		{
 			// "from text" is slower
@@ -59,9 +61,7 @@ export default class Sql_store
 			data.info = info
 		}
 
-		const image = await this.images.create(data)
-
-		return image.id
+		return await this.images.create(data)
 	}
 
 	delete(id)

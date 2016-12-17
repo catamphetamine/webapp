@@ -70,7 +70,7 @@ web.delete('/:id', async ({ id }, { user }) =>
 		throw new errors.Unauthenticated()
 	}
 
-	const image = await database.get_with_user(id)
+	const image = await database.get(id)
 
 	if (!image)
 	{

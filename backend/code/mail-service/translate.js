@@ -31,6 +31,18 @@ function apply_parameters(text, parameters)
 	return text.replace(/\{([^\}]*)\}/g, (text, parameter) => parameters[parameter] !== undefined ? parameters[parameter] : parameter)
 }
 
+// // http://archive.oreilly.com/pub/a/actionscript/excerpts/as3-cookbook/appendix.html
+// // http://stackoverflow.com/questions/39193510/how-to-insert-arbitrary-json-in-htmls-script-tag
+// const escaped_symbols_json =
+// {
+// 	'&' : '\u0026',
+// 	'<' : '\u003c',
+// 	'>' : '\u003e',
+// 	'"' : '\u0022',
+// 	"'" : '\u0027',
+// 	'/' : '\u002f'
+// }
+
 const escaped_symbols =
 {
 	'&' : '&amp;',
