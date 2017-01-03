@@ -221,26 +221,28 @@ const server = webpage_server
 				`
 
 				return [
-					<style key={1} id="flash-of-unstyled-content-fix" dangerouslySetInnerHTML={{ __html: html_assets.style().toString() }} charSet="UTF-8"/>,
-					<script key={2} dangerouslySetInnerHTML={{__html: remove_style_javascript}}/>
+					`<style id="flash-of-unstyled-content-fix">${html_assets.style().toString()}</style>`,
+					`<script>${remove_style_javascript}</script>`
 				]
 			}
 		},
 
-		// returns an array of React elements.
-		// allows adding arbitrary React components to the start of the <body/>
-		// (use `key`s to prevent React warning when returning an array of React elements)
+		// (optional)
+		// Adding arbitrary React components to the start of the <body/>
 		body_start: () =>
 		{
 			if (_development_)
 			{
+				// Using "Webpack DLL plugin" in development
+				// to speed up incremental Webpack builds,
+				// hence the "vendor.dll.js".
 				return [
-					<script key="1" dangerouslySetInnerHTML={{__html: initializing_javascript}}/>,
-					<script key="2" src="/assets/vendor.dll.js"/>
+					`<script>${initializing_javascript}</script>`,
+					`<script src="/assets/vendor.dll.js"></script>`
 				]
 			}
 
-			return <script dangerouslySetInnerHTML={{__html: initializing_javascript}}/>
+			return `<script>${initializing_javascript}</script>`
 		}
 	},
 
@@ -267,6 +269,7 @@ const server = webpage_server
 
 	// (optional)
 	// A React element for "loading" page (when server-side rendering is disabled)
+	// (may be moved out of this function)
 	// loading: <div className="loading"><ActivityIndicator style={{ opacity: 0.1 }}/></div>,
 
 	log

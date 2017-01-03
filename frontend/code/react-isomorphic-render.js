@@ -17,12 +17,11 @@ export default
 	// Wraps React page component with arbitrary elements (e.g. <Provider/>, etc; see an example below)
 	wrapper,
 
-	redux_middleware(middleware)
-	{
-		// enable Redux event logging here
-		// middleware.push(create_logger())
-		return middleware
-	},
+	// redux_middleware()
+	// {
+	// 	// enable Redux event logging here
+	// 	// return [create_logger()]
+	// },
 
 	preload:
 	{

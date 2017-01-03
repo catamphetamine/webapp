@@ -6,7 +6,6 @@ import webpack_isomorphic_tools_configuration from '../webpack/webpack-isomorphi
 global._server_ = true
 global._client_ = false
 
-
 // Is React Server Side Rendering disabled?
 //
 // (does not affect server side routing
