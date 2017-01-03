@@ -253,13 +253,21 @@ const server = webpage_server
 	// `print-error` options
 	print_error: { font_size: '20pt' },
 
-	// (testing)
-	// Disables server-side rendering (e.g. as a performance optimization)
+	// Is React Server Side Rendering enabled?
+	// (is `true` by default)
+	//
+	// (does not affect server side routing
+	//  and server side page preloading)
+	//
+	// Can be used to offload React server-side rendering
+	// from the server side to the client's web browser
+	// (as a performance optimization) by setting it to `false`.
+	//
 	render: _disable_server_side_rendering_ ? false : true,
 
 	// (optional)
 	// A React element for "loading" page (when server-side rendering is disabled)
-	loading: <div className="loading"><ActivityIndicator style={{ opacity: 0.1 }}/></div>,
+	// loading: <div className="loading"><ActivityIndicator style={{ opacity: 0.1 }}/></div>,
 
 	log
 },

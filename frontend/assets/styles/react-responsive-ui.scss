@@ -229,7 +229,7 @@
 	transform-origin: 50% bottom 0px;
 }
 
-.rrui__select__option--selected
+.rrui__select__option--focused
 {
 	background-color: var(--gray-color-lighter);
 }
@@ -353,8 +353,8 @@
 	width  : 0.8em;
 	height : 0.8em;
 
-	margin-left : 0.1em;
-	margin-top  : 0.1em;
+	margin-left : var(--input-border-width);
+	margin-top  : var(--input-border-width);
 }
 
 /* Checkmark color */
@@ -366,7 +366,7 @@
 
 .rrui__checkbox__box
 {
-	border     : 0.1em solid #cfcfcf;
+	border     : var(--input-border-width) solid #cfcfcf;
 	transition : opacity 0.3s;
 }
 
@@ -444,7 +444,7 @@
 
 	color            : var(--black-color);
 	background-color : transparent;
-	border           : 0.1em solid var(--base-color-darker);
+	border           : var(--input-border-width) solid var(--base-color-darker);
 	border-radius    : 0.2em;
 	outline          : none;
 
