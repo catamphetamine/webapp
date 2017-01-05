@@ -1,6 +1,6 @@
 var path = require('path')
 var webpack_isomorphic_tools_plugin = require('webpack-isomorphic-tools/plugin')
-var configuration = require('../../code/configuration')
+var configuration = require('../../code/configuration').default
 
 module.exports =
 {

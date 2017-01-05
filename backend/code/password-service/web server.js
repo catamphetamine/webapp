@@ -1,10 +1,15 @@
 import { api } from '../common/webservice'
 
-api
-(
-	'Password service',
-	configuration.password_service.http,
-	[
-		require('./api/password')
-	]
-)
+import password_api from './api/password'
+
+export default function()
+{
+	api
+	(
+		'Password service',
+		configuration.password_service.http,
+		[
+			password_api
+		]
+	)
+}

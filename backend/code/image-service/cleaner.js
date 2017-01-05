@@ -119,4 +119,7 @@ export function clean_up(options = {})
 	})
 }
 
-clean_up.periodical(clean_up_interval_in_milliseconds)
+export default function run_cleaner()
+{
+	clean_up.periodical(clean_up_interval_in_milliseconds)
+}

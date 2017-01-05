@@ -1,11 +1,17 @@
 import { api } from '../common/webservice'
 
-api
-(
-	'User service',
-	configuration.user_service.http,
-	[
-		require('./api/user'),
-		require('./api/user.legacy')
-	]
-)
+import user_api from './api/user'
+import user_api_legacy from './api/user.legacy'
+
+export default function()
+{
+	api
+	(
+		'User service',
+		configuration.user_service.http,
+		[
+			user_api,
+			user_api_legacy
+		]
+	)
+}

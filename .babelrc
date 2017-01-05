@@ -1,14 +1,13 @@
 {
 	"presets":
 	[
-		"es2015", 
-		"stage-0"
+		"es2015",
+		"stage-2"
 	],
 
 	"plugins":
 	[
 		"transform-bluebird",
-		"add-module-exports",
 		"transform-decorators-legacy"
 	]
 }

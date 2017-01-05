@@ -1,5 +1,5 @@
-import cleaner from './cleaner'
+import log from './log'
 import web_server from './web server'
 
-cleaner()
+global.log = log
 web_server()

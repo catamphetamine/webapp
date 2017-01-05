@@ -11,7 +11,7 @@ function Wrapper(props)
 
 	const { store, locale, messages } = props
 
-	const markup = 
+	const markup =
 	(
 		<Provider store={store} key="provider">
 			<IntlProvider locale={locale ? get_language_from_locale(locale) : 'en'} messages={messages}>
@@ -23,7 +23,7 @@ function Wrapper(props)
 	return markup
 }
 
-Wrapper.propTypes = 
+Wrapper.propTypes =
 {
 	store     : React.PropTypes.object.isRequired,
 	locale    : React.PropTypes.string.isRequired,

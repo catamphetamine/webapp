@@ -78,20 +78,22 @@ configuration.output.publicPath = `http://${application_configuration.developmen
 
 // enable `react-transform-hmr` for Webpack React hot reload in development mode
 
-const javascript_loader = configuration.module.loaders.filter(loader =>
+const javascript_loader = configuration.module.rules.filter(loader =>
 {
 	return loader.test.toString() === /\.js$/.toString()
 })
 .first()
 
-if (!javascript_loader.query)
+const babel_loader = javascript_loader.use.filter(loader => loader.loader === 'babel-loader')[0]
+
+if (!babel_loader.options)
 {
-	javascript_loader.query = {}
+	babel_loader.options = {}
 }
 
-if (!javascript_loader.query.plugins)
+if (!babel_loader.options.plugins)
 {
-	javascript_loader.query.plugins = []
+	babel_loader.options.plugins = []
 }
 
 // https://github.com/gaearon/react-hot-loader
@@ -100,11 +102,11 @@ const using_react_hot_loader_v3 = false
 if (using_react_hot_loader_v3)
 {
 	configuration.entry.main.push('react-hot-loader/patch')
-	javascript_loader.query.plugins.push('react-hot-loader/babel')
+	babel_loader.options.plugins.push('react-hot-loader/babel')
 }
 else
 {
-	javascript_loader.query.plugins = javascript_loader.query.plugins.concat
+	babel_loader.options.plugins = babel_loader.options.plugins.concat
 	([[
 		'react-transform',
 		{

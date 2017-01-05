@@ -5,7 +5,7 @@ import { get_language_from_locale } from './locale'
 
 const fs_exists_cache = {}
 
-export default function cache_locale_data(locale_data_path)
+function cache_locale_data(locale_data_path)
 {
 	const cache = []
 
@@ -86,7 +86,15 @@ function locale_data(locale, locale_data_path, options)
 	}
 
 	// Is retrieved from cache in production mode
-	return require(file_path)
+	let locale_data = require(file_path)
+
+	// Fix ES6 to ES5 exports
+	if (typeof locale_data.default === 'object')
+	{
+		locale_data = locale_data.default
+	}
+
+	return locale_data
 }
 
 // // Does the path exist

@@ -1,42 +1,46 @@
 import { server as tcp_server } from '../../../code/tcp'
 import message_store            from './message store'
+import web_server               from './web server'
 
-const server = tcp_server
-({
-	name: 'Log service',
-	host: configuration.log_service.tcp.host,
-	port: configuration.log_service.tcp.port,
-	access_list: configuration.log_service.tcp.access_list
-})
-
-server.on('error', error =>
+export default function()
 {
-	log.error(error, 'Shutting down due to an error')
-})
-
-server.on('session', messenger =>
-{
-	let name = 'a client'
-
-	messenger.on('connect', () =>
-	{
-		name = `"${messenger.other_party.name}"`
+	const server = tcp_server
+	({
+		name: 'Log service',
+		host: configuration.log_service.tcp.host,
+		port: configuration.log_service.tcp.port,
+		access_list: configuration.log_service.tcp.access_list
 	})
 
-	messenger.on('error', error =>
+	server.on('error', error =>
 	{
-		if (error.code === 'ECONNRESET')
+		log.error(error, 'Shutting down due to an error')
+	})
+
+	server.on('session', messenger =>
+	{
+		let name = 'a client'
+
+		messenger.on('connect', () =>
 		{
-			return log.error(`Lost connection to ${name}`)
-		}
+			name = `"${messenger.other_party.name}"`
+		})
 
-		log.error(error, 'Messenger error')
+		messenger.on('error', error =>
+		{
+			if (error.code === 'ECONNRESET')
+			{
+				return log.error(`Lost connection to ${name}`)
+			}
+
+			log.error(error, 'Messenger error')
+		})
+
+		messenger.on('message', function(message)
+		{
+			message_store.add(message)
+		})
 	})
 
-	messenger.on('message', function(message)
-	{
-		message_store.add(message)
-	})
-})
-
-require('./web server')
+	web_server()
+}

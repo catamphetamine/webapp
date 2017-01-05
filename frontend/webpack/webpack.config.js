@@ -52,12 +52,8 @@ const configuration =
 
 	module:
 	{
-		loaders:
+		rules:
 		[
-			{
-				test   : /\.json$/,
-				loader : 'json-loader'
-			},
 			// This loader will be enhanced with `react-transform-hmr`
 			{
 				test    : /\.js$/,
@@ -65,12 +61,10 @@ const configuration =
 				[
 					path.resolve(frontend_root_folder, 'code')
 				],
-				loader: 'babel-loader',
-				query:
-				{
-					// currently Relay is not used in this project
-					// plugins: [path.resolve(root_folder, 'code/relay/babel_relay_plugin')]
-				}
+				use :
+				[{
+					loader: 'babel-loader'
+				}]
 			},
 			// This loader won't be enhanced with `react-transform-hmr`
 			{
@@ -79,18 +73,27 @@ const configuration =
 				[
 					path.resolve(root_folder, 'code')
 				],
-				loader: 'babel-loader'
+				use :
+				[{
+					loader: 'babel-loader'
+				}]
 			},
 			{
 				test    : /\.scss$/,
 				include : assets_source_folder,
-				loaders :
-				[
-					'style-loader',
-					'css-loader?importLoaders=2&sourceMap',
-					'postcss-loader',
-					'sass-loader?outputStyle=expanded&sourceMap=true&sourceMapContents=true'
-				]
+				use     :
+				[{
+					loader : 'style-loader'
+				},
+				{
+					loader : 'css-loader?importLoaders=2&sourceMap'
+				},
+				{
+					loader : 'postcss-loader'
+				},
+				{
+					loader : 'sass-loader?outputStyle=expanded&sourceMap=true&sourceMapContents=true'
+				}]
 			},
 			// {
 			// 	test    : Webpack_isomorphic_tools_plugin.regular_expression(['woff', 'woff2', 'eot', 'ttf'].concat(webpack_isomorphic_tools_configuration.assets.images.extensions)),
@@ -103,23 +106,26 @@ const configuration =
 			{
 				test    : webpack_isomorphic_tools_plugin.regular_expression('fonts'),
 				include : assets_source_folder,
-				loaders :
-				[
-					'url-loader?limit=10240' // Any png-image or woff-font below or equal to 10K will be converted to inline base64 instead
-				]
+				use     :
+				[{
+					loader : 'url-loader?limit=10240' // Any png-image or woff-font below or equal to 10K will be converted to inline base64 instead
+				}]
 			},
 			{
 				test    : webpack_isomorphic_tools_plugin.regular_expression('images'),
 				include : assets_source_folder,
-				loaders :
-				[
-					'url-loader?limit=10240' // Any png-image or woff-font below or equal to 10K will be converted to inline base64 instead
-				]
+				use     :
+				[{
+					loader : 'url-loader?limit=10240' // Any png-image or woff-font below or equal to 10K will be converted to inline base64 instead
+				}]
 			},
 			{
 				test    : webpack_isomorphic_tools_plugin.regular_expression('html'),
 				include : assets_source_folder,
-				loader  :  'file-loader'
+				use     :
+				[{
+					loader : 'file-loader'
+				}]
 			}
 		]
 	},

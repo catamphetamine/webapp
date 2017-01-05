@@ -15,79 +15,82 @@ const templates = new EmailTemplates
 	}
 })
 
-let transporter
-
-if (configuration.mail_service.smtp)
+export default function connect_to_email_server()
 {
-	// create reusable transporter object using the default SMTP transport
-	transporter = nodemailer.createTransport
-	({
-		// pool   : true,
-		host   : configuration.mail_service.smtp.host,
-		port   : configuration.mail_service.smtp.port,
-		secure : configuration.mail_service.smtp.secure, // use SSL
-		auth:
-		{
-			user : configuration.mail_service.smtp.username,
-			pass : configuration.mail_service.smtp.password
-		}
-	})
-}
-else
-{
-	log.warn(`SMTP server connection not set up because no configuration was supplied. Emails won't be sent.`)
+	let transporter
 
-	transporter =
+	if (configuration.mail_service.smtp)
 	{
-		send(options)
-		{
-			log.info(`Email wasn't sent. Configure SMTP server connection to be able to send emails.`)
-			log.info(``)
-			log.info(`From:`, options.from)
-			log.info(`To:`, options.to)
-			log.info(`Subject:`, options.subject)
-			log.info(``)
-			log.info(`Text:`, options.text)
-			log.info(``)
-			log.info(`Html:`, options.html)
-
-			return Promise.resolve({})
-		},
-
-		templateSender(renderer, defaults)
-		{
-			return function(options, parameters)
+		// create reusable transporter object using the default SMTP transport
+		transporter = nodemailer.createTransport
+		({
+			// pool   : true,
+			host   : configuration.mail_service.smtp.host,
+			port   : configuration.mail_service.smtp.port,
+			secure : configuration.mail_service.smtp.secure, // use SSL
+			auth:
 			{
-				options = merge(options, defaults)
+				user : configuration.mail_service.smtp.username,
+				pass : configuration.mail_service.smtp.password
+			}
+		})
+	}
+	else
+	{
+		log.warn(`SMTP server connection not set up because no configuration was supplied. Emails won't be sent.`)
 
-				return new Promise((resolve, reject) =>
+		transporter =
+		{
+			send(options)
+			{
+				log.info(`Email wasn't sent. Configure SMTP server connection to be able to send emails.`)
+				log.info(``)
+				log.info(`From:`, options.from)
+				log.info(`To:`, options.to)
+				log.info(`Subject:`, options.subject)
+				log.info(``)
+				log.info(`Text:`, options.text)
+				log.info(``)
+				log.info(`Html:`, options.html)
+
+				return Promise.resolve({})
+			},
+
+			templateSender(renderer, defaults)
+			{
+				return function(options, parameters)
 				{
-					renderer.render(parameters, function(error, result)
+					options = merge(options, defaults)
+
+					return new Promise((resolve, reject) =>
 					{
-						if (error)
+						renderer.render(parameters, function(error, result)
 						{
-							return reject(error)
-						}
+							if (error)
+							{
+								return reject(error)
+							}
 
-						const { text, html } = result
+							const { text, html } = result
 
-						log.info(`Email wasn't sent. Configure SMTP server connection to be able to send emails.`)
-						log.info(``)
-						log.info(`From:`, options.from)
-						log.info(`To:`, options.to)
-						log.info(`Subject:`, options.subject)
-						log.info(``)
-						log.info(`Text:`)
-						log.info(``)
-						log.info(text)
-						log.info(``)
-						log.info(`Html:`)
-						log.info(``)
-						log.info(html)
+							log.info(`Email wasn't sent. Configure SMTP server connection to be able to send emails.`)
+							log.info(``)
+							log.info(`From:`, options.from)
+							log.info(`To:`, options.to)
+							log.info(`Subject:`, options.subject)
+							log.info(``)
+							log.info(`Text:`)
+							log.info(``)
+							log.info(text)
+							log.info(``)
+							log.info(`Html:`)
+							log.info(``)
+							log.info(html)
 
-						return resolve({})
+							return resolve({})
+						})
 					})
-				})
+				}
 			}
 		}
 	}

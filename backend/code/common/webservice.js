@@ -2,11 +2,8 @@ import web_service, { api as api_service, http } from 'web-service'
 
 const validate_token_url = '/token/valid'
 
-// `log` is a global variable in each Node.js process.
-// `_development_` is too.
 const common_options =
 {
-	log,
 	keys : configuration.web_service_secret_keys,
 	error_html : { font_size: '20pt' }
 }
@@ -38,7 +35,9 @@ export function api(name, host_port, api_modules, options = {})
 		...common_options,
 		...authentication_options,
 		...options,
-		api : api_modules
+		api : api_modules,
+		// `log` global variable has been defined by now
+		log
 	})
 	.listen(host_port).then(() =>
 	{
@@ -56,7 +55,9 @@ export default function webservice(options)
 	options =
 	{
 		...common_options,
-		...options
+		...options,
+		// `log` global variable has been defined by now
+		log
 	}
 
 	if (options.authentication)

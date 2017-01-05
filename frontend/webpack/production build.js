@@ -49,9 +49,6 @@ configuration.plugins = configuration.plugins.concat
 	// without this option styles would only be extracted from the top-level chunk of an entry.
 	new extract_text_plugin({ filename: '[name]-[contenthash].css', allChunks: true }),
 
-	// omit duplicate modules
-	new webpack.optimize.DedupePlugin(),
-
 	// For production mode
 	// https://moduscreate.com/webpack-2-tree-shaking-configuration/
 	new webpack.LoaderOptionsPlugin
@@ -73,7 +70,7 @@ configuration.plugins = configuration.plugins.concat
 )
 
 // find the styles loader
-const scss_loader = configuration.module.loaders.filter(loader =>
+const scss_loader = configuration.module.rules.filter(loader =>
 {
 	return loader.test.toString() === /\.scss$/.toString()
 })
@@ -90,8 +87,8 @@ const scss_loader = configuration.module.loaders.filter(loader =>
 // the first argument to the .extract() function is the name of the loader
 // ("style-loader" in this case) to be applied to non-top-level-chunks in case of "allChunks: false" option.
 // since in this configuration "allChunks: true" option is used, this first argument is irrelevant.
-scss_loader.loader = extract_text_plugin.extract({ notExtractLoader: scss_loader.loaders.shift(), loader: scss_loader.loaders })
-delete scss_loader.loaders
+scss_loader.loader = extract_text_plugin.extract({ notExtractLoader: scss_loader.use.shift(), loader: scss_loader.use })
+delete scss_loader.use
 
 // done: set extract text plugin as a Css loader
 

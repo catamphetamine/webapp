@@ -5,37 +5,40 @@ import IP_limiter    from '../../../code/ip limiter'
 
 const ip_limiter = new IP_limiter(5)
 
-const service = api
-(
-	'Log service',
-	configuration.log_service.http.port,
-	[
-		function(api)
-		{
-			api.get('/', function()
+export default function()
+{
+	api
+	(
+		'Log service',
+		configuration.log_service.http.port,
+		[
+			function(api)
 			{
-				this.role('administrator')
-
-				return message_store.messages.clone().reverse()
-			})
-
-			// Anyone can post, so this is kinda security hole,
-			// but I guess better this than to loose
-			// errors happening in users' web browsers.
-			api.post('/', function(message, { ip })
-			{
-				if (!ip_limiter.passes(ip))
+				api.get('/', function()
 				{
-					// set_header('Retry-After', ...)
-					throw new errors.Too_many_requests()
-				}
+					this.role('administrator')
 
-				message.ip   = ip
-				message.name = 'client side'
-				message.time = new Date().toString()
+					return message_store.messages.clone().reverse()
+				})
 
-				return message_store.add(message)
-			})
-		}
-	]
-)
+				// Anyone can post, so this is kinda security hole,
+				// but I guess better this than to loose
+				// errors happening in users' web browsers.
+				api.post('/', function(message, { ip })
+				{
+					if (!ip_limiter.passes(ip))
+					{
+						// set_header('Retry-After', ...)
+						throw new errors.Too_many_requests()
+					}
+
+					message.ip   = ip
+					message.name = 'client side'
+					message.time = new Date().toString()
+
+					return message_store.add(message)
+				})
+			}
+		]
+	)
+}

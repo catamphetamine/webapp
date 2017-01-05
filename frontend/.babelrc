@@ -1,14 +1,13 @@
 {
 	"presets":
 	[
-		"react", 
-		"es2015", 
-		"stage-0"
+		"react",
+		["es2015", { modules: false }],
+		"stage-2"
 	],
 
 	"plugins":
 	[
-		"add-module-exports",
 		"transform-bluebird",
 		"transform-decorators-legacy",
 		"transform-react-display-name"
@@ -20,15 +19,14 @@
 		{
 			"presets":
 			[
-				"react", 
-				"node6", 
-				"stage-0"
+				"react",
+				"node6",
+				"stage-2"
 			],
 
 			"plugins":
 			[
 				"transform-runtime",
-				"add-module-exports",
 				"transform-decorators-legacy",
 				"transform-react-display-name"
 			]
@@ -38,7 +36,7 @@
 		{
 			"plugins":
 			[
-				["react-intl", 
+				["react-intl",
 				{
 					"messagesDir": "./build/messages/",
 					"enforceDescriptions": true

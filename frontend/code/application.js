@@ -46,7 +46,7 @@ import international from './international/loader'
 international.load().then(() =>
 {
 	// since react-intl assumes Intl is already in the global scope,
-	// we can't import the routes (which imports react-intl in some of its components)
+	// we can't import the routes (which import `react-intl` in some of their components)
 	// before polyfilling Intl. That's why you see require("./routes") here,
 	// and not as import on the top of the file.
 	const create_routes = require('./routes')

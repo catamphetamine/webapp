@@ -1,10 +1,15 @@
 import { api } from '../common/webservice'
 
-api
-(
-	'API service',
-	configuration.api_service.http,
-	[
-		require('./api/example')
-	]
-)
+import example_api from './api/example'
+
+export default function()
+{
+	api
+	(
+		'API service',
+		configuration.api_service.http,
+		[
+			example_api
+		]
+	)
+}

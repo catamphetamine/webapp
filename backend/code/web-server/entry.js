@@ -1,5 +1,2 @@
 require('../../../code/server entry')
-
-global.log = require('./log')
-
-require('./main')
+require('./entry.es6')

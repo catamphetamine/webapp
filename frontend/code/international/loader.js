@@ -67,13 +67,13 @@ const international =
 					require.ensure
 					([
 						'intl',
-						'intl/locale-data/jsonp/en.js'
+						'intl/locale-data/jsonp/ru.js'
 					],
 					(require) =>
 					{
 						// apply the polyfill
 						require('intl')
-						require('intl/locale-data/jsonp/en.js')
+						require('intl/locale-data/jsonp/ru.js')
 						debug(`Intl polyfill for "${locale}" has been loaded`)
 						resolve()
 					},
@@ -86,13 +86,13 @@ const international =
 					require.ensure
 					([
 						'intl',
-						'intl/locale-data/jsonp/ru.js'
+						'intl/locale-data/jsonp/en.js'
 					],
 					(require) =>
 					{
 						// apply the polyfill
 						require('intl')
-						require('intl/locale-data/jsonp/ru.js')
+						require('intl/locale-data/jsonp/en.js')
 						debug(`Intl polyfill for "${locale}" has been loaded`)
 						resolve()
 					},
@@ -112,7 +112,7 @@ const international =
 		// Make sure ReactIntl is in the global scope: this is required for adding locale-data
 		// Since ReactIntl needs the `Intl` polyfill to be required (sic) we must place
 		// this require here, when loadIntlPolyfill is supposed to be present
-		require('expose?ReactIntl!react-intl')
+		require('expose-loader?ReactIntl!react-intl')
 
 		// The require.ensure function accepts an additional 3rd parameter.
 		// This must be a string.
@@ -182,22 +182,10 @@ const international =
 		switch (get_language_from_locale(locale))
 		{
 			case 'ru':
-				return new Promise(resolve =>
-				{
-					require.ensure(['./translations/ru'], require =>
-					{
-						resolve(require('./translations/ru'))
-					})
-				})
+				return import('./translations/ru').then(module => module.default)
 
 			default:
-				return new Promise(resolve =>
-				{
-					require.ensure(['./translations/en'], require =>
-					{
-						resolve(require('./translations/en'))
-					})
-				})
+				return import('./translations/en').then(module => module.default)
 		}
 	},
 

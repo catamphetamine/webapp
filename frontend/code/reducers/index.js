@@ -3,7 +3,10 @@ import { combineReducers } from 'redux'
 import user_settings_main            from './user/settings/main'
 import user_settings_change_password from './user/settings/change password'
 
-export { reducer as form } from 'simpler-redux-form'
+// https://github.com/webpack/webpack/issues/3769#issuecomment-270563837
+// export { reducer as form } from 'simpler-redux-form'
+import { reducer } from 'simpler-redux-form'
+export { reducer as form }
 
 export { default as preload }        from './preload'
 export { default as snackbar }       from './snackbar'
