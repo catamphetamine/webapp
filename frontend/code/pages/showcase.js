@@ -36,7 +36,7 @@ export default class Form_showcase extends Component
 						focused={this.state.focused}
 						date={this.state.date}
 						onDateChange={date => this.setState({ date })}
-						onFocusChange={({ focused }) => { this.setState({ focused })}}/>
+						onFocusChange={({ focused }) => this.setState({ focused })}/>
 				</div>
 			</section>
 		)
