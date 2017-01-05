@@ -7,6 +7,9 @@
 @import "layout.scss";
 @import "components.scss";
 
+@import "datepicker.css";
+@import "datepicker.custom.css";
+
 @media all                                                { @import "responsive/xs.scss"; }
 @media all and (min-width: $small-screen-min-width)       { @import "responsive/s.scss";  }
 @media all and (min-width: $medium-screen-min-width)      { @import "responsive/m.scss";  }

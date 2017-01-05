@@ -3,26 +3,12 @@ import { title }            from 'react-isomorphic-render'
 import styler               from 'react-styling'
 import { connect }          from 'react-redux'
 import Phone, { phone_number_format, is_valid_phone_number } from 'react-phone-number-input'
-
-import Date_picker from 'material-ui/DatePicker/DatePicker'
-import getMuiTheme from 'material-ui/styles/getMuiTheme'
+import { SingleDatePicker } from 'react-dates'
 
 @connect(model => ({ navigator: model.navigator }))
 export default class Form_showcase extends Component
 {
 	state = {}
-
-	static childContextTypes =
-	{
-		muiTheme: React.PropTypes.object
-	}
-
-	getChildContext()
-	{
-		return {
-			muiTheme: getMuiTheme({ userAgent: this.props.navigator.userAgent })
-		}
-	}
 
 	constructor(props, context)
 	{
@@ -42,20 +28,15 @@ export default class Form_showcase extends Component
 
 				See <a target="_blank" href="https://halt-hammerzeit.github.io/react-responsive-ui/"><code>react-responsive-ui</code></a>
 
-				<h2 style={style.label}>Date picker (part of Material UI)</h2>
-				<p><a href="https://github.com/callemall/material-ui/issues/4219">has calendar positioning issue</a></p>
+				<h2 style={style.label}>Date picker (AirBnB)</h2>
 				<div className="date-picker">
-					{/* `id` is a workaround for a randomly generated UID issue */}
-					{/* https://github.com/callemall/material-ui/issues/3757#issuecomment-239170710 */}
-					<Date_picker
-						id="date_picker"
-						style={style.date_picker}
-						hintText="Portrait Dialog"
-						autoOk={true}
-						container="inline"
-						textFieldStyle={style.date_picker.input}
-						hintStyle={style.date_picker.hint}
-						underlineShow={false}/>
+					<SingleDatePicker
+						id="date-picker"
+						numberOfMonths={1}
+						focused={this.state.focused}
+						date={this.state.date}
+						onDateChange={date => this.setState({ date })}
+						onFocusChange={({ focused }) => { this.setState({ focused })}}/>
 				</div>
 			</section>
 		)
