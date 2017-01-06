@@ -13,13 +13,6 @@ import moment from 'moment';
 // import parseDate from 'date-fns/parse';
 // import formatDate from 'date-fns/format';
 
-const overlayStyle = {
-  position: 'absolute',
-  zIndex: 1,
-  background: 'white',
-  boxShadow: '0 2px 5px rgba(0, 0, 0, .15)'
-};
-
 export default class DatePicker extends PureComponent {
 
   static propTypes = {
@@ -27,13 +20,22 @@ export default class DatePicker extends PureComponent {
     format: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     locale: PropTypes.string,
     value: PropTypes.instanceOf(Date),
-    onChange: PropTypes.func.isRequired
+    onChange: PropTypes.func.isRequired,
+    overlayStyle: PropTypes.object.isRequired,
+    className: PropTypes.string,
+    style: PropTypes.object
   }
 
   static defaultProps = {
     format: 'DD/MM/YYYY',
     locale: 'en-US',
-    firstDayOfWeek: 0
+    firstDayOfWeek: 0,
+    overlayStyle: {
+      position: 'absolute',
+      zIndex: 1,
+      background: 'white',
+      boxShadow: '0 2px 5px rgba(0, 0, 0, .15)'
+    }
   }
 
   state = {
@@ -133,11 +135,14 @@ export default class DatePicker extends PureComponent {
   }
 
   render() {
-    const { format, value, firstDayOfWeek } = this.props;
+    const { format, value, firstDayOfWeek, overlayStyle, className, style } = this.props;
     const { textValue, showOverlay } = this.state;
 
     return (
-      <div onMouseDown={ this.handleContainerMouseDown }>
+      <div
+        onMouseDown={ this.handleContainerMouseDown }
+        className={ className }
+        style={ style} >
         <input
           type="text"
           ref={ ref => this.input = ref }
