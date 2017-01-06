@@ -1,3 +1,4 @@
+// Derived from `react-day-picker` example
 // http://react-day-picker.js.org/examples/?overlay
 
 import React, { PureComponent, PropTypes } from 'react';
@@ -11,7 +12,7 @@ const overlayStyle = {
   position: 'absolute',
   zIndex: 1,
   background: 'white',
-  boxShadow: '0 2px 5px rgba(0, 0, 0, .15)',
+  boxShadow: '0 2px 5px rgba(0, 0, 0, .15)'
 };
 
 export default class DatePicker extends PureComponent {
@@ -33,7 +34,7 @@ export default class DatePicker extends PureComponent {
   state = {
     showOverlay: false,
     textValue: '',
-    selectedDay: null,
+    selectedDay: null
   };
 
   constructor(props) {
@@ -73,7 +74,7 @@ export default class DatePicker extends PureComponent {
     const showOverlay = this.clickedInside;
 
     this.setState({
-      showOverlay,
+      showOverlay
     });
 
     // Force input's focus if blur event was caused by clicking on the calendar
@@ -165,24 +166,24 @@ function parseDate(textValue) {
   return momentDay.toDate();
 }
 
-// Intl date formatting
+// // Intl date formatting
 
-const dateFormatters = {};
+// const dateFormatters = {};
 
-function formatDateIntl(date, locale) {
-  if (typeof Intl === 'undefined') {
-    return date.toISOString()
-  }
+// function formatDateIntl(date, locale) {
+//   if (typeof Intl === 'undefined') {
+//     return date.toISOString();
+//   }
 
-  const key = typeof locale === 'string' ? locale : locale.join(',')
+//   const key = typeof locale === 'string' ? locale : locale.join(',');
 
-  if (!dateFormatters[key]) {
-    dateFormatters[key] = new Intl.DateTimeFormat(locale, {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    })
-  }
+//   if (!dateFormatters[key]) {
+//     dateFormatters[key] = new Intl.DateTimeFormat(locale, {
+//       day: '2-digit',
+//       month: '2-digit',
+//       year: 'numeric'
+//     });
+//   }
 
-  return dateFormatters[key]
-}
+//   return dateFormatters[key];
+// }
