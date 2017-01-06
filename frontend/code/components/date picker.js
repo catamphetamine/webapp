@@ -2,11 +2,16 @@
 // http://react-day-picker.js.org/examples/?overlay
 
 import React, { PureComponent, PropTypes } from 'react';
-import moment from 'moment';
 import DayPicker, { DateUtils } from 'react-day-picker';
-import formatDate from 'date-fns/format';
+
+import moment from 'moment';
+
+// `date-fns` would be a better alternative to moment
+// but it doesn't support templated date parsing
+// until version `2.0.0` of it is released.
 // https://github.com/date-fns/date-fns/issues/347
 // import parseDate from 'date-fns/parse';
+// import formatDate from 'date-fns/format';
 
 const overlayStyle = {
   position: 'absolute',
@@ -166,17 +171,21 @@ function parseDate(textValue) {
   return momentDay.toDate();
 }
 
+function formatDate(date, format) {
+  return moment(date).format('L');
+}
+
 // // Intl date formatting
-
+//
 // const dateFormatters = {};
-
+//
 // function formatDateIntl(date, locale) {
 //   if (typeof Intl === 'undefined') {
 //     return date.toISOString();
 //   }
-
+//
 //   const key = typeof locale === 'string' ? locale : locale.join(',');
-
+//
 //   if (!dateFormatters[key]) {
 //     dateFormatters[key] = new Intl.DateTimeFormat(locale, {
 //       day: '2-digit',
@@ -184,6 +193,6 @@ function parseDate(textValue) {
 //       year: 'numeric'
 //     });
 //   }
-
+//
 //   return dateFormatters[key];
 // }
