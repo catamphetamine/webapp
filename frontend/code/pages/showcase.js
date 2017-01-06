@@ -3,19 +3,12 @@ import { title }            from 'react-isomorphic-render'
 import styler               from 'react-styling'
 import { connect }          from 'react-redux'
 import Phone, { phone_number_format, is_valid_phone_number } from 'react-phone-number-input'
-import { SingleDatePicker } from 'react-dates'
+import Date_picker from '../components/date picker'
 
 @connect(model => ({ navigator: model.navigator }))
 export default class Form_showcase extends Component
 {
 	state = {}
-
-	constructor(props, context)
-	{
-		super(props, context)
-
-		this.on_selection_changed = this.on_selection_changed.bind(this)
-	}
 
 	render()
 	{
@@ -28,26 +21,14 @@ export default class Form_showcase extends Component
 
 				See <a target="_blank" href="https://halt-hammerzeit.github.io/react-responsive-ui/"><code>react-responsive-ui</code></a>
 
-				<h2 style={style.label}>Date picker (AirBnB)</h2>
-				<div className="date-picker">
-					<SingleDatePicker
-						id="date-picker"
-						numberOfMonths={1}
-						focused={this.state.focused}
-						date={this.state.date}
-						onDateChange={date => this.setState({ date })}
-						onFocusChange={({ focused }) => this.setState({ focused })}/>
-				</div>
+				<h2 style={style.label}>Date picker</h2>
+				<Date_picker
+					value={this.state.selectedDay}
+					onChange={selectedDay => this.setState({ selectedDay })}/>
 			</section>
 		)
 
 		return markup
-	}
-
-	on_selection_changed(event)
-	{
-		const value = event.target.value
-    	this.setState({ select_value: value })
 	}
 }
 

@@ -1,35 +1,4 @@
-
-
-.DayPicker
-{
-	font-size: 20px;
-}
-
-.DayPicker__week-header
-{
-	margin-top: -6px;
-	font-size: 24px;
-}
-
-.CalendarMonth__caption
-{
-	position: relative;
-	top: -2px;
-	font-size: 24px;
-}
-
-.DateInput__display-text
-{
-	font-size: 28px;
-}
-
-.SingleDatePicker,
-.DateInput__display-text
-{
-	width: 100%;
-}
-
-.SingleDatePickerInput
-{
-	border: none
+.DayPicker-Day:active:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside) {
+  color: #FFF;
+  background-color: #72B2FC;
 }
