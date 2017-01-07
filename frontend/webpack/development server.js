@@ -30,9 +30,8 @@ configuration.plugins = configuration.plugins.concat
 			BABEL_ENV: JSON.stringify('development/client')
 		},
 
-		// _client_            : true,
-		// _server_            : false,
-		_development_tools_ : false  // <-------- DISABLE redux-devtools HERE
+		_server_ : false,
+		_development_tools_ : false  // redux-devtools on/off
 	}),
 
 	// Slightly faster webpack builds
