@@ -8,9 +8,6 @@ import _ from './language'
 import configuration from './configuration'
 import global_variables from './global variables'
 
-global._development_ = process.env.NODE_ENV !== 'production'
-global._production_ = !global._development_
-
 Promise.promisifyAll(fs)
 
 global.Root_folder = path.join(__dirname, '..')

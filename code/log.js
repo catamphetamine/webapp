@@ -33,7 +33,7 @@ const colours =
 	'...' : 'grey'
 }
 
-const styles = 
+const styles =
 {
 	//styles
 	'bold'      : [1,  22],
@@ -72,7 +72,7 @@ function colorize(text, style)
 
 // if ((item instanceof Error) && item.stack)
 // {
-// 	item = 
+// 	item =
 // 	{
 // 		inspect: function()
 // 		{
@@ -158,14 +158,14 @@ export default function create(name, options = {})
 		// }
 	}
 
-	const development_log = 
+	const development_log =
 	{
-		streams: 
+		streams:
 		[{
 			type   : 'raw',
 			stream : console_output
 		}],
-		serializers: 
+		serializers:
 		{
 			error    : bunyan.stdSerializers.err,
 			request  : bunyan.stdSerializers.req,
@@ -186,7 +186,7 @@ export default function create(name, options = {})
 			period : '1d',            // daily rotation
 			count  : 3                // keep 3 back copies
 		}],
-		serializers: 
+		serializers:
 		{
 			error    : bunyan.stdSerializers.err,
 			request  : bunyan.stdSerializers.req,
@@ -194,7 +194,7 @@ export default function create(name, options = {})
 		}
 	}
 
-	const log_configuration = (_production_ || process.env.NODE_ENV === 'production') ? production_log : development_log
+	const log_configuration = process.env.NODE_ENV === 'production' ? production_log : development_log
 
 	if (options.use_log_server !== false)
 	{

@@ -54,15 +54,12 @@ international.load().then(() =>
 	// renders the webpage on the client side
 	return render
 	({
-		// enable/disable development mode (true/false)
-		development: _development_,
-
 		// enable/disable Redux dev-tools (true/false)
-		devtools: _development_tools_ ? require('./devtools') : undefined,
+		devtools: _development_tools_ && require('./devtools').default,
 
 		// internationalization
 		// (this is here solely for Webpack HMR in dev mode)
-		translation: _development_ ? international.load_translation : undefined
+		translation: process.env.NODE_ENV !== 'production' && international.load_translation
 	},
 	common)
 	.then(({ component, store, rerender }) =>

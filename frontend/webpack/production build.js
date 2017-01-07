@@ -34,11 +34,9 @@ configuration.plugins = configuration.plugins.concat
 			NODE_ENV: JSON.stringify('production') // 'development' to see non-minified React errors
 		},
 
-		_client_            : true,
-		_server_            : false,
-		_development_       : false,
-		_production_        : true,
-		_development_tools_ : false  // <-------- DISABLE redux-devtools HERE
+		// _client_            : true,
+		// _server_            : false,
+		_development_tools_ : false
 	}),
 
 	// css files from the extract-text-plugin loader

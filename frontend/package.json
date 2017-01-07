@@ -45,7 +45,7 @@
     "react-dnd-html5-backend": "^2.1.2",
     "react-dom": "^15.3.1",
     "react-intl": "^2.1.2",
-    "react-isomorphic-render": "^8.0.7",
+    "react-isomorphic-render": "file:///Users/kuchumovn/work/webapp/react-isomorphic-render-8.0.11.tgz",
     "react-phone-number-input": "^0.3.2",
     "react-redux": "^4.0.0",
     "react-responsive-ui": "^0.1.26",

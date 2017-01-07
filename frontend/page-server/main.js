@@ -75,7 +75,7 @@ const server = webpage_server
 	//
 	assets: (url) =>
 	{
-		if (_development_)
+		if (process.env.NODE_ENV !== 'production')
 		{
 			webpack_isomorphic_tools.refresh()
 		}
@@ -162,7 +162,7 @@ const server = webpage_server
 
 		// Choose the most preferred locale from all available locales
 		// (the ones having messages translated)
-		let { locale, messages } = load_locale_data(preferred_locales, { force_reload: _development_ })
+		let { locale, messages } = load_locale_data(preferred_locales, { force_reload: process.env.NODE_ENV !== 'production' })
 
 		// Cache messages JSON
 		// (a tiny optimization)
@@ -196,7 +196,7 @@ const server = webpage_server
 		// (when in development mode only - removes rendering flicker)
 		head: () =>
 		{
-			if (_development_ && html_assets.style())
+			if (process.env.NODE_ENV !== 'production' && html_assets.style())
 			{
 				const remove_style_javascript =
 				`
@@ -231,7 +231,7 @@ const server = webpage_server
 		// Adding arbitrary React components to the start of the <body/>
 		body_start: () =>
 		{
-			if (_development_)
+			if (process.env.NODE_ENV !== 'production')
 			{
 				// Using "Webpack DLL plugin" in development
 				// to speed up incremental Webpack builds,

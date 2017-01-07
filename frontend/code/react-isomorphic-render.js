@@ -34,7 +34,7 @@ export default
 		//
 		// client side hot module reload for Redux reducers
 		// http://webpack.github.io/docs/hot-module-replacement.html#accept
-		if (_development_ && module.hot)
+		if (module.hot)
 		{
 			// this path must be equal to the path in the `require()` call in `create_store` above
 			module.hot.accept('./reducers', reload_reducer)

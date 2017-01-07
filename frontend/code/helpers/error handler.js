@@ -30,7 +30,7 @@ export default function(error, { url, redirect, dispatch })
 	// some kind of server error happened
 
 	// show error stack trace in development mode
-	if (_development_)
+	if (process.env.NODE_ENV !== 'production')
 	{
 		throw error
 	}

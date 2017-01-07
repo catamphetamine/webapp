@@ -1,4 +1,4 @@
-if (_development_)
+if (process.env.NODE_ENV !== 'production')
 {
 	require('bluebird').longStackTraces()
 }

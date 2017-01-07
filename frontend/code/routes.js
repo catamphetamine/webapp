@@ -17,7 +17,7 @@
 // to convert those `.json`s into a proper translations file
 // https://github.com/yahoo/react-intl/blob/master/examples/translations/scripts/translate.js
 //
-if (_development_)
+if (process.env.NODE_ENV !== 'production')
 {
 	const console_error = console.error
 	console.error = (...parameters) =>

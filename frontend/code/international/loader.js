@@ -191,12 +191,12 @@ const international =
 
 	hot_reload: on_reload =>
 	{
-		// `_development_` flag is needed here
+		// `process.env.NODE_ENV !== 'production'` flag is needed here
 		// to make sure that Webpack doesn't include
 		// the whole `./international` folder into the `main` bundle
 		// in production mode (because that's the sole point of code splitting)
 		//
-		if (_development_ && module.hot)
+		if (process.env.NODE_ENV !== 'production' && module.hot)
 		{
 			module.hot.accept(require.resolve('./translations/' + _locale + '.js'), function()
 			{

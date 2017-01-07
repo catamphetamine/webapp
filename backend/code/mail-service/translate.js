@@ -8,7 +8,7 @@ const default_translate_options = { escape: true }
 
 export default function translator(locale)
 {
-	const translation = load_locale_data([locale], locale_data_path, { force_reload: _development_ })
+	const translation = load_locale_data([locale], locale_data_path, { force_reload: process.env.NODE_ENV !== 'production' })
 
 	return function translate(key, parameters, options = {})
 	{
