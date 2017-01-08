@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { title }                       from 'react-isomorphic-render'
-import { preload }                     from 'react-isomorphic-render/redux'
+import { title, preload }              from 'react-isomorphic-render'
 import { connect }                     from 'react-redux'
 import styler                          from 'react-styling'
 import classNames                      from 'classnames'

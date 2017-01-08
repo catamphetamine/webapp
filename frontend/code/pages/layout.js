@@ -3,11 +3,10 @@ import React, { Component, PropTypes } from 'react'
 
 // testing `flat` styler
 import styler              from 'react-styling/flat'
-import { preload }         from 'react-isomorphic-render/redux'
+import { preload, head }   from 'react-isomorphic-render'
 import { connect }         from 'react-redux'
 import { Link, IndexLink } from 'react-router'
 import { defineMessages }  from 'react-intl'
-import { head }            from 'react-isomorphic-render'
 import classNames          from 'classnames'
 
 import international   from '../international/internationalize'

@@ -6,7 +6,7 @@ import language       from '../../code/language'
 
 import React          from 'react'
 
-import { render }     from 'react-isomorphic-render/redux'
+import { render }     from 'react-isomorphic-render'
 import common         from './react-isomorphic-render'
 
 // include these assets in webpack build (styles, images)

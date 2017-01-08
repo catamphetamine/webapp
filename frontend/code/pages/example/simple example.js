@@ -1,9 +1,7 @@
 import React, { Component, PropTypes } from 'react'
-
-import { title }   from 'react-isomorphic-render'
-import { preload } from 'react-isomorphic-render/redux'
-import styler      from 'react-styling'
-import { connect } from 'react-redux'
+import { title, preload }              from 'react-isomorphic-render'
+import styler                          from 'react-styling'
+import { connect }                     from 'react-redux'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
 

@@ -3,7 +3,7 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import styler      from 'react-styling'
 
-import { redirect } from 'react-isomorphic-render/redux'
+import { redirect } from 'react-isomorphic-render'
 
 import { defineMessages, FormattedMessage } from 'react-intl'
 import international from '../international/internationalize'
