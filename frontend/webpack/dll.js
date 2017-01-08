@@ -55,6 +55,7 @@ const third_party_libraries =
 	'react-isomorphic-render',
 	'react-modal',
 	'react-phone-number-input',
+	'react-responsive-ui',
 	'react-redux',
 	'react-router',
 	'react-sticky',

@@ -4,14 +4,22 @@
 = Buttons                                                   =
 ===========================================================*/
 
-.rrui__button--primary .rrui__button__button,
-.rrui__button--primary .rrui__button__link
+.rrui__button
+{
+	color : var(--base-color-darker);
+}
+
+.rrui__button:active
+{
+	color : var(--base-color);
+}
+
+.rrui__button--primary
 {
 	color : var(--accent-color);
 }
 
-.rrui__button--primary .rrui__button__button:active,
-.rrui__button--primary .rrui__button__link:active
+.rrui__button--primary:active
 {
 	color: var(--accent-color-lighter);
 }
@@ -26,7 +34,7 @@
 
 	white-space : nowrap;
 
-	color : var(--base-color-darker);
+	color : inherit;
 
 	transition : color 30ms ease-out, opacity 150ms ease-out 100ms;
 }
@@ -34,13 +42,8 @@
 .rrui__button--busy .rrui__button__button,
 .rrui__button--busy .rrui__button__link
 {
+	opacity    : 0;
 	transition : color 30ms ease-out, opacity 200ms ease-out 300ms;
-}
-
-.rrui__button__button:active,
-.rrui__button__link:active
-{
-	color : var(--base-color);
 }
 
 .rrui__button .rrui__activity-indicator
@@ -328,7 +331,6 @@
 	padding-left   : 1.5em;
 	vertical-align : bottom;
 	color          : inherit;
-	cursor         : default;
 }
 
 /* Checkbox label color */
@@ -709,47 +711,30 @@ but introduces page width jumps.
 = Text input                                                =
 ===========================================================*/
 
-.rrui__text-input
+.rrui__text-input--floating-label
 {
-	/*
-	"flex" is for the <label/> which goes after the <input/> in markup
-	but is then placed before the <input/> using "order".
+	padding-top : calc(var(--modular-grid-unit) * 2.5);
+}
 
-	The reason for this is "input:focus + label" selector,
-	which highlights the <label/> when the input is focused.
-	(there's no CSS selector for "label [before] input:focus")
-	*/
-
-	display        : flex;
-	flex-direction : column;
+.rrui__text-input label
+{
+	top        : var(--input-padding);
+	margin-top : calc(var(--modular-grid-unit) * 2.5);
 
 	/*
 	When changing this label color
 	also change "input" and "textarea" placeholder color.
 	*/
-}
+	color : #9FA8B3;
 
-.rrui__text-input label
-{
-	order : -2;
-
-	margin-top : -0.6em;
-
-	padding-top    : var(--input-padding);
-
-	color : var(--gray-color-dark);
-
-	transform        : scale(0.8) translateY(0.6em);
+	transform        : scale(0.8) translateY(-1.2em);
 	transform-origin : left top;
 	transition       : color 0.1s ease-out, transform 0.1s ease-out;
-	pointer-events   : none;
 }
 
 /* Either label or description */
 .rrui__text-input p
 {
-	order: -2;
-
 	margin-top    : 0;
 	margin-bottom : 0;
 }
@@ -789,7 +774,7 @@ but introduces page width jumps.
 .rrui__text-input--empty label
 {
 	color     : var(--gray-color-darker);
-	transform : translateY(1.4em) scale(1);
+	transform : translateY(0) scale(1);
 }
 
 .rrui__text-input--empty input:focus + label,
@@ -962,3 +947,19 @@ but introduces page width jumps.
 	}
 }
 */
+
+/*===========================================================
+= Date picker                                               =
+===========================================================*/
+
+.DayPicker-Day:active:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside)
+{
+	color: #FFF;
+	background-color: #72B2FC;
+}
+
+.rrui__date-picker__calendar
+{
+	background-color: white;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, .15);
+}

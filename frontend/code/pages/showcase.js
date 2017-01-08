@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 import { title }            from 'react-isomorphic-render'
 import styler               from 'react-styling'
 import { connect }          from 'react-redux'
-import Phone, { phone_number_format, is_valid_phone_number } from 'react-phone-number-input'
-import Date_picker from '../components/date picker'
+import { DatePicker }       from 'react-responsive-ui'
 
 @connect(model => ({ navigator: model.navigator }))
 export default class Form_showcase extends Component
@@ -22,7 +21,7 @@ export default class Form_showcase extends Component
 				See <a target="_blank" href="https://halt-hammerzeit.github.io/react-responsive-ui/"><code>react-responsive-ui</code></a>
 
 				<h2 style={style.label}>Date picker</h2>
-				<Date_picker
+				<DatePicker
 					value={this.state.selectedDay}
 					onChange={selectedDay => this.setState({ selectedDay })}/>
 			</section>

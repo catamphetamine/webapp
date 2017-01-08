@@ -5,10 +5,9 @@
 @import "fonts.scss";
 @import "base.scss";
 @import "layout.scss";
-@import "components.scss";
-
+@import "react-responsive-ui.scss";
 @import "datepicker.css";
-@import "datepicker.custom.css";
+@import "components.scss";
 
 @media all                                                { @import "responsive/xs.scss"; }
 @media all and (min-width: $small-screen-min-width)       { @import "responsive/s.scss";  }
