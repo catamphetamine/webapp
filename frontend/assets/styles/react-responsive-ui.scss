@@ -4,26 +4,6 @@
 = Buttons                                                   =
 ===========================================================*/
 
-.rrui__button
-{
-	color : var(--base-color-darker);
-}
-
-.rrui__button:active
-{
-	color : var(--base-color);
-}
-
-.rrui__button--primary
-{
-	color : var(--accent-color);
-}
-
-.rrui__button--primary:active
-{
-	color: var(--accent-color-lighter);
-}
-
 .rrui__button__button,
 .rrui__button__link
 {
@@ -59,6 +39,84 @@
 .rrui__button--busy .rrui__activity-indicator
 {
 	transition-delay : 350ms;
+}
+
+/* Bordered button */
+
+.rrui__button--border .rrui__button__button,
+.rrui__button--border .rrui__button__link
+{
+	padding-left   : 1.6em;
+	padding-right  : 1.6em;
+	padding-top    : 0.7em;
+	padding-bottom : 0.55em;
+
+	border: var(--input-border-width) solid transparent;
+	border-radius: var(--border-radius);
+}
+
+.rrui__button--border,
+.rrui__button--border .rrui__button__button
+{
+	cursor: pointer;
+}
+
+.rrui__button--border .rrui__activity-indicator
+{
+	top  : 0.8em;
+	left : 0.5em;
+}
+
+.rrui__button--border.rrui__button--busy .rrui__button__button,
+.rrui__button--border.rrui__button--busy .rrui__button__link
+{
+	opacity: 1;
+}
+
+/* Button colors */
+
+.rrui__button
+{
+	color : var(--base-color-darker);
+}
+
+.rrui__button--border .rrui__button__button,
+.rrui__button--border .rrui__button__link
+{
+	border-color: var(--base-color-darker);
+}
+
+.rrui__button:active
+{
+	color : var(--base-color);
+}
+
+.rrui__button--border:active .rrui__button__button,
+.rrui__button--border:active .rrui__button__link
+{
+	border-color: var(--base-color);
+}
+
+.rrui__button--primary
+{
+	color: var(--accent-color);
+}
+
+.rrui__button--primary.rrui__button--border .rrui__button__button,
+.rrui__button--primary.rrui__button--border .rrui__button__link
+{
+	border-color: var(--accent-color);
+}
+
+.rrui__button--primary:active
+{
+	color: var(--accent-color-lighter);
+}
+
+.rrui__button--primary.rrui__button--border:active .rrui__button__button,
+.rrui__button--primary.rrui__button--border:active .rrui__button__link
+{
+	border-color: var(--accent-color-lighter);
 }
 
 /*===========================================================
