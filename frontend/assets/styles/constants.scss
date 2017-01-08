@@ -25,26 +25,24 @@
 	--gray-color-dark       : #B3AA9F;
 	--gray-color-darker     : #918d88;
 
-	--black-color           : #4e3d27;
-
-	--white-color        : #ffffff;
+	--black-color : #4e3d27;
+	--white-color : #ffffff;
 
 	--error-color         : #EB2010;
 	--error-color-lighter : #FF1300;
 	--error-color-darker  : #D30F00;
 
+	--modular-grid-unit : 0.3rem;
+
 	--input-border-width         : 2pt;
 	--input-separator-width      : 1pt;
-	--input-padding              : 0.15rem;
+	--input-padding              : calc(var(--modular-grid-unit) / 2);
 
 	--dropdown-item-side-padding : 4; // im modular grid units
 
 	--header-vertically-centered-text-margin-top: 0.1em;
 
-	--border-radius : 3pt;
-
-	--modular-grid-unit : 0.3rem;
-
+	--border-radius      : 3pt;
 	--card-border-radius : 0.2rem;
 
 	--shadow : 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
