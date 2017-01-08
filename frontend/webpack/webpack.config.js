@@ -79,7 +79,7 @@ const configuration =
 				}]
 			},
 			{
-				test    : /\.scss$/,
+				test    : /\.(scss|css)$/,
 				include : assets_source_folder,
 				use     :
 				[{
@@ -153,7 +153,7 @@ configuration.plugins.push
 (
 	new webpack.LoaderOptionsPlugin
 	({
-		test: /\.scss$/,
+		test: /\.(scss|css)$/,
 		debug: true,
 		options:
 		{
