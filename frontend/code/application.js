@@ -2,12 +2,13 @@
 // (including generators, which means async/await)
 import 'babel-polyfill'
 
-import language       from '../../code/language'
+import React      from 'react'
+import { render } from 'react-isomorphic-render'
+import inject_tap_event_plugin from 'react-tap-event-plugin'
 
-import React          from 'react'
-
-import { render }     from 'react-isomorphic-render'
-import common         from './react-isomorphic-render'
+import language from '../../code/language'
+import settings from './react-isomorphic-render'
+import international from './international/loader'
 
 // include these assets in webpack build (styles, images)
 
@@ -18,29 +19,11 @@ for (let asset of Object.keys(html_assets))
 	html_assets[asset]()
 }
 
-import inject_tap_event_plugin from 'react-tap-event-plugin'
-
 // Needed for onTouchTap
 // Can go away when react 1.0 release
 // Check this repo:
 // https://github.com/zilverline/react-tap-event-plugin
 inject_tap_event_plugin()
-
-// import ajax from './tools/ajax'
-// global.ajax = ajax
-
-import international from './international/loader'
-
-// // react-hot-loader 3
-// import { AppContainer } from 'react-hot-loader'
-//
-// class react_hot_loader_3_markup_wrapper extends React.Component
-// {
-// 	render()
-// 	{
-// 		return <AppContainer component={markup_wrapper} props={this.props}/>
-// 	}
-// }
 
 // load the Intl polyfill and its locale data before rendering the application
 international.load().then(() =>
@@ -52,33 +35,27 @@ international.load().then(() =>
 	const create_routes = require('./routes')
 
 	// renders the webpage on the client side
-	return render
-	({
+	return render(settings,
+	{
 		// enable/disable Redux dev-tools (true/false)
 		devtools: _development_tools_ && require('./devtools').default,
 
 		// internationalization
 		// (this is here solely for Webpack HMR in dev mode)
 		translation: process.env.NODE_ENV !== 'production' && international.load_translation
-	},
-	common)
-	.then(({ component, store, rerender }) =>
+	})
+	.then(({ store, rerender }) =>
 	{
-		international.hot_reload(rerender)
+		if (module.hot)
+		{
+			module.hot.accept('./react-isomorphic-render', () =>
+			{
+				alert('hot')
+				store.hotReload(settings.reducer)
+				rerender()
+			})
+
+			international.hot_reload(rerender)
+		}
 	})
 })
-
-// // react-hot-loader 3
-// if (module.hot)
-// {
-// 	module.hot.accept('./markup wrapper', () =>
-// 	{
-// 		render
-// 		(
-// 			<AppContainer
-// 				component={require('./markup wrapper').default}
-// 				props={{ store }}/>,
-// 			document.getElementById('root')
-// 		)
-// 	})
-// }

@@ -12,18 +12,18 @@ import { Button } from 'react-responsive-ui'
 @preload(({ dispatch }) => dispatch(get_users()))
 @connect
 (
-	model =>
+	state =>
 	({
-		users         : model.example_users.users,
-		loading       : model.example_users.loading,
-		loaded        : model.example_users.loaded,
-		loading_error : model.example_users.loading_error,
-		adding_error  : model.example_users.adding_error,
+		users         : state.example_users.users,
+		loading       : state.example_users.loading,
+		loaded        : state.example_users.loaded,
+		loading_error : state.example_users.loading_error,
+		adding_error  : state.example_users.adding_error,
 
-		uploading_picture       : model.example_users.uploading_picture,
-		uploading_picture_error : model.example_users.uploading_picture_error,
+		uploading_picture       : state.example_users.uploading_picture,
+		uploading_picture_error : state.example_users.uploading_picture_error,
 
-		user : model.authentication.user
+		user : state.authentication.user
 	}),
 	{
 		get_users,

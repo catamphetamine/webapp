@@ -14,24 +14,16 @@ import application_configuration from '../../code/configuration'
 
 const configuration = Object.clone(base_configuration)
 
-// configuration.devtool = 'inline-source-map'
-// configuration.devtool = 'inline-eval-cheap-source-map'
-// configuration.devtool = 'eval-source-map'
-// configuration.devtool = 'eval-cheap-module-source-map'
+// https://webpack.js.org/configuration/devtool/#devtool
+// configuration.devtool = 'cheap-module-eval-source-map'
 
 configuration.plugins = configuration.plugins.concat
 (
 	// environment variables
 	new webpack.DefinePlugin
 	({
-		'process.env':
-		{
-			NODE_ENV: JSON.stringify('development'),
-			BABEL_ENV: JSON.stringify('development/client')
-		},
-
 		_server_ : false,
-		_development_tools_ : false  // redux-devtools on/off
+		_development_tools_ : false  // `redux-devtools` on/off
 	}),
 
 	// Slightly faster webpack builds
@@ -44,6 +36,9 @@ configuration.plugins = configuration.plugins.concat
 
 	// faster code reload on changes
 	new webpack.HotModuleReplacementPlugin(),
+
+	// prints more readable module names in the browser console on HMR updates
+	new webpack.NamedModulesPlugin(),
 
 	// For development mode
 	// https://moduscreate.com/webpack-2-tree-shaking-configuration/
@@ -61,67 +56,18 @@ configuration.plugins = configuration.plugins.concat
 	new webpack_isomorphic_tools_plugin(require('./webpack-isomorphic-tools.js')).development()
 )
 
-// enable webpack development server
+// Enable `webpack-dev-server` and `react-hot-loader`
 configuration.entry.main =
 [
-	// `webpack-dev-server/client?http://${application_configuration.development.webpack.development_server.host}:${application_configuration.development.webpack.development_server.port}`,
-	// 'webpack/hot/only-dev-server',
 	`webpack-hot-middleware/client?path=http://${application_configuration.development.webpack.development_server.host}:${application_configuration.development.webpack.development_server.port}/__webpack_hmr`,
+	'react-hot-loader/patch',
 	configuration.entry.main
 ]
 
-// network path for static files: fetch all statics from webpack development server
+// Network path for static files: fetch all statics from webpack development server
 configuration.output.publicPath = `http://${application_configuration.development.webpack.development_server.host}:${application_configuration.development.webpack.development_server.port}${configuration.output.publicPath}`
 
-// enable `react-transform-hmr` for Webpack React hot reload in development mode
-
-const javascript_loader = configuration.module.rules.filter(loader =>
-{
-	return loader.test.toString() === /\.js$/.toString()
-})
-.first()
-
-const babel_loader = javascript_loader.use.filter(loader => loader.loader === 'babel-loader')[0]
-
-if (!babel_loader.options)
-{
-	babel_loader.options = {}
-}
-
-if (!babel_loader.options.plugins)
-{
-	babel_loader.options.plugins = []
-}
-
-// https://github.com/gaearon/react-hot-loader
-const using_react_hot_loader_v3 = false
-
-if (using_react_hot_loader_v3)
-{
-	configuration.entry.main.push('react-hot-loader/patch')
-	babel_loader.options.plugins.push('react-hot-loader/babel')
-}
-else
-{
-	babel_loader.options.plugins = babel_loader.options.plugins.concat
-	([[
-		'react-transform',
-		{
-			transforms:
-			[{
-				transform : 'react-transform-catch-errors',
-				imports   : ['react', 'redbox-react']
-			},
-			{
-				transform : 'react-transform-hmr',
-				imports   : ['react'],
-				locals    : ['module']
-			}]
-		}
-	]])
-}
-
-// run `webpack-dev-server`
+// Run `webpack-dev-server`
 
 // http://webpack.github.io/docs/webpack-dev-server.html
 const development_server_options =
@@ -145,8 +91,6 @@ const development_server_options =
 
 const compiler = webpack(configuration)
 
-// const development_server = new webpack_development_server(compiler, development_server_options)
-
 const development_server = new express()
 
 development_server.use(webpack_dev_middleware(compiler, development_server_options))
@@ -160,5 +104,5 @@ development_server.listen(application_configuration.development.webpack.developm
 		throw error
 	}
 
-	console.log('[webpack-dev-server] Running') // , `http://localhost:${application_configuration.development.webpack.development_server.port}/webpack-dev-server/index.html`)
+	console.log('[webpack-dev-server] Running')
 })

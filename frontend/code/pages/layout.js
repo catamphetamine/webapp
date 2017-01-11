@@ -2,12 +2,11 @@ import React, { Component, PropTypes } from 'react'
 // import { StickyContainer, Sticky } from 'react-sticky'
 
 // testing `flat` styler
-import styler              from 'react-styling/flat'
-import { preload, head }   from 'react-isomorphic-render'
-import { connect }         from 'react-redux'
-import { Link, IndexLink } from 'react-router'
-import { defineMessages }  from 'react-intl'
-import classNames          from 'classnames'
+import styler                             from 'react-styling'
+import { preload, head, Link, IndexLink } from 'react-isomorphic-render'
+import { connect }                        from 'react-redux'
+import { defineMessages }                 from 'react-intl'
+import classNames                         from 'classnames'
 
 import international   from '../international/internationalize'
 
@@ -112,7 +111,7 @@ export default class Layout extends Component
 
 				{/* navigation for small screens (will slide out) */}
 				{/* main menu */}
-				<Menu slideout items={menu_entries(translate)}/>
+				<Menu slideout items={menu_entries(translate)} itemComponent={Menu_item}/>
 
 				{/* "page is preloading" spinner */}
 				<Preloading/>
@@ -140,7 +139,7 @@ export default class Layout extends Component
 
 							{/* navigation for wide screens */}
 							{/* main menu */}
-							<Menu items={menu_entries(translate)}/>
+							<Menu items={menu_entries(translate)} itemComponent={Menu_item}/>
 
 							{/* User accout section */}
 							<User_bar/>
@@ -209,7 +208,25 @@ const style = styler
 		active
 			cursor : default
 			color  : inherit
+
+	menu_item_link
 `
+
+function Menu_item({ to, children })
+{
+	const markup =
+	(
+		<Link
+			to={ to }
+			style={ style.menu_item_link }
+			className="rrui__menu__item"
+			activeClassName="rrui__menu__item--selected">
+			{ children }
+		</Link>
+	)
+
+	return markup
+}
 
 export function menu_entries(translate)
 {

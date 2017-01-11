@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react'
-
+import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import styler      from 'react-styling'
-
 import { redirect } from 'react-isomorphic-render'
 
 import { defineMessages, FormattedMessage } from 'react-intl'
+
 import international from '../international/internationalize'
 
 import Text_input             from './form/text input'
@@ -214,8 +214,7 @@ export const messages = defineMessages
 		registration_pending : model.authentication.registration_pending,
 		sign_in_pending      : model.authentication.sign_in_pending,
 
-		locale   : model.locale.locale,
-		location : model.router.location
+		locale   : model.locale.locale
 	}),
 	dispatch =>
 	({
@@ -232,7 +231,7 @@ export const messages = defineMessages
 	})
 )
 @international()
-export default class Authentication_form extends Component
+class Authentication_form extends Component
 {
 	state =
 	{
@@ -256,7 +255,7 @@ export default class Authentication_form extends Component
 
 		focus_on     : PropTypes.string,
 
-		location     : PropTypes.object,
+		router       : PropTypes.object.isRequired,
 
 		initial_values : PropTypes.object
 	}
@@ -315,7 +314,8 @@ export default class Authentication_form extends Component
 			error,
 			initial_values,
 			submit,
-			submitting
+			submitting,
+			router: { location }
 		}
 		= this.props
 
@@ -337,7 +337,7 @@ export default class Authentication_form extends Component
 				<div style={style.or_register} className="or-register">
 					<span>{translate(messages.or)}&nbsp;</span>
 					<Button
-						link={add_redirect('/register', this.props.location)}
+						link={add_redirect('/register', location)}
 						buttonStyle={style.or_register.register}
 						action={this.start_registration}
 						disabled={sign_in_pending}>
@@ -371,7 +371,7 @@ export default class Authentication_form extends Component
 					inputStyle={style.input.input}/>
 
 				{/* Support redirecting to the initial page when javascript is disabled */}
-				<input type="hidden" name="request" value={should_redirect_to(this.props.location)}/>
+				<input type="hidden" name="request" value={should_redirect_to(location)}/>
 
 				<Form.Error/>
 
@@ -417,7 +417,8 @@ export default class Authentication_form extends Component
 			register_pending,
 			initial_values,
 			submit,
-			submitting
+			submitting,
+			router: { location }
 		}
 		= this.props
 
@@ -439,7 +440,7 @@ export default class Authentication_form extends Component
 				<div style={style.or_register} className="or-register">
 					<span>{translate(messages.or)}&nbsp;</span>
 					<Button
-						link={add_redirect('/sign-in', this.props.location)}
+						link={add_redirect('/sign-in', location)}
 						buttonStyle={style.or_register.register}
 						action={this.cancel_registration}
 						disabled={sign_in_pending || register_pending}>
@@ -505,7 +506,7 @@ export default class Authentication_form extends Component
 				<input
 					type="hidden"
 					name="request"
-					value={should_redirect_to(this.props.location)}/>
+					value={should_redirect_to(location)}/>
 
 				{/* "Register" button */}
 				<Form.Actions className="rrui__form__actions--right">
@@ -627,7 +628,12 @@ export default class Authentication_form extends Component
 			// Hide the modal
 			this.setState({ show: false })
 
-			const { location, dispatch } = this.props
+			const
+			{
+				dispatch,
+				router: { location }
+			}
+			= this.props
 
 			// Refresh the page so that `authentication_token`
 			// is applied to the `http` tool.
@@ -841,6 +847,8 @@ export default class Authentication_form extends Component
 		})
 	}
 }
+
+export default withRouter(Authentication_form)
 
 const style = styler
 `

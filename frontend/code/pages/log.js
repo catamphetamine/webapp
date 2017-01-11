@@ -78,9 +78,9 @@ export default class Log extends Component
 		error   : PropTypes.object
 	}
 
-	constructor(props, context)
+	constructor(props)
 	{
-		super(props, context)
+		super(props)
 
 		this.render_log_entry = this.render_log_entry.bind(this)
 		this.hide_stack_trace = this.hide_stack_trace.bind(this)

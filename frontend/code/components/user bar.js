@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { Link }    from 'react-router'
+import { Link }    from 'react-isomorphic-render'
 import classNames  from 'classnames'
 import { connect } from 'react-redux'
 import styler      from 'react-styling'

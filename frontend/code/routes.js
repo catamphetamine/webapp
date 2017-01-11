@@ -55,41 +55,38 @@ import authorization from './helpers/authorize'
 
 const authorize = (component, is_authorized) => authorization(is_authorized)(component)
 
-export default function() // ({ dispatch, getState })
-{
-	const routes =
-	(
-		<Route path="/" component={Layout}>
-			<IndexRoute component={Home}/>
+const routes =
+(
+	<Route path="/" component={Layout}>
+		<IndexRoute component={Home}/>
 
-			<Route path="example" component={Example}>
-				<Route path="simple"   component={Simple_example}/>
-				<Route path="database" component={Database_example}/>
-				<Route path="graphql"  component={Simple_graphQL_example}/>
-			</Route>
-
-			<Route path="showcase" component={Showcase}/>
-
-			<Route path="user">
-				<Route path="block/:token_id" component={Block_user}/>
-				<Route path=":id" component={Profile}/>
-			</Route>
-
-			<Route path="settings" component={authorize(Settings)}/>
-
-			<Route path="logs" component={authorize(Log, 'administrator')}/>
-
-			<Route path="sign-in"  component={Sign_in}/>
-			<Route path="register" component={Register}/>
-
-			<Route path="menu" component={Menu}/>
-
-			<Route path="unauthenticated" status={401} component={Unauthenticated}/>
-			<Route path="unauthorized"    status={403} component={Unauthorized}/>
-			<Route path="error"           status={500} component={Generic_error}/>
-			<Route path="*"               status={404} component={Not_found}/>
+		<Route path="example" component={Example}>
+			<Route path="simple"   component={Simple_example}/>
+			<Route path="database" component={Database_example}/>
+			<Route path="graphql"  component={Simple_graphQL_example}/>
 		</Route>
-	)
 
-	return routes
-}
+		<Route path="showcase" component={Showcase}/>
+
+		<Route path="user">
+			<Route path="block/:token_id" component={Block_user}/>
+			<Route path=":id" component={Profile}/>
+		</Route>
+
+		<Route path="settings" component={authorize(Settings)}/>
+
+		<Route path="logs" component={authorize(Log, 'administrator')}/>
+
+		<Route path="sign-in"  component={Sign_in}/>
+		<Route path="register" component={Register}/>
+
+		<Route path="menu" component={Menu}/>
+
+		<Route path="unauthenticated" status={401} component={Unauthenticated}/>
+		<Route path="unauthorized"    status={403} component={Unauthorized}/>
+		<Route path="error"           status={500} component={Generic_error}/>
+		<Route path="*"               status={404} component={Not_found}/>
+	</Route>
+)
+
+export default routes

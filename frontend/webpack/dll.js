@@ -62,12 +62,8 @@ const third_party_libraries =
 	'react-styling',
 	'react-tap-event-plugin',
 	'react-time-ago',
-	'react-transform-catch-errors',
-	'react-transform-hmr',
-	'redbox-react',
 	'redux',
 	'redux-logger',
-	'redux-router',
 	'webpack-hot-middleware'
 ]
 

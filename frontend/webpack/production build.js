@@ -35,7 +35,7 @@ configuration.plugins = configuration.plugins.concat
 		},
 
 		_server_ : false,
-		_development_tools_ : false
+		_development_tools_ : false // `redux-devtools` on/off
 	}),
 
 	// css files from the extract-text-plugin loader

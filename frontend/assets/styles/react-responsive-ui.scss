@@ -189,8 +189,9 @@
 	transition-duration        : 0ms; /* don't animate short lists */
 	transition-timing-function : ease-out;
 
-	opacity: 0;
-	overflow-y: auto;
+	pointer-events : none;
+	opacity        : 0;
+	overflow-y     : auto;
 
 	background-color: white;
 
@@ -236,6 +237,8 @@
 
 .rrui__select__options--expanded
 {
+	pointer-events : auto;
+
 	opacity          : 1;
 	transform        : scaleY(1);
 	transform-origin : 50% top 0px;

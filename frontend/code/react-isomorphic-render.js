@@ -1,14 +1,21 @@
+import * as reducer from './reducers'
 import routes  from './routes'
 import wrapper from './wrapper'
 
-import create_logger from 'redux-logger'
+// import create_logger from 'redux-logger'
 import error_handler from './helpers/error handler'
+import async_settings from './react-isomorphic-render-async'
+
+if (module.hot)
+{
+	module.hot.accept('./routes', () => alert('hot routes'))
+}
 
 export default
 {
 	// Redux reducer
 	// (either an object or a function returning an object)
-	reducer: () => require('./reducers'),
+	reducer,
 
 	// React-router routes
 	// (either a `<Route/>` element or a `function({ store })` returning a `<Route/>` element)
@@ -28,16 +35,5 @@ export default
 		catch: error_handler
 	},
 
-	on_store_created({ reload_reducer })
-	{
-		// (for Webpack users only)
-		//
-		// client side hot module reload for Redux reducers
-		// http://webpack.github.io/docs/hot-module-replacement.html#accept
-		if (module.hot)
-		{
-			// this path must be equal to the path in the `require()` call in `create_store` above
-			module.hot.accept('./reducers', reload_reducer)
-		}
-	}
+	...async_settings
 }

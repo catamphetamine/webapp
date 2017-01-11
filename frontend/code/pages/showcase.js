@@ -4,11 +4,8 @@ import styler               from 'react-styling'
 import { connect }          from 'react-redux'
 import { DatePicker }       from 'react-responsive-ui'
 
-@connect(model => ({ navigator: model.navigator }))
 export default class Form_showcase extends Component
 {
-	state = {}
-
 	render()
 	{
 		const markup =
@@ -19,11 +16,6 @@ export default class Form_showcase extends Component
 				<br/>
 
 				See <a target="_blank" href="https://halt-hammerzeit.github.io/react-responsive-ui/"><code>react-responsive-ui</code></a>
-
-				<h2 style={style.label}>Date picker</h2>
-				<DatePicker
-					value={this.state.selectedDay}
-					onChange={selectedDay => this.setState({ selectedDay })}/>
 			</section>
 		)
 

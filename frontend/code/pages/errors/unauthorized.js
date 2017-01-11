@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import { title }            from 'react-isomorphic-render'
+import { title, Link }      from 'react-isomorphic-render'
 import { connect }          from 'react-redux'
-import { Link }             from 'react-router'
 
 import styler from 'react-styling'
 

@@ -10,21 +10,16 @@
 // import look from 'look'
 // look.start()
 
-import React from 'react'
-
-import webpage_server from 'react-isomorphic-render/server'
+import React                    from 'react'
+import webpage_server           from 'react-isomorphic-render/server'
 import is_intl_locale_supported from 'intl-locales-supported'
-import file_size_parser from 'filesize-parser'
+import file_size_parser         from 'filesize-parser'
+import Intl_polyfill            from 'intl'
+import { ActivityIndicator }    from 'react-responsive-ui'
 
-import Intl_polyfill from 'intl'
-
-import common         from '../code/react-isomorphic-render'
-import html_assets    from '../code/html assets'
-
+import settings         from '../code/react-isomorphic-render'
+import html_assets      from '../code/html assets'
 import load_locale_data from './locale'
-
-import { ActivityIndicator } from 'react-responsive-ui'
-
 import start_monitoring from '../../code/monitoring'
 
 // A faster way to load all the localization data for Node.js
@@ -58,8 +53,8 @@ const messagesJSON = {}
 const monitoring = start_monitoring(configuration)
 
 // starts webpage rendering server
-const server = webpage_server
-({
+const server = webpage_server(settings,
+{
 	// Http host and port for executing all client-side ajax requests on server-side
 	application:
 	{
@@ -273,8 +268,7 @@ const server = webpage_server
 	// loading: <div className="loading"><ActivityIndicator style={{ opacity: 0.1 }}/></div>,
 
 	log
-},
-common)
+})
 
 // Start webpage rendering server
 server.listen(configuration.webpage_server.http.port, function(error)

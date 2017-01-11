@@ -1,18 +1,12 @@
 import React, { Component, PropTypes } from 'react'
-
-// import { write as cookie } from '../tools/cookie'
-
+import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-
 import styler from 'react-styling'
-
-import Flag     from './flag'
-
 import { Form, Button, ActivityIndicator, Select } from 'react-responsive-ui'
-
-import Url from '../../../code/url'
-
 import { defineMessages } from 'react-intl'
+
+import Flag from './flag'
+import Url from '../../../code/url'
 import international from '../international/internationalize'
 
 // брать с сервера, из i18n файлов (key - имя, label - из файла этого считывать)
@@ -44,22 +38,16 @@ const messages = defineMessages
 	}
 })
 
-@connect
-(
-	model =>
-	({
-		locale   : model.locale.locale,
-		location : model.router.location
-	})
-)
+@connect(state => ({ locale : state.locale.locale }))
 @international()
-export default class Locale_switcher extends Component
+class Locale_switcher extends Component
 {
 	state = {}
 
 	static propTypes =
 	{
-		locale: PropTypes.string.isRequired
+		locale: PropTypes.string.isRequired,
+		router: PropTypes.object.isRequired
 	}
 
 	constructor(props, context)
@@ -71,7 +59,14 @@ export default class Locale_switcher extends Component
 
 	render()
 	{
-		const { locale, translate, upward, alignment, location } = this.props
+		const
+		{
+			locale,
+			translate,
+			upward,
+			alignment,
+			router: { location }
+		} = this.props
 
 		const markup =
 		(
@@ -151,6 +146,8 @@ export default class Locale_switcher extends Component
 		form.submit()
 	}
 }
+
+export default withRouter(Locale_switcher)
 
 const style = styler
 `

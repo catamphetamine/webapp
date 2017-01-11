@@ -1,15 +1,14 @@
 import React, { Component, PropTypes } from 'react'
 
-import { title }   from 'react-isomorphic-render'
-import { connect } from 'react-redux'
-import { Link }    from 'react-router'
-import styler      from 'react-styling'
+import { title, Link } from 'react-isomorphic-render'
+import { connect }     from 'react-redux'
+import styler          from 'react-styling'
 
 export default class Page extends Component
 {
 	render()
 	{
-		const markup = 
+		const markup =
 		(
 			<section className="content" style={{ padding: '1.6em' }}>
 				{title("REST API Example")}
@@ -21,7 +20,7 @@ export default class Page extends Component
 					<li style={style.menu.item}><Link to="/example/graphql" style={style.menu.item.link} activeStyle={style.menu.item.link.current}>{'GraphQL'}</Link></li>
 				</ul>
 				*/}
-				
+
         		{this.props.children}
 			</section>
 		)

@@ -3,7 +3,7 @@ import hoist_statics  from 'hoist-non-react-statics'
 
 import { connect }      from 'react-redux'
 import { redirect }     from 'react-isomorphic-render'
-import { Preload_method_name, Preload_blocking_method_name } from 'react-isomorphic-render'
+import { Preload_method_name } from 'react-isomorphic-render'
 
 import Unauthenticated from '../pages/errors/unauthenticated'
 import Unauthorized    from '../pages/errors/unauthorized'
@@ -83,15 +83,10 @@ export default function authorize(authorization)
 
 		hoist_statics(Authorize, Wrapped)
 
-		const preloads = [Preload_method_name, Preload_blocking_method_name]
+		const preload = Preload_method_name
 
-		preloads.forEach(preload =>
+		if (Authorize[preload])
 		{
-			if (!Authorize[preload])
-			{
-				return
-			}
-
 			const preloader = Authorize[preload]
 
 			Authorize[preload] = function authorize_then_preload(parameters)
@@ -113,7 +108,7 @@ export default function authorize(authorization)
 
 				return preloader(parameters)
 			}
-		})
+		}
 
 		return connect
 		(model =>

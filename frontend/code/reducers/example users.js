@@ -92,7 +92,7 @@ const handlers =
 
 	'user picture uploaded': (result, state) =>
 	{
-		const new_state = 
+		const new_state =
 		{
 			...state,
 			uploading_picture: false

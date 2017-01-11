@@ -1,9 +1,8 @@
-import React, { Component, PropTypes } from 'react'
-import { title, preload, redirect }    from 'react-isomorphic-render'
-import { connect }                     from 'react-redux'
-import styler                          from 'react-styling'
-import { Link }                        from 'react-router'
-import classNames                      from 'classnames'
+import React, { Component, PropTypes }    from 'react'
+import { title, preload, redirect, Link } from 'react-isomorphic-render'
+import { connect }                        from 'react-redux'
+import styler                             from 'react-styling'
+import classNames                         from 'classnames'
 
 import { defineMessages, FormattedMessage } from 'react-intl'
 

@@ -3,6 +3,7 @@ import { title, redirect }             from 'react-isomorphic-render'
 import { connect }                     from 'react-redux'
 import styler                          from 'react-styling'
 import { defineMessages }              from 'react-intl'
+import { withRouter }                  from 'react-router'
 
 import { should_redirect_to } from '../helpers/redirection'
 
@@ -25,27 +26,40 @@ const messages = defineMessages
 
 @connect
 (
-	model =>
+	state =>
 	({
-		user : model.authentication.user,
-
-		sign_in_pending : model.authentication.sign_in_pending,
-
-		error        : model.router.location.query.error,
-		error_status : parseInt(model.router.location.query.error_status),
-		email        : model.router.location.query.email
+		user : state.authentication.user,
+		sign_in_pending : state.authentication.sign_in_pending,
 	})
 )
 @international()
-export default class Sign_in extends Component
+class Sign_in extends Component
 {
 	constructor(props, context)
 	{
 		super(props, context)
 
+		const
+		{
+			router:
+			{
+				state:
+				{
+					location:
+					{
+						query:
+						{
+							email
+						}
+					}
+				}
+			}
+		}
+		= props
+
 		this.fields =
 		{
-			email : props.email
+			email
 		}
 
 		this.redirect = this.redirect.bind(this)
@@ -86,7 +100,27 @@ export default class Sign_in extends Component
 
 	error_message()
 	{
-		const { error, error_status, translate } = this.props
+		let
+		{
+			translate,
+			router:
+			{
+				state:
+				{
+					location:
+					{
+						query:
+						{
+							error,
+							error_status
+						}
+					}
+				}
+			}
+		}
+		= this.props
+
+		error_status = parseInt(error_status)
 
 		if (!error)
 		{
@@ -123,7 +157,27 @@ export default class Sign_in extends Component
 
 	get_focused_element()
 	{
-		const { error, error_status, translate } = this.props
+		let
+		{
+			translate,
+			router:
+			{
+				state:
+				{
+					location:
+					{
+						query:
+						{
+							error,
+							error_status
+						}
+					}
+				}
+			}
+		}
+		= this.props
+
+		error_status = parseInt(error_status)
 
 		if (error === '"email" is required')
 		{
@@ -154,6 +208,8 @@ export default class Sign_in extends Component
 		this.props.dispatch(redirect(should_redirect_to(this.props.location)))
 	}
 }
+
+export default withRouter(Sign_in)
 
 const style = styler
 `
