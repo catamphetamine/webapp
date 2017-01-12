@@ -6,11 +6,6 @@ import wrapper from './wrapper'
 import error_handler from './helpers/error handler'
 import async_settings from './react-isomorphic-render-async'
 
-if (module.hot)
-{
-	module.hot.accept('./routes', () => alert('hot routes'))
-}
-
 export default
 {
 	// Redux reducer
