@@ -44,7 +44,7 @@ export function add_redirect(base_url, location)
 				// 	break
 
 				default:
-					url.parameter('request', location.pathname + (location.search ? '?' + location.search : ''))
+					url.parameter('request', location.pathname + (location.search ? location.search : ''))
 			}
 		}
 	}

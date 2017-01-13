@@ -1024,3 +1024,11 @@ but introduces page width jumps.
 	background-color: white;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, .15);
 }
+
+.rrui__date-picker__input
+{
+	padding-left   : 0;
+	padding-right  : 0;
+	padding-top    : var(--input-padding);
+	padding-bottom : var(--input-padding);
+}

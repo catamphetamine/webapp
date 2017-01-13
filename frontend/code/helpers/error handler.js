@@ -1,24 +1,26 @@
+import { goto } from 'react-isomorphic-render'
+
 import { add_redirect } from '../helpers/redirection'
 import { error as log_error } from '../actions/log'
 
-export default function(error, { url, redirect, dispatch })
+export default function(error, { path, url, dispatch })
 {
 	// not authenticated
 	if (error.status === 401)
 	{
-		return redirect(add_redirect('/unauthenticated', url))
+		return dispatch(goto(add_redirect('/unauthenticated', url)))
 	}
 
 	// not authorized
 	if (error.status === 403)
 	{
-		return redirect(add_redirect('/unauthorized', url))
+		return dispatch(goto(add_redirect('/unauthorized', url)))
 	}
 
 	// log the error if running on the server side
 	if (_server_)
 	{
-		log.error(`Rendering error while executing an http request for url "${url}"`)
+		log.error(`Rendering error while executing an HTTP request for URL "${url}"`)
 		log.error(error)
 	}
 	else
@@ -36,11 +38,11 @@ export default function(error, { url, redirect, dispatch })
 	}
 
 	// prevents infinite redirect to the error page
-	if (url.starts_with('/error?'))
+	if (path === '/error')
 	{
 		throw error
 	}
 
 	// redirect to the generic error page
-	redirect(add_redirect('/error', url))
+	dispatch(goto(add_redirect('/error', url)))
 }

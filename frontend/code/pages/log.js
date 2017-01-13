@@ -56,10 +56,10 @@ export const messages = defineMessages
 @preload(({ dispatch }) => dispatch(get_log()))
 @connect
 (
-	model =>
+	state =>
 	({
-		log   : model.log.log,
-		error : model.log.error
+		log   : state.log.log,
+		error : state.log.error
 	}),
 	{ get_log }
 )

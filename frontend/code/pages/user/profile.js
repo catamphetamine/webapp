@@ -531,6 +531,7 @@ export default class User_profile extends Component
 							{ edit &&
 								// Country
 								<Select
+									autocomplete
 									name="country"
 									label={translate(messages.country)}
 									disabled={update_user_info_pending}

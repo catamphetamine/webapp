@@ -99,8 +99,8 @@ const server = webpage_server(settings,
 		const state =
 		{
 			authentication: { user },
-			// Is used by "material-ui" for CSS autoprefixing
-			navigator: { userAgent: request.headers['user-agent'] }
+			// // Is used by "material-ui" for CSS autoprefixing
+			// navigator: { userAgent: request.headers['user-agent'] }
 		}
 
 		return state
@@ -137,7 +137,7 @@ const server = webpage_server(settings,
 	},
 
 	// internationalization
-	localize: (store, preferred_locales) =>
+	localize: ({ store }, preferred_locales) =>
 	{
 		// Determine preferred locales
 

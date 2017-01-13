@@ -34,7 +34,7 @@ export default function authorize(authorization)
 				const user = props.user
 
 				// the requested page url
-				const url = props.location.pathname + (props.location.search ? '?' + props.location.search : '')
+				const url = props.location.pathname + (props.location.search ? props.location.search : '')
 
 				const result = check_privileges({ user, url, authorization })
 
