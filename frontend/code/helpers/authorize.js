@@ -31,10 +31,10 @@ export default function authorize(authorization)
 			check_privileges_and_take_action(props = this.props)
 			{
 				// current user
-				const user = props.user
+				const { user, location, redirect } = props
 
 				// the requested page url
-				const url = props.location.pathname + (props.location.search ? props.location.search : '')
+				const url = location.pathname + (location.search || '')
 
 				const result = check_privileges({ user, url, authorization })
 
@@ -43,19 +43,17 @@ export default function authorize(authorization)
 					return this.setState({ error: false })
 				}
 
-				// on the server we can just perform an Http 302 Redirect
+				// On the server we can just perform an Http 302 Redirect
 				// (for simplicity)
 				if (_server_)
 				{
-					const error = new Error(user ? 'Unauthenticated' : 'Unauthorized')
-					error.status = user ? 403 : 401
-					throw error
+					throw_server_side_error(user)
 				}
 
-				// on the client side: redirect to the "unauthorized" page
+				// On the client side: redirect to the "unauthorized" page
 				// (using React-router)
 				this.setState({ error: result.error })
-				this.props.dispatch(redirect(result.redirect_to))
+				redirect(result.redirect_to)
 			}
 
 			render()
@@ -65,15 +63,22 @@ export default function authorize(authorization)
 					return <Wrapped {...this.props}/>
 				}
 
-				if (this.state.error === 'unauthenticated')
-				{
-					return <Unauthenticated {...this.props}/>
-				}
+				// No need to render the authentication form
+				// and unauthorized message since the user
+				// will be immediately redirected to those pages.
+				// Just leave the page blank.
+				// Otherwise that would be too much going on.
+				// Simpler is considered better.
 
-				if (this.state.error === 'unauthorized')
-				{
-					return <Unauthorized {...this.props}/>
-				}
+				// if (this.state.error === 'unauthenticated')
+				// {
+				// 	return <Unauthenticated {...this.props}/>
+				// }
+
+				// if (this.state.error === 'unauthorized')
+				// {
+				// 	return <Unauthorized {...this.props}/>
+				// }
 
 				return <section className="content"/>
 			}
@@ -100,10 +105,17 @@ export default function authorize(authorization)
 
 				if (result.error)
 				{
-					return Promise.resolve()
+					// On the client side the redirection
+					// will be made in `componentWillMount()`.
+					// On the server side `component` won't neccessarily mount,
+					// (e.g. when SSR is turned off) therefore redirect right here.
 
-					// will trigger store.on_preload_error()
-					// return Promise.reject(new Error(result.error))
+					if (_server_)
+					{
+						throw_server_side_error(user)
+					}
+
+					return Promise.resolve()
 				}
 
 				return preloader(parameters)
@@ -111,10 +123,13 @@ export default function authorize(authorization)
 		}
 
 		return connect
-		(model =>
-		({
-			user : model.authentication.user
-		}))
+		(
+			state =>
+			({
+				user : state.authentication.user
+			}),
+			{ redirect }
+		)
 		(Authorize)
 	}
 }
@@ -175,4 +190,11 @@ function check_privileges({ user, url, authorization })
 function get_display_name(Wrapped)
 {
 	return Wrapped.displayName || Wrapped.name || 'Component'
+}
+
+function throw_server_side_error(user)
+{
+	const error = new Error(user ? 'Unauthenticated' : 'Unauthorized')
+	error.status = user ? 403 : 401
+	throw error
 }

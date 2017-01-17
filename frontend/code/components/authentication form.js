@@ -187,23 +187,6 @@ export const messages = defineMessages
 })
 
 @Redux_form
-({
-	id: 'authentication_form',
-	submitting: (state, props) =>
-	{
-		if (props.sign_in)
-		{
-			return state.authentication.sign_in_pending
-		}
-
-		if (props.register)
-		{
-			return state.authentication.registration_pending
-		}
-
-		return state.authentication.sign_in_pending || state.authentication.registration_pending
-	}
-})
 @connect
 (
 	model =>
@@ -241,7 +224,7 @@ export default class Authentication_form extends Component
 
 	static propTypes =
 	{
-		user               : PropTypes.object,
+		user : PropTypes.object,
 
 		sign_in_pending  : PropTypes.bool,
 		register_pending : PropTypes.bool,
@@ -253,11 +236,9 @@ export default class Authentication_form extends Component
 		on_sign_in   : PropTypes.func,
 
 		registration : PropTypes.bool,
-
 		focus_on     : PropTypes.string,
-
 		router       : PropTypes.object.isRequired,
-
+		submitting     : PropTypes.bool,
 		initial_values : PropTypes.object
 	}
 
@@ -316,7 +297,10 @@ export default class Authentication_form extends Component
 			initial_values,
 			submit,
 			submitting,
-			router: { location }
+			router:
+			{
+				location
+			}
 		}
 		= this.props
 
@@ -419,7 +403,10 @@ export default class Authentication_form extends Component
 			initial_values,
 			submit,
 			submitting,
-			router: { location }
+			router:
+			{
+				location
+			}
 		}
 		= this.props
 
@@ -618,9 +605,22 @@ export default class Authentication_form extends Component
 
 	async sign_in(fields)
 	{
+		const
+		{
+			sign_in,
+			preload_started,
+			dispatch,
+			clear,
+			router:
+			{
+				location
+			}
+		}
+		= this.props
+
 		try
 		{
-			await this.props.sign_in
+			await sign_in
 			({
 				email    : fields.email,
 				password : fields.password
@@ -629,17 +629,10 @@ export default class Authentication_form extends Component
 			// Hide the modal
 			this.setState({ show: false })
 
-			const
-			{
-				dispatch,
-				router: { location }
-			}
-			= this.props
-
 			// Refresh the page so that `authentication_token`
 			// is applied to the `http` tool.
 
-			this.props.preload_started()
+			preload_started()
 
 			// Redirect to a page
 			if (location.pathname === '/unauthenticated'
@@ -664,7 +657,7 @@ export default class Authentication_form extends Component
 
 			if (error.status === http_status_codes.Input_rejected)
 			{
-				this.props.clear('password', this.validate_password_on_sign_in())
+				clear('password', this.validate_password_on_sign_in())
 			}
 		}
 	}
@@ -676,30 +669,29 @@ export default class Authentication_form extends Component
 
 	async register(fields)
 	{
+		const
+		{
+			register,
+			submit,
+			locale
+		}
+		= this.props
+
 		try
 		{
-			const result = await this.props.register
+			await register
 			({
 				name                      : fields.name,
 				email                     : fields.email,
 				password                  : fields.password,
 				terms_of_service_accepted : true, // is used when posting the <form/>
-				locale                    : this.props.locale
+				locale                    : locale
 			})
-
-			// // Switch to sign in form
-			// this.cancel_registration()
-
-			// Sign in as the newly created user
-
-			// Won't show validation errors for sign-in form
-			// (because `indicate_invalid` is set to `true` only on form submit)
-			// await this.sign_in()
 
 			// Submit the sign-in form
 			this.setState({ register: false }, () =>
 			{
-				this.props.submit(this.sign_in)()
+				submit(this.sign_in)()
 			})
 		}
 		catch (error)
@@ -709,11 +701,6 @@ export default class Authentication_form extends Component
 			if (!error.status)
 			{
 				throw error
-			}
-
-			if (error.message === 'User is already registered for this email')
-			{
-				// this.props.focus('email')
 			}
 		}
 	}

@@ -15,10 +15,10 @@ const templates = new EmailTemplates
 	}
 })
 
+let transporter
+
 export default function connect_to_email_server()
 {
-	let transporter
-
 	if (configuration.mail_service.smtp)
 	{
 		// create reusable transporter object using the default SMTP transport

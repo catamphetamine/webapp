@@ -77,7 +77,7 @@ const messages = defineMessages
 	}
 })
 
-@Redux_form({ id: 'block_user' })
+@Redux_form
 @preload(({ dispatch, getState, location, parameters }) =>
 {
 	return dispatch(get_block_user_token(parameters.token_id))

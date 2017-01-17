@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import classNames from 'classnames'
-import Redux_form, { Field, Submit } from 'simpler-redux-form'
+import { Form as Redux_form, Field, Submit } from 'simpler-redux-form'
 
 import default_messages from './messages'
 
@@ -10,6 +10,8 @@ import international from '../international/internationalize'
 
 @Redux_form
 ({
+	// Either return a `Promise` from the action
+	// or provide `submitting` property
 	submitting: (state, props) => props.saving
 })
 @international()
@@ -67,20 +69,20 @@ export default class Editable_field extends Component
 		const markup =
 		(
 			<div
-				className={classNames('editable-field', className)}
-				style={style}>
+				className={ classNames('editable-field', className) }
+				style={ style }>
 
 				{/* Field label */}
-				<label>{label}</label>
+				<label>{ label }</label>
 
 				{/* Hint */}
-				{ hint && <p>{hint}</p> }
+				{ hint && <p>{ hint }</p> }
 
 				{/* Field value and actions */}
 				{ (edit || editing || submitting || error) ? this.render_editing() : this.render_not_editing() }
 
 				{/* Can be used for relevant <Modal/>s */}
-				{children}
+				{ children }
 			</div>
 		)
 
@@ -194,7 +196,12 @@ export default class Editable_field extends Component
 		// Save the new value (if it changed)
 		if (value !== this.props.value)
 		{
-			save(value)
+			const result = save(value)
+
+			if (result && typeof result.then === 'function')
+			{
+				await result
+			}
 		}
 
 		// Exit editing mode

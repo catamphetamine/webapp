@@ -164,7 +164,6 @@ export default class Authentication extends Component
 					close={this.hide}>
 
 					<Authentication_form
-						form_id="authentication_form_popup"
 						busy={registration_pending || sign_in_pending}/>
 				</Modal>
 			</div>

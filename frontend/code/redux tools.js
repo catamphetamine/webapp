@@ -2,7 +2,7 @@
 //
 //   * "[event]: pending"
 //   * "[event]: done"
-//   * "[event]: failed"
+//   * "[event]: error"
 //   * "[event]: reset error"
 //
 export function asynchronous_handler(...handlers)
@@ -25,7 +25,7 @@ export function asynchronous_handler(...handlers)
 //
 //   * "[event]: pending"
 //   * "[event]: done"
-//   * "[event]: failed"
+//   * "[event]: error"
 //   * "[event]: reset error"
 //
 function _asynchronous_hander(handlers, namespace, event, on_result)
@@ -85,7 +85,7 @@ function _asynchronous_hander(handlers, namespace, event, on_result)
 	// When Promise fails,
 	// clear `pending` flag,
 	// set `error`.
-	handlers[`${namespace}: ${event}: failed`] = (error, state) =>
+	handlers[`${namespace}: ${event}: error`] = (error, state) =>
 	({
 		...state,
 		[`${base}_pending`] : false,

@@ -118,7 +118,6 @@ export default class Change_password extends Component
 		const markup =
 		(
 			<Editable_field
-				form_id="change-password"
 				label={translate(authentication_messages.password)}
 				edit={this.change_password}>
 
@@ -302,8 +301,6 @@ class Change_password_popup extends Component
 // Enter current password
 class Change_password_step_1 extends Component
 {
-	state = {}
-
 	static propTypes =
 	{
 		action      : PropTypes.func.isRequired,
@@ -338,14 +335,12 @@ class Change_password_step_1 extends Component
 	render()
 	{
 		const { error, busy } = this.props
-		const { value } = this.state
 
 		const translate = this.context.intl.formatMessage
 
 		const markup =
 		(
 			<Text_input_step
-				form_id="change_password_step_1"
 				ref={ref => this.step = ref}
 				password={true}
 				description={translate(messages.enter_current_password)}
@@ -430,7 +425,6 @@ class Change_password_step_1 extends Component
 	// Reset form error before running form field validation
 	reset_error()
 	{
-		this.setState({ error: undefined })
 		this.props.reset_error()
 	}
 }
@@ -466,7 +460,6 @@ class Change_password_step_2 extends Component
 		const markup =
 		(
 			<Text_input_step
-				form_id="change_password_step_2"
 				ref={ref => this.step = ref}
 				password={true}
 				description={translate(messages.enter_new_password)}
@@ -544,7 +537,6 @@ class Change_password_step_3 extends Component
 		const markup =
 		(
 			<Text_input_step
-				form_id="change_password_step_3"
 				ref={ref => this.step = ref}
 				password={true}
 				description={translate(messages.enter_new_password_again)}
@@ -578,7 +570,7 @@ class Change_password_step_3 extends Component
 		// and show "Password misspelled" error instead of "Missing input"
 		if (value !== state.new_password)
 		{
-			this.setState({ value: '', error: translate(messages.new_password_misspelled) })
+			// this.setState({ value: '', error: translate(messages.new_password_misspelled) })
 			this.step.focus()
 			return
 		}

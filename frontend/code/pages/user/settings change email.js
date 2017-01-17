@@ -151,7 +151,6 @@ export default class Change_email extends Component
 		const markup =
 		(
 			<Editable_field
-				form_id="change-email"
 				name="email"
 				email={true}
 				label={translate(authentication_messages.email)}
@@ -313,7 +312,6 @@ class Check_password_popup extends Component
 				<Check_password
 					ref={ref => this.check_password = ref}
 					submit_form={this.done}
-					submitting={check_password_pending}
 					action={check_password}
 					error={check_password_error}
 					reset_error={reset_check_password_error}/>
@@ -331,9 +329,6 @@ class Check_password_popup extends Component
 }
 
 @Redux_form
-({
-	id: 'change_email_check_password'
-})
 class Check_password extends Component
 {
 	state = {}

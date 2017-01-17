@@ -49,7 +49,7 @@ handlers['user profile: upload user picture: prefetch: done'] = (result, state) 
 	uploaded_picture            : result
 })
 
-handlers['user profile: upload user picture: prefetch: failed'] = (error, state) =>
+handlers['user profile: upload user picture: prefetch: error'] = (error, state) =>
 ({
 	...state,
 	upload_user_picture_pending : false,

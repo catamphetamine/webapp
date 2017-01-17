@@ -24,8 +24,9 @@ const messages = defineMessages
 		registration_pending : state.authentication.registration_pending,
 	})
 )
+@withRouter
 @international()
-class Register extends Component
+export default class Register extends Component
 {
 	constructor(props)
 	{
@@ -35,18 +36,15 @@ class Register extends Component
 		{
 			router:
 			{
-				state:
+				location:
 				{
-					location:
+					query:
 					{
-						query:
-						{
-							error,
-							name,
-							email,
-							password,
-							terms_of_service_accepted
-						}
+						error,
+						name,
+						email,
+						password,
+						terms_of_service_accepted
 					}
 				}
 			}
@@ -115,14 +113,11 @@ class Register extends Component
 			translate,
 			router:
 			{
-				state:
+				location:
 				{
-					location:
+					query:
 					{
-						query:
-						{
-							error
-						}
+						error
 					}
 				}
 			}
@@ -169,14 +164,11 @@ class Register extends Component
 			translate,
 			router:
 			{
-				state:
+				location:
 				{
-					location:
+					query:
 					{
-						query:
-						{
-							error
-						}
+						error
 					}
 				}
 			}
@@ -216,8 +208,6 @@ class Register extends Component
 		this.props.dispatch(redirect(should_redirect_to(this.props.location)))
 	}
 }
-
-export default withRouter(Register)
 
 const style = styler
 `

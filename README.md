@@ -674,9 +674,11 @@ Troubleshooting
 To do
 ====================
 
-Мониторить time.preload на клиенте тоже - слать в monitoring service (в statsd)
+отрефакторить webapp на asynchronousActionHandlers
 
-Посмотреть, что в профиле так долго рендерит
+
+
+
 
 Графики сервера рендера (influx, grafana)
 

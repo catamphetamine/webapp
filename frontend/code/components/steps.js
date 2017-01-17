@@ -90,7 +90,7 @@ export default class Steps extends Component
 
 	next(store)
 	{
-		const { set_last_step } = this.props
+		const { set_last_step, on_finished } = this.props
 		const { step } = this.state
 
 		// If current step submission succeeded, then move on to the next step
@@ -99,7 +99,7 @@ export default class Steps extends Component
 		if (step === this.step_count())
 		{
 			this.setState({ store: {} })
-			this.props.on_finished(store)
+			on_finished(store)
 			return
 		}
 
@@ -115,7 +115,7 @@ export default class Steps extends Component
 	}
 }
 
-@Redux_form()
+@Redux_form
 export class Text_input_step extends Component
 {
 	state = {}

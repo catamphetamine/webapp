@@ -30,27 +30,28 @@ const messages = defineMessages
 	({
 		user : state.authentication.user,
 		sign_in_pending : state.authentication.sign_in_pending,
-	})
+	}),
+	{
+		redirect
+	}
 )
 @international()
-class Sign_in extends Component
+@withRouter
+export default class Sign_in extends Component
 {
-	constructor(props, context)
+	constructor(props)
 	{
-		super(props, context)
+		super(props)
 
 		const
 		{
 			router:
 			{
-				state:
+				location:
 				{
-					location:
+					query:
 					{
-						query:
-						{
-							email
-						}
+						email
 					}
 				}
 			}
@@ -105,15 +106,12 @@ class Sign_in extends Component
 			translate,
 			router:
 			{
-				state:
+				location:
 				{
-					location:
+					query:
 					{
-						query:
-						{
-							error,
-							error_status
-						}
+						error,
+						error_status
 					}
 				}
 			}
@@ -162,15 +160,12 @@ class Sign_in extends Component
 			translate,
 			router:
 			{
-				state:
+				location:
 				{
-					location:
+					query:
 					{
-						query:
-						{
-							error,
-							error_status
-						}
+						error,
+						error_status
 					}
 				}
 			}
@@ -204,12 +199,12 @@ class Sign_in extends Component
 
 	redirect()
 	{
+		const { redirect, location } = this.props
+
 		// Revisit current URL now being logged in
-		this.props.dispatch(redirect(should_redirect_to(this.props.location)))
+		redirect(should_redirect_to(location))
 	}
 }
-
-export default withRouter(Sign_in)
 
 const style = styler
 `

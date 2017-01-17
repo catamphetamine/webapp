@@ -106,24 +106,21 @@ const messages = defineMessages
 	}
 })
 
-@preload(({ dispatch, getState }) =>
-{
-	return Promise.all
-	([
-		dispatch(get_user(getState().authentication.user.id))
-	])
+@preload(({ dispatch, getState }) => {
+	console.log('====================== preloading')
+	return dispatch(get_user(getState().authentication.user.id))
 })
 @connect
 (
-	model =>
+	state =>
 	({
-		user : model.user_settings.main.user,
+		user : state.user_settings.main.user,
 
-		load_advanced_settings_error   : model.user_settings.main.load_advanced_settings_error,
-		load_advanced_settings_pending : model.user_settings.main.load_advanced_settings_pending,
+		load_advanced_settings_error   : state.user_settings.main.load_advanced_settings_error,
+		load_advanced_settings_pending : state.user_settings.main.load_advanced_settings_pending,
 
-		change_alias_pending : model.user_settings.main.change_alias_pending,
-		change_alias_error   : model.user_settings.main.change_alias_error
+		change_alias_pending : state.user_settings.main.change_alias_pending,
+		change_alias_error   : state.user_settings.main.change_alias_error
 	}),
 	dispatch =>
 	({
@@ -230,7 +227,6 @@ export default class Settings_page extends Component
 
 							{/* Alias */}
 							<Editable_field
-								form_id="change-alias"
 								name="alias"
 								label={translate(messages.alias)}
 								hint={translate(messages.alias_hint)}
@@ -238,7 +234,6 @@ export default class Settings_page extends Component
 								validate={this.validate_alias}
 								save={this.update_alias}
 								cancel={this.reset_change_alias_error}
-								saving={change_alias_pending}
 								error={this.change_alias_error_message(change_alias_error)}/>
 
 							{/* User's email */}

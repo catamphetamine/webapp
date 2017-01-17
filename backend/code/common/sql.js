@@ -181,7 +181,14 @@ export default class Sql
 
 	async count(example)
 	{
-		return parseInt(await knex(this.table).count(example))
+		let query = knex(this.table)
+
+		if (example)
+		{
+			query = query.where(example)
+		}
+
+		return parseInt(await query.count())
 	}
 
 	async create(data)

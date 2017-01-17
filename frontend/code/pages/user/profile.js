@@ -177,10 +177,6 @@ const messages = defineMessages
 const Latest_activity_time_refresh_interval = 60 * 1000 // once in a minute
 
 @Redux_form
-({
-	id   : 'edit_user_profile',
-	busy : (state, props) => state.update_user_picture_pending || state.update_user_info_pending
-})
 @preload(({ dispatch, getState, location, parameters }) =>
 {
 	return Promise.all
@@ -724,7 +720,7 @@ export default class User_profile extends Component
 		const image = new Image()
 
 		image.onload  = () => dispatch({ type: 'user profile: upload user picture: prefetch: done', result: uploaded_picture })
-		image.onerror = () => dispatch({ type: 'user profile: upload user picture: prefetch: failed' })
+		image.onerror = () => dispatch({ type: 'user profile: upload user picture: prefetch: error' })
 
 		image.src = url(get_preferred_size(uploaded_picture.sizes, this.user_picture.decoratedComponentInstance.width()))
 	}
