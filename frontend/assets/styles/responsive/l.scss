@@ -2,8 +2,8 @@
 // when CSS native variables will be supported in all major browsers.
 // http://caniuse.com/#search=css%20var
 @include set_css_variable_font_size(18pt);
-@include set_css_variable_header_height(calc(var(--modular-grid-unit) * 7));
-@include set_css_variable_content_section_margin(calc(var(--modular-grid-unit) * 2));
+@include set_css_variable_header_height(calc(var(--unit) * 7));
+@include set_css_variable_content_section_margin(calc(var(--unit) * 2));
 
 @include columns(l);
 
@@ -58,11 +58,11 @@ header
 
 .rrui__menu__item
 {
-	padding-left    : calc(var(--modular-grid-unit) * 2);
-	padding-right   : calc(var(--modular-grid-unit) * 2);
+	padding-left    : calc(var(--unit) * 2);
+	padding-right   : calc(var(--unit) * 2);
 
-	padding-top    : var(--modular-grid-unit);
-	padding-bottom : var(--modular-grid-unit);
+	padding-top    : var(--unit);
+	padding-bottom : var(--unit);
 
 	// padding-top : var(--header-vertically-centered-text-margin-top);
 
@@ -111,7 +111,7 @@ header
 
 .authentication-form, .registration-form
 {
-	width : calc(var(--modular-grid-unit) * 84);
+	width : calc(var(--unit) * 84);
 }
 
 header > .rrui__menu
@@ -129,7 +129,7 @@ header
 {
 	input[type="text"]
 	{
-		width: calc(var(--modular-grid-unit) * 50);
+		width: calc(var(--unit) * 50);
 	}
 }
 
@@ -142,7 +142,7 @@ header
 
 		&:not(:first-child)
 		{
-			margin-left: calc(var(--modular-grid-unit) * 3);
+			margin-left: calc(var(--unit) * 3);
 		}
 	}
 }

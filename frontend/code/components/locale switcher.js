@@ -40,7 +40,8 @@ const messages = defineMessages
 
 @connect(state => ({ locale : state.locale.locale }))
 @international()
-class Locale_switcher extends Component
+@withRouter
+export default class Locale_switcher extends Component
 {
 	state = {}
 
@@ -146,8 +147,6 @@ class Locale_switcher extends Component
 		form.submit()
 	}
 }
-
-export default withRouter(Locale_switcher)
 
 const style = styler
 `

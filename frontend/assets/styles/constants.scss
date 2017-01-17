@@ -32,11 +32,11 @@
 	--error-color-lighter : #FF1300;
 	--error-color-darker  : #D30F00;
 
-	--modular-grid-unit : 0.3rem;
+	--unit : 0.3rem;
 
 	--input-border-width         : 2pt;
 	--input-separator-width      : 1pt;
-	--input-padding              : calc(var(--modular-grid-unit) / 2);
+	--input-padding              : calc(var(--unit) / 2);
 
 	--dropdown-item-side-padding : 4; // im modular grid units
 

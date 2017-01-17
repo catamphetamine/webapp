@@ -95,8 +95,8 @@ body.javascript-is-enabled .sign-out--fallback
 	flex-direction  : column;
 	justify-content : center;
 
-	margin-left  : calc(var(--modular-grid-unit) * 1);
-	margin-right : calc(var(--modular-grid-unit) * 2);
+	margin-left  : calc(var(--unit) * 1);
+	margin-right : calc(var(--unit) * 2);
 
 	margin-top: var(--header-vertically-centered-text-margin-top);
 }
@@ -127,7 +127,7 @@ header .rrui__menu
 .sign-in, .sign-out
 {
 	margin-top   : var(--header-vertically-centered-text-margin-top);
-	margin-right : calc(var(--modular-grid-unit));
+	margin-right : calc(var(--unit));
 }
 
 .sign-out-form
@@ -158,8 +158,8 @@ header .rrui__menu
 
 .rrui__form__error
 {
-	margin-top    : calc(var(--modular-grid-unit) * 4);
-	margin-bottom : calc(var(--modular-grid-unit) * 4);
+	margin-top    : calc(var(--unit) * 4);
+	margin-bottom : calc(var(--unit) * 4);
 	color         : var(--error-color-darker);
 }
 
@@ -224,8 +224,8 @@ header .rrui__menu
 // e.g. <ul/> with errors in `pages/register.js`
 .errors
 {
-	margin-top    : calc(var(--modular-grid-unit) * 6);
-	margin-bottom : calc(var(--modular-grid-unit) * 6);
+	margin-top    : calc(var(--unit) * 6);
+	margin-bottom : calc(var(--unit) * 6);
 
 	color      : var(--error-color-darker);
 	text-align : center;
@@ -289,7 +289,7 @@ header .rrui__menu
 
 .editable-field
 {
-	margin-bottom: calc(var(--modular-grid-unit) * 4);
+	margin-bottom: calc(var(--unit) * 4);
 
 	&:last-child
 	{
@@ -299,18 +299,18 @@ header .rrui__menu
 	label
 	{
 		display       : block;
-		margin-bottom : calc(var(--modular-grid-unit) * 0.5);
+		margin-bottom : calc(var(--unit) * 0.5);
 		opacity       : 0.6;
 	}
 
 	.editable-field__button--subsequent
 	{
-		margin-left: calc(var(--modular-grid-unit) * 2);
+		margin-left: calc(var(--unit) * 2);
 	}
 
 	.rrui__text-input
 	{
-		margin-bottom: var(--modular-grid-unit);
+		margin-bottom: var(--unit);
 	}
 
 	.rrui__text-input__field
@@ -321,8 +321,8 @@ header .rrui__menu
 
 	p
 	{
-		margin-top    : calc(var(--modular-grid-unit) * 0.5);
-		margin-bottom : var(--modular-grid-unit);
+		margin-top    : calc(var(--unit) * 0.5);
+		margin-bottom : var(--unit);
 
 		font-size : 85%;
 		color     : var(--gray-color-darker);

@@ -3,6 +3,7 @@ import routes  from './routes'
 import wrapper from './wrapper'
 
 // import create_logger from 'redux-logger'
+// import redux_thunk from 'redux-thunk'
 import error_handler from './helpers/error handler'
 import async_settings from './react-isomorphic-render-async'
 
@@ -23,6 +24,7 @@ export default
 	// {
 	// 	// enable Redux event logging here
 	// 	// return [create_logger()]
+	// 	return [redux_thunk]
 	// },
 
 	preload:

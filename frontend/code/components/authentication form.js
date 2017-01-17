@@ -231,7 +231,8 @@ export const messages = defineMessages
 	})
 )
 @international()
-class Authentication_form extends Component
+@withRouter
+export default class Authentication_form extends Component
 {
 	state =
 	{
@@ -847,8 +848,6 @@ class Authentication_form extends Component
 		})
 	}
 }
-
-export default withRouter(Authentication_form)
 
 const style = styler
 `

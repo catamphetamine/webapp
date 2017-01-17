@@ -2,8 +2,8 @@
 // when CSS native variables will be supported in all major browsers.
 // http://caniuse.com/#search=css%20var
 @include set_css_variable_font_size(14pt);
-@include set_css_variable_input_width(calc(var(--modular-grid-unit) * 35));
-@include set_css_variable_header_height(calc(var(--modular-grid-unit) * 7));
+@include set_css_variable_input_width(calc(var(--unit) * 35));
+@include set_css_variable_header_height(calc(var(--unit) * 7));
 @include set_css_variable_content_section_margin(0);
 @include set_css_variable_content_section_padding(0.8rem);
 
@@ -32,7 +32,7 @@
 
 .authentication-form, .registration-form
 {
-	width : calc(var(--modular-grid-unit) * 40);
+	width : calc(var(--unit) * 40);
 
 	h2
 	{
@@ -43,7 +43,7 @@
 	.or-register
 	{
 		margin-top: 0;
-		margin-bottom: calc(var(--modular-grid-unit) * 2);
+		margin-bottom: calc(var(--unit) * 2);
 	}
 }
 
@@ -59,7 +59,7 @@
 
 .sign-in
 {
-	margin-right: calc(var(--modular-grid-unit) * 2);
+	margin-right: calc(var(--unit) * 2);
 }
 
 header
@@ -139,10 +139,10 @@ header
 
 .user-profile .user-picture
 {
-	width      : calc(var(--modular-grid-unit) * 14);
-	height     : calc(var(--modular-grid-unit) * 14);
-	min-width  : calc(var(--modular-grid-unit) * 14);
-	min-height : calc(var(--modular-grid-unit) * 14);
+	width      : calc(var(--unit) * 14);
+	height     : calc(var(--unit) * 14);
+	min-width  : calc(var(--unit) * 14);
+	min-height : calc(var(--unit) * 14);
 }
 
 .user-profile__picture__change__label
@@ -152,6 +152,6 @@ header
 
 .background-section
 {
-	margin-top    : calc(var(--modular-grid-unit) * 2);
-	margin-bottom : calc(var(--modular-grid-unit) * 2);
+	margin-top    : calc(var(--unit) * 2);
+	margin-bottom : calc(var(--unit) * 2);
 }

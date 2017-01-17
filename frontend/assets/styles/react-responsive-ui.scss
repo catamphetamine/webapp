@@ -43,6 +43,15 @@
 
 /* Bordered button */
 
+.rrui__button--border
+{
+	/* Could use `box-shadow` here instead of border
+	   to make the entire area clickable */
+	/* box-shadow: inset 0 0 0 0.1em transparent; */
+	border        : var(--input-border-width) solid transparent;
+	border-radius : var(--border-radius);
+}
+
 .rrui__button--border .rrui__button__button,
 .rrui__button--border .rrui__button__link
 {
@@ -50,9 +59,6 @@
 	padding-right  : 1.6em;
 	padding-top    : 0.7em;
 	padding-bottom : 0.55em;
-
-	border: var(--input-border-width) solid transparent;
-	border-radius: var(--border-radius);
 }
 
 .rrui__button--border,
@@ -63,14 +69,10 @@
 
 .rrui__button--border .rrui__activity-indicator
 {
-	top  : 0.8em;
-	left : 0.5em;
-}
-
-.rrui__button--border.rrui__button--busy .rrui__button__button,
-.rrui__button--border.rrui__button--busy .rrui__button__link
-{
-	opacity: 1;
+	left   : calc(50% - 0.7em);
+	top    : calc(50% - 0.7em);
+	width  : 1.4em;
+	height : 1.4em;
 }
 
 /* Button colors */
@@ -80,8 +82,7 @@
 	color : var(--base-color-darker);
 }
 
-.rrui__button--border .rrui__button__button,
-.rrui__button--border .rrui__button__link
+.rrui__button--border
 {
 	border-color: var(--base-color-darker);
 }
@@ -91,8 +92,7 @@
 	color : var(--base-color);
 }
 
-.rrui__button--border:active .rrui__button__button,
-.rrui__button--border:active .rrui__button__link
+.rrui__button--border:active
 {
 	border-color: var(--base-color);
 }
@@ -102,8 +102,7 @@
 	color: var(--accent-color);
 }
 
-.rrui__button--primary.rrui__button--border .rrui__button__button,
-.rrui__button--primary.rrui__button--border .rrui__button__link
+.rrui__button--primary.rrui__button--border
 {
 	border-color: var(--accent-color);
 }
@@ -113,8 +112,7 @@
 	color: var(--accent-color-lighter);
 }
 
-.rrui__button--primary.rrui__button--border:active .rrui__button__button,
-.rrui__button--primary.rrui__button--border:active .rrui__button__link
+.rrui__button--primary.rrui__button--border:active
 {
 	border-color: var(--accent-color-lighter);
 }
@@ -209,12 +207,12 @@
 
 .rrui__select__options--simple-left-aligned
 {
-	left: calc(var(--modular-grid-unit) * var(--dropdown-item-side-padding) * -1) !important;
+	left: calc(var(--unit) * var(--dropdown-item-side-padding) * -1) !important;
 }
 
 .rrui__select__options--simple-right-aligned
 {
-	right : calc(var(--modular-grid-unit) * var(--dropdown-item-side-padding) * -1) !important;
+	right : calc(var(--unit) * var(--dropdown-item-side-padding) * -1) !important;
 }
 
 .rrui__select__options li
@@ -227,12 +225,12 @@
 
 .rrui__select__options > li:first-child
 {
-	padding-top    : calc(2 * var(--modular-grid-unit));
+	padding-top    : calc(2 * var(--unit));
 }
 
 .rrui__select__options > li:last-child
 {
-	padding-bottom : calc(2 * var(--modular-grid-unit));
+	padding-bottom : calc(2 * var(--unit));
 }
 
 .rrui__select__options--expanded
@@ -255,11 +253,11 @@
 {
 	width: 100%;
 
-	padding-left  : calc(var(--modular-grid-unit) * var(--dropdown-item-side-padding));
-	padding-right : calc(var(--modular-grid-unit) * var(--dropdown-item-side-padding));
+	padding-left  : calc(var(--unit) * var(--dropdown-item-side-padding));
+	padding-right : calc(var(--unit) * var(--dropdown-item-side-padding));
 
-	padding-top    : calc(var(--modular-grid-unit) * 1);
-	padding-bottom : calc(var(--modular-grid-unit) * 1);
+	padding-top    : calc(var(--unit) * 1);
+	padding-bottom : calc(var(--unit) * 1);
 
 	box-sizing: border-box;
 
@@ -273,7 +271,7 @@
 
 .rrui__select__option-icon
 {
-	margin-right : calc(var(--modular-grid-unit) * 3);
+	margin-right : calc(var(--unit) * 3);
 }
 
 .rrui__select__separator
@@ -284,8 +282,8 @@
 
 .rrui__select__separator-option
 {
-	padding-top      : calc(var(--modular-grid-unit) * 2);
-	padding-bottom   : calc(var(--modular-grid-unit) * 2);
+	padding-top      : calc(var(--unit) * 2);
+	padding-bottom   : calc(var(--unit) * 2);
 }
 
 .rrui__select--upward .rrui__select__options
@@ -500,10 +498,10 @@
 
 .rrui__segmented-control__option
 {
-	padding-top    : var(--modular-grid-unit);
-	padding-bottom : var(--modular-grid-unit);
-	padding-left   : calc(var(--modular-grid-unit) * 1.5);
-	padding-right  : calc(var(--modular-grid-unit) * 1.5);
+	padding-top    : var(--unit);
+	padding-bottom : var(--unit);
+	padding-left   : calc(var(--unit) * 1.5);
+	padding-right  : calc(var(--unit) * 1.5);
 
 	color            : var(--black-color);
 	background-color : transparent;
@@ -620,10 +618,10 @@ but introduces page width jumps.
 
 .rrui__modal__header
 {
-	padding-left   : calc(4 * var(--modular-grid-unit));
-	padding-right  : calc(4 * var(--modular-grid-unit));
-	padding-top    : calc(3 * var(--modular-grid-unit));
-	padding-bottom : calc(3 * var(--modular-grid-unit));
+	padding-left   : calc(4 * var(--unit));
+	padding-right  : calc(4 * var(--unit));
+	padding-top    : calc(3 * var(--unit));
+	padding-bottom : calc(3 * var(--unit));
 
 	border-top-left-radius  : var(--card-border-radius);
 	border-top-right-radius : var(--card-border-radius);
@@ -634,10 +632,10 @@ but introduces page width jumps.
 
 .rrui__modal__actions
 {
-	padding-left   : calc(4 * var(--modular-grid-unit));
-	padding-right  : calc(2 * var(--modular-grid-unit));
-	padding-top    : calc(1.5 * var(--modular-grid-unit));
-	padding-bottom : calc(1.5 * var(--modular-grid-unit));
+	padding-left   : calc(4 * var(--unit));
+	padding-right  : calc(2 * var(--unit));
+	padding-top    : calc(1.5 * var(--unit));
+	padding-bottom : calc(1.5 * var(--unit));
 
 	border-bottom-left-radius  : var(--card-border-radius);
 	border-bottom-right-radius : var(--card-border-radius);
@@ -645,7 +643,7 @@ but introduces page width jumps.
 
 .rrui__modal__actions .rrui__button
 {
-	margin-right : calc(2 * var(--modular-grid-unit));
+	margin-right : calc(2 * var(--unit));
 }
 
 .rrui__modal__actions .rrui__button:last-child
@@ -665,14 +663,14 @@ but introduces page width jumps.
 
 .rrui__modal__content
 {
-	padding-left   : calc(var(--modular-grid-unit) * 4);
-	padding-right  : calc(var(--modular-grid-unit) * 4);
-	padding-bottom : calc(var(--modular-grid-unit) * 4);
+	padding-left   : calc(var(--unit) * 4);
+	padding-right  : calc(var(--unit) * 4);
+	padding-bottom : calc(var(--unit) * 4);
 }
 
 .rrui__modal__content--no-bars
 {
-	padding-top   : calc(4 * var(--modular-grid-unit));
+	padding-top   : calc(4 * var(--unit));
 	border-radius : var(--card-border-radius);
 }
 
@@ -746,7 +744,7 @@ but introduces page width jumps.
 
 .rrui__form__actions
 {
-	margin-top : calc(var(--modular-grid-unit) * 4);
+	margin-top : calc(var(--unit) * 4);
 }
 
 .rrui__form__actions--right
@@ -765,7 +763,7 @@ but introduces page width jumps.
 
 .rrui__form__field
 {
-	margin-bottom : calc(var(--modular-grid-unit) * 2);
+	margin-bottom : calc(var(--unit) * 2);
 }
 
 /*===========================================================
@@ -774,13 +772,13 @@ but introduces page width jumps.
 
 .rrui__text-input--floating-label
 {
-	padding-top : calc(var(--modular-grid-unit) * 2.5);
+	padding-top : calc(var(--unit) * 2.5);
 }
 
 .rrui__text-input label
 {
 	top        : var(--input-padding);
-	margin-top : calc(var(--modular-grid-unit) * 2.5);
+	margin-top : calc(var(--unit) * 2.5);
 
 	/*
 	When changing this label color
@@ -862,10 +860,10 @@ but introduces page width jumps.
 
 	border-radius: var(--border-radius);
 
-	padding-left   : calc(var(--modular-grid-unit) * 2);
-	padding-right  : calc(var(--modular-grid-unit) * 2);
-	padding-top    : calc(var(--modular-grid-unit) * 1);
-	padding-bottom : calc(var(--modular-grid-unit) * 1);
+	padding-left   : calc(var(--unit) * 2);
+	padding-right  : calc(var(--unit) * 2);
+	padding-top    : calc(var(--unit) * 1);
+	padding-bottom : calc(var(--unit) * 1);
 
 	margin-top : -0.3em;
 	opacity    : 0;
@@ -910,10 +908,10 @@ but introduces page width jumps.
 	border-top-left-radius  : var(--border-radius);
 	border-top-right-radius : var(--border-radius);
 
-	padding-left   : calc(var(--modular-grid-unit) * 3);
-	padding-right  : calc(var(--modular-grid-unit) * 3);
-	padding-top    : calc(var(--modular-grid-unit) * 2);
-	padding-bottom : calc(var(--modular-grid-unit) * 2);
+	padding-left   : calc(var(--unit) * 3);
+	padding-right  : calc(var(--unit) * 3);
+	padding-top    : calc(var(--unit) * 2);
+	padding-bottom : calc(var(--unit) * 2);
 }
 
 /*===========================================================
@@ -930,12 +928,12 @@ but introduces page width jumps.
 
 .rrui__slideout-menu li:first-child
 {
-	padding-top    : calc(2 * var(--modular-grid-unit));
+	padding-top    : calc(2 * var(--unit));
 }
 
 .rrui__slideout-menu li:last-child
 {
-	padding-bottom : calc(2 * var(--modular-grid-unit));
+	padding-bottom : calc(2 * var(--unit));
 }
 
 .rrui__slideout-menu
@@ -963,11 +961,11 @@ but introduces page width jumps.
 {
 	margin : 0;
 
-	padding-top    : var(--modular-grid-unit);
-	padding-bottom : var(--modular-grid-unit);
+	padding-top    : var(--unit);
+	padding-bottom : var(--unit);
 
-	padding-left  : calc(var(--modular-grid-unit) * 2);
-	padding-right : calc(var(--modular-grid-unit) * 3);
+	padding-left  : calc(var(--unit) * 2);
+	padding-right : calc(var(--unit) * 3);
 }
 
 .rrui__menu__item--selected
@@ -978,15 +976,15 @@ but introduces page width jumps.
 .rrui__slideout-menu-button
 {
 	display     : inline-block;
-	padding     : calc(var(--modular-grid-unit) * 1.5);
+	padding     : calc(var(--unit) * 1.5);
 	line-height : 0;
 }
 
 .rrui__slideout-menu-button__icon
 {
 	display : block;
-	width   : calc(var(--modular-grid-unit) * 5);
-	height  : calc(var(--modular-grid-unit) * 5);
+	width   : calc(var(--unit) * 5);
+	height  : calc(var(--unit) * 5);
 }
 
 .rrui__slideout-menu-button__icon path
