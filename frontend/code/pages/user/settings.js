@@ -106,10 +106,7 @@ const messages = defineMessages
 	}
 })
 
-@preload(({ dispatch, getState }) => {
-	console.log('====================== preloading')
-	return dispatch(get_user(getState().authentication.user.id))
-})
+@preload(({ dispatch, getState }) => dispatch(get_user(getState().authentication.user.id)))
 @connect
 (
 	state =>

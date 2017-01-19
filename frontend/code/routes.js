@@ -31,6 +31,7 @@ if (process.env.NODE_ENV !== 'production')
 
 import React from 'react'
 import { Router, Route, IndexRoute } from 'react-router'
+import { authorize } from 'react-isomorphic-render'
 
 import Layout           from './pages/layout'
 import Not_found        from './pages/errors/not found'
@@ -49,10 +50,42 @@ import Example          from './pages/example'
 import Simple_example   from './pages/example/simple example'
 import Log              from './pages/log'
 
-import { authorize } from 'react-isomorphic-render'
+const routes =
+(
+	<Route path="/" component={ Layout }>
+		<IndexRoute component={ Home }/>
+
+		<Route path="example" component={ Example }>
+			<Route path="simple"   component={ Simple_example }/>
+		</Route>
+
+		<Route path="showcase" component={ Showcase }/>
+
+		<Route path="user">
+			<Route path="block/:token_id" component={ Block_user }/>
+			<Route path=":id" component={ Profile }/>
+		</Route>
+
+		<Route path="settings" component={ restricted(Settings) }/>
+
+		<Route path="logs" component={ Log }/>
+
+		<Route path="sign-in"  component={ Sign_in }/>
+		<Route path="register" component={ Register }/>
+
+		<Route path="menu" component={ Menu }/>
+
+		<Route path="unauthenticated" status={ 401 } component={ Unauthenticated }/>
+		<Route path="unauthorized"    status={ 403 } component={ Unauthorized }/>
+		<Route path="error"           status={ 500 } component={ Generic_error }/>
+		<Route path="*"               status={ 404 } component={ Not_found }/>
+	</Route>
+)
+
+export default routes
 
 // Restricts a `<Route/>` to a subset of users
-const restricted = (component, is_authorized) =>
+function restricted(component, is_authorized)
 {
 	let authorization
 
@@ -80,37 +113,3 @@ const restricted = (component, is_authorized) =>
 
 	return authorize(state => state.authentication.user, authorization, component)
 }
-
-const routes =
-(
-	<Route path="/" component={ Layout }>
-		<IndexRoute component={ Home }/>
-
-		<Route path="example" component={ Example }>
-			<Route path="simple"   component={ Simple_example }/>
-		</Route>
-
-		<Route path="showcase" component={ Showcase }/>
-
-		<Route path="user">
-			<Route path="block/:token_id" component={ Block_user }/>
-			<Route path=":id" component={ Profile }/>
-		</Route>
-
-		<Route path="settings" component={ restricted(Settings) }/>
-
-		<Route path="logs" component={ restricted(Log, 'administrator') }/>
-
-		<Route path="sign-in"  component={ Sign_in }/>
-		<Route path="register" component={ Register }/>
-
-		<Route path="menu" component={ Menu }/>
-
-		<Route path="unauthenticated" status={ 401 } component={ Unauthenticated }/>
-		<Route path="unauthorized"    status={ 403 } component={ Unauthorized }/>
-		<Route path="error"           status={ 500 } component={ Generic_error }/>
-		<Route path="*"               status={ 404 } component={ Not_found }/>
-	</Route>
-)
-
-export default routes
