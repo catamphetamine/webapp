@@ -674,6 +674,13 @@ Troubleshooting
 To do
 ====================
 
+не работает legacy выход:
+
+     authentication_error:
+      { Unauthenticated: JWT token not found: no "Authorization: Bearer {token}" HTTP header specified.
+
+
+
 отрефакторить webapp на asynchronousActionHandlers
 
 
