@@ -1,9 +1,6 @@
 export const get_user = (user_id) =>
 ({
-	promise : async http => {
-		console.log('@@@@@@@@@ get user: user id', user_id)
-		return await http.get(`/users/${user_id}`)
-	},
+	promise : http => http.get('/users/current'),
 	event   : 'user settings: get user'
 })
 

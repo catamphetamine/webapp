@@ -284,8 +284,8 @@ export default function(api)
 
 	// This pattern can potentially match other GET requests
 	// it wasn't intended to match, so placing it in the end.
-	api.get('/:id', async function({ id }, { user })
+	api.get('/:id', async function({ id })
 	{
-		return await get_user({ id }, { user })
+		return await get_user({ id })
 	})
 }

@@ -66,7 +66,7 @@ const routes =
 			<Route path=":id" component={ Profile }/>
 		</Route>
 
-		<Route path="settings" component={ restricted(Settings) }/>
+		<Route path="settings" component={ Settings }/>
 
 		<Route path="logs" component={ Log }/>
 

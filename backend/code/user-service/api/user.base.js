@@ -159,8 +159,6 @@ export async function register({ name, email, password, terms_of_service_accepte
 // May possibly add something like { alias } in the future
 export async function get_user({ id }, options = {})
 {
-	const { user } = options
-
 	const user_data = await store.find_user(id)
 
 	if (!user_data)
@@ -170,17 +168,20 @@ export async function get_user({ id }, options = {})
 
 	if (user_data.blocked_by)
 	{
+		// This `if` prevents infinite recursion
 		if (user_data.blocked_by === id)
 		{
 			user_data.blocked_by = public_user(user_data)
 		}
 		else
 		{
-			user_data.blocked_by = await get_user({ id: user_data.blocked_by }, { user })
+			user_data.blocked_by = await get_user({ id: user_data.blocked_by })
 		}
 	}
 
-	return (user && id === String(user.id)) ? own_user(user_data) : public_user(user_data)
+	const { user } = options
+	const self = user && id === String(user.id)
+	return self ? own_user(user_data) : public_user(user_data)
 }
 
 function public_user(user)
