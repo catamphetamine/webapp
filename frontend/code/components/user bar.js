@@ -152,7 +152,7 @@ export default class Authentication extends Component
 				{ !user && <Button className="sign-in" link="/sign-in" action={this.show}>{translate(messages.sign_in)}</Button> }
 
 				{/* "Sign out" button for javascriptless users */}
-				{ user && this.render_sign_out_fallback() }
+				{/* user && this.render_sign_out_fallback() */}
 
 				{/* User info if authenticated */}
 				{ user && this.render_user_info(user) }
@@ -160,7 +160,7 @@ export default class Authentication extends Component
 				{/* Sign in / Register popup */}
 				<Modal
 					busy={registration_pending || sign_in_pending}
-					shown={exists(this.state.password) || (!user && this.state.show)}
+					isOpen={exists(this.state.password) || (!user && this.state.show)}
 					close={this.hide}>
 
 					<Authentication_form

@@ -164,7 +164,7 @@ export default class Change_email extends Component
 
 				{/* Password check popup */}
 				<Check_password_popup
-					shown={this.state.check_password}
+					isOpen={this.state.check_password}
 					close={this.dismiss_check_password}
 					done={this.update_email}/>
 			</Editable_field>
@@ -257,7 +257,7 @@ class Check_password_popup extends Component
 
 	static propTypes =
 	{
-		shown   : PropTypes.bool,
+		isOpen  : PropTypes.bool,
 		close   : PropTypes.func.isRequired,
 		done    : PropTypes.func.isRequired,
 
@@ -268,11 +268,11 @@ class Check_password_popup extends Component
 		reset_check_password_error : PropTypes.func.isRequired
 	}
 
-	constructor(props, context)
+	constructor()
 	{
-		super(props, context)
+		super()
 
-		this.done  = this.done.bind(this)
+		this.done = this.done.bind(this)
 	}
 
 	render()
@@ -285,7 +285,7 @@ class Check_password_popup extends Component
 			check_password,
 			reset_check_password_error,
 
-			shown,
+			isOpen,
 			close,
 
 			translate
@@ -296,7 +296,7 @@ class Check_password_popup extends Component
 		(
 			<Modal
 				title={translate(messages.password_check)}
-				shown={shown}
+				isOpen={isOpen}
 				close={close}
 				reset={reset_check_password_error}
 				cancel={true}

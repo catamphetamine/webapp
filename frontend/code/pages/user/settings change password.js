@@ -123,7 +123,7 @@ export default class Change_password extends Component
 
 				{/* Change password popup */}
 				<Change_password_popup
-					shown={changing_password}
+					isOpen={changing_password}
 					close={this.cancel_change_password}/>
 			</Editable_field>
 		)
@@ -181,13 +181,13 @@ class Change_password_popup extends Component
 
 	static propTypes =
 	{
-		shown : PropTypes.bool,
-		close : PropTypes.func.isRequired
+		isOpen : PropTypes.bool,
+		close  : PropTypes.func.isRequired
 	}
 
-	constructor(props, context)
+	constructor()
 	{
-		super(props, context)
+		super()
 
 		this.change_password_steps_actions = this.change_password_steps_actions.bind(this)
 
@@ -210,7 +210,7 @@ class Change_password_popup extends Component
 			change_password_error,
 			reset_change_password_error,
 
-			shown,
+			isOpen,
 			close,
 
 			translate
@@ -221,7 +221,7 @@ class Change_password_popup extends Component
 		(
 			<Modal
 				title={translate(messages.change_password)}
-				shown={shown}
+				isOpen={isOpen}
 				close={close}
 				reset={this.reset_modal}
 				cancel={true}
