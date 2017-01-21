@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 // import { StickyContainer, Sticky } from 'react-sticky'
-import { PageAndMenu, Page, Menu, MenuButton, Snackbar } from 'react-responsive-ui'
+import { PageAndMenu, Page, Menu, MenuButton, Snackbar, DragAndDrop } from 'react-responsive-ui'
 import styler                             from 'react-styling'
 import { preload, head, Link, IndexLink } from 'react-isomorphic-render'
 import { connect }                        from 'react-redux'
@@ -11,7 +11,6 @@ import international   from '../international/internationalize'
 import Locale_switcher from '../components/locale switcher'
 import User_bar        from '../components/user bar'
 import Preloading      from '../components/preloading'
-import { DragAndDrop } from '../components/drag-n-drop'
 
 @connect
 (

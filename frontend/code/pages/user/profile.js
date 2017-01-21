@@ -7,9 +7,7 @@ import Redux_form                      from 'simpler-redux-form'
 
 import { defineMessages, FormattedMessage } from 'react-intl'
 import { bindActionCreators as bind_action_creators } from 'redux'
-import { Form, Button, FileUpload, ActivityIndicator } from 'react-responsive-ui'
-
-import { File, CanDrop } from '../../components/drag-n-drop'
+import { Form, Button, FileUpload, ActivityIndicator, File, CanDrop } from 'react-responsive-ui'
 
 import
 {
