@@ -256,7 +256,7 @@ export default class User_profile extends Component
 				value: code,
 				label: context.intl.messages[`country.${code}`]
 			}))
-			.sort((a, b) => a.label.localeCompare(b.label, this.props.locale))
+			.sort((a, b) => a.label.localeCompare(b.label, props.locale))
 	}
 
 	componentDidMount()
@@ -285,6 +285,7 @@ export default class User_profile extends Component
 		{
 			user,
 			translate,
+			style,
 			current_user,
 			latest_activity_time,
 			uploaded_picture,
@@ -320,7 +321,7 @@ export default class User_profile extends Component
 							'content-section',
 							'user-profile__personal-info'
 						)}
-						style={style.personal_info}>
+						style={styles.personal_info}>
 
 						{/* User blocked notice */}
 						{ user.blocked_at &&
@@ -353,7 +354,7 @@ export default class User_profile extends Component
 							|| uploaded_user_picture_is_too_big_error
 							|| unsupported_uploaded_user_picture_file_error)
 							&&
-							<ul style={style.own_profile_actions.errors} className="content-section__errors errors">
+							<ul style={styles.own_profile_actions.errors} className="content-section__errors errors">
 								{/* Couldn't update user's picture with the uploaded one */}
 								{update_user_picture_error &&
 									<li>{translate(messages.update_error)}</li>
@@ -387,13 +388,13 @@ export default class User_profile extends Component
 
 							{/* Edit/Save own profile */}
 							{ is_own_profile &&
-								<div style={style.own_profile_actions} className="user-profile__actions">
+								<div style={styles.own_profile_actions} className="user-profile__actions">
 
 									{/* "Edit profile" */}
 									{ !edit &&
 										<Button
-											style={style.own_profile_actions.action}
-											buttonStyle={style.own_profile_actions.action.button}
+											style={styles.own_profile_actions.action}
+											buttonStyle={styles.own_profile_actions.action.button}
 											action={this.edit_profile}>
 											{translate(messages.edit_profile)}
 										</Button>
@@ -402,8 +403,8 @@ export default class User_profile extends Component
 									{/* "Cancel changes" */}
 									{  edit &&
 										<Button
-											style={style.own_profile_actions.action}
-											buttonStyle={style.own_profile_actions.action.button}
+											style={styles.own_profile_actions.action}
+											buttonStyle={styles.own_profile_actions.action.button}
 											action={this.cancel_profile_edits}
 											disabled={update_user_info_pending || upload_user_picture_pending}>
 											{translate(messages.cancel_profile_edits)}
@@ -413,8 +414,8 @@ export default class User_profile extends Component
 									{/* "Save changes" */}
 									{  edit &&
 										<Submit
-											style={style.own_profile_actions.action}
-											buttonStyle={style.own_profile_actions.action.button}
+											style={styles.own_profile_actions.action}
+											buttonStyle={styles.own_profile_actions.action.button}
 											disabled={upload_user_picture_pending}>
 											{translate(messages.save_profile_edits)}
 										</Submit>
@@ -424,13 +425,13 @@ export default class User_profile extends Component
 
 							{/* Block this other user */}
 							{ !is_own_profile &&
-								<div style={style.own_profile_actions} className="user-profile__actions">
+								<div style={styles.own_profile_actions} className="user-profile__actions">
 
 									{/* "Block user" */}
 									{ !user.blocked_at && can('block user', current_user) &&
 										<Button
-											style={style.own_profile_actions.action}
-											buttonStyle={style.own_profile_actions.action.button}
+											style={styles.own_profile_actions.action}
+											buttonStyle={styles.own_profile_actions.action.button}
 											action={this.block_user}>
 											{translate(messages.block_user)}
 										</Button>
@@ -439,8 +440,8 @@ export default class User_profile extends Component
 									{/* "Unblock user" */}
 									{ user.blocked_at && can('unblock user', current_user) &&
 										<Button
-											style={style.own_profile_actions.action}
-											buttonStyle={style.own_profile_actions.action.button}
+											style={styles.own_profile_actions.action}
+											buttonStyle={styles.own_profile_actions.action.button}
 											action={this.unblock_user}>
 											{translate(messages.unblock_user)}
 										</Button>
@@ -465,9 +466,9 @@ export default class User_profile extends Component
 								<Text_input
 									name="name"
 									label={translate(messages.name)}
-									style={style.user_name_field}
-									inputStyle={style.user_name}
-									labelStyle={style.user_name}
+									style={styles.user_name_field}
+									inputStyle={styles.user_name}
+									labelStyle={styles.user_name}
 									value={user.name}
 									validate={this.validate_name}/>
 							}
@@ -479,7 +480,7 @@ export default class User_profile extends Component
 									name="place"
 									label={translate(messages.place)}
 									disabled={update_user_info_pending}
-									style={style.user_location.edit}
+									style={styles.user_location.edit}
 									value={user.place}/>
 							}
 
@@ -497,14 +498,14 @@ export default class User_profile extends Component
 
 							{/* User's name */}
 							{ !edit &&
-								<h1 style={style.user_name.idle}>{user.name}</h1>
+								<h1 style={styles.user_name.idle}>{user.name}</h1>
 							}
 
 							{/* User's place and country */}
 							{ !edit &&
 								((user.place || user.country) &&
 									<div
-										style={style.user_location}
+										style={styles.user_location}
 										className="user-profile__location">
 										{this.whereabouts().join(', ')}
 									</div>
@@ -514,10 +515,10 @@ export default class User_profile extends Component
 
 						{/* User actions: "Send message", "Subscribe" */}
 						{ !is_own_profile &&
-							<div style={style.user_actions}>
+							<div style={styles.user_actions}>
 								{/* "Subscribe" */}
 								<Button
-									style={style.user_actions.button}
+									style={styles.user_actions.button}
 									action={this.subscribe}>
 
 									{/* Icon */}
@@ -528,7 +529,7 @@ export default class User_profile extends Component
 
 								{/* "Send message" */}
 								<Button
-									style={style.user_actions.button.last}
+									style={styles.user_actions.button.last}
 									action={this.send_message}>
 
 									{/* Icon */}
@@ -541,7 +542,7 @@ export default class User_profile extends Component
 
 						{/* Online status: "Last seen: an hour ago" */}
 						{ latest_activity_time &&
-							<div style={style.latest_activity} className="user-profile__last-seen">
+							<div style={styles.latest_activity} className="user-profile__last-seen">
 								{/* Icon */}
 								<i className="material-icons">schedule</i>
 								{/* "an hour ago" */}
@@ -568,10 +569,12 @@ export default class User_profile extends Component
 
 	cancel_profile_edits()
 	{
+		const { dispatch } = this.props
+
 		this.reset_user_info_edit_errors()
 
 		this.setState({ edit: false })
-		this.props.dispatch({ type: 'user profile: reset uploaded user picture' })
+		dispatch({ type: 'user profile: reset uploaded user picture' })
 	}
 
 	async save_profile_edits(values)
@@ -606,16 +609,19 @@ export default class User_profile extends Component
 
 	reset_user_info_edit_errors()
 	{
-		this.props.update_user_reset_error()
+		const { update_user_reset_error } = this.props
 
+		update_user_reset_error()
 		this.reset_upload_user_picture_errors()
 	}
 
 	reset_upload_user_picture_errors()
 	{
-		this.props.dispatch({ type: 'user profile: upload user picture: reset error' })
-		this.props.dispatch({ type: 'user profile: upload user picture: error: too big: reset' })
-		this.props.dispatch({ type: 'user profile: upload user picture: error: unsupported file: reset' })
+		const { dispatch } = this.props
+
+		dispatch({ type: 'user profile: upload user picture: reset error' })
+		dispatch({ type: 'user profile: upload user picture: error: too big: reset' })
+		dispatch({ type: 'user profile: upload user picture: error: unsupported file: reset' })
 	}
 
 	async block_user()
@@ -707,9 +713,11 @@ export default class User_profile extends Component
 
 	validate_name(value)
 	{
+		const { translate } = this.props
+
 		if (!value)
 		{
-			return this.props.translate(messages.name_is_required)
+			return translate(messages.name_is_required)
 		}
 	}
 }
@@ -735,7 +743,6 @@ class Uploadable_user_picture extends React.Component
 			upload_user_picture,
 			choosing_user_picture,
 			translate,
-			style,
 
 			dropTarget,
 			draggedOver,
@@ -746,7 +753,7 @@ class Uploadable_user_picture extends React.Component
 		{/* User picture */}
 		return dropTarget(
 			<div
-				style={style.user_picture}
+				style={styles.user_picture}
 				className={classNames
 				(
 					'user-picture',
@@ -757,7 +764,7 @@ class Uploadable_user_picture extends React.Component
 				{/* The picture itself */}
 				<User_picture
 					ref={ref => this.user_picture = ref}
-					style={style.user_picture.element.image}
+					style={styles.user_picture.element.image}
 					user={user}
 					picture={edit ? uploaded_picture : undefined}/>
 
@@ -765,7 +772,7 @@ class Uploadable_user_picture extends React.Component
 				{ edit && !uploaded_picture &&
 					<div
 						className="user-profile__picture__change__overlay"
-						style={style.user_picture.element.overlay.background}/>
+						style={styles.user_picture.element.overlay.background}/>
 				}
 
 				{/* A colored overlay indicating "can drop image file here" situation */}
@@ -779,14 +786,14 @@ class Uploadable_user_picture extends React.Component
 								'user-profile__picture__change__droppable-overlay--cannot-drop' : draggedOver && !canDrop
 							}
 						)}
-						style={style.user_picture.element.overlay.background}/>
+						style={styles.user_picture.element.overlay.background}/>
 				}
 
 				{/* "Change user picture" file uploader */}
 				{ edit &&
 					<FileUpload
 						className="user-profile__picture__change__label"
-						style={style.user_picture.element.overlay.label}
+						style={styles.user_picture.element.overlay.label}
 						disabled={uploading_picture}
 						onClick={choosing_user_picture}
 						action={upload_user_picture}>
@@ -795,7 +802,7 @@ class Uploadable_user_picture extends React.Component
 						{!uploaded_picture && !uploading_picture && translate(messages.change_user_picture)}
 
 						{/* "Uploading picture" spinner */}
-						{uploading_picture && <ActivityIndicator style={style.user_picture.element.spinner}/>}
+						{uploading_picture && <ActivityIndicator style={styles.user_picture.element.spinner}/>}
 					</FileUpload>
 				}
 			</div>
@@ -808,7 +815,7 @@ class Uploadable_user_picture extends React.Component
 	}
 }
 
-const style = styler
+const styles = styler
 `
 	user_picture
 		position: relative
