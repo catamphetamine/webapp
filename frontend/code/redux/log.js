@@ -1,10 +1,17 @@
+import { action, createHandler, stateConnector } from 'react-isomorphic-render'
+import settings from '../react-isomorphic-render-async'
 import { log_level_values } from '../../../code/log levels'
 
-export const get = () =>
+const handler = createHandler(settings)
+
+export const get = action
 ({
-	promise : http => http.get('/log'),
-	event   : 'log: fetch'
-})
+	namespace : 'log',
+	event     : 'fetch',
+	action    : http => http.get('/log'),
+	result    : 'log'
+},
+handler)
 
 export const error   = (...parameters) => post_log(parameters, 'Error')
 export const warning = (...parameters) => post_log(parameters, 'Warning')
@@ -53,3 +60,9 @@ export const post_log = (parameters, level) =>
 
 	return action
 }
+
+// A little helper for Redux `@connect()`
+export const connector = stateConnector(handler)
+
+// This is the Redux reducer
+export default handler.reducer()

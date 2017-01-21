@@ -9,9 +9,10 @@ import
 {
 	check_password,
 	reset_check_password_error,
-	change_email
+	change_email,
+	connector
 }
-from '../../actions/user/settings/main'
+from '../../redux/user/settings/main'
 
 import http_status_codes from '../../tools/http status codes'
 
@@ -71,12 +72,9 @@ const messages = defineMessages
 
 @connect
 (
-	model =>
+	(state) =>
 	({
-		user : model.user_settings.main.user,
-
-		change_email_pending : model.user_settings.main.change_email_pending,
-		change_email_error   : model.user_settings.main.change_email_error,
+		...connector(state.user_settings.main)
 	}),
 	dispatch =>
 	({
@@ -91,19 +89,11 @@ const messages = defineMessages
 @international()
 export default class Change_email extends Component
 {
-	static propTypes =
-	{
-		user : PropTypes.object.isRequired,
-
-		change_email_pending : PropTypes.bool,
-		change_email_error   : PropTypes.object
-	}
-
 	state = {}
 
-	constructor(props, context)
+	constructor()
 	{
-		super(props, context)
+		super()
 
 		this.validate_email              = this.validate_email.bind(this)
 		this.dismiss_check_password      = this.dismiss_check_password.bind(this)

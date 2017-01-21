@@ -15,7 +15,7 @@ import
 	get_block_user_token,
 	block_user
 }
-from '../../actions/user/block'
+from '../../redux/user/block'
 
 import { Form } from 'react-responsive-ui'
 
@@ -89,7 +89,7 @@ const messages = defineMessages
 		current_user : state.authentication.user,
 		block_user_token : state.block_user.token
 	}),
-	dispatch =>
+	(dispatch) =>
 	({
 		dispatch,
 		...bind_action_creators
@@ -102,18 +102,12 @@ const messages = defineMessages
 @international()
 export default class User_profile extends Component
 {
-	static propTypes =
+	constructor()
 	{
-		current_user : PropTypes.object,
-		block_user_token : PropTypes.object.isRequired
-	}
-
-	constructor(props, context)
-	{
-		super(props, context)
+		super()
 
 		this.validate_reason = this.validate_reason.bind(this)
-		this.submit = this.submit.bind(this)
+		this.submit          = this.submit.bind(this)
 	}
 
 	validate_reason(value)

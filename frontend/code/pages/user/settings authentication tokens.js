@@ -16,9 +16,10 @@ import Time_ago        from '../../components/time ago'
 import
 {
 	get_user_authentication_tokens,
-	revoke_authentication_token
+	revoke_authentication_token,
+	connector
 }
-from '../../actions/user/settings/main'
+from '../../redux/user/settings/main'
 
 const messages = defineMessages
 ({
@@ -86,10 +87,9 @@ const messages = defineMessages
 
 @connect
 (
-	model =>
+	(state) =>
 	({
-		authentication_tokens         : model.user_settings.main.authentication_tokens,
-		revoking_authentication_token : model.user_settings.main.revoking_authentication_token
+		...connector(state.user_settings.main)
 	}),
 	{
 		get_user_authentication_tokens,
@@ -99,22 +99,16 @@ const messages = defineMessages
 @international()
 export default class Authentication_tokens extends Component
 {
-	static propTypes =
+	constructor()
 	{
-		revoke_authentication_token   : PropTypes.func.isRequired,
-		revoking_authentication_token : PropTypes.bool
-	}
-
-	constructor(props, context)
-	{
-		super(props, context)
+		super()
 
 		this.revoke_authentication_token = this.revoke_authentication_token.bind(this)
 	}
 
 	render()
 	{
-		const { authentication_tokens, revoking_authentication_token, translate } = this.props
+		const { authentication_tokens, revoke_authentication_token_pending, translate } = this.props
 
 		const markup =
 		(
@@ -189,7 +183,7 @@ export default class Authentication_tokens extends Component
 												{/* (if this token is not being currently used) */}
 												{!token.currently_used &&
 													<Button
-														busy={revoking_authentication_token}
+														busy={revoke_authentication_token_pending}
 														action={() => this.revoke_authentication_token(token.id)}>
 														{translate(messages.revoke_authentication_token)}
 													</Button>

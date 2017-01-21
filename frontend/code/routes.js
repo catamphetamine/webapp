@@ -45,21 +45,12 @@ import Menu             from './pages/menu'
 import Block_user       from './pages/user/block'
 import Profile          from './pages/user/profile'
 import Settings         from './pages/user/settings'
-import Showcase         from './pages/showcase'
-import Example          from './pages/example'
-import Simple_example   from './pages/example/simple example'
 import Log              from './pages/log'
 
 const routes =
 (
 	<Route path="/" component={ Layout }>
 		<IndexRoute component={ Home }/>
-
-		<Route path="example" component={ Example }>
-			<Route path="simple"   component={ Simple_example }/>
-		</Route>
-
-		<Route path="showcase" component={ Showcase }/>
 
 		<Route path="user">
 			<Route path="block/:token_id" component={ Block_user }/>

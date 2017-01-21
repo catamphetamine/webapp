@@ -10,9 +10,10 @@ import
 	check_current_password,
 	reset_check_current_password_error,
 	change_password,
-	reset_change_password_error
+	reset_change_password_error,
+	connector
 }
-from '../../actions/user/settings/change password'
+from '../../redux/user/settings/change password'
 
 import Editable_field  from '../../components/editable field'
 import Modal from '../../components/modal'
@@ -100,9 +101,9 @@ export default class Change_password extends Component
 {
 	state = {}
 
-	constructor(props, context)
+	constructor()
 	{
-		super(props, context)
+		super()
 
 		this.change_password        = this.change_password.bind(this)
 		this.cancel_change_password = this.cancel_change_password.bind(this)
@@ -154,13 +155,9 @@ export default class Change_password extends Component
 @international()
 @connect
 (
-	model =>
+	(state) =>
 	({
-		check_current_password_pending : model.user_settings.change_password.check_current_password_pending,
-		check_current_password_error   : model.user_settings.change_password.check_current_password_error,
-
-		change_password_pending : model.user_settings.change_password.change_password_pending,
-		change_password_error   : model.user_settings.change_password.change_password_error
+		...connect(state.user_settings.change_password)
 	}),
 	dispatch =>
 	({

@@ -674,13 +674,6 @@ Troubleshooting
 To do
 ====================
 
-не работает legacy выход:
-
-     authentication_error:
-      { Unauthenticated: JWT token not found: no "Authorization: Bearer {token}" HTTP header specified.
-
-
-
 отрефакторить webapp на asynchronousActionHandlers
 
 
@@ -688,15 +681,6 @@ To do
 
 
 Графики сервера рендера (influx, grafana)
-
-
-
-
-
-
-т.к. разметка будет кешироваться, убрать можно будет preload, например (для страниц, на которых не ограничен доступ).
-
-или, альтернативно, кешировать можно разметку отдельно, а к ней потом добавлять содержимое store, и вот содержимое store у каждого будет своё подставляться.
 
 
 
@@ -721,10 +705,6 @@ https://material-design.storage.googleapis.com/publish/material_v_9/0Bzhp5Z4wHba
 
 
 
-нагрузочное тестирование на рендеринг страницы (пользователя, например)
-
-
-
 писать логи через Кафку в отдельную базу Postgresql
 
 
@@ -736,14 +716,7 @@ https://material-design.storage.googleapis.com/publish/material_v_9/0Bzhp5Z4wHba
 
 
 
-сделать кеширование страниц на реакте
-
-
-
-
-
-rabbitmq для писем
-
+сделать очередь для писем
 
 
 
@@ -1252,68 +1225,10 @@ add user: validation
 
 
 
-
-// мб вычленить dropdown, menu, menu-button в react-responsive-ui
-// и зарелизить react-responsive-ui, с react и react-router - peerDependencies
-
-// мб в будущем: логи слать по ssl
-
 // во время загрузки картинки - показывать выбранную картинку, уменьшенную, в обозревателе
 (либо прямо через src, либо предварительно уменьшив), и тикать, как установка приложения в AppStore, пока не загрузится на сервер
 
-// мб перейти на imagemagick-native, когда будет исправлен build
-// https://github.com/elad/node-imagemagick-native/issues
-
-
-
-
-https://github.com/gaearon/react-dnd
-
-написать свои тикающие relative_time (нормальные)
-
-https://www.google.com/design/icons/
-
-
-
-// В react-router сделать модульность (постепенную загрузку dependencies)
-
-// update-schema вызывать при изменении схемы Relay (nodemon)
-
-
-
-
-// graphiql в development mode
-
-// https://github.com/graphql/graphiql
-
-
-
-
-// locale hot switch
-
-// https://github.com/gpbl/react-locale-hot-switch/
-
-// nodemon не watch'ит новые файлы
-
-// Долго рестартует web сервер после изменений - мб улучшить это как-то
-
-// Мб перейти с bluebird на обычные Promises
-// Пока bluebird лучше:
-// http://programmers.stackexchange.com/questions/278778/why-are-native-es6-promises-slower-and-more-memory-intensive-than-bluebird
-// к тому же, в bluebird есть обработчик ошибок по умолчанию; есть .cancel(); есть много разного удобного.
-
-// NginX
-
-
-
-Рендеринг React'а вместе с React-router'ом и Redux'ом взят отсюда
-(будет обновляться после 22.03.2016 - мержить к себе новые изменения):
-
-https://github.com/erikras/react-redux-universal-hot-example/commits/master
-
-// Разделить проект на ядро (модуль npm) и чисто кастомный код (actions, stores, pages, components)
-
-// можно сделать уведомление (на почту, например, и ограничение функциональности) при заходе с "нового" ip-адреса (опция)
+// NginX в production
 
 Загрузку видео + плеер
 http://videojs.com/

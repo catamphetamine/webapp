@@ -1,5 +1,5 @@
 import { add_redirect } from '../helpers/redirection'
-import { error as log_error } from '../actions/log'
+import { error as log_error } from '../redux/log'
 
 export default function(error, { path, url, goto, dispatch })
 {

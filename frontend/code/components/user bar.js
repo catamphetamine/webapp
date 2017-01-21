@@ -17,8 +17,8 @@ import User_picture        from './user picture'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
 
-import { sign_out } from '../actions/authentication'
-import { preload_started } from '../actions/preload'
+import { sign_out, connector } from '../redux/authentication'
+import { preload_started } from '../redux/preload'
 
 export const messages = defineMessages
 ({
@@ -68,25 +68,13 @@ export const messages = defineMessages
 
 @connect
 (
-	model =>
+	(state) =>
 	({
-		user                 : model.authentication.user,
-		sign_out_error       : model.authentication.sign_out_error,
-		sign_in_pending      : model.authentication.sign_in_pending,
-		registration_pending : model.authentication.registration_pending
+		...connector(state.authentication)
 	}),
-	dispatch =>
 	{
-		const props = bind_action_creators
-		({
-			sign_out,
-			preload_started
-		},
-		dispatch)
-
-		props.dispatch = dispatch
-
-		return props
+		sign_out,
+		preload_started
 	}
 )
 @international()
@@ -102,20 +90,9 @@ export default class Authentication extends Component
 		register : false
 	}
 
-	static propTypes =
+	constructor()
 	{
-		user : PropTypes.object,
-
-		sign_out : PropTypes.func.isRequired,
-		sign_out_error : PropTypes.object,
-
-		sign_in_pending      : PropTypes.bool,
-		registration_pending : PropTypes.bool
-	}
-
-	constructor(properties)
-	{
-		super(properties)
+		super()
 
 		this.hide = this.hide.bind(this)
 		this.show = this.show.bind(this)
@@ -140,16 +117,31 @@ export default class Authentication extends Component
 			user,
 			registration_pending,
 			sign_in_pending,
-			translate
+			translate,
+			style
 		}
 		= this.props
 
+		const
+		{
+			password,
+			show
+		}
+		= this.state
+
 		const markup =
 		(
-			<div className="user-bar" style={this.props.style}>
+			<div className="user-bar" style={ style }>
 
 				{/* Sign in action */}
-				{ !user && <Button className="sign-in" link="/sign-in" action={this.show}>{translate(messages.sign_in)}</Button> }
+				{ !user &&
+					<Button
+						className="sign-in"
+						link="/sign-in"
+						action={ this.show }>
+						{ translate(messages.sign_in) }
+					</Button>
+				}
 
 				{/* "Sign out" button for javascriptless users */}
 				{/* user && this.render_sign_out_fallback() */}
@@ -159,12 +151,12 @@ export default class Authentication extends Component
 
 				{/* Sign in / Register popup */}
 				<Modal
-					busy={registration_pending || sign_in_pending}
-					isOpen={exists(this.state.password) || (!user && this.state.show)}
-					close={this.hide}>
+					busy={ registration_pending || sign_in_pending }
+					isOpen={ exists(password) || (!user && show) }
+					close={ this.hide }>
 
 					<Authentication_form
-						busy={registration_pending || sign_in_pending}/>
+						busy={ registration_pending || sign_in_pending }/>
 				</Modal>
 			</div>
 		)

@@ -3,13 +3,13 @@ import { title, preload, redirect }    from 'react-isomorphic-render'
 import { connect }                     from 'react-redux'
 import styler                          from 'react-styling'
 import classNames                      from 'classnames'
-import { NativeTypes }                 from 'react-dnd-html5-backend'
-import { DropTarget }                  from 'react-dnd'
 import Redux_form                      from 'simpler-redux-form'
 
 import { defineMessages, FormattedMessage } from 'react-intl'
-
 import { bindActionCreators as bind_action_creators } from 'redux'
+import { Form, Button, FileUpload, ActivityIndicator } from 'react-responsive-ui'
+
+import { File, CanDrop } from '../../components/drag-n-drop'
 
 import
 {
@@ -18,24 +18,21 @@ import
 	update_user,
 	update_user_reset_error,
 	upload_user_picture,
-	update_user_picture
+	update_user_picture,
+	connector
 }
-from '../../actions/user/profile'
+from '../../redux/user/profile'
 
 import
 {
 	generate_block_user_token,
 	unblock_user
 }
-from '../../actions/user/block'
-
-import { Form } from 'react-responsive-ui'
+from '../../redux/user/block'
 
 import Text_input   from '../../components/form/text input'
 import Submit       from '../../components/form/submit'
 import Select       from '../../components/form/select'
-
-import { Button, FileUpload, ActivityIndicator } from 'react-responsive-ui'
 
 import User         from '../../components/user'
 import User_picture from '../../components/user picture'
@@ -187,25 +184,11 @@ const Latest_activity_time_refresh_interval = 60 * 1000 // once in a minute
 })
 @connect
 (
-	model =>
+	(state) =>
 	({
-		current_user         : model.authentication.user,
-
-		user                 : model.user_profile.user,
-		latest_activity_time : model.user_profile.latest_activity_time,
-		uploaded_picture     : model.user_profile.uploaded_picture,
-
-		update_user_info_error                       : model.user_profile.update_user_info_error,
-		update_user_picture_error                    : model.user_profile.update_user_picture_error,
-		upload_user_picture_error                    : model.user_profile.upload_user_picture_error,
-		uploaded_user_picture_is_too_big_error       : model.user_profile.uploaded_user_picture_is_too_big_error,
-		unsupported_uploaded_user_picture_file_error : model.user_profile.unsupported_uploaded_user_picture_file_error,
-
-		upload_user_picture_pending : model.user_profile.upload_user_picture_pending,
-		update_user_picture_pending : model.user_profile.update_user_picture_pending,
-		update_user_info_pending    : model.user_profile.update_user_info_pending,
-
-		locale : model.locale.locale
+		current_user: state.authentication.user,
+		...connector(state.user_profile),
+		locale : state.locale.locale
 	}),
 	dispatch =>
 	({
@@ -228,27 +211,6 @@ const Latest_activity_time_refresh_interval = 60 * 1000 // once in a minute
 export default class User_profile extends Component
 {
 	state = {}
-
-	static propTypes =
-	{
-		current_user         : PropTypes.object,
-
-		user                 : PropTypes.object.isRequired,
-		latest_activity_time : PropTypes.object,
-		uploaded_picture     : PropTypes.object,
-
-		update_user_info_error                       : PropTypes.object,
-		update_user_picture_error                    : PropTypes.object,
-		upload_user_picture_error                    : PropTypes.object,
-		uploaded_user_picture_is_too_big_error       : PropTypes.bool,
-		unsupported_uploaded_user_picture_file_error : PropTypes.bool,
-
-		update_user_info_pending    : PropTypes.bool,
-		upload_user_picture_pending : PropTypes.bool,
-		update_user_picture_pending : PropTypes.bool,
-
-		locale : PropTypes.string.isRequired
-	}
 
 	static contextTypes =
 	{
@@ -754,28 +716,14 @@ export default class User_profile extends Component
 	}
 }
 
-// `react-dnd`
-const drop_file_target =
+@CanDrop(File, ({ uploading_picture, choosing_user_picture, upload_user_picture }, dropped) =>
 {
-	drop(props, monitor)
+	if (!uploading_picture)
 	{
-		if (props.uploading_picture)
-		{
-			return
-		}
-
-		props.choosing_user_picture()
-
-		props.upload_user_picture(monitor.getItem())
+		choosing_user_picture()
+		upload_user_picture(dropped)
 	}
-}
-
-@DropTarget(NativeTypes.FILE, drop_file_target, (connect, monitor) =>
-({
-	drop_target  : connect.dropTarget(),
-	dragged_over : monitor.isOver(),
-	can_drop     : monitor.canDrop()
-}))
+})
 class Uploadable_user_picture extends React.Component
 {
 	render()
@@ -791,14 +739,14 @@ class Uploadable_user_picture extends React.Component
 			translate,
 			style,
 
-			drop_target,
-			dragged_over,
-			can_drop
+			dropTarget,
+			draggedOver,
+			canDrop
 		}
 		= this.props
 
 		{/* User picture */}
-		return drop_target(
+		return dropTarget(
 			<div
 				style={style.user_picture}
 				className={classNames
@@ -829,8 +777,8 @@ class Uploadable_user_picture extends React.Component
 						(
 							'user-profile__picture__change__droppable-overlay',
 							{
-								'user-profile__picture__change__droppable-overlay--can-drop'    : dragged_over,
-								'user-profile__picture__change__droppable-overlay--cannot-drop' : dragged_over && !can_drop
+								'user-profile__picture__change__droppable-overlay--can-drop'    : draggedOver,
+								'user-profile__picture__change__droppable-overlay--cannot-drop' : draggedOver && !canDrop
 							}
 						)}
 						style={style.user_picture.element.overlay.background}/>

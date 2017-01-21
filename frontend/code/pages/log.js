@@ -8,7 +8,7 @@ import styler             from 'react-styling'
 import { title, preload } from 'react-isomorphic-render'
 import { FormattedDate }  from 'react-intl'
 
-import { get as get_log } from '../actions/log'
+import { get as get_log, connector } from '../redux/log'
 import log_levels         from '../../../code/log levels'
 
 import { messages as layout_messages } from './layout'
@@ -58,8 +58,7 @@ export const messages = defineMessages
 (
 	state =>
 	({
-		log   : state.log.log,
-		error : state.log.error
+		...connector(state.log)
 	}),
 	{ get_log }
 )
@@ -71,16 +70,9 @@ export default class Log extends Component
 		show_stack_trace: false
 	}
 
-	static propTypes =
+	constructor()
 	{
-		get_log : PropTypes.func.isRequired,
-		log     : PropTypes.array,
-		error   : PropTypes.object
-	}
-
-	constructor(props)
-	{
-		super(props)
+		super()
 
 		this.render_log_entry = this.render_log_entry.bind(this)
 		this.hide_stack_trace = this.hide_stack_trace.bind(this)
@@ -88,7 +80,7 @@ export default class Log extends Component
 
 	render()
 	{
-		const { error, log, translate } = this.props
+		const { log, translate } = this.props
 
 		const markup =
 		(

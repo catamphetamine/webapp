@@ -105,7 +105,8 @@ export default class Locale_switcher extends Component
 						})}
 					</Select>
 
-					{/* submit */}
+					{/* (legacy) javascriptless submit */}
+					{/*
 					<Button
 						className="rrui__rich__fallback"
 						style={style.locale.form.button}
@@ -113,6 +114,7 @@ export default class Locale_switcher extends Component
 
 						{translate(messages.apply)}
 					</Button>
+					*/}
 
 					{/* this page url for back redirection */}
 					<input

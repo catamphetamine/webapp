@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 // import { StickyContainer, Sticky } from 'react-sticky'
-
-// testing `flat` styler
+import { PageAndMenu, Page, Menu, MenuButton, Snackbar } from 'react-responsive-ui'
 import styler                             from 'react-styling'
 import { preload, head, Link, IndexLink } from 'react-isomorphic-render'
 import { connect }                        from 'react-redux'
@@ -9,15 +8,10 @@ import { defineMessages }                 from 'react-intl'
 import classNames                         from 'classnames'
 
 import international   from '../international/internationalize'
-
-import { PageAndMenu, Page, Menu, MenuButton, Snackbar } from 'react-responsive-ui'
-
 import Locale_switcher from '../components/locale switcher'
 import User_bar        from '../components/user bar'
 import Preloading      from '../components/preloading'
-
-import HTML5Backend                   from 'react-dnd-html5-backend'
-import { DragDropContext, DragLayer } from 'react-dnd'
+import { DragAndDrop } from '../components/drag-n-drop'
 
 @connect
 (
@@ -29,30 +23,12 @@ import { DragDropContext, DragLayer } from 'react-dnd'
 	dispatch => ({ dispatch })
 )
 @international()
-@DragDropContext(HTML5Backend)
-@DragLayer(monitor =>
-({
-	// item           : monitor.getItem(),
-	// item_type      : monitor.getItemType(),
-	// current_offset : monitor.getSourceClientOffset(),
-	is_dragging    : monitor.isDragging()
-}))
+@DragAndDrop()
 export default class Layout extends Component
 {
 	static propTypes =
 	{
-		// item: PropTypes.object,
-		// item_type: PropTypes.string,
-		// current_offset: PropTypes.shape
-		// ({
-		// 	x: PropTypes.number.isRequired,
-		// 	y: PropTypes.number.isRequired
-		// }),
-
-		is_dragging : PropTypes.bool.isRequired,
-
-		locale : PropTypes.string.isRequired,
-		snack  : PropTypes.oneOfType([PropTypes.string, PropTypes.object])
+		snack : PropTypes.object
 	}
 
 	static defaultProps =
@@ -60,9 +36,9 @@ export default class Layout extends Component
 		snack : {}
 	}
 
-	constructor(props, context)
+	constructor()
 	{
-		super(props, context)
+		super()
 
 		this.reset_snack = this.reset_snack.bind(this)
 	}
@@ -74,7 +50,7 @@ export default class Layout extends Component
 
 	render()
 	{
-		const { translate, is_dragging, snack, locale } = this.props
+		const { translate, isDragging, snack, locale } = this.props
 
 		const title       = translate(messages.title)
 		const description = translate(messages.description)
@@ -104,7 +80,7 @@ export default class Layout extends Component
 		const markup =
 		(
 			<PageAndMenu
-				className={classNames('layout', { 'layout--dragging': is_dragging })}>
+				className={classNames('layout', { 'layout--dragging': isDragging })}>
 
 				{/* <head/> */}
 				{head(title, meta)}
@@ -180,18 +156,6 @@ export const messages = defineMessages
 		description    : 'Web application description',
 		defaultMessage : 'A generic web application boilerplate'
 	},
-	menu_example:
-	{
-		id             : 'menu.example',
-		description    : 'API usage examples',
-		defaultMessage : 'Example'
-	},
-	menu_components_showcase:
-	{
-		id             : 'menu.components_showcase',
-		description    : 'The section shows various React components in action',
-		defaultMessage : 'Showcase'
-	},
 	menu_log:
 	{
 		id             : 'menu.log',
@@ -231,12 +195,6 @@ function Menu_item({ to, children })
 export function menu_entries(translate)
 {
 	return [{
-		name: translate(messages.menu_example),
-		link: '/example/simple'
-	}, {
-		name: translate(messages.menu_components_showcase),
-		link: '/showcase'
-	}, {
 		name: translate(messages.menu_log),
 		link: '/logs'
 	}]

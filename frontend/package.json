@@ -59,7 +59,7 @@
     "simpler-redux-form": "^0.3.4",
     "style-loader": "^0.12.4",
     "url-loader": "^0.5.5",
-    "webpack": "^2.2.0-rc.4",
+    "webpack": "^2.2.0",
     "webpack-dev-middleware": "^1.9.0",
     "webpack-isomorphic-tools": "^2.5.8"
   },

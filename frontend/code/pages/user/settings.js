@@ -15,9 +15,10 @@ import
 {
 	get_user,
 	get_user_authentication_tokens,
-	change_alias
+	change_alias,
+	connector
 }
-from '../../actions/user/settings/main'
+from '../../redux/user/settings/main'
 
 import default_messages from '../../components/messages'
 
@@ -109,15 +110,9 @@ const messages = defineMessages
 @preload(({ dispatch }) => dispatch(get_user()))
 @connect
 (
-	state =>
+	(state) =>
 	({
-		user : state.user_settings.main.user,
-
-		load_advanced_settings_error   : state.user_settings.main.load_advanced_settings_error,
-		load_advanced_settings_pending : state.user_settings.main.load_advanced_settings_pending,
-
-		change_alias_pending : state.user_settings.main.change_alias_pending,
-		change_alias_error   : state.user_settings.main.change_alias_error
+		...connector(state.user_settings.main)
 	}),
 	dispatch =>
 	({
@@ -133,20 +128,11 @@ const messages = defineMessages
 @international()
 export default class Settings_page extends Component
 {
-	static propTypes =
-	{
-		user                  : PropTypes.object.isRequired,
-		authentication_tokens : PropTypes.array,
-
-		change_alias_pending : PropTypes.bool,
-		change_alias_error   : PropTypes.object
-	}
-
 	state = {}
 
-	constructor(props, context)
+	constructor()
 	{
-		super(props, context)
+		super()
 
 		this.load_advanced_settings   = this.load_advanced_settings.bind(this)
 		this.update_alias             = this.update_alias.bind(this)

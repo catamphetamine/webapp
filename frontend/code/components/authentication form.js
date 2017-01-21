@@ -22,21 +22,21 @@ import { messages as user_bar_messages } from './user bar'
 import { add_redirect, should_redirect_to, redirection_target } from '../helpers/redirection'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
+import Redux_form, { Field } from 'simpler-redux-form'
 
 import
 {
 	sign_in,
 	sign_in_reset_error,
 	register,
-	register_reset_error
+	register_reset_error,
+	connector
 }
-from '../actions/authentication'
+from '../redux/authentication'
 
-import { preload_started } from '../actions/preload'
+import { preload_started } from '../redux/preload'
 
 import { get_language_from_locale } from '../../../code/locale'
-
-import Redux_form, { Field } from 'simpler-redux-form'
 
 export const messages = defineMessages
 ({
@@ -189,29 +189,18 @@ export const messages = defineMessages
 @Redux_form
 @connect
 (
-	model =>
+	state =>
 	({
-		sign_in_error  : model.authentication.sign_in_error,
-		register_error : model.authentication.register_error,
-
-		registration_pending : model.authentication.registration_pending,
-		sign_in_pending      : model.authentication.sign_in_pending,
-
-		locale   : model.locale.locale
+		...connector(state.authentication),
+		locale : state.locale.locale
 	}),
-	dispatch =>
-	({
-		dispatch,
-		...bind_action_creators
-		({
-			sign_in,
-			sign_in_reset_error,
-			register,
-			register_reset_error,
-			preload_started
-		},
-		dispatch)
-	})
+	{
+		sign_in,
+		sign_in_reset_error,
+		register,
+		register_reset_error,
+		preload_started
+	}
 )
 @international()
 @withRouter
@@ -224,14 +213,6 @@ export default class Authentication_form extends Component
 
 	static propTypes =
 	{
-		user : PropTypes.object,
-
-		sign_in_pending  : PropTypes.bool,
-		register_pending : PropTypes.bool,
-
-		sign_in_error  : PropTypes.object,
-		register_error : PropTypes.object,
-
 		style        : PropTypes.object,
 		on_sign_in   : PropTypes.func,
 
@@ -609,7 +590,6 @@ export default class Authentication_form extends Component
 		{
 			sign_in,
 			preload_started,
-			dispatch,
 			clear,
 			router:
 			{

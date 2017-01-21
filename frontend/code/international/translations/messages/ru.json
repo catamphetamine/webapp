@@ -49,10 +49,6 @@
 
 	"sign_in.error.user_with_email_not_found" : "Пользователь с почтой «{email}» не найден",
 
-	"menu.editor"              : "Редактор",
-	"menu.about"               : "Прочее",
-	"menu.example"             : "Пример",
-	"menu.components_showcase" : "Компоненты",
 	"menu.log"                 : "Журнал",
 
 	"home.header": "Собака",
