@@ -4,12 +4,12 @@ export default function connect_to_realtime_service()
 {
 	const websocket = new WebSocket(`ws://${configuration.realtime_service.host}:${configuration.realtime_service.port}`)
 
-	websocket.onerror = (error) =>
+	websocket.addEventListener('error', (error) =>
 	{
 		console.error(error)
-	}
+	})
 
-	websocket.onmessage = (event) =>
+	websocket.addEventListener('message', (event) =>
 	{
 		let message
 
@@ -29,17 +29,17 @@ export default function connect_to_realtime_service()
 			default:
 				return console.log('Unknown message type', message)
 		}
-	}
+	})
 
-	websocket.onopen = () =>
+	websocket.addEventListener('open', () =>
 	{
 		console.log('WebSocket connected')
 		websocket.send(JSON.stringify({ command: 'GET /notifications' }))
 		// To do: issue "GET /notifications" on reconnect.
-	}
+	})
 
-	websocket.onclose = () =>
+	websocket.addEventListener('close', ({ code, reason, wasClean }) =>
 	{
 		console.log('WebSocket disconnected. To do: start reconnect loop.')
-	}
+	})
 }

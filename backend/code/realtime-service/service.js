@@ -61,5 +61,10 @@ export default function start()
 		})
 	})
 
+	server.on('error', (error) =>
+	{
+		log.error(error)
+	})
+
 	log.info(`Realtime service is listening at port ${configuration.realtime_service.port}`)
 }
