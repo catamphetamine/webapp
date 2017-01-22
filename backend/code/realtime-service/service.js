@@ -1,13 +1,42 @@
 // https://github.com/uWebSockets/uWebSockets
-import websocket from 'uws'
+import WebSocket from 'uws'
 
 export default function start()
 {
-	const server = new websocket.Server({ port: configuration.realtime_service.port })
+	const server = new WebSocket.Server({ port: configuration.realtime_service.port })
+
+	// Broadcasts to all
+	server.broadcast = function broadcast(message)
+	{
+		for (let client of server.clients)
+		{
+			if (client.readyState === WebSocket.OPEN)
+			{
+				client.send(message)
+			}
+		}
+	}
 
 	server.on('connection', (socket) =>
 	{
 		log.info('Client connected')
+
+		// Broadcasts to everyone else
+		socket.broadcast = (message) =>
+		{
+			for (let client of server.clients)
+			{
+				if (client !== socket && client.readyState === WebSocket.OPEN)
+				{
+					client.send(message)
+				}
+			}
+		}
+
+		socket.on('close', () =>
+		{
+			log.info('Client disconnected')
+		})
 
 		socket.on('message', (message) =>
 		{

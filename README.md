@@ -734,7 +734,7 @@ https://material-design.storage.googleapis.com/publish/material_v_9/0Bzhp5Z4wHba
 
 
 
-при заходе соединяться с realtime-service (websocket), который будет push-ить уведомления, и каждую минуту, например, проверять (pull): `{ notifications: [] }`
+WebSocket reconnect
 
 
 
