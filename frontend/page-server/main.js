@@ -39,6 +39,11 @@ const initializing_javascript =
 		image_service:
 		{
 			file_size_limit: ${file_size_parser(configuration.image_service.file_size_limit)}
+		},
+		realtime_service:
+		{
+			host: "${configuration.realtime_service.host}",
+			port: ${configuration.realtime_service.port}
 		}
 	}
 `

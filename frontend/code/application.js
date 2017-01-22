@@ -9,6 +9,7 @@ import inject_tap_event_plugin from 'react-tap-event-plugin'
 import language from '../../code/language'
 import settings from './react-isomorphic-render'
 import international from './international/loader'
+import connect_to_realtime_service from './tools/websocket'
 
 // include these assets in webpack build (styles, images)
 
@@ -52,3 +53,6 @@ international.load().then(() =>
 		}
 	})
 })
+
+// WebSocket connection
+connect_to_realtime_service()
