@@ -151,6 +151,14 @@ module.exports =
 		// 	secure: true
 		// }
 	},
+	realtime_service:
+	{
+		ws:
+		{
+			host: '127.0.0.1',
+			port: 3010
+		}
+	},
 	web_service_secret_keys: ['hammertime'],
 	development:
 	{

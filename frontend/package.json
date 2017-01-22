@@ -73,27 +73,27 @@
     "react-hot-loader": "^3.0.0-beta.6"
   },
   "scripts": {
-    "development": "npm-run-all --parallel development:client development:page-server",
-    "development:client": "npm-run-all development:client:webpack-dll development:client:webpack development:page-server",
-    "development:client:webpack-dll": "webpack --color --display-error-details --config \"webpack/dll.entry.js\"",
-    "development:client:webpack": "better-npm-run development:client:webpack",
-    "development:page-server": "better-npm-run development:page-server",
-    "production": "npm-run-all react-intl:clean-messages react-intl:babel-run react-intl:default-translation production:client:webpack production:page-server",
-    "production:client:webpack": "better-npm-run production:client:webpack",
-    "production:page-server": "better-npm-run production:page-server",
+    "development": "npm-run-all --parallel development:webpack:optimized development:rendering-service",
+    "development:webpack:optimized": "npm-run-all development:webpack:dll development:webpack",
+    "development:webpack:dll": "webpack --color --display-error-details --config \"webpack/dll.entry.js\"",
+    "development:webpack": "better-npm-run development:webpack",
+    "development:rendering-service": "better-npm-run development:rendering-service",
+    "production": "npm-run-all react-intl:clean-messages react-intl:babel-run react-intl:default-translation production:webpack production:rendering-service",
+    "production:webpack": "better-npm-run production:webpack",
+    "production:rendering-service": "better-npm-run production:rendering-service",
     "react-intl:default-translation": "babel-node ./automation/international/react-intl-default-translation.js",
     "react-intl:clean-messages": "rimraf ./build/messages",
     "react-intl:babel-run": "better-npm-run react-intl:babel-run",
     "install-recursive": "node ../automation/install"
   },
   "betterScripts": {
-    "development:client:webpack": {
+    "development:webpack": {
       "command": "babel-node \"webpack/development server.js\"",
       "env": {
         "BABEL_ENV": "client"
       }
     },
-    "production:client:webpack": {
+    "production:webpack": {
       "command": "webpack --color --progress --display-error-details --config \"webpack/production build.entry.js\"",
       "env": {
         "NODE_ENV": "production",
@@ -107,13 +107,13 @@
         "BABEL_ENV": "react-intl-extract-default-messages"
       }
     },
-    "development:page-server": {
+    "development:rendering-service": {
       "command": "\"../node_modules/.bin/nodemon\" ./page-server/entry.js --watch ./page-server --watch ./code --watch ../code",
       "env": {
         "BABEL_ENV": "server"
       }
     },
-    "production:page-server": {
+    "production:rendering-service": {
       "command": "node --harmony ./page-server/entry.js",
       "env": {
         "NODE_ENV": "production",

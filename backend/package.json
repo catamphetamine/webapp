@@ -23,33 +23,36 @@
     "web-service": "^0.4.4"
   },
   "scripts": {
-    "development": "npm-run-all --parallel development-log-service-delayed development-authentication-service-delayed development-user-service-delayed development-password-service-delayed development-api-service-delayed development-image-service-delayed development-mail-service-delayed development-web-server-delayed",
-    "development-log-service": "better-npm-run development-log-service",
-    "development-authentication-service": "better-npm-run development-authentication-service",
-    "development-user-service": "better-npm-run development-user-service",
-    "development-password-service": "better-npm-run development-password-service",
-    "development-api-service": "better-npm-run development-api-service",
-    "development-image-service": "better-npm-run development-image-service",
-    "development-mail-service": "better-npm-run development-mail-service",
-    "development-web-server": "better-npm-run development-web-server",
-    "development-log-service-delayed": "npm-run-all delay development-log-service",
-    "development-api-service-delayed": "npm-run-all delay delay development-api-service",
-    "development-image-service-delayed": "npm-run-all delay delay delay development-image-service",
-    "development-password-service-delayed": "npm-run-all delay delay delay delay development-password-service",
-    "development-authentication-service-delayed": "npm-run-all delay delay delay delay delay development-authentication-service",
-    "development-user-service-delayed": "npm-run-all delay delay delay delay delay delay development-user-service",
-    "development-mail-service-delayed": "npm-run-all delay delay delay delay delay delay delay development-mail-service",
-    "development-web-server-delayed": "npm-run-all delay delay delay delay delay delay delay delay development-web-server",
+    "development": "npm-run-all --parallel development:log-service:delayed development:authentication-service:delayed development:user-service:delayed development:password-service:delayed development:api-service:delayed development:image-service:delayed development:mail-service:delayed development:realtime-service:delayed development:web-server:delayed",
+    "development:log-service": "better-npm-run development:log-service",
+    "development:realtime-service": "better-npm-run development:realtime-service",
+    "development:authentication-service": "better-npm-run development:authentication-service",
+    "development:user-service": "better-npm-run development:user-service",
+    "development:password-service": "better-npm-run development:password-service",
+    "development:api-service": "better-npm-run development:api-service",
+    "development:image-service": "better-npm-run development:image-service",
+    "development:mail-service": "better-npm-run development:mail-service",
+    "development:web-server": "better-npm-run development:web-server",
+    "development:log-service:delayed": "npm-run-all delay development:log-service",
+    "development:api-service:delayed": "npm-run-all delay delay development:api-service",
+    "development:image-service:delayed": "npm-run-all delay delay delay development:image-service",
+    "development:password-service:delayed": "npm-run-all delay delay delay delay development:password-service",
+    "development:authentication-service:delayed": "npm-run-all delay delay delay delay delay development:authentication-service",
+    "development:user-service:delayed": "npm-run-all delay delay delay delay delay delay development:user-service",
+    "development:mail-service:delayed": "npm-run-all delay delay delay delay delay delay delay development:mail-service",
+    "development:realtime-service:delayed": "npm-run-all delay delay delay delay delay delay delay delay development:realtime-service",
+    "development:web-server:delayed": "npm-run-all delay delay delay delay delay delay delay delay delay development:web-server",
     "delay": "node ./code/sleep 600",
-    "production": "npm-run-all --parallel production-log-service production-authentication-service production-user-service production-password-service production-api-service production-image-service production-mail-service production-web-server",
-    "production-log-service": "better-npm-run production-log-service",
-    "production-authentication-service": "better-npm-run production-authentication-service",
-    "production-user-service": "better-npm-run production-user-service",
-    "production-password-service": "better-npm-run production-password-service",
-    "production-api-service": "better-npm-run production-api-service",
-    "production-image-service": "better-npm-run production-image-service",
-    "production-mail-service": "better-npm-run production-mail-service",
-    "production-web-server": "better-npm-run production-web-server",
+    "production": "npm-run-all --parallel production:log-service production:authentication-service production:user-service production:password-service production:api-service production:image-service production:mail-service production:realtime-service production:web-server",
+    "production:log-service": "better-npm-run production:log-service",
+    "production:authentication-service": "better-npm-run production:authentication-service",
+    "production:user-service": "better-npm-run production:user-service",
+    "production:password-service": "better-npm-run production:password-service",
+    "production:api-service": "better-npm-run production:api-service",
+    "production:image-service": "better-npm-run production:image-service",
+    "production:mail-service": "better-npm-run production:mail-service",
+    "production:realtime-service": "better-npm-run production:realtime-service",
+    "production:web-server": "better-npm-run production:web-server",
     "postgresql-knex-init": "knex init",
     "postgresql-migrate": "knex migrate:latest",
     "postgresql-rollback": "knex migrate:rollback",
@@ -62,112 +65,126 @@
     "install-recursive": "node ../automation/install"
   },
   "betterScripts": {
-    "development-web-server": {
+    "development:web-server": {
       "command": "\"../node_modules/.bin/nodemon\" ./code/web-server/entry.js  --watch ./code/web-server --watch ./code/common",
       "env": {
         "NODE_ENV": "development",
         "BABEL_ENV": "server"
       }
     },
-    "development-image-service": {
+    "development:image-service": {
       "command": "\"../node_modules/.bin/nodemon\" ./code/image-service/entry.js --watch ./code/image-service --watch ./code/common",
       "env": {
         "NODE_ENV": "development",
         "BABEL_ENV": "server"
       }
     },
-    "development-api-service": {
+    "development:api-service": {
       "command": "\"../node_modules/.bin/nodemon\" ./code/api-service/entry.js --watch ./code/api-service --watch ./code/common",
       "env": {
         "NODE_ENV": "development",
         "BABEL_ENV": "server"
       }
     },
-    "development-password-service": {
+    "development:password-service": {
       "command": "\"../node_modules/.bin/nodemon\" ./code/password-service/entry.js --watch ./code/password-service --watch ./code/common",
       "env": {
         "NODE_ENV": "development",
         "BABEL_ENV": "server"
       }
     },
-    "development-user-service": {
+    "development:user-service": {
       "command": "\"../node_modules/.bin/nodemon\" ./code/user-service/entry.js --watch ./code/user-service --watch ./code/common",
       "env": {
         "NODE_ENV": "development",
         "BABEL_ENV": "server"
       }
     },
-    "development-authentication-service": {
+    "development:authentication-service": {
       "command": "\"../node_modules/.bin/nodemon\" ./code/authentication-service/entry.js --watch ./code/authentication-service --watch ./code/common",
       "env": {
         "NODE_ENV": "development",
         "BABEL_ENV": "server"
       }
     },
-    "development-mail-service": {
+    "development:mail-service": {
       "command": "\"../node_modules/.bin/nodemon\" ./code/mail-service/entry.js --watch ./code/mail-service --watch ./code/common",
       "env": {
         "NODE_ENV": "development",
         "BABEL_ENV": "server"
       }
     },
-    "development-log-service": {
+    "development:realtime-service": {
+      "command": "\"../node_modules/.bin/nodemon\" ./code/realtime-service/entry.js --watch ./code/realtime-service --watch ./code/common",
+      "env": {
+        "NODE_ENV": "development",
+        "BABEL_ENV": "server"
+      }
+    },
+    "development:log-service": {
       "command": "\"../node_modules/.bin/nodemon\" ./code/log-service/entry.js --watch ./code/log-service --watch ./code/common",
       "env": {
         "NODE_ENV": "development",
         "BABEL_ENV": "server"
       }
     },
-    "production-web-server": {
+    "production:web-server": {
       "command": "node --harmony ./code/web-server/entry.js",
       "env": {
         "NODE_ENV": "production",
         "BABEL_ENV": "server"
       }
     },
-    "production-image-service": {
+    "production:image-service": {
       "command": "node --harmony ./code/image-service/entry.js",
       "env": {
         "NODE_ENV": "production",
         "BABEL_ENV": "server"
       }
     },
-    "production-api-service": {
+    "production:api-service": {
       "command": "node --harmony ./code/api-service/entry.js",
       "env": {
         "NODE_ENV": "production",
         "BABEL_ENV": "server"
       }
     },
-    "production-password-service": {
+    "production:password-service": {
       "command": "node --harmony ./code/password-service/entry.js",
       "env": {
         "NODE_ENV": "production",
         "BABEL_ENV": "server"
       }
     },
-    "production-user-service": {
+    "production:user-service": {
       "command": "node --harmony ./code/user-service/entry.js",
       "env": {
         "NODE_ENV": "production",
         "BABEL_ENV": "server"
       }
     },
-    "production-authentication-service": {
+    "production:authentication-service": {
       "command": "node --harmony ./code/authentication-service/entry.js",
       "env": {
         "NODE_ENV": "production",
         "BABEL_ENV": "server"
       }
     },
-    "production-mail-service": {
+    "production:mail-service": {
       "command": "node --harmony ./code/mail-service/entry.js",
       "env": {
         "NODE_ENV": "production",
         "BABEL_ENV": "server"
       }
     },
-    "production-log-service": {
+    "production:realtime-service": {
+      "command": "node --harmony ./code/realtime-service/entry.js",
+      "env": {
+        "NODE_ENV": "production",
+        "BABEL_ENV": "server"
+      }
+    },
+    "production:log-service": {
       "command": "node --harmony ./code/log-service/entry.js",
       "env": {
         "NODE_ENV": "production",

@@ -237,5 +237,5 @@ export default function create(name, options = {})
 		}
 	}
 
-	return bunyan.createLogger(extend({ name }, log_configuration))
+	return global.log = bunyan.createLogger(extend({ name }, log_configuration))
 }

@@ -50,7 +50,14 @@ global.Intl = Intl_polyfill
 // Messages JSON cache
 const messagesJSON = {}
 
-const monitoring = start_monitoring(configuration)
+const monitoring = start_monitoring
+({
+	statsd:
+	{
+		...configuration.statsd,
+		prefix: configuration.statsd.prefix ? `${configuration.statsd.prefix}.server_side_render` : 'server_side_render'
+	}
+})
 
 // starts webpage rendering server
 const server = webpage_server(settings,
@@ -281,5 +288,5 @@ server.listen(configuration.webpage_server.http.port, function(error)
 
 	const host = 'localhost'
 
-	log.info(`Webpage server is listening at http://${host ? host : 'localhost'}:${configuration.webpage_server.http.port}`)
+	log.info(`Webpage rendering service is listening at http://${host ? host : 'localhost'}:${configuration.webpage_server.http.port}`)
 })

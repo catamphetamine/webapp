@@ -356,7 +356,7 @@ This application can run in demo mode without InfluxDB being installed.
 
 InfluxDB can be used to store different kinds of stats.
 
-(ports used: 8083 (web), 8086, 8090, 8099)
+(ports used: 8086, 8090, 8099)
 
 If you want this application make use of InfluxDB then you should first install it.
 
@@ -368,14 +368,14 @@ brew install influxdb
 
 ```
 # enable autostart
-ln -sfv /usr/local/opt/influxdb/*.plist ~/Library/LaunchAgents
-launchctl load ~/Library/LaunchAgents/homebrew.mxcl.influxdb.plist
+brew services start influxdb
 ```
 
 ```
 influx
-> CREATE USER admin WITH PASSWORD [administrator password here] WITH ALL PRIVILEGES
-> CREATE USER webapp WITH PASSWORD [webapp password here]
+> CREATE USER "admin" WITH PASSWORD '[administrator password here]' WITH ALL PRIVILEGES
+> CREATE USER "webapp" WITH PASSWORD '[webapp password here]'
+> CREATE USER "telegraf" WITH PASSWORD '[telegraf password here]'
 > exit
 ```
 
@@ -383,12 +383,11 @@ influx
 nano /usr/local/etc/influxdb.conf
 
 # [http]
-#   auth-enabled = true
+   auth-enabled = true
 ```
 
 ```
-launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.influxdb.plist
-launchctl load ~/Library/LaunchAgents/homebrew.mxcl.influxdb.plist
+brew services restart influxdb
 ```
 
 Then run `influx`.
@@ -398,9 +397,16 @@ CREATE DATABASE webapp
 GRANT ALL ON webapp TO webapp
 USE webapp
 
-CREATE RETENTION POLICY 7_days ON webapp DURATION 7d REPLICATION 1
+# CREATE CONTINUOUS QUERY emails_in_a_day ON webapp BEGIN SELECT mean(count) AS mean_count INTO webapp."default".downsampled_emails_sent FROM emails_sent GROUP BY time(24h) END
 
-CREATE CONTINUOUS QUERY emails_in_a_day ON webapp BEGIN SELECT mean(website) AS mean_website, mean(phone) AS mean_phone INTO webapp."default".downsampled_emails_sent FROM emails_sent GROUP BY time(24h) END
+CREATE DATABASE telegraf
+GRANT ALL ON telegraf TO telegraf
+USE telegraf
+
+CREATE RETENTION POLICY "7_days" ON telegraf DURATION 7d REPLICATION 1
+CREATE RETENTION POLICY "1_month" ON telegraf DURATION 30d REPLICATION 1
+CREATE RETENTION POLICY "1_year" ON telegraf DURATION 365d REPLICATION 1
+CREATE RETENTION POLICY "infinite" ON telegraf DURATION INF REPLICATION 1
 ```
 
 ```
@@ -415,6 +421,13 @@ CREATE CONTINUOUS QUERY emails_in_a_day ON webapp BEGIN SELECT mean(website) AS 
 ```
 
 For production the password is set in `/opt/influxdb/current/config.toml`.
+
+Test login
+
+```sh
+influx -username admin -password PASSWORD
+> show databases
+```
 
 Telegraf (StatsD)
 =================
@@ -435,14 +448,17 @@ brew services start telegraf
 [[outputs.influxdb]]
   urls = ["http://localhost:8086"]
   database = "telegraf"
-  retention_policy = ""
+  retention_policy = "7_days"
+  # create user `telegraf` in influxdb, and `telegraf` database too
   username = "telegraf"
-  password = "metricsmetricsmetricsmetrics"
+  password = "PASSWORD"
 
-# Statsd Server
 [[inputs.statsd]]
   ## Address and port to host UDP listener on
   service_address = ":8125"
+
+  ## Percentiles to calculate for timing & histogram stats
+  percentiles = [90]
 ```
 
 Grafana
@@ -455,6 +471,40 @@ Installing Grafana:
 http://docs.grafana.org/installation/
 
 <!-- /usr/local/Cellar/grafana/3.1.0 -->
+
+```sh
+createuser --username=postgres --interactive grafana
+createdb --username=postgres --encoding=utf8 --owner=grafana grafana --template=template0
+
+psql -U grafana
+\password PASSWORD
+\q
+
+nano /usr/local/etc/grafana/grafana.ini
+```
+
+```
+; logs = /var/log/grafana
+
+# The http port  to use
+http_port = 8888
+
+# database
+type = postgres
+host = 127.0.0.1
+name = grafana
+user = grafana
+password = PASSWORD
+
+[security]
+# default admin user, created on startup
+admin_user = admin
+
+# default admin password, can be changed before first start of grafana,  or in profile settings
+admin_password = PASSWORD
+```
+
+Go to `localhost:8888`
 
 Setting up Grafana for InfluxDB:
 
@@ -674,24 +724,17 @@ Troubleshooting
 To do
 ====================
 
-отрефакторить webapp на asynchronousActionHandlers
-
-
-
-
-
-Графики сервера рендера (influx, grafana)
-
-
-
-
-
-
 form_errors - показывать наверху формы, (мб) на сером фоне, в плашке
 
 https://material-design.storage.googleapis.com/publish/material_v_9/0Bzhp5Z4wHba3dEZTUF9idzBHMWc/patterns_errors_userinput19.png
 
 при такой ошибке - скроллить форму наверх (плавно)
+
+
+
+
+
+при заходе соединяться с realtime-service (websocket), который будет push-ить уведомления, и каждую минуту, например, проверять (pull): `{ notifications: [] }`
 
 
 
