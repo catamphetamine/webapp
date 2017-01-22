@@ -8,34 +8,34 @@ export default function start()
 	// Broadcasts to all
 	server.broadcast = function broadcast(message)
 	{
-		for (let client of server.clients)
+		server.clients.forEach((client) =>
 		{
 			if (client.readyState === WebSocket.OPEN)
 			{
 				client.send(message)
 			}
-		}
+		})
 	}
 
 	server.on('connection', (socket) =>
 	{
-		log.info('Client connected')
+		log.info('Client connected. Total clients:', server.clients.length)
 
 		// Broadcasts to everyone else
 		socket.broadcast = (message) =>
 		{
-			for (let client of server.clients)
+			server.clients.forEach((client) =>
 			{
 				if (client !== socket && client.readyState === WebSocket.OPEN)
 				{
 					client.send(message)
 				}
-			}
+			})
 		}
 
 		socket.on('close', () =>
 		{
-			log.info('Client disconnected')
+			log.info('Client disconnected. Clients left:', server.clients.length)
 		})
 
 		socket.on('message', (message) =>
