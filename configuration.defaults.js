@@ -153,8 +153,20 @@ module.exports =
 	},
 	realtime_service:
 	{
-		host: '127.0.0.1',
-		port: 3010
+		http:
+		{
+			host: '127.0.0.1',
+			port: 3010,
+			// Allowed IP subnets.
+			// For more security set to local IPs only,
+			// excluding the router IP (exclusions start with an exclamation sign)
+			access_list: ['127.0.0.1/32', '192.168.0.0/16']
+		},
+		websocket:
+		{
+			host: '127.0.0.1',
+			port: 3100
+		}
 	},
 	web_service_secret_keys: ['hammertime'],
 	development:

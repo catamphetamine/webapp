@@ -491,7 +491,7 @@ http_port = 8888
 
 # database
 type = postgres
-host = 127.0.0.1
+host = 127.0.0.1:5432
 name = grafana
 user = grafana
 password = PASSWORD

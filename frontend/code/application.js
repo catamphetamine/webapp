@@ -26,6 +26,9 @@ for (let asset of Object.keys(html_assets))
 // https://github.com/zilverline/react-tap-event-plugin
 inject_tap_event_plugin()
 
+// WebSocket connection
+connect_to_realtime_service(window._authentication_token)
+
 // load the Intl polyfill and its locale data before rendering the application
 international.load().then(() =>
 {
@@ -53,6 +56,3 @@ international.load().then(() =>
 		}
 	})
 })
-
-// WebSocket connection
-connect_to_realtime_service()

@@ -1,3 +1,4 @@
+// Limits requests for every client IP-address to `5` per second
 export default class IP_limiter
 {
 	ips = {}

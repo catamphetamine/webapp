@@ -42,8 +42,11 @@ const initializing_javascript =
 		},
 		realtime_service:
 		{
-			host: "${configuration.realtime_service.host}",
-			port: ${configuration.realtime_service.port}
+			websocket:
+			{
+				host: "${configuration.realtime_service.websocket.host}",
+				port: ${configuration.realtime_service.websocket.port}
+			}
 		}
 	}
 `
@@ -106,7 +109,7 @@ const server = webpage_server(settings,
 	// (will be added to Redux store)
 	initialize: async (http, { request }) =>
 	{
-		const user = await http.get(`/users/current`)
+		const user = await http.get(`/users`)
 
 		const state =
 		{

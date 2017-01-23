@@ -1,8 +1,8 @@
 // WebSocket connection
 
-export default function connect_to_realtime_service()
+export default function connect_to_realtime_service(authentication_token)
 {
-	const websocket = new WebSocket(`ws://${configuration.realtime_service.host}:${configuration.realtime_service.port}`)
+	const websocket = new WebSocket(`ws://${configuration.realtime_service.websocket.host}:${configuration.realtime_service.websocket.port}`)
 
 	websocket.addEventListener('error', (error) =>
 	{
@@ -24,8 +24,8 @@ export default function connect_to_realtime_service()
 
 		switch (message.command)
 		{
-			case 'GET /notifications':
-				return console.log('Notifications', message.notifications)
+			case 'GET /':
+				return console.log('Connected', message)
 			default:
 				return console.log('Unknown message type', message)
 		}
@@ -34,7 +34,13 @@ export default function connect_to_realtime_service()
 	websocket.addEventListener('open', () =>
 	{
 		console.log('WebSocket connected')
-		websocket.send(JSON.stringify({ command: 'GET /notifications' }))
+
+		websocket.send(JSON.stringify
+		({
+			command: 'GET /',
+			token: authentication_token
+		}))
+
 		// To do: issue "GET /notifications" on reconnect.
 	})
 

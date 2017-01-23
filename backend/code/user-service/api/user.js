@@ -49,7 +49,7 @@ export default function(api)
 	})
 
 	// Get currently logged in user (if any)
-	api.get('/current', async function({}, { user, internal_http, get_cookie, set_cookie })
+	api.get('/', async function({}, { user, internal_http, get_cookie, set_cookie })
 	{
 		// If no valid JWT token present,
 		// then assume this user is not authenticated.

@@ -7,7 +7,7 @@ export const get_user = action
 ({
 	namespace : 'user settings',
 	event     : 'get user',
-	action    : http => http.get('/users/current'),
+	action    : http => http.get('/users'),
 	result    : 'user'
 },
 handler)
