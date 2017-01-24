@@ -2,14 +2,13 @@
 // (including generators, which means async/await)
 import 'babel-polyfill'
 
-import React      from 'react'
-import { render } from 'react-isomorphic-render'
+import { render, websocket } from 'react-isomorphic-render'
 import inject_tap_event_plugin from 'react-tap-event-plugin'
 
 import language from '../../code/language'
 import settings from './react-isomorphic-render'
 import international from './international/loader'
-import connect_to_realtime_service from './tools/websocket'
+import set_up_realtime_service_connection from './realtime service'
 
 // include these assets in webpack build (styles, images)
 
@@ -26,17 +25,17 @@ for (let asset of Object.keys(html_assets))
 // https://github.com/zilverline/react-tap-event-plugin
 inject_tap_event_plugin()
 
-// WebSocket connection
-connect_to_realtime_service(window._authentication_token)
-
 // load the Intl polyfill and its locale data before rendering the application
 international.load().then(() =>
 {
 	// renders the webpage on the client side
-	return render(settings,
+	render(settings,
 	{
 		// enable/disable Redux dev-tools (true/false)
 		devtools: _development_tools_ && require('./devtools').default,
+
+		// Set up WebSocket connection
+		websocket: websocket(configuration.realtime_service.websocket),
 
 		// internationalization
 		// (this is here solely for Webpack HMR in dev mode)
@@ -55,4 +54,7 @@ international.load().then(() =>
 			international.hot_reload(rerender)
 		}
 	})
+
+	// Set up realtime service connection
+	set_up_realtime_service_connection()
 })

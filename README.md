@@ -734,9 +734,7 @@ https://material-design.storage.googleapis.com/publish/material_v_9/0Bzhp5Z4wHba
 
 
 
-WebSocket reconnect
-
-
+сделать статусный значок websocket'а: connected, disconnected (dispatch-ить эти статусы)
 
 
 
