@@ -34,15 +34,13 @@ international.load().then(() =>
 		// enable/disable Redux dev-tools (true/false)
 		devtools: _development_tools_ && require('./devtools').default,
 
-		// Set up WebSocket connection
-		websocket: websocket(configuration.realtime_service.websocket),
-
 		// internationalization
 		// (this is here solely for Webpack HMR in dev mode)
 		translation: process.env.NODE_ENV !== 'production' && international.load_translation
 	})
-	.then(({ store, rerender }) =>
+	.then(({ store, token, rerender }) =>
 	{
+		// Webpack Hot Module Replacement (hot reload)
 		if (module.hot)
 		{
 			module.hot.accept('./react-isomorphic-render', () =>
@@ -53,8 +51,16 @@ international.load().then(() =>
 
 			international.hot_reload(rerender)
 		}
-	})
 
-	// Set up realtime service connection
-	set_up_realtime_service_connection()
+		// Set up WebSocket connection
+		websocket
+		({
+			...configuration.realtime_service.websocket,
+			store,
+			token
+		})
+
+		// Set up realtime service connection
+		set_up_realtime_service_connection()
+	})
 })
