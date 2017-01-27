@@ -672,6 +672,17 @@ but introduces page width jumps.
 	font-size  : 1.3rem;
 }
 
+.rrui__modal__close
+{
+	float  : right;
+	cursor : pointer;
+}
+
+.rrui__modal__close--busy
+{
+	cursor : wait;
+}
+
 .rrui__modal__actions
 {
 	padding-left   : calc(4 * var(--unit));
@@ -710,10 +721,17 @@ but introduces page width jumps.
 	padding-bottom : calc(var(--unit) * 4);
 }
 
-.rrui__modal__content--no-bars
+.rrui__modal__content--no-title
 {
-	padding-top   : calc(4 * var(--unit));
-	border-radius : var(--card-border-radius);
+  padding-top             : calc(4 * var(--unit));
+  border-top-left-radius  : var(--card-border-radius);
+  border-top-right-radius : var(--card-border-radius);
+}
+
+.rrui__modal__content--no-actions
+{
+  border-bottom-left-radius  : var(--card-border-radius);
+  border-bottom-right-radius : var(--card-border-radius);
 }
 
 .rrui__modal__content,
@@ -726,7 +744,7 @@ but introduces page width jumps.
 .rrui__modal__padding--top,
 .rrui__modal__padding--bottom
 {
-	flex-basis : 80px;
+	flex-basis : 3%;
 }
 
 .rrui__modal__padding--bottom
