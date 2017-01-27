@@ -1,5 +1,6 @@
 {
   "name": "webapp-realtime-service",
+  "private": true,
   "version": "1.0.0",
   "description": "Sends push notifications, tracks online users",
   "main": "entry.js",

@@ -1,5 +1,6 @@
 {
   "name": "webapp-image-service",
+  "private": true,
   "version": "1.0.0",
   "description": "Converts images during upload",
   "main": "entry.js",

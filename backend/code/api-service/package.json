@@ -1,5 +1,6 @@
 {
   "name": "webapp-api-service",
+  "private": true,
   "version": "1.0.0",
   "description": "It's just here for the examples section to work",
   "main": "entry.js",

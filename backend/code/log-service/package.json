@@ -1,5 +1,6 @@
 {
   "name": "webapp-log-service",
+  "private": true,
   "version": "1.0.0",
   "description": "Aggregates logs from other services",
   "main": "entry.js",

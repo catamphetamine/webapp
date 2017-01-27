@@ -1,5 +1,6 @@
 {
   "name": "webapp-authentication-service",
+  "private": true,
   "version": "1.0.0",
   "description": "Authenticates users (sign in and sign up) and checks if they're authenticated (JWT token validation)",
   "main": "entry.js",

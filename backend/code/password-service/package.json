@@ -1,5 +1,6 @@
 {
   "name": "webapp-password-service",
+  "private": true,
   "version": "1.0.0",
   "description": "Hashes passwords and verifies password hashes",
   "main": "entry.js",

@@ -1,5 +1,6 @@
 {
   "name": "webapp-mail-service",
+  "private": true,
   "version": "1.0.0",
   "description": "Sends emails",
   "main": "entry.js",

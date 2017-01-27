@@ -1,5 +1,6 @@
 {
   "name": "webapp",
+  "private": true,
   "version": "1.0.0",
   "description": "React + Redux + Webpack example project",
   "main": "code/server/entry.js",

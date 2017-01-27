@@ -1,5 +1,6 @@
 {
   "name": "webapp-web-server",
+  "private": true,
   "version": "1.0.0",
   "description": "Just a proxying gateway",
   "main": "entry.js",

@@ -1,5 +1,6 @@
 {
   "name": "webapp-user-service",
+  "private": true,
   "version": "1.0.0",
   "description": "Gets users' info, and updates that info",
   "main": "entry.js",
