@@ -1,4 +1,5 @@
 // https://codeascraft.com/2011/02/15/measure-anything-measure-everything/
+// http://statsd.readthedocs.io/en/latest/types.html
 import StatsD from 'lynx'
 
 export default function(settings = {})
