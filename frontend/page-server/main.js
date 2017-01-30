@@ -20,7 +20,7 @@ import { ActivityIndicator }    from 'react-responsive-ui'
 import settings         from '../code/react-isomorphic-render'
 import html_assets      from '../code/html assets'
 import load_locale_data from './locale'
-import start_monitoring from '../../code/monitoring'
+import start_metrics    from '../../code/metrics'
 
 // A faster way to load all the localization data for Node.js
 // (`intl-messageformat` will load everything automatically when run in Node.js)
@@ -58,12 +58,12 @@ global.Intl = Intl_polyfill
 // Messages JSON cache
 const messagesJSON = {}
 
-const monitoring = start_monitoring
+const metrics = start_metrics
 ({
 	statsd:
 	{
 		...configuration.statsd,
-		prefix: configuration.statsd.prefix ? `${configuration.statsd.prefix}.server_side_render` : 'server_side_render'
+		prefix : 'server_side_render'
 	}
 })
 
@@ -138,12 +138,12 @@ const server = webpage_server(settings,
 	//
 	stats({ url, route, time: { initialize, preload, render, total } })
 	{
-		monitoring.increment(`count`)
+		metrics.increment(`count`)
 
-		monitoring.time('initialize', Math.round(initialize))
-		monitoring.time('preload', Math.round(preload))
-		monitoring.time('render', Math.round(render))
-		monitoring.time('total', Math.round(total))
+		metrics.time('initialize', Math.round(initialize))
+		metrics.time('preload', Math.round(preload))
+		metrics.time('render', Math.round(render))
+		metrics.time('total', Math.round(total))
 
 		if (total > 0)
 		{

@@ -2,8 +2,22 @@
 import WebSocket from 'uws'
 import { http } from 'web-service'
 
+import start_metrics from '../../../code/metrics'
+
 export default function start()
 {
+	const metrics = start_metrics
+	({
+		statsd:
+		{
+			...configuration.statsd,
+			prefix : 'realtime_service'
+		}
+	})
+
+	let users_online = 0
+	let guests_online = 0
+
 	const server = new WebSocket.Server({ port: configuration.realtime_service.websocket.port })
 
 	// Broadcasts to all
@@ -20,7 +34,7 @@ export default function start()
 
 	server.on('connection', (socket) =>
 	{
-		log.info('Client connected. Total clients:', server.clients.length)
+		// log.info('Client connected. Total clients:', server.clients.length)
 
 		// Broadcasts to everyone else
 		socket.broadcast = (message) =>
@@ -38,7 +52,18 @@ export default function start()
 		{
 			try
 			{
-				log.info('Client disconnected. Clients left:', server.clients.length)
+				// log.info('Client disconnected. Clients left:', server.clients.length)
+
+				if (socket.user)
+				{
+					users_online--
+					metrics.report('users_online', users_online)
+				}
+				else
+				{
+					guests_online--
+					metrics.report('guests_online', guests_online)
+				}
 			}
 			catch (error)
 			{
@@ -80,9 +105,22 @@ export default function start()
 
 							if (user)
 							{
+								socket.user = user
+
 								response.user = user
 								response.notifications = []
 							}
+						}
+
+						if (socket.user)
+						{
+							users_online++
+							metrics.report('users_online', users_online)
+						}
+						else
+						{
+							guests_online++
+							metrics.report('guests_online', guests_online)
 						}
 
 						return socket.send(JSON.stringify(response))
