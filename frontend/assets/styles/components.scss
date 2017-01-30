@@ -375,3 +375,10 @@ header .rrui__menu
 		padding      : var(--modal-padding);
 	}
 }
+
+.realtime-service-indicator
+{
+	width  : 0.6em;
+	height : 0.6em;
+	stroke : var(--white-color);
+}

@@ -8,7 +8,7 @@ import { defineMessages } from 'react-intl'
 
 import international from '../international/internationalize'
 
-import { Form, Button, Select } from 'react-responsive-ui'
+import { Form, Button, Select, ActivityIndicator } from 'react-responsive-ui'
 
 import Modal               from './modal'
 import Authentication_form from './authentication form'
@@ -20,57 +20,12 @@ import { bindActionCreators as bind_action_creators } from 'redux'
 import { sign_out, connector } from '../redux/authentication'
 import { preload_started } from '../redux/preload'
 
-export const messages = defineMessages
-({
-	sign_in:
-	{
-		id             : 'authentication.sign_in',
-		description    : 'Log in action',
-		defaultMessage : 'Sign in'
-	},
-	sign_out:
-	{
-		id             : 'authentication.sign_out',
-		description    : 'Log out action',
-		defaultMessage : 'Sign out'
-	},
-	register:
-	{
-		id             : 'authentication.register',
-		description    : 'Registration action',
-		defaultMessage : 'Register'
-	},
-	notifications:
-	{
-		id             : 'user_menu.notifications',
-		description    : 'Notifications user menu item',
-		defaultMessage : 'Notifications'
-	},
-	messages:
-	{
-		id             : 'user_menu.messages',
-		description    : 'Messages user menu item',
-		defaultMessage : 'Messages'
-	},
-	profile:
-	{
-		id             : 'user_menu.profile',
-		description    : 'Profile user menu item',
-		defaultMessage : 'Profile'
-	},
-	settings:
-	{
-		id             : 'user_menu.settings',
-		description    : 'Settings user menu item',
-		defaultMessage : 'Settings'
-	}
-})
-
 @connect
 (
 	(state) =>
 	({
-		...connector(state.authentication)
+		...connector(state.authentication),
+		realtime_service_is_connected : state.realtime_service.connected
 	}),
 	{
 		sign_out,
@@ -118,7 +73,8 @@ export default class Authentication extends Component
 			registration_pending,
 			sign_in_pending,
 			translate,
-			style
+			style,
+			realtime_service_is_connected
 		}
 		= this.props
 
@@ -132,6 +88,13 @@ export default class Authentication extends Component
 		const markup =
 		(
 			<div className="user-bar" style={ style }>
+
+				{/* WebSocket status indicator (client side only) */}
+				{ !realtime_service_is_connected &&
+					<ActivityIndicator
+						className="realtime-service-indicator"
+						title={ translate(messages.realtime_service_connecting) }/>
+				}
 
 				{/* Sign in action */}
 				{ !user &&
@@ -313,3 +276,55 @@ const style = styler
 		display     : flex
 		align-items : center
 `
+
+export const messages = defineMessages
+({
+	sign_in:
+	{
+		id             : 'authentication.sign_in',
+		description    : 'Log in action',
+		defaultMessage : 'Sign in'
+	},
+	sign_out:
+	{
+		id             : 'authentication.sign_out',
+		description    : 'Log out action',
+		defaultMessage : 'Sign out'
+	},
+	register:
+	{
+		id             : 'authentication.register',
+		description    : 'Registration action',
+		defaultMessage : 'Register'
+	},
+	notifications:
+	{
+		id             : 'user_menu.notifications',
+		description    : 'Notifications user menu item',
+		defaultMessage : 'Notifications'
+	},
+	messages:
+	{
+		id             : 'user_menu.messages',
+		description    : 'Messages user menu item',
+		defaultMessage : 'Messages'
+	},
+	profile:
+	{
+		id             : 'user_menu.profile',
+		description    : 'Profile user menu item',
+		defaultMessage : 'Profile'
+	},
+	settings:
+	{
+		id             : 'user_menu.settings',
+		description    : 'Settings user menu item',
+		defaultMessage : 'Settings'
+	},
+	realtime_service_connecting:
+	{
+		id             : 'realtime_service.connecting',
+		description    : 'Connecting to realtime push notifications service',
+		defaultMessage : 'Connecting...'
+	}
+})

@@ -1,25 +1,29 @@
+import { connected, disconnected } from './redux/realtime service'
+
 export default function set_up_realtime_service_connection()
 {
-	websocket.onMessage((message) =>
+	websocket.onMessage((message, store) =>
 	{
 		switch (message.command)
 		{
 			case 'GET /':
-				return console.log('Connected', message)
+				store.dispatch(connected())
+				return console.log('Realtime service connected', message)
 			default:
 				return console.log('Unknown message type', message)
 		}
 	})
 
-	websocket.onOpen(() =>
+	websocket.onOpen((event, store) =>
 	{
-		console.log('WebSocket connected')
-
 		websocket.send
 		({
 			command: 'GET /'
 		})
+	})
 
-		// To do: issue "GET /notifications" on reconnect.
+	websocket.onClose((event, store) =>
+	{
+		store.dispatch(disconnected())
 	})
 }

@@ -38,154 +38,6 @@ import { preload_started } from '../redux/preload'
 
 import { get_language_from_locale } from '../../../code/locale'
 
-export const messages = defineMessages
-({
-	or:
-	{
-		id             : 'authentication.sign_in_or_register',
-		description    : 'Sign in or register',
-		defaultMessage : 'or'
-	},
-	name:
-	{
-		id             : 'authentication.name',
-		description    : 'User name',
-		defaultMessage : 'Name'
-	},
-	email:
-	{
-		id             : 'authentication.email',
-		description    : 'Email',
-		defaultMessage : 'Email'
-	},
-	password:
-	{
-		id             : 'authentication.password',
-		description    : 'Password',
-		defaultMessage : 'Password'
-	},
-	forgot_password:
-	{
-		id             : 'authentication.forgot_password',
-		description    : 'Forgot password?',
-		defaultMessage : 'Forgot password?'
-	},
-	i_accept:
-	{
-		id             : 'registration.i_accept',
-		description    : 'I agree to',
-		defaultMessage : 'I agree to'
-	},
-	the_terms_of_service:
-	{
-		id             : 'registration.the_terms_of_service',
-		description    : 'the terms of service',
-		defaultMessage : 'the terms of service'
-	},
-	registration_name_is_required:
-	{
-		id             : 'registration.name_is_required',
-		description    : 'Name field value can\'t be empty',
-		defaultMessage : 'Choose a user name'
-	},
-	registration_email_is_required:
-	{
-		id             : 'registration.email_is_required',
-		description    : 'Email field value can\'t be empty',
-		defaultMessage : 'Your email address is required'
-	},
-	registration_password_is_required:
-	{
-		id             : 'registration.password_is_required',
-		description    : 'Password field value can\'t be empty',
-		defaultMessage : 'Choose a password'
-	},
-	registration_terms_of_service_acceptance_is_required:
-	{
-		id             : 'registration.terms_of_service_acceptance_is_required',
-		description    : 'Terms of service acceptance checkbox must be checked',
-		defaultMessage : 'You must agree to our terms of service in order to create an account'
-	},
-	authentication_email_is_required:
-	{
-		id             : 'authentication.email_is_required',
-		description    : 'Email field value can\'t be empty',
-		defaultMessage : 'Enter your email address'
-	},
-	authentication_password_is_required:
-	{
-		id             : 'authentication.password_is_required',
-		description    : 'Password field value can\'t be empty',
-		defaultMessage : 'Enter your password'
-	},
-	user_not_found:
-	{
-		id             : 'authentication.user_not_found',
-		description    : 'Email not found in the database',
-		defaultMessage : 'User with this email doesn\'t exist'
-	},
-	wrong_password:
-	{
-		id             : 'authentication.wrong_password',
-		description    : 'Passowrd doesn\'t match the one in the database',
-		defaultMessage : 'Wrong password'
-	},
-	email_already_registered:
-	{
-		id             : 'registration.email_already_registered',
-		description    : 'User with this email address is already registered',
-		defaultMessage : 'There already is a user account associated with this email address'
-	},
-	user_is_self_blocked:
-	{
-		id             : 'authentication.error.user_is_self_blocked',
-		description    : 'A note that this user has opted into temporarily blocking his own account for safety concerns',
-		defaultMessage : `You willingly temporarily blocked your account {details}`
-	},
-	user_is_self_blocked_details:
-	{
-		id             : 'authentication.error.user_is_self_blocked_details',
-		description    : 'Date when this user has opted into temporarily blocking his own account for safety concerns',
-		defaultMessage : `{blocked_at}`
-	},
-	user_is_blocked:
-	{
-		id             : 'authentication.error.user_is_blocked',
-		description    : 'A note that this user is blocked',
-		defaultMessage : `Your account was blocked {details}`
-	},
-	user_is_blocked_details:
-	{
-		id             : 'authentication.error.user_is_blocked_details',
-		description    : 'A date when this user was blocked along with the details',
-		defaultMessage : `{blocked_at} by {blocked_by} with reason: "{blocked_reason}"`
-	},
-	unblock_instructions:
-	{
-		id             : 'authentication.unblock_instructions',
-		description    : 'Instructions on unblocking this blocked user',
-		defaultMessage : `To request unblocking your account you can contact support by email {support_email}"`
-	},
-	sign_in_error:
-	{
-		id             : 'authentication.error',
-		description    : 'User sign in error',
-		defaultMessage : 'Couldn\'t sign in'
-	},
-	registration_error:
-	{
-		id             : 'registration.error',
-		description    : 'User registration error',
-		defaultMessage : 'Couldn\'t register'
-	},
-	login_attempts_limit_exceeded_error:
-	{
-		id             : 'authentication.login_attempts_limit_exceeded_error',
-		description    : `The user's login attempts limit has been reached. The user shold try again in 15 minutes or so.`,
-		defaultMessage : 'Login attempts limit exceeded. Try again later.'
-	}
-})
-
 @Redux_form
 @connect
 (
@@ -851,3 +703,151 @@ const style = styler
 
 		margin-top: 1em
 `
+
+export const messages = defineMessages
+({
+	or:
+	{
+		id             : 'authentication.sign_in_or_register',
+		description    : 'Sign in or register',
+		defaultMessage : 'or'
+	},
+	name:
+	{
+		id             : 'authentication.name',
+		description    : 'User name',
+		defaultMessage : 'Name'
+	},
+	email:
+	{
+		id             : 'authentication.email',
+		description    : 'Email',
+		defaultMessage : 'Email'
+	},
+	password:
+	{
+		id             : 'authentication.password',
+		description    : 'Password',
+		defaultMessage : 'Password'
+	},
+	forgot_password:
+	{
+		id             : 'authentication.forgot_password',
+		description    : 'Forgot password?',
+		defaultMessage : 'Forgot password?'
+	},
+	i_accept:
+	{
+		id             : 'registration.i_accept',
+		description    : 'I agree to',
+		defaultMessage : 'I agree to'
+	},
+	the_terms_of_service:
+	{
+		id             : 'registration.the_terms_of_service',
+		description    : 'the terms of service',
+		defaultMessage : 'the terms of service'
+	},
+	registration_name_is_required:
+	{
+		id             : 'registration.name_is_required',
+		description    : 'Name field value can\'t be empty',
+		defaultMessage : 'Choose a user name'
+	},
+	registration_email_is_required:
+	{
+		id             : 'registration.email_is_required',
+		description    : 'Email field value can\'t be empty',
+		defaultMessage : 'Your email address is required'
+	},
+	registration_password_is_required:
+	{
+		id             : 'registration.password_is_required',
+		description    : 'Password field value can\'t be empty',
+		defaultMessage : 'Choose a password'
+	},
+	registration_terms_of_service_acceptance_is_required:
+	{
+		id             : 'registration.terms_of_service_acceptance_is_required',
+		description    : 'Terms of service acceptance checkbox must be checked',
+		defaultMessage : 'You must agree to our terms of service in order to create an account'
+	},
+	authentication_email_is_required:
+	{
+		id             : 'authentication.email_is_required',
+		description    : 'Email field value can\'t be empty',
+		defaultMessage : 'Enter your email address'
+	},
+	authentication_password_is_required:
+	{
+		id             : 'authentication.password_is_required',
+		description    : 'Password field value can\'t be empty',
+		defaultMessage : 'Enter your password'
+	},
+	user_not_found:
+	{
+		id             : 'authentication.user_not_found',
+		description    : 'Email not found in the database',
+		defaultMessage : 'User with this email doesn\'t exist'
+	},
+	wrong_password:
+	{
+		id             : 'authentication.wrong_password',
+		description    : 'Passowrd doesn\'t match the one in the database',
+		defaultMessage : 'Wrong password'
+	},
+	email_already_registered:
+	{
+		id             : 'registration.email_already_registered',
+		description    : 'User with this email address is already registered',
+		defaultMessage : 'There already is a user account associated with this email address'
+	},
+	user_is_self_blocked:
+	{
+		id             : 'authentication.error.user_is_self_blocked',
+		description    : 'A note that this user has opted into temporarily blocking his own account for safety concerns',
+		defaultMessage : `You willingly temporarily blocked your account {details}`
+	},
+	user_is_self_blocked_details:
+	{
+		id             : 'authentication.error.user_is_self_blocked_details',
+		description    : 'Date when this user has opted into temporarily blocking his own account for safety concerns',
+		defaultMessage : `{blocked_at}`
+	},
+	user_is_blocked:
+	{
+		id             : 'authentication.error.user_is_blocked',
+		description    : 'A note that this user is blocked',
+		defaultMessage : `Your account was blocked {details}`
+	},
+	user_is_blocked_details:
+	{
+		id             : 'authentication.error.user_is_blocked_details',
+		description    : 'A date when this user was blocked along with the details',
+		defaultMessage : `{blocked_at} by {blocked_by} with reason: "{blocked_reason}"`
+	},
+	unblock_instructions:
+	{
+		id             : 'authentication.unblock_instructions',
+		description    : 'Instructions on unblocking this blocked user',
+		defaultMessage : `To request unblocking your account you can contact support by email {support_email}"`
+	},
+	sign_in_error:
+	{
+		id             : 'authentication.error',
+		description    : 'User sign in error',
+		defaultMessage : 'Couldn\'t sign in'
+	},
+	registration_error:
+	{
+		id             : 'registration.error',
+		description    : 'User registration error',
+		defaultMessage : 'Couldn\'t register'
+	},
+	login_attempts_limit_exceeded_error:
+	{
+		id             : 'authentication.login_attempts_limit_exceeded_error',
+		description    : `The user's login attempts limit has been reached. The user shold try again in 15 minutes or so.`,
+		defaultMessage : 'Login attempts limit exceeded. Try again later.'
+	}
+})
