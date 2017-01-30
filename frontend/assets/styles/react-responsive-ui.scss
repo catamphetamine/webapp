@@ -660,8 +660,8 @@ but introduces page width jumps.
 
 .rrui__modal__header
 {
-	padding-left   : calc(4 * var(--unit));
-	padding-right  : calc(4 * var(--unit));
+	padding-left   : var(--modal-padding);
+	padding-right  : var(--modal-padding);
 	padding-top    : calc(3 * var(--unit));
 	padding-bottom : calc(3 * var(--unit));
 
@@ -716,14 +716,14 @@ but introduces page width jumps.
 
 .rrui__modal__content
 {
-	padding-left   : calc(var(--unit) * 4);
-	padding-right  : calc(var(--unit) * 4);
-	padding-bottom : calc(var(--unit) * 4);
+	padding-left   : var(--modal-padding);
+	padding-right  : var(--modal-padding);
+	padding-bottom : var(--modal-padding);
 }
 
 .rrui__modal__content--no-title
 {
-  padding-top             : calc(4 * var(--unit));
+  padding-top             : var(--modal-padding);
   border-top-left-radius  : var(--card-border-radius);
   border-top-right-radius : var(--card-border-radius);
 }
@@ -824,6 +824,11 @@ but introduces page width jumps.
 .rrui__form__field
 {
 	margin-bottom : calc(var(--unit) * 2);
+}
+
+.rrui__form__error:empty
+{
+	display : none;
 }
 
 /*===========================================================

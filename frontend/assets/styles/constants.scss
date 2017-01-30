@@ -45,7 +45,9 @@
 	--border-radius      : 3pt;
 	--card-border-radius : 0.2rem;
 
-	--shadow : 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
+	--shadow : 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+
+	--modal-padding : calc(var(--unit) * 4);
 }
 
 $extra-large-screen-min-width : 1260pt;

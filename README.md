@@ -724,16 +724,6 @@ Troubleshooting
 To do
 ====================
 
-form_errors - показывать наверху формы, (мб) на сером фоне, в плашке
-
-https://material-design.storage.googleapis.com/publish/material_v_9/0Bzhp5Z4wHba3dEZTUF9idzBHMWc/patterns_errors_userinput19.png
-
-при такой ошибке - скроллить форму наверх (плавно)
-
-
-
-
-
 сделать статусный значок websocket'а: connected, disconnected (dispatch-ить эти статусы)
 
 

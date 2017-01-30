@@ -138,6 +138,13 @@
 		margin-bottom : $value;
 	}
 
+	.content-section__errors--top
+	{
+		margin        : calc(-1 * #{$value});
+		margin-bottom : $value;
+		padding       : $value;
+	}
+
 	.content-section--no-padding
 	{
 		padding : 0;

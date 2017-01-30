@@ -325,7 +325,7 @@ export default class User_profile extends Component
 
 						{/* User blocked notice */}
 						{ user.blocked_at &&
-							<div className="content-section__errors">
+							<div className="content-section__errors content-section__errors--top">
 								{ user.blocked_by.id === user.id
 									?
 									<FormattedMessage
@@ -354,37 +354,37 @@ export default class User_profile extends Component
 							|| uploaded_user_picture_is_too_big_error
 							|| unsupported_uploaded_user_picture_file_error)
 							&&
-							<ul style={styles.own_profile_actions.errors} className="content-section__errors errors">
+							<ul style={ styles.own_profile_actions.errors } className="content-section__errors content-section__errors--top errors">
 								{/* Couldn't update user's picture with the uploaded one */}
-								{update_user_picture_error &&
-									<li>{translate(messages.update_error)}</li>
+								{ update_user_picture_error &&
+									<li>{ translate(messages.update_error) }</li>
 								}
 
 								{/* Couldn't update user info */}
-								{update_user_info_error &&
-									<li>{translate(messages.update_error)}</li>
+								{ update_user_info_error &&
+									<li>{ translate(messages.update_error) }</li>
 								}
 
 								{/* Couldn't upload user picture */}
-								{upload_user_picture_error &&
-									<li>{translate(messages.user_picture_upload_error)}</li>
+								{ upload_user_picture_error &&
+									<li>{ translate(messages.user_picture_upload_error) }</li>
 								}
 
 								{/* User picture file's too big */}
-								{uploaded_user_picture_is_too_big_error &&
-									<li>{translate(messages.uploaded_user_picture_is_too_big_error)}</li>
+								{ uploaded_user_picture_is_too_big_error &&
+									<li>{ translate(messages.uploaded_user_picture_is_too_big_error) }</li>
 								}
 
 								{/* User picture file's format is not supported */}
-								{unsupported_uploaded_user_picture_file_error &&
-									<li>{translate(messages.unsupported_uploaded_user_picture_file_error)}</li>
+								{ unsupported_uploaded_user_picture_file_error &&
+									<li>{ translate(messages.unsupported_uploaded_user_picture_file_error) }</li>
 								}
 							</ul>
 						}
 
 						<Form
-							busy={update_user_info_pending || update_user_picture_pending || upload_user_picture_pending}
-							action={submit(this.save_profile_edits)}>
+							busy={ update_user_info_pending || update_user_picture_pending || upload_user_picture_pending }
+							action={ submit(this.save_profile_edits) }>
 
 							{/* Edit/Save own profile */}
 							{ is_own_profile &&
@@ -903,6 +903,5 @@ const styles = styler
 				text-transform : lowercase
 
 		errors
-			margin-top    : 0
 			text-align    : left
 `

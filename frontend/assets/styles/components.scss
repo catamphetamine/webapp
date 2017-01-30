@@ -339,3 +339,39 @@ header .rrui__menu
 		margin-bottom: 0;
 	}
 }
+
+// https://material-design.storage.googleapis.com/publish/material_v_9/0Bzhp5Z4wHba3dEZTUF9idzBHMWc/patterns_errors_userinput19.png
+.content-section__errors
+{
+	color            : var(--error-color-darker);
+	background-color : var(--gray-color-lighter);
+
+	border-bottom: 1px solid var(--gray-color);
+}
+
+.content-section__errors--top
+{
+	border-top-left-radius  : var(--card-border-radius);
+	border-top-right-radius : var(--card-border-radius);
+}
+
+// https://material-design.storage.googleapis.com/publish/material_v_9/0Bzhp5Z4wHba3dEZTUF9idzBHMWc/patterns_errors_userinput19.png
+.rrui__form__error
+{
+	background-color : var(--gray-color-lighter);
+
+	// box shadow on top and bottom
+	box-shadow:
+		inset 0px  1em 0.18em -1em rgba(0, 0, 0, 0.2),
+		inset 0px -1em 0.18em -1em rgba(0, 0, 0, 0.2);
+}
+
+.rrui__modal
+{
+	.rrui__form__error
+	{
+		margin-left  : calc(-1 * var(--modal-padding));
+		margin-right : calc(-1 * var(--modal-padding));
+		padding      : var(--modal-padding);
+	}
+}
