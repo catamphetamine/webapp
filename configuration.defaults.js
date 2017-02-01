@@ -5,22 +5,6 @@ module.exports =
 	{
 		email: 'robot@webapp.com'
 	},
-	api_service:
-	{
-		http:
-		{
-			host: '127.0.0.1',
-			port: 3002
-		},
-		database:
-		{
-			host: '127.0.0.1',
-			port: 5432,
-			user: 'postgres',
-			password: 'password',
-			database: 'webapp'
-		}
-	},
 	authentication_service:
 	{
 		http:

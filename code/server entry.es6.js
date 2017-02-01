@@ -49,11 +49,15 @@ for (let key of Object.keys(global.configuration))
 
 global.wait_for_stores = function(stores, then)
 {
-	return Promise.all(stores.map(store => store.ready()))
-		.then(then)
-		.catch((error) =>
-		{
-			log.error(error)
-			process.exit(1)
-		})
+	return global.catch_errors
+		(Promise.all(stores.map(store => store.ready())).then(then))
+}
+
+global.catch_errors = function(promise)
+{
+	promise.catch((error) =>
+	{
+		log.error(error)
+		process.exit(1)
+	})
 }

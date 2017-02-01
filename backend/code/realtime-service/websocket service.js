@@ -15,8 +15,8 @@ export default function start()
 		}
 	})
 
-	let users_online = 0
-	let guests_online = 0
+	const visitor_tracker = new Visitor_tracker(metrics)
+	visitor_tracker.report()
 
 	const server = new WebSocket.Server({ port: configuration.realtime_service.websocket.port })
 
@@ -53,17 +53,7 @@ export default function start()
 			try
 			{
 				// log.info('Client disconnected. Clients left:', server.clients.length)
-
-				if (socket.user)
-				{
-					users_online--
-					metrics.report('users_online', users_online)
-				}
-				else
-				{
-					guests_online--
-					metrics.report('guests_online', guests_online)
-				}
+				visitor_tracker.disconnected(socket)
 			}
 			catch (error)
 			{
@@ -86,10 +76,10 @@ export default function start()
 			{
 				switch (message.command)
 				{
-					case 'GET /':
+					case 'initialize':
 						const response =
 						{
-							command: 'GET /'
+							command: 'initialize'
 						}
 
 						const token = message.token
@@ -106,30 +96,37 @@ export default function start()
 							if (user)
 							{
 								socket.user = user
+								socket.token = token
 
 								response.user = user
 								response.notifications = []
 							}
 						}
 
-						if (socket.user)
-						{
-							users_online++
-							metrics.report('users_online', users_online)
-						}
-						else
-						{
-							guests_online++
-							metrics.report('guests_online', guests_online)
-						}
+						visitor_tracker.connected(socket)
 
 						return socket.send(JSON.stringify(response))
+
+					case 'active':
+						if (socket.user)
+						{
+							http.post
+							(
+								`${address_book.user_service}/ping`,
+								undefined,
+								{ headers: { Authorization: `Bearer ${socket.token}` } }
+							)
+						}
+						return visitor_tracker.active(socket)
+
+					case 'inactive':
+						return visitor_tracker.inactive(socket)
 
 					default:
 						return socket.send(JSON.stringify
 						({
 							status: 404,
-							error: 'Unknown command'
+							error: `Unknown command: ${message.command}`
 						}))
 				}
 			}
@@ -146,4 +143,132 @@ export default function start()
 	})
 
 	log.info(`Realtime service is listening at port ${configuration.realtime_service.websocket.port}`)
+}
+
+// These counters ("state") could be stored somewhere in Redis,
+// but since it's no big deal they're just stored
+// in the current Node.js process' memory
+// and are discarded in case of a restart.
+class Visitor_tracker
+{
+	users_online = 0
+	guests_online = 0
+
+	active_user_connections = {}
+
+	constructor(metrics)
+	{
+		this.metrics = metrics
+	}
+
+	active(socket)
+	{
+		// If this connection is not transitioning
+		// from `inactive` to `active` then no changes.
+		if (socket.active)
+		{
+			return
+		}
+
+		if (socket.user)
+		{
+			const id = socket.user.id
+
+			// If this user is connected for the first time
+			if (this.active_user_connections[id] === 0)
+			{
+				this.one_more_active_user()
+			}
+
+			// One more connection from this user
+			this.active_user_connections[id]++
+		}
+		else
+		{
+			// Multiple connections from the same guests
+			// could be theoretically accounted for
+			// using "shared workers", or "local storage",
+			// or something like that
+			// (by assigning a random `guest_id`).
+			this.one_more_active_guest()
+		}
+
+		socket.active = true
+	}
+
+	inactive(socket)
+	{
+		if (socket.user)
+		{
+			const id = socket.user.id
+
+			// One less active connection from this user.
+			this.active_user_connections[id]--
+
+			// If it was the last connection from this user,
+			// then this user is gone.
+			if (this.active_user_connections[id] === 0)
+			{
+				this.one_less_active_user()
+			}
+		}
+		else
+		{
+			this.one_less_active_guest()
+		}
+
+		socket.active = false
+	}
+
+	connected(socket)
+	{
+		if (socket.user)
+		{
+			const id = socket.user.id
+
+			// Initialize this user's connection counter.
+			if (this.active_user_connections[id] === undefined)
+			{
+				this.active_user_connections[id] = 0
+			}
+		}
+	}
+
+	disconnected(socket)
+	{
+		if (socket.active)
+		{
+			this.inactive(socket)
+		}
+	}
+
+	one_more_active_user()
+	{
+		this.users_online++
+		this.metrics.report('users_online', this.users_online)
+	}
+
+	one_less_active_user()
+	{
+		this.users_online--
+		this.metrics.report('users_online', this.users_online)
+	}
+
+	one_more_active_guest()
+	{
+		this.guests_online++
+		this.metrics.report('guests_online', this.guests_online)
+	}
+
+	one_less_active_guest()
+	{
+		this.guests_online--
+		this.metrics.report('guests_online', this.guests_online)
+	}
+
+	report()
+	{
+		this.metrics.report('users_online', this.users_online)
+		this.metrics.report('guests_online', this.guests_online)
+	}
 }

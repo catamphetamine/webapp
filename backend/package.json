@@ -24,18 +24,16 @@
     "web-service": "^0.4.4"
   },
   "scripts": {
-    "development": "npm-run-all --parallel development:log-service:delayed development:authentication-service:delayed development:user-service:delayed development:password-service:delayed development:api-service:delayed development:image-service:delayed development:mail-service:delayed development:realtime-service:delayed development:web-server:delayed",
+    "development": "npm-run-all --parallel development:log-service:delayed development:authentication-service:delayed development:user-service:delayed development:password-service:delayed development:image-service:delayed development:mail-service:delayed development:realtime-service:delayed development:web-server:delayed",
     "development:log-service": "better-npm-run development:log-service",
     "development:realtime-service": "better-npm-run development:realtime-service",
     "development:authentication-service": "better-npm-run development:authentication-service",
     "development:user-service": "better-npm-run development:user-service",
     "development:password-service": "better-npm-run development:password-service",
-    "development:api-service": "better-npm-run development:api-service",
     "development:image-service": "better-npm-run development:image-service",
     "development:mail-service": "better-npm-run development:mail-service",
     "development:web-server": "better-npm-run development:web-server",
     "development:log-service:delayed": "npm-run-all delay development:log-service",
-    "development:api-service:delayed": "npm-run-all delay delay development:api-service",
     "development:image-service:delayed": "npm-run-all delay delay delay development:image-service",
     "development:password-service:delayed": "npm-run-all delay delay delay delay development:password-service",
     "development:authentication-service:delayed": "npm-run-all delay delay delay delay delay development:authentication-service",
@@ -44,12 +42,11 @@
     "development:realtime-service:delayed": "npm-run-all delay delay delay delay delay delay delay delay development:realtime-service",
     "development:web-server:delayed": "npm-run-all delay delay delay delay delay delay delay delay delay development:web-server",
     "delay": "node ./code/sleep 600",
-    "production": "npm-run-all --parallel production:log-service production:authentication-service production:user-service production:password-service production:api-service production:image-service production:mail-service production:realtime-service production:web-server",
+    "production": "npm-run-all --parallel production:log-service production:authentication-service production:user-service production:password-service production:image-service production:mail-service production:realtime-service production:web-server",
     "production:log-service": "better-npm-run production:log-service",
     "production:authentication-service": "better-npm-run production:authentication-service",
     "production:user-service": "better-npm-run production:user-service",
     "production:password-service": "better-npm-run production:password-service",
-    "production:api-service": "better-npm-run production:api-service",
     "production:image-service": "better-npm-run production:image-service",
     "production:mail-service": "better-npm-run production:mail-service",
     "production:realtime-service": "better-npm-run production:realtime-service",
@@ -75,13 +72,6 @@
     },
     "development:image-service": {
       "command": "\"../node_modules/.bin/nodemon\" ./code/image-service/entry.js --watch ./code/image-service --watch ./code/common",
-      "env": {
-        "NODE_ENV": "development",
-        "BABEL_ENV": "server"
-      }
-    },
-    "development:api-service": {
-      "command": "\"../node_modules/.bin/nodemon\" ./code/api-service/entry.js --watch ./code/api-service --watch ./code/common",
       "env": {
         "NODE_ENV": "development",
         "BABEL_ENV": "server"
@@ -138,13 +128,6 @@
     },
     "production:image-service": {
       "command": "node --harmony ./code/image-service/entry.js",
-      "env": {
-        "NODE_ENV": "production",
-        "BABEL_ENV": "server"
-      }
-    },
-    "production:api-service": {
-      "command": "node --harmony ./code/api-service/entry.js",
       "env": {
         "NODE_ENV": "production",
         "BABEL_ENV": "server"

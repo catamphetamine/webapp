@@ -76,7 +76,6 @@ The application consists of the following microservices
   * `authentication-service` handles user authentication (sign in, sign out, register) and auditing (keeps a list of user sessions and traces latest activity time)
   * `password-service` performs password hashing and checking (these operations are lengthy and CPU-intensive)
   * `user-service` provides REST Api for users (getting users, creating users, updating users)
-  * `api-service` provides some generic (uncategorized) Http REST Api
   * `image-server` resizes uploaded images using ImageMagick and serves them
   * `log-service` aggregates logs from all the other services
   * `email-service` sends emails
@@ -724,14 +723,26 @@ Troubleshooting
 To do
 ====================
 
-сделать письмо восстановления (то есть сброса = смены) пароля (форма входа + настройки) - то же самое, токен писать в коллекцию (уже другую), и сделать страницу сброса пароля на новый.
+сделать вход через вконтакт, facebook и google
 
-два токена на смену пароля: один с request: true, а второй - нормальный, от техподдержки
+https://developers.google.com/identity/sign-in/web/sign-in
+
+https://developers.google.com/api-client-library/javascript/samples/samples#authorizing-and-making-authorized-requests
 
 
 
+переделать аутентикацию: убрать смену пароля, доделать смену почты, сделать вход по почте (токен - слово из словаря, словарь определяется по текущей локали, которая для пользователя выбрана, если пользователь, или если регается - то просто текущая локаль), убрать регистрацию (сделать через вход)
 
-писать логи через Кафку в отдельную базу Postgresql
+
+
+перевести прокси + статику на nginx, с локальными именами dns, и в address book тоже будут dns, host при этом уберётся из конфигов везде, останется только порт, который будет браться из process.env.PORT.
+
+в readme отразить, что для запуска нужен nginx, иначе не будет работать.
+
+защитить внутренние сервисы - не проксировать их просто через nginx, и нормально будет.
+
+
+
 
 
 
@@ -739,6 +750,10 @@ To do
 
 при входе (не первом) слать письмо на почту с указанием IP, страны, времени.
 
+
+
+
+писать логи через Кафку в отдельную базу Postgresql
 
 
 

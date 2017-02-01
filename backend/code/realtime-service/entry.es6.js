@@ -10,4 +10,4 @@ import start_web_service from './web service'
 // via HTTP REST API will be lost.
 // (and for that to happen the notifications must be sent
 //  after the database has been written to which comes natural)
-start_web_service().then(start_websocket_service)
+catch_errors(start_web_service().then(start_websocket_service))

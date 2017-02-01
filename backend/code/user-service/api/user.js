@@ -37,7 +37,13 @@ export default function(api)
 		return user.was_online_at
 	})
 
-	// Update user's "was online at" time
+	// Update user's "was online at" time.
+	// This is the internal method used by
+	// `/authentication/valid` token validity check.
+	// For manually updating user's online status just hit
+	// any API endpoint without `bot` query parameter:
+	// it will trigger token validity check which
+	// automatically calls this internal endpoint.
 	api.post('/was-online-at', async ({ date }, { user }) =>
 	{
 		if (!user)
@@ -47,6 +53,9 @@ export default function(api)
 
 		await store.update_user(user.id, { was_online_at: date })
 	})
+
+	// A dummy endpoint to update a user's online status
+	api.post('/ping', () => {})
 
 	// Get currently logged in user (if any)
 	api.get('/', async function({}, { user, internal_http, get_cookie, set_cookie })

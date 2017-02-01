@@ -7,7 +7,7 @@ export default function start_web_service()
 	return api
 	(
 		'Realtime service',
-		configuration.realtime_service.http.port,
+		configuration.realtime_service.http,
 		[
 			notifications_api
 		],

@@ -263,18 +263,29 @@ export default class User_profile extends Component
 	{
 		const { user, get_users_latest_activity_time } = this.props
 
-		// Refresh this user's latest activity time periodically
-		this.latest_activity_time_refresh = setInterval(() =>
+		// Refresh this user's latest activity time periodically.
+		// Do it in a timeout because `react-time-ago` also
+		// refreshes the time label once a minute,
+		// therefore to eliminate jitter due to the race condition
+		// a delay of half a minute is imposed.
+		setTimeout(() =>
 		{
-			get_users_latest_activity_time(user.id)
+			this.latest_activity_time_refresh = setInterval(() =>
+			{
+				get_users_latest_activity_time(user.id)
+			},
+			Latest_activity_time_refresh_interval)
 		},
-		Latest_activity_time_refresh_interval)
+		30 * 1000)
 	}
 
 	componentWillUnmount()
 	{
 		// Stop refreshing this user's latest activity time
-		clearInterval(this.latest_activity_time_refresh)
+		if (this.latest_activity_time_refresh)
+		{
+			clearInterval(this.latest_activity_time_refresh)
+		}
 	}
 
 	render()

@@ -12,7 +12,6 @@ export default function start_web_server()
 		// {
 		// 	[address_book.authentication_service] : false,
 		// 	[address_book.user_service]           : false,
-		// 	[address_book.api_service]            : false,
 		// 	[address_book.image_service]          : false,
 		// 	[address_book.log_service]            : false,
 		// 	[address_book.webpage_server]         : false
@@ -35,9 +34,6 @@ export default function start_web_server()
 
 	// Proxy /users requests to user-service
 	web.proxy('/users', address_book.user_service, { name: 'User service' })
-
-	// Proxy /api requests to API server
-	web.proxy('/api', address_book.api_service, { name: 'API service' })
 
 	// Proxy /images requests to Image server
 	web.proxy('/images', address_book.image_service, { name: 'Image service' })

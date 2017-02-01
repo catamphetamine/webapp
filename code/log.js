@@ -237,5 +237,14 @@ export default function create(name, options = {})
 		}
 	}
 
-	return global.log = bunyan.createLogger(extend({ name }, log_configuration))
+	const log = bunyan.createLogger(extend({ name }, log_configuration))
+
+	log.trace = log.trace.bind(log)
+	log.debug = log.debug.bind(log)
+	log.info  = log.info.bind(log)
+	log.warn  = log.warn.bind(log)
+	log.error = log.error.bind(log)
+	log.fatal = log.fatal.bind(log)
+
+	return global.log = log
 }
