@@ -103,6 +103,11 @@ export default function start()
 							}
 						}
 
+						if (!socket.user)
+						{
+							socket.guest_id = message.guest
+						}
+
 						visitor_tracker.connected(socket)
 
 						return socket.send(JSON.stringify(response))
@@ -155,10 +160,16 @@ class Visitor_tracker
 	guests_online = 0
 
 	active_user_connections = {}
+	active_guest_connections = {}
 
 	constructor(metrics)
 	{
 		this.metrics = metrics
+
+		this.one_more_active_user = this.one_more_active_user.bind(this)
+		this.one_less_active_user = this.one_less_active_user.bind(this)
+		this.one_more_active_guest = this.one_more_active_guest.bind(this)
+		this.one_less_active_guest = this.one_less_active_guest.bind(this)
 	}
 
 	active(socket)
@@ -172,65 +183,72 @@ class Visitor_tracker
 
 		if (socket.user)
 		{
-			const id = socket.user.id
-
-			// If this user is connected for the first time
-			if (this.active_user_connections[id] === 0)
-			{
-				this.one_more_active_user()
-			}
-
-			// One more connection from this user
-			this.active_user_connections[id]++
+			this._active(socket.user.id, this.active_user_connections, this.one_more_active_user)
 		}
 		else
 		{
-			// Multiple connections from the same guests
-			// could be theoretically accounted for
-			// using "shared workers", or "local storage",
-			// or something like that
-			// (by assigning a random `guest_id`).
-			this.one_more_active_guest()
+			this._active(socket.guest_id, this.active_guest_connections, this.one_more_active_guest)
 		}
 
 		socket.active = true
+	}
+
+	_active(id, connections, one_more_active_visitor)
+	{
+		// If connected for the first time
+		if (connections[id] === 0)
+		{
+			one_more_active_visitor()
+		}
+
+		// One more connection
+		connections[id]++
 	}
 
 	inactive(socket)
 	{
 		if (socket.user)
 		{
-			const id = socket.user.id
-
-			// One less active connection from this user.
-			this.active_user_connections[id]--
-
-			// If it was the last connection from this user,
-			// then this user is gone.
-			if (this.active_user_connections[id] === 0)
-			{
-				this.one_less_active_user()
-			}
+			this._inactive(socket.user.id, this.active_user_connections, this.one_less_active_user)
 		}
 		else
 		{
-			this.one_less_active_guest()
+			this._inactive(socket.guest_id, this.active_guest_connections, this.one_less_active_guest)
 		}
 
 		socket.active = false
+	}
+
+	_inactive(id, connections, one_less_active_visitor)
+	{
+		// One less active connection
+		connections[id]--
+
+		// If it was the last connection
+		if (connections[id] === 0)
+		{
+			one_less_active_visitor()
+		}
 	}
 
 	connected(socket)
 	{
 		if (socket.user)
 		{
-			const id = socket.user.id
+			this._connected(socket.user.id, this.active_user_connections)
+		}
+		else
+		{
+			this._connected(socket.guest_id, this.active_guest_connections)
+		}
+	}
 
-			// Initialize this user's connection counter.
-			if (this.active_user_connections[id] === undefined)
-			{
-				this.active_user_connections[id] = 0
-			}
+	_connected(id, connections)
+	{
+		// Initialize connection counter
+		if (connections[id] === undefined)
+		{
+			connections[id] = 0
 		}
 	}
 

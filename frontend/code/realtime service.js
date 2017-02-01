@@ -21,7 +21,15 @@ export default function set_up_realtime_service_connection()
 
 	websocket.onOpen((event, store) =>
 	{
-		websocket.send({ command: 'initialize' })
+		const message = { command: 'initialize' }
+
+		// Track multiple tabs of the same guest user
+		if (!store.user)
+		{
+			message.guest = get_guest_id()
+		}
+
+		websocket.send(message)
 	})
 
 	websocket.onClose((event, store) =>
@@ -85,4 +93,15 @@ class Activity_tracker
 			clearTimeout(this.is_active_timeout)
 		}
 	}
+}
+
+// Track multiple tabs of the same guest user
+function get_guest_id()
+{
+	if (!localStorage.getItem('guest_id'))
+	{
+		localStorage.setItem('guest_id', String(Math.random()).slice(2))
+	}
+
+	return localStorage.getItem('guest_id')
 }
