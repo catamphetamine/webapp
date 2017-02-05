@@ -1,24 +1,24 @@
 import { add_redirect } from '../helpers/redirection'
 import { error as log_error } from '../redux/log'
 
-export default function(error, { path, url, goto, dispatch })
+export default function(error, { path, url, redirect, dispatch, getState, server })
 {
 	// Not authenticated
 	if (error.status === 401)
 	{
-		return goto(add_redirect('/unauthenticated', url))
+		return redirect(add_redirect('/unauthenticated', url))
 	}
 
 	// Not authorized
 	if (error.status === 403)
 	{
-		return goto(add_redirect('/unauthorized', url))
+		return redirect(add_redirect('/unauthorized', url))
 	}
 
-	// Log the error if running on the server side
-	if (_server_)
+	// Log the error
+	if (server)
 	{
-		log.error(`Rendering error while executing an HTTP request for URL "${url}"`)
+		log.error(`Error while preloading "${url}"`)
 		log.error(error)
 	}
 	else
@@ -27,9 +27,7 @@ export default function(error, { path, url, goto, dispatch })
 		dispatch(log_error(error))
 	}
 
-	// some kind of server error happened
-
-	// Show error stack trace in development mode
+	// In development mode don't redirect to the error page
 	if (process.env.NODE_ENV !== 'production')
 	{
 		throw error
@@ -42,5 +40,5 @@ export default function(error, { path, url, goto, dispatch })
 	}
 
 	// Redirect to a generic error page
-	goto(add_redirect('/error', url))
+	redirect(add_redirect('/error', url))
 }
