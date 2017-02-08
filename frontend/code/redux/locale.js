@@ -11,6 +11,17 @@ handler.handle('locale', (state, result) =>
 
 handler.addStateProperties('locale')
 
+export const set_locale = action
+({
+	namespace: 'locale',
+	event: 'set',
+	action(locale, http)
+	{
+		return http.post('/users/locale', { locale })
+	}
+},
+handler)
+
 // A little helper for Redux `@connect()`
 export const connector = stateConnector(handler)
 

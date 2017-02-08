@@ -196,6 +196,19 @@ export default function(api)
 		return picture
 	})
 
+	// Change user's (or guest's) locale
+	api.post('/locale', async function({ locale }, { set_cookie, user })
+	{
+		if (user)
+		{
+			await store.update_locale(user.id, locale)
+		}
+		else
+		{
+			set_cookie('locale', locale, { signed: false })
+		}
+	})
+
 	api.post('/block-user-token', async ({ user_id }, { user }) =>
 	{
 		if (!can('block user', user))
