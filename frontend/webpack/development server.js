@@ -22,7 +22,6 @@ configuration.plugins = configuration.plugins.concat
 	// environment variables
 	new webpack.DefinePlugin
 	({
-		_server_ : false,
 		_development_tools_ : false  // `redux-devtools` on/off
 	}),
 

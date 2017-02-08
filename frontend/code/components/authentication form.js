@@ -38,6 +38,12 @@ import { preload_started } from '../redux/preload'
 
 import { get_language_from_locale } from '../../../code/locale'
 
+const licences =
+{
+	ru : require('../../assets/license-agreement/ru.html'),
+	en : require('../../assets/license-agreement/en.html')
+}
+
 @Redux_form
 @connect
 (
@@ -166,27 +172,29 @@ export default class Authentication_form extends Component
 
 				<div style={style.clearfix}></div>
 
-				{/* "Email" */}
-				<Text_input
-					name="email"
-					email={true}
-					focus={this.props.focus_on === 'email'}
-					value={initial_values.email}
-					error={this.sign_in_email_error(sign_in_error)}
-					validate={this.validate_email}
-					label={translate(messages.email)}
-					inputStyle={style.input.input}/>
+				<div className="rrui__form__fields">
+					{/* "Email" */}
+					<Text_input
+						name="email"
+						email={true}
+						focus={this.props.focus_on === 'email'}
+						value={initial_values.email}
+						error={this.sign_in_email_error(sign_in_error)}
+						validate={this.validate_email}
+						label={translate(messages.email)}
+						inputStyle={style.input.input}/>
 
-				{/* "Password" */}
-				<Text_input
-					name="password"
-					password={true}
-					focus={this.props.focus_on === 'password'}
-					value={initial_values.password}
-					error={this.sign_in_password_error(sign_in_error)}
-					validate={this.validate_password_on_sign_in}
-					label={translate(messages.password)}
-					inputStyle={style.input.input}/>
+					{/* "Password" */}
+					<Text_input
+						name="password"
+						password={true}
+						focus={this.props.focus_on === 'password'}
+						value={initial_values.password}
+						error={this.sign_in_password_error(sign_in_error)}
+						validate={this.validate_password_on_sign_in}
+						label={translate(messages.password)}
+						inputStyle={style.input.input}/>
+				</div>
 
 				{/* Support redirecting to the initial page when javascript is disabled */}
 				<input type="hidden" name="request" value={should_redirect_to(location)}/>
@@ -214,7 +222,8 @@ export default class Authentication_form extends Component
 					{/* "Sign in" button */}
 					<Submit
 						component={Button}
-						submit={true}>
+						submit
+						className="button--primary">
 						{translate(user_bar_messages.sign_in)}
 					</Submit>
 				</Form.Actions>
@@ -236,6 +245,7 @@ export default class Authentication_form extends Component
 			initial_values,
 			submit,
 			submitting,
+			locale,
 			router:
 			{
 				location
@@ -272,50 +282,52 @@ export default class Authentication_form extends Component
 
 				<div style={style.clearfix}></div>
 
-				{/* "Name" */}
-				<Text_input
-					name="name"
-					focus={this.props.focus_on === 'name'}
-					value={initial_values.name}
-					validate={this.validate_name}
-					label={translate(messages.name)}
-					inputStyle={style.input.input}/>
+				<div className="rrui__form__fields">
+					{/* "Name" */}
+					<Text_input
+						name="name"
+						focus={this.props.focus_on === 'name'}
+						value={initial_values.name}
+						validate={this.validate_name}
+						label={translate(messages.name)}
+						inputStyle={style.input.input}/>
 
-				{/* "Email" */}
-				<Text_input
-					name="email"
-					email={true}
-					focus={this.props.focus_on === 'email'}
-					value={initial_values.email}
-					error={this.registration_email_error(register_error)}
-					validate={this.validate_email}
-					label={translate(messages.email)}
-					inputStyle={style.input.input}/>
+					{/* "Email" */}
+					<Text_input
+						name="email"
+						email={true}
+						focus={this.props.focus_on === 'email'}
+						value={initial_values.email}
+						error={this.registration_email_error(register_error)}
+						validate={this.validate_email}
+						label={translate(messages.email)}
+						inputStyle={style.input.input}/>
 
-				{/* "Password" */}
-				<Text_input
-					name="password"
-					password={true}
-					focus={this.props.focus_on === 'password'}
-					value={initial_values.password}
-					validate={this.validate_password_on_registration}
-					label={translate(messages.password)}
-					inputStyle={style.input.input}/>
+					{/* "Password" */}
+					<Text_input
+						name="password"
+						password={true}
+						focus={this.props.focus_on === 'password'}
+						value={initial_values.password}
+						validate={this.validate_password_on_registration}
+						label={translate(messages.password)}
+						inputStyle={style.input.input}/>
 
-				{/* "Accept terms of service" */}
-				<Checkbox
-					name="terms_of_service_accepted"
-					focus={this.props.focus_on === 'terms_of_service_accepted'}
-					style={style.terms_of_service}
-					value={initial_values.terms_of_service_accepted}
-					validate={this.validate_terms_of_service}>
+					{/* "Accept terms of service" */}
+					<Checkbox
+						name="terms_of_service_accepted"
+						focus={this.props.focus_on === 'terms_of_service_accepted'}
+						style={style.terms_of_service}
+						value={initial_values.terms_of_service_accepted}
+						validate={this.validate_terms_of_service}>
 
-					{/* "Accept" */}
-					{translate(messages.i_accept)}
+						{/* "Accept" */}
+						{translate(messages.i_accept)}
 
-					{/* Terms of service link */}
-					&nbsp;<a target="_blank" href={require('../../assets/license-agreement/' + get_language_from_locale(this.props.locale) + '.html')}>{translate(messages.the_terms_of_service)}</a>
-				</Checkbox>
+						{/* Terms of service link */}
+						&nbsp;<a target="_blank" href={licences[get_language_from_locale(locale)]}>{translate(messages.the_terms_of_service)}</a>
+					</Checkbox>
+				</div>
 
 				{/* Send `locale` when javascript is disabled */}
 				<input
@@ -331,7 +343,8 @@ export default class Authentication_form extends Component
 
 				{/* "Register" button */}
 				<Form.Actions className="rrui__form__actions--right">
-					<Submit>
+					<Submit
+						className="button--primary">
 						{translate(user_bar_messages.register)}
 					</Submit>
 				</Form.Actions>

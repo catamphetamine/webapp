@@ -1,0 +1,67 @@
+.authentication-form, .registration-form
+{
+	width : calc(var(--unit) * 40);
+
+	h2
+	{
+		font-size: 1.3em;
+		margin-bottom: 0;
+	}
+
+	.or-register
+	{
+		margin-top: 0;
+		margin-bottom: calc(var(--unit) * 2);
+	}
+}
+
+.authentication-form
+{
+	.button--primary
+	{
+		// overwrites inline css
+		display: block !important;
+		// margin-bottom: 1em;
+	}
+}
+
+@include s
+{
+	.authentication-form, .registration-form
+	{
+		width : calc(var(--unit) * 40);
+
+		h2
+		{
+			font-size: 1.4em;
+		}
+	}
+}
+
+@include m
+{
+	.authentication-form, .registration-form
+	{
+		width : 22em;
+
+		h2
+		{
+			float : left;
+		}
+
+		.or-register
+		{
+			float: right;
+			margin-top: 0.42em;
+			margin-bottom: 0;
+		}
+	}
+}
+
+@include l
+{
+	.authentication-form, .registration-form
+	{
+		width : calc(var(--unit) * 84);
+	}
+}

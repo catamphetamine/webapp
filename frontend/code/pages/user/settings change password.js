@@ -38,7 +38,7 @@ export const messages = defineMessages
 	{
 		id             : 'user.settings.password.current',
 		description    : `User's current password`,
-		defaultMessage : `Change password`
+		defaultMessage : `Current password`
 	},
 	new_password:
 	{
@@ -266,10 +266,10 @@ class Change_password_popup extends Component
 
 		const result =
 		[{
-			text    : this.state.is_last_step ? translate(default_messages.done) : translate(default_messages.next),
-			action  : () => this.change_password_steps.submit(),
-			primary : true,
-			busy    : check_current_password_pending || change_password_pending
+			text      : this.state.is_last_step ? translate(default_messages.done) : translate(default_messages.next),
+			action    : () => this.change_password_steps.submit(),
+			className : 'button--primary',
+			busy      : check_current_password_pending || change_password_pending
 		}]
 
 		return result

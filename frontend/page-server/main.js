@@ -105,8 +105,8 @@ const server = webpage_server(settings,
 		return result
 	},
 
-	// user info preloading
-	// (will be added to Redux store)
+	// User info preloading
+	// (will be written to Redux store)
 	initialize: async (http, { request }) =>
 	{
 		const user = await http.get(`/users`)

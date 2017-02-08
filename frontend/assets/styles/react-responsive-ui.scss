@@ -1,132 +1,6 @@
 @import "constants.scss";
 
 /*===========================================================
-= Buttons                                                   =
-===========================================================*/
-
-.rrui__button__button
-{
-	background : none;
-	border     : none;
-	outline    : none;
-	padding    : 0;
-
-	white-space : nowrap;
-
-	color : inherit;
-
-	transition : background-color 30ms ease-out, color 30ms ease-out, opacity 150ms ease-out 100ms;
-}
-
-.rrui__button,
-.rrui__button .rrui__button__button
-{
-	cursor : pointer;
-}
-
-.rrui__button--busy,
-.rrui__button--busy .rrui__button__button
-{
-	cursor : wait;
-}
-
-.rrui__button--disabled,
-.rrui__button--disabled .rrui__button__button
-{
-	cursor : default;
-}
-
-.rrui__button--busy .rrui__button__button
-{
-	opacity    : 0;
-	transition : color 30ms ease-out, opacity 200ms ease-out 300ms;
-}
-
-.rrui__button .rrui__activity-indicator
-{
-	top : 0.1em;
-
-	width  : 1em;
-	height : 1em;
-
-	transition : opacity 200ms ease-out;
-}
-
-.rrui__button--busy .rrui__activity-indicator
-{
-	transition-delay : 350ms;
-}
-
-/* Bordered button */
-
-.rrui__button--border
-{
-	/* Could use `box-shadow` here instead of border
-	   to make the entire area clickable */
-	/* box-shadow: inset 0 0 0 0.1em transparent; */
-	border        : var(--input-border-width) solid transparent;
-	border-radius : var(--border-radius);
-}
-
-.rrui__button--border .rrui__button__button
-{
-	padding-left   : 1.6em;
-	padding-right  : 1.6em;
-	padding-top    : 0.7em;
-	padding-bottom : 0.55em;
-}
-
-.rrui__button--border .rrui__activity-indicator
-{
-	left   : calc(50% - 0.7em);
-	top    : calc(50% - 0.7em);
-	width  : 1.4em;
-	height : 1.4em;
-}
-
-/* Button colors */
-
-.rrui__button
-{
-	color : var(--base-color-darker);
-}
-
-.rrui__button--border
-{
-	border-color: var(--base-color-darker);
-}
-
-.rrui__button:active
-{
-	color : var(--base-color);
-}
-
-.rrui__button--border:active
-{
-	border-color: var(--base-color);
-}
-
-.rrui__button--primary
-{
-	color: var(--accent-color);
-}
-
-.rrui__button--primary.rrui__button--border
-{
-	border-color: var(--accent-color);
-}
-
-.rrui__button--primary:active
-{
-	color: var(--accent-color-lighter);
-}
-
-.rrui__button--primary.rrui__button--border:active
-{
-	border-color: var(--accent-color-lighter);
-}
-
-/*===========================================================
 = Activity indicator                                        =
 ===========================================================*/
 
@@ -138,13 +12,13 @@
 	stroke : var(--black-color);
 }
 
-.rrui__activity-indicator svg
+.rrui__activity-indicator-circle-container
 {
 	animation: spinner-rotate 2s linear infinite;
 	transform-origin: center center;
 }
 
-.rrui__activity-indicator circle
+.rrui__activity-indicator-circle
 {
 	stroke-dasharray  : 1,200;
 	stroke-dashoffset : 0;
@@ -179,6 +53,69 @@
 		stroke-dasharray  : 89,200;
 		stroke-dashoffset : -124;
 	}
+}
+
+/*===========================================================
+= Buttons                                                   =
+===========================================================*/
+
+.rrui__button__button
+{
+	background  : none;
+	border      : none;
+	outline     : none;
+	padding     : 0;
+	white-space : nowrap;
+	color       : inherit;
+	transition  : background-color 30ms ease-out, color 30ms ease-out;
+}
+
+.rrui__button
+{
+  cursor : pointer;
+}
+
+.rrui__button__contents
+{
+  transition : opacity 150ms ease-out 100ms;
+}
+
+.rrui__button__contents--busy
+{
+  opacity    : 0;
+  transition : opacity 200ms ease-out 300ms;
+}
+
+.rrui__button__activity-indicator
+{
+	left   : calc(50% - 0.7em);
+	top    : calc(50% - 0.7em);
+	width  : 1.4em;
+	height : 1.4em;
+
+	transition : opacity 200ms ease-out;
+}
+
+.rrui__button .rrui__activity-indicator-circle
+{
+	stroke-width: 0.2em;
+}
+
+.rrui__button__activity-indicator--busy
+{
+  transition-delay : 350ms;
+}
+
+/* Button colors */
+
+.rrui__button
+{
+  color : var(--base-color-darker);
+}
+
+.rrui__button:active
+{
+  color : var(--base-color);
 }
 
 /*===========================================================
@@ -258,6 +195,18 @@
 	opacity: 1;
 }
 
+/* Reset the default `<button/>` styles */
+.rrui__select__selected,
+.rrui__select__option
+{
+	padding    : 0;
+	outline    : none;
+	appearance : none;
+	border     : none;
+	background : transparent;
+	cursor     : pointer;
+}
+
 .rrui__select__option
 {
 	width: 100%;
@@ -271,12 +220,6 @@
 	box-sizing: border-box;
 
 	text-align: left;
-}
-
-.rrui__select__selected,
-.rrui__select__option
-{
-	cursor : pointer;
 }
 
 .rrui__select--disabled .rrui__select__selected,
@@ -325,11 +268,6 @@
 
 .rrui__select__selected
 {
-	padding-left   : 0;
-	padding-right  : 0;
-	padding-top    : var(--input-padding);
-	padding-bottom : var(--input-padding);
-
 	border: none;
 	border-bottom: var(--input-border-width) solid var(--gray-color-light);
 	transition: border 0.1s;
@@ -374,6 +312,7 @@
 	height : 0;
 
 	margin-left   : 0.35em;
+	margin-top    : 0.1em;
 	margin-bottom : 0.1em;
 
 	opacity: 0.7;
@@ -401,11 +340,6 @@
 
 /* http://tympanus.net/codrops/2013/10/15/animated-checkboxes-and-radio-buttons-with-svg/ */
 
-.rrui__checkbox
-{
-	position: relative;
-}
-
 .rrui__checkbox__label
 {
 	position       : relative;
@@ -414,10 +348,29 @@
 	color          : inherit;
 }
 
+.rrui__checkbox__input,
+.rrui__checkbox__label
+{
+	cursor : pointer;
+}
+
+.rrui__checkbox--disabled .rrui__checkbox__input,
+.rrui__checkbox--disabled .rrui__checkbox__label
+{
+	cursor : default;
+}
+
 /* Checkbox label color */
 .rrui__checkbox__label:active
 {
 	color: var(--base-color-darker);
+}
+
+.rrui__checkbox__checkbox
+{
+	/* The `height` is a bit more than the real height
+	   just to elevate the checkbox a bit */
+	height : 1em;
 }
 
 .rrui__checkbox__input,
@@ -425,7 +378,8 @@
 .rrui__checkbox__checkmark
 {
 	position : absolute;
-	top      : 0.1em;
+	left     : 0;
+	top      : 0;
 
 	width  : 0.9em;
 	height : 0.9em;
@@ -468,13 +422,6 @@
 .rrui__checkbox--invalid .rrui__checkbox__box
 {
 	border-color: var(--error-color);
-}
-
-/* Checkbox error message */
-.rrui__checkbox__error
-{
-	padding-top: var(--input-padding);
-	color: var(--error-color-darker);
 }
 
 /*===========================================================
@@ -528,10 +475,14 @@
 = Segmented control                                         =
 ===========================================================*/
 
+.rrui__segmented-control
+{
+  height : calc(var(--unit) * 6);
+}
+
 .rrui__segmented-control__option
 {
-	padding-top    : var(--unit);
-	padding-bottom : var(--unit);
+  height         : 100%;
 	padding-left   : calc(var(--unit) * 1.5);
 	padding-right  : calc(var(--unit) * 1.5);
 
@@ -658,6 +609,72 @@ but introduces page width jumps.
 = Modal                                                     =
 ===========================================================*/
 
+.rrui__fixed-full-width
+{
+	position : fixed;
+	top      : 0;
+	left     : 0;
+	right    : 0;
+}
+
+.rrui__modal__overlay
+{
+	/* Apparently this `1px` height was some kind of a hack, probably for IE or something */
+	height     : 1px;
+	min-height : 100%;
+
+	/* Could center with `flexbox` here
+	   but modal content needs to be `display: inline-block` anyway */
+	text-align : center;
+	/* Fixes `display: inline-block` whitespace causing scrollbar to appear */
+	line-height : 0;
+
+	background-color: rgba(0, 0, 0, 0.2);
+}
+
+.rrui__modal__overlay--fullscreen
+{
+	background-color: transparent;
+}
+
+.rrui__modal__overlay--busy
+{
+	cursor : wait;
+}
+
+.rrui__modal__container
+{
+	/* `display : inline-block` so that
+	   the modal won't stretch itself horizontally */
+	display : inline-block;
+	height  : 100%;
+
+	/* Restore the default `line-height`
+	   after the `line-height: 0` workaround
+	   has been applied in `.rrui__modal__overlay` */
+	text-align : left;
+
+	/* Restore the default `line-height`
+	   after the `line-height: 0` workaround
+	   has been applied in `.rrui__modal__overlay` */
+	line-height : normal;
+}
+
+.rrui__modal__container--fullscreen
+{
+	display : block;
+}
+
+.rrui__modal__vertical-container
+{
+	align-items : center;
+}
+
+.rrui__modal__vertical-container--fullscreen
+{
+	align-items : stretch;
+}
+
 .rrui__modal__header
 {
 	padding-left   : var(--modal-padding);
@@ -681,6 +698,26 @@ but introduces page width jumps.
 .rrui__modal__close--busy
 {
 	cursor : wait;
+}
+
+.rrui__modal__content
+{
+	/* So that modal content won't neccessarily
+	   stretch horizontally to the full width of the screen */
+	display : inline-block;
+
+	/* Modal content shouldn't stretch vertically */
+	flex-grow : 0
+}
+
+.rrui__modal__content--fullscreen
+{
+	/* Stretch modal content horizontally to the full width of the screen */
+	display : block;
+
+	/* Modal content won't stretch vertically
+	   unless it's in the fullscreen mode */
+	flex-grow : 1
 }
 
 .rrui__modal__actions
@@ -741,15 +778,26 @@ but introduces page width jumps.
 	background-color : var(--white-color);
 }
 
-.rrui__modal__padding--top,
-.rrui__modal__padding--bottom
+.rrui__modal__top-padding,
+.rrui__modal__bottom-padding
 {
 	flex-basis : 3%;
 }
 
-.rrui__modal__padding--bottom
+.rrui__modal__top-padding
+{
+	flex-grow : 1;
+}
+
+.rrui__modal__bottom-padding
 {
 	flex-grow : 4;
+}
+
+.rrui__modal__top-padding--fullscreen,
+.rrui__modal__bottom-padding--fullscreen
+{
+	display: none;
 }
 
 .rrui__modal--could-not-close-because-busy
@@ -832,18 +880,35 @@ but introduces page width jumps.
 }
 
 /*===========================================================
-= Text input                                                =
+= Input                                                     =
 ===========================================================*/
 
-.rrui__text-input--floating-label
+.rrui__input
 {
-	padding-top : calc(var(--unit) * 2.5);
+	height : calc(var(--unit) * 6);
 }
 
-.rrui__text-input label
+.rrui__input--multiline
 {
-	top        : var(--input-padding);
-	margin-top : calc(var(--unit) * 2.5);
+	height : auto;
+}
+
+.rrui__input-error
+{
+	padding-top : calc(2 * var(--unit));
+	color       : var(--error-color-darker);
+}
+
+/*===========================================================
+= Input label                                               =
+===========================================================*/
+
+.rrui__input-label
+{
+	left : 0;
+	top  : 0;
+
+	font-size : inherit;
 
 	/*
 	When changing this label color
@@ -856,65 +921,40 @@ but introduces page width jumps.
 	transition       : color 0.1s ease-out, transform 0.1s ease-out;
 }
 
-/* Either label or description */
-.rrui__text-input p
-{
-	margin-top    : 0;
-	margin-bottom : 0;
-}
-
-.rrui__text-input__description
-{
-	transition : opacity 160ms ease-out;
-}
-
-.rrui__text-input--empty .rrui__text-input__description
-{
-	opacity : 0.6;
-}
-
-.rrui__text-input input,
-.rrui__text-input textarea
-{
-	order: -1;
-}
-
-.rrui__text-input input:focus + label,
-.rrui__text-input textarea:focus + label
+/* Focused input label */
+.rrui__text-input__input:focus  + .rrui__input-label,
+.rrui__select__selected:focus   + .rrui__input-label,
+.rrui__date-picker__input:focus + .rrui__input-label
 {
 	color: var(--accent-color);
 }
 
-.rrui__text-input--invalid label
+/*===========================================================
+= Text input                                                =
+===========================================================*/
+
+.rrui__text-input__label--invalid
 {
 	color: var(--error-color-darker);
 }
 
-.rrui__text-input--invalid .rrui__text-input__field
+.rrui__text-input__input--invalid
 {
 	border-bottom-color: var(--error-color) !important;
 }
 
-.rrui__text-input--empty label
+.rrui__text-input__label--placeholder
 {
 	color     : var(--gray-color-darker);
 	transform : translateY(0) scale(1);
 }
 
-.rrui__text-input--empty input:focus + label,
-.rrui__text-input--empty textarea:focus + label
+.rrui__text-input__input--empty:focus + .rrui__input-label--floating
 {
 	color: var(--gray-color-darker);
 }
 
-.rrui__text-input__error
-{
-	padding-top: calc(2 * var(--input-padding));
-
-	color: var(--error-color-darker);
-}
-
-.rrui__text-input--disabled .rrui__text-input__field
+.rrui__text-input__input--disabled
 {
 	cursor: default;
 }
@@ -1097,6 +1137,6 @@ but introduces page width jumps.
 {
 	padding-left   : 0;
 	padding-right  : 0;
-	padding-top    : var(--input-padding);
-	padding-bottom : var(--input-padding);
+	// padding-top    : var(--input-padding);
+	// padding-bottom : var(--input-padding);
 }

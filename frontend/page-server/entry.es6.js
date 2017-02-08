@@ -3,8 +3,6 @@ import webpack_configuration from '../webpack/webpack.config'
 import Webpack_isomorphic_tools from 'webpack-isomorphic-tools'
 import webpack_isomorphic_tools_configuration from '../webpack/webpack-isomorphic-tools.js'
 
-global._server_ = true
-
 // Is React Server Side Rendering disabled?
 //
 // (does not affect server side routing

@@ -7,67 +7,6 @@
 
 @include columns(m);
 
-.logo
-{
-	font-size : 20pt
-}
-
-.sign-in
-{
-	margin-right: calc(var(--unit) * 2);
-}
-
-.user-profile .user-picture
-{
-	width      : calc(var(--unit) * 18);
-	height     : calc(var(--unit) * 18);
-	min-width  : calc(var(--unit) * 18);
-	min-height : calc(var(--unit) * 18);
-}
-
-.user-bar
-{
-	.user-name
-	{
-		display: flex;
-	}
-}
-
-.authentication-form, .registration-form
-{
-	width : 22em;
-
-	h2
-	{
-		float : left;
-	}
-
-	.or-register
-	{
-		float: right;
-	    margin-top: 0.42em;
-	}
-}
-
-.user-profile__actions
-{
-	.rrui__button
-	{
-		// overwrites inline css
-		display: block !important;
-
-		&:not(:first-child)
-		{
-			margin-left: 0;
-		}
-	}
-}
-
-.user-profile__picture__change__label
-{
-	font-size: 1rem;
-}
-
 .rrui__segmented-control__option
 {
 	padding-left  : calc(var(--unit) * 2);

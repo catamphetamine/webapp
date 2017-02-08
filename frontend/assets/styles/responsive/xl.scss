@@ -5,11 +5,3 @@
 @include set_css_variable_content_section_margin(calc(var(--unit) * 2.5));
 
 @include columns(xl);
-
-.user-profile .user-picture
-{
-	width      : calc(var(--unit) * 20);
-	height     : calc(var(--unit) * 20);
-	min-width  : calc(var(--unit) * 20);
-	min-height : calc(var(--unit) * 20);
-}

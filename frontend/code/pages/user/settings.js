@@ -13,7 +13,7 @@ import http_status_codes from '../../tools/http status codes'
 
 import
 {
-	get_user,
+	get_own_user,
 	get_user_authentication_tokens,
 	change_alias,
 	connector
@@ -31,83 +31,7 @@ import Change_email    from './settings change email'
 import Change_password from './settings change password'
 import Authentication_tokens from './settings authentication tokens'
 
-const messages = defineMessages
-({
-	header:
-	{
-		id             : 'user.settings.header',
-		description    : 'User account settings page header',
-		defaultMessage : 'Settings'
-	},
-	show_advanced_settings:
-	{
-		id             : 'user.settings.show_advanced_settings',
-		description    : 'Show user account\'s advanced settings',
-		defaultMessage : 'Show advanced settings'
-	},
-	change_email_failed:
-	{
-		id             : 'user.settings.could_not_change_email',
-		description    : `Couldn't change user's email to a new one`,
-		defaultMessage : `Couldn't change your email`
-	},
-	save_settings_failed:
-	{
-		id             : 'user.settings.could_not_save',
-		description    : `Couldn't save new user's settings`,
-		defaultMessage : `Couldn't save your settings`
-	},
-	alias:
-	{
-		id             : 'user.settings.alias',
-		description    : `User's alias, which is a unique human-readable identifier used in user's URL`,
-		defaultMessage : `Alias`
-	},
-	alias_hint:
-	{
-		id             : 'user.settings.alias.hint',
-		description    : `A hint on user's alias, which is a unique human-readable identifier used in user's URL`,
-		defaultMessage : `An "alias" is a unique textual identifier used as part of your profile page URL`
-	},
-	enter_alias:
-	{
-		id             : 'user.settings.alias.required',
-		description    : `An error message stating that new alias hasn't been entered`,
-		defaultMessage : `Enter alias`
-	},
-	alias_updated:
-	{
-		id             : 'user.settings.alias.updated',
-		description    : `User's new alias has been saved`,
-		defaultMessage : `Alias updated`
-	},
-	change_alias_failed:
-	{
-		id             : 'user.settings.alias.update_failed',
-		description    : `An error stating that the user's alias couldn't be changed to the new one`,
-		defaultMessage : `Couldn't update your alias`
-	},
-	alias_already_taken:
-	{
-		id             : 'user.settings.alias.already_taken',
-		description    : `An error stating that the desired alias is already taken`,
-		defaultMessage : `This alias is already taken`
-	},
-	invalid_alias:
-	{
-		id             : 'user.settings.alias.invalid',
-		description    : `An error stating that the desired alias is invalid (maybe is digits-only, or something else)`,
-		defaultMessage : `Not a valid alias`
-	},
-	max_aliases_reached:
-	{
-		id             : 'user.settings.alias.max_aliases_reached',
-		description    : `An error stating that the user has occupied too much aliases and more aliases per user aren't allowed`,
-		defaultMessage : `You have already too many aliases`
-	}
-})
-
-@preload(({ dispatch }) => dispatch(get_user()))
+@preload(({ dispatch }) => dispatch(get_own_user()))
 @connect
 (
 	(state) =>
@@ -311,3 +235,79 @@ const style = styler
 	change_button
 		margin-left: 1em
 `
+
+const messages = defineMessages
+({
+	header:
+	{
+		id             : 'user.settings.header',
+		description    : 'User account settings page header',
+		defaultMessage : 'Settings'
+	},
+	show_advanced_settings:
+	{
+		id             : 'user.settings.show_advanced_settings',
+		description    : 'Show user account\'s advanced settings',
+		defaultMessage : 'Show advanced settings'
+	},
+	change_email_failed:
+	{
+		id             : 'user.settings.could_not_change_email',
+		description    : `Couldn't change user's email to a new one`,
+		defaultMessage : `Couldn't change your email`
+	},
+	save_settings_failed:
+	{
+		id             : 'user.settings.could_not_save',
+		description    : `Couldn't save new user's settings`,
+		defaultMessage : `Couldn't save your settings`
+	},
+	alias:
+	{
+		id             : 'user.settings.alias',
+		description    : `User's alias, which is a unique human-readable identifier used in user's URL`,
+		defaultMessage : `Alias`
+	},
+	alias_hint:
+	{
+		id             : 'user.settings.alias.hint',
+		description    : `A hint on user's alias, which is a unique human-readable identifier used in user's URL`,
+		defaultMessage : `An "alias" is a unique textual identifier used as part of your profile page URL`
+	},
+	enter_alias:
+	{
+		id             : 'user.settings.alias.required',
+		description    : `An error message stating that new alias hasn't been entered`,
+		defaultMessage : `Enter alias`
+	},
+	alias_updated:
+	{
+		id             : 'user.settings.alias.updated',
+		description    : `User's new alias has been saved`,
+		defaultMessage : `Alias updated`
+	},
+	change_alias_failed:
+	{
+		id             : 'user.settings.alias.update_failed',
+		description    : `An error stating that the user's alias couldn't be changed to the new one`,
+		defaultMessage : `Couldn't update your alias`
+	},
+	alias_already_taken:
+	{
+		id             : 'user.settings.alias.already_taken',
+		description    : `An error stating that the desired alias is already taken`,
+		defaultMessage : `This alias is already taken`
+	},
+	invalid_alias:
+	{
+		id             : 'user.settings.alias.invalid',
+		description    : `An error stating that the desired alias is invalid (maybe is digits-only, or something else)`,
+		defaultMessage : `Not a valid alias`
+	},
+	max_aliases_reached:
+	{
+		id             : 'user.settings.alias.max_aliases_reached',
+		description    : `An error stating that the user has occupied too much aliases and more aliases per user aren't allowed`,
+		defaultMessage : `You have already too many aliases`
+	}
+})

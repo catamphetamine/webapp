@@ -1,0 +1,39 @@
+.user-bar
+{
+	.user-name
+	{
+		display: none;
+	}
+}
+
+@include m
+{
+	.user-bar
+	{
+		.user-name
+		{
+			display: flex;
+		}
+	}
+}
+
+.sign-in
+{
+	margin-right: calc(var(--unit) * 2);
+}
+
+@include s
+{
+	.sign-in
+	{
+		margin-right : calc(var(--unit) * 2);
+	}
+}
+
+@include m
+{
+	.sign-in
+	{
+		margin-right: calc(var(--unit) * 2);
+	}
+}

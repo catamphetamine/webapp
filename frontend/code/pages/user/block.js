@@ -171,7 +171,8 @@ export default class User_profile extends Component
 
 						<Form.Actions>
 							{/* "Submit" */}
-							<Submit>
+							<Submit
+								className="button--primary">
 								{translate(messages.submit)}
 							</Submit>
 						</Form.Actions>

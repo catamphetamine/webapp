@@ -723,6 +723,12 @@ Troubleshooting
 To do
 ====================
 
+use svg icons instead of google font
+
+
+
+
+
 сделать вход через вконтакт, facebook и google
 
 https://developers.google.com/identity/sign-in/web/sign-in

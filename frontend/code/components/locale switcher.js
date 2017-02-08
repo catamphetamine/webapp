@@ -84,7 +84,7 @@ export default class Locale_switcher extends Component
 					{/* language list */}
 					<Select
 						name="locale"
-						label={translate(messages.language)}
+						placeholder={translate(messages.language)}
 						value={locale}
 						onChange={this.set_locale}
 						title={translate(messages.language)}

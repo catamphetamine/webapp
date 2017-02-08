@@ -181,7 +181,7 @@ export default class Authentication extends Component
 
 				{/* Dropdown */}
 				<Select
-					menu={true}
+					menu
 					toggler={user_info}
 					alignment="right">
 

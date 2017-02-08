@@ -9,8 +9,15 @@
 @import "datepicker.css";
 @import "components.scss";
 
-@media all                                                { @import "responsive/xs.scss"; }
-@media all and (min-width: $small-screen-min-width)       { @import "responsive/s.scss";  }
-@media all and (min-width: $medium-screen-min-width)      { @import "responsive/m.scss";  }
-@media all and (min-width: $large-screen-min-width)       { @import "responsive/l.scss";  }
-@media all and (min-width: $extra-large-screen-min-width) { @import "responsive/xl.scss"; }
+@import "../../code/components/authentication form.scss";
+@import "../../code/components/locale switcher.scss";
+@import "../../code/components/user bar.scss";
+
+@import "../../code/pages/layout.scss";
+@import "../../code/pages/user/profile.scss";
+
+@include xs { @import "responsive/xs.scss"; }
+@include s  { @import "responsive/s.scss";  }
+@include m  { @import "responsive/m.scss";  }
+@include l  { @import "responsive/l.scss";  }
+@include xl { @import "responsive/xl.scss"; }

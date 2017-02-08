@@ -293,10 +293,10 @@ class Check_password_popup extends Component
 				busy={check_password_pending}
 				actions=
 				{[{
-					text    : translate(default_messages.done),
-					action  : () => this.check_password.ref().submit(),
-					primary : true,
-					busy    : check_password_pending
+					text      : translate(default_messages.done),
+					action    : () => this.check_password.ref().submit(),
+					className : 'button--primary',
+					busy      : check_password_pending
 				}]}>
 
 				<Check_password

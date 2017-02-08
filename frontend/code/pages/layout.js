@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 // import { StickyContainer, Sticky } from 'react-sticky'
 import { PageAndMenu, Page, Menu, MenuButton, Snackbar, DragAndDrop } from 'react-responsive-ui'
-import styler                             from 'react-styling'
+import { flat as style }                  from 'react-styling'
 import { preload, head, Link, IndexLink } from 'react-isomorphic-render'
 import { connect }                        from 'react-redux'
 import { defineMessages }                 from 'react-intl'
@@ -49,7 +49,7 @@ export default class Layout extends Component
 
 	render()
 	{
-		const { translate, isDragging, snack, locale } = this.props
+		const { translate, isDragging, snack, locale, children } = this.props
 
 		const title       = translate(messages.title)
 		const description = translate(messages.description)
@@ -95,11 +95,11 @@ export default class Layout extends Component
 				<Snackbar value={snack.text} reset={this.reset_snack}/>
 
 				{/* webpage */}
-				{/* <StickyContainer className="page" style={style.page}> */}
+				{/* <StickyContainer className="page" style={styles.page}> */}
 				<Page className="page">
 					{/* header */}
 					{/* <Sticky> */}
-						<header className="card">
+						<header className="card rrui__fixed-full-width">
 							{/* menu button for small screens */}
 							<div className="menu-button-container">
 								<MenuButton link="/menu"/>
@@ -107,7 +107,7 @@ export default class Layout extends Component
 
 							{/* home page link */}
 							<div className="logo" style={{ textAlign: 'center' }}>
-								<IndexLink to="/" style={style.home} activeStyle={style.home_active}>
+								<IndexLink to="/" style={styles.home} activeStyle={styles.home_active}>
 									{translate(messages.title)}
 								</IndexLink>
 							</div>
@@ -122,14 +122,14 @@ export default class Layout extends Component
 					{/* </Sticky> */}
 
 					{/* page content */}
-					{this.props.children}
+					{ children }
 
 					<footer>
 						<div><a href="https://github.com/halt-hammerzeit">halt-hammerzeit@github.com</a></div>
 
 						{/* language chooser */}
 						<div className="language-wrapper">
-							<Locale_switcher alignment="right" upward={true} style={style.locale_switcher}/>
+							<Locale_switcher alignment="right" upward={true} style={styles.locale_switcher}/>
 						</div>
 					</footer>
 				</Page>
@@ -163,7 +163,7 @@ export const messages = defineMessages
 	}
 })
 
-const style = styler
+const styles = style
 `
 	home
 		text-decoration : none
@@ -181,7 +181,7 @@ function Menu_item({ to, children })
 	(
 		<Link
 			to={ to }
-			style={ style.menu_item_link }
+			style={ styles.menu_item_link }
 			className="rrui__menu__item"
 			activeClassName="rrui__menu__item--selected">
 			{ children }

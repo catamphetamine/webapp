@@ -175,3 +175,43 @@
 		right            : $value;
 	}
 }
+
+@mixin xs
+{
+	@media all
+	{
+		@content;
+	}
+}
+
+@mixin s
+{
+	@media all and (min-width: $small-screen-min-width)
+	{
+		@content;
+	}
+}
+
+@mixin m
+{
+	@media all and (min-width: $medium-screen-min-width)
+	{
+		@content;
+	}
+}
+
+@mixin l
+{
+	@media all and (min-width: $large-screen-min-width)
+	{
+		@content;
+	}
+}
+
+@mixin xl
+{
+	@media all and (min-width: $extra-large-screen-min-width)
+	{
+		@content;
+	}
+}

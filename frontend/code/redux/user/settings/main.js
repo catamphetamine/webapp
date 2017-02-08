@@ -3,11 +3,23 @@ import settings from '../../../react-isomorphic-render-async'
 
 const handler = createHandler(settings)
 
-export const get_user = action
+export const get_own_user = action
 ({
 	namespace : 'user settings',
 	event     : 'get user',
-	action    : http => http.get('/users'),
+	action    : async (http) =>
+	{
+		const user = await http.get('/users')
+
+		if (!user)
+		{
+			const error = new Error('Unauthenticated')
+			error.status = 401
+			throw error
+		}
+
+		return user
+	},
 	result    : 'user'
 },
 handler)

@@ -7,31 +7,3 @@
 @include set_css_variable_content_section_padding(calc(var(--unit) * 3));
 
 @include columns(s);
-
-.logo
-{
-	font-size : 16pt;
-
-	margin-top : var(--header-vertically-centered-text-margin-top);
-}
-
-.language
-{
-	margin-top   : 0.25em;
-	margin-right : 0.5em;
-}
-
-.sign-in
-{
-	margin-right : calc(var(--unit) * 2);
-}
-
-.authentication-form, .registration-form
-{
-	width : calc(var(--unit) * 40);
-
-	h2
-	{
-		font-size: 1.4em;
-	}
-}

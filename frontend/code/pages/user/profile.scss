@@ -1,0 +1,78 @@
+.user-profile .user-picture
+{
+	width      : calc(var(--unit) * 14);
+	height     : calc(var(--unit) * 14);
+	min-width  : calc(var(--unit) * 14);
+	min-height : calc(var(--unit) * 14);
+}
+
+.user-profile__picture__change__label
+{
+	font-size: 0.75rem;
+}
+
+@include m
+{
+	.user-profile .user-picture
+	{
+		width      : calc(var(--unit) * 18);
+		height     : calc(var(--unit) * 18);
+		min-width  : calc(var(--unit) * 18);
+		min-height : calc(var(--unit) * 18);
+	}
+
+	.card__actions
+	{
+		.card__action
+		{
+			// overwrites inline css
+			display: block !important;
+
+			&:not(:first-child)
+			{
+				margin-left: 0;
+			}
+		}
+	}
+
+	.user-profile__picture__change__label
+	{
+		font-size: 1rem;
+	}
+}
+
+@include l
+{
+	.user-profile
+	{
+		input[type="text"]
+		{
+			width: calc(var(--unit) * 50);
+		}
+	}
+
+	.card__actions
+	{
+		.card__action
+		{
+			// overwrites M size settings
+			display: inline-block !important;
+
+			&:not(:first-child)
+			{
+				margin-left: calc(var(--unit) * 3);
+			}
+		}
+	}
+}
+
+@include xl
+{
+	.user-profile .user-picture
+	{
+		width      : calc(var(--unit) * 20);
+		height     : calc(var(--unit) * 20);
+		min-width  : calc(var(--unit) * 20);
+		min-height : calc(var(--unit) * 20);
+	}
+}

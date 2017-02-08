@@ -73,7 +73,7 @@ export default class Editable_field extends Component
 				style={ style }>
 
 				{/* Field label */}
-				<label>{ label }</label>
+				{ label }
 
 				{/* Hint */}
 				{ hint && <p>{ hint }</p> }
@@ -101,6 +101,11 @@ export default class Editable_field extends Component
 		if (value !== undefined)
 		{
 			elements.push(<div key="value" className="editable-field__value">{value}</div>)
+		}
+		else
+		{
+			// Just so that the button is on the new line
+			elements.push(<div key="value"/>)
 		}
 
 		// "Change" button
@@ -166,7 +171,7 @@ export default class Editable_field extends Component
 				<Submit
 					component={Button}
 					submit={true}
-					className="editable-field__button--subsequent">
+					className="editable-field__button--subsequent button--primary">
 					{translate(default_messages.save).toLowerCase()}
 				</Submit>
 			</Form>

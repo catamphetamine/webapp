@@ -1,0 +1,99 @@
+.language-wrapper
+{
+	position: absolute;
+	top   : 0;
+	right : 0;
+
+	height: 100%;
+
+	// centers children vertically
+	display     : flex;
+	align-items : center;
+}
+
+.language
+{
+// 	margin-top: 0.1em;
+// 	margin-right: 1.5em;
+
+	.rrui__select
+	{
+		text-align: right !important;
+	}
+
+	.rrui__select__selected
+	{
+		border: none;
+	}
+}
+
+.language
+{
+	margin-top   : 0.25em;
+	margin-right : 1em;
+
+	&, .rrui__select__options li, .rrui__select__option, .rrui__select__selected
+	{
+		// line-height: 0;
+	}
+
+	.rrui__select__option
+	{
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+
+	.rrui__select__arrow
+	{
+		// overrides inline css
+		margin-bottom : 0.25em !important;
+	}
+}
+
+@include s
+{
+	.language
+	{
+		margin-top   : 0.25em;
+		margin-right : 0.5em;
+	}
+}
+
+@include l
+{
+	.language
+	{
+		right : 0.5em;
+
+		margin-top   : 0.25em;
+		margin-right : 0.5em;
+
+		.rrui__select__selected
+		{
+			text-align : right;
+			border     : none;
+		}
+
+		&, .rrui__select__options li, .rrui__select__option, .rrui__select__selected
+		{
+			line-height : normal;
+		}
+
+		.rrui__select__arrow
+		{
+			// overwrites inline css
+			margin-bottom : 0.1em !important;
+		}
+
+		.rrui__select__option
+		{
+			padding-top    : 0.2em;
+			padding-bottom : 0.2em;
+		}
+	}
+
+	.language button
+	{
+		font-size : 18pt;
+	}
+}
