@@ -3,16 +3,11 @@ import { http, errors } from 'web-service'
 import store from '../store/store'
 import generate_alias from '../alias'
 
-export async function sign_in({ email, password }, { set_cookie })
+export async function sign_in({ email }, { set_cookie })
 {
 	if (!exists(email))
 	{
 		throw new errors.Input_rejected(`"email" is required`)
-	}
-
-	if (!exists(password))
-	{
-		throw new errors.Input_rejected(`"password" is required`)
 	}
 
 	const user = await store.find_user_by_email(email)
@@ -22,27 +17,77 @@ export async function sign_in({ email, password }, { set_cookie })
 		throw new errors.Not_found(`No user registered with this email`, { field: 'email' })
 	}
 
+	// Check if the user is blocked
 	if (user.blocked_at)
 	{
 		await user_is_blocked(user)
 	}
 
+	// Generate an access code
+	const { id, code } = await http.post(`${address_book.access_code_service}`,
+	{
+		user   : user.id,
+		locale : user.locale
+	})
+
+	// Send the access code via email
+	await http.post(`${address_book.mail_service}`,
+	{
+		to         : user.email,
+		template   : 'sign in code',
+		locale     : user.locale,
+		parameters :
+		{
+			code
+		}
+	})
+
+	// Return access code id
+	return id
+}
+
+export async function sign_in_with_access_code({ id, code }, { set_cookie })
+{
+	// Get the user
+	const access_code = await http.get(`${address_book.access_code_service}/${id}`)
+	const user = await store.find_user(access_code.user)
+
 	// Generate JWT authentication token
 	const token = await http.post(`${address_book.authentication_service}/token`,
 	{
-		// Send only the neccessary fields required for authentication
-		id : user.id,
-		password,
+		user:
+		{
+			// Send only the neccessary fields required for authentication
+			id : user.id,
 
-		// Send only the neccessary fields required for JWT payload
-		role : user.role
+			// Send only the neccessary fields required for JWT payload
+			role : user.role
+		},
+
+		access_code:
+		{
+			id,
+			code
+		}
 	})
 
 	// If there was an almost impossible race condition
 	// when the user was blocked while obtaining an access token,
 	// then immediately revoke that token.
+	//
+	// (or, say, if an attacker managed to send an access code request
+	//  directly to the `access-code-service` bypassing `user-service`)
+	//
+	// If we got here, then the token is already written to the database,
+	// hence if the user is gonna be blocked right now
+	// then this token will be rendered invalid.
+	// So this second "just to make sure" check
+	// prevents all possible user blocking race conditions.
+	// (when a user is being blocked first its `blocked`
+	// flag is set to `true` in the database
+	// and then all his access tokens are rendered invalid)
 
-	const user_blocked_check = await store.find_user_by_email(email)
+	const user_blocked_check = await store.find_user(user.id)
 
 	if (user_blocked_check.blocked_at)
 	{
@@ -78,7 +123,7 @@ export async function sign_out({}, { user, authentication_token_id, destroy_cook
 	destroy_cookie('authentication')
 }
 
-export async function register({ name, email, password, terms_of_service_accepted, locale })
+export async function register({ name, email, locale }, { internal_http })
 {
 	if (!exists(name))
 	{
@@ -90,15 +135,10 @@ export async function register({ name, email, password, terms_of_service_accepte
 		throw new errors.Input_rejected(`"email" is required`)
 	}
 
-	if (!exists(password))
-	{
-		throw new errors.Input_rejected(`"password" is required`)
-	}
-
-	if (!terms_of_service_accepted)
-	{
-		throw new errors.Input_rejected(`You must accept the terms of service`)
-	}
+	// if (!exists(password))
+	// {
+	// 	throw new errors.Input_rejected(`"password" is required`)
+	// }
 
 	if (!exists(locale))
 	{
@@ -146,14 +186,17 @@ export async function register({ name, email, password, terms_of_service_accepte
 	// Create user
 	const id = await store.create_user(user)
 
-	// Add authentication data (password) for this user
-	await http.post(`${address_book.authentication_service}/authentication-data`,
-	{
-		id,
-		password
-	})
+	// // Add authentication data (password) for this user
+	// await http.post(`${address_book.authentication_service}/authentication-data`,
+	// {
+	// 	id,
+	// 	password
+	// })
 
-	return { id }
+	return await internal_http.post(`${address_book.user_service}/sign-in`,
+	{
+		email
+	})
 }
 
 // May possibly add something like { alias } in the future

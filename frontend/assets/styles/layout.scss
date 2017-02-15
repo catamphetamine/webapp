@@ -67,10 +67,13 @@ header
 	// border-bottom : 1px solid $header-border-color;
 	// box-sizing    : border-box;
 
+	.sign-in,
 	// .sign-out--fallback,
-	a,
-	.rrui__button__button,
-	.rrui__select__selected
+	.rrui__menu__item,
+	// .rrui__button,
+	// .rrui__select__selected,
+	.rrui__select__toggler,
+	.logo
 	{
 		color: var(--white-color);
 
@@ -78,11 +81,6 @@ header
 		{
 			color: var(--base-color-lightest);
 		}
-	}
-
-	.logo
-	{
-		color: var(--white-color);
 	}
 }
 
@@ -147,4 +145,45 @@ footer
 .row--content-sections + .row--content-sections
 {
 	position : relative;
+}
+
+.page__text-content
+{
+	margin-top    : calc(var(--unit) * 2);
+	margin-bottom : calc(var(--unit) * 2);
+	margin-left   : calc(var(--unit) * 2);
+	margin-right  : calc(var(--unit) * 2);
+}
+
+@include s
+{
+	.page__text-content
+	{
+		margin-top    : calc(var(--unit) * 3);
+		margin-bottom : calc(var(--unit) * 3);
+		margin-left   : calc(var(--unit) * 3);
+		margin-right  : calc(var(--unit) * 3);
+	}
+}
+
+@include m
+{
+	.page__text-content
+	{
+		margin-top    : calc(var(--unit) * 4);
+		margin-bottom : calc(var(--unit) * 4);
+		margin-left   : calc(var(--unit) * 4);
+		margin-right  : calc(var(--unit) * 4);
+	}
+}
+
+@include l
+{
+	.page__text-content
+	{
+		margin-top    : calc(var(--unit) * 6);
+		margin-bottom : calc(var(--unit) * 6);
+		margin-left   : calc(var(--unit) * 6);
+		margin-right  : calc(var(--unit) * 6);
+	}
 }

@@ -10,9 +10,6 @@ export default function start_web_service()
 		configuration.realtime_service.http,
 		[
 			notifications_api
-		],
-		{
-			access_list: configuration.realtime_service.http.access_list
-		}
+		]
 	)
 }

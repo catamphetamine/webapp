@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import { Link }    from 'react-isomorphic-render'
 import classNames  from 'classnames'
 import { connect } from 'react-redux'
-import styler      from 'react-styling'
+import style       from 'react-styling'
 
 import { defineMessages } from 'react-intl'
 
@@ -32,7 +32,7 @@ import { preload_started } from '../redux/preload'
 		preload_started
 	}
 )
-@international()
+@international
 export default class Authentication extends Component
 {
 	state =
@@ -70,8 +70,9 @@ export default class Authentication extends Component
 		const
 		{
 			user,
-			registration_pending,
+			register_pending,
 			sign_in_pending,
+			sign_in_with_access_code_pending,
 			translate,
 			style,
 			realtime_service_is_connected
@@ -114,12 +115,12 @@ export default class Authentication extends Component
 
 				{/* Sign in / Register popup */}
 				<Modal
-					busy={ registration_pending || sign_in_pending }
+					busy={ register_pending || sign_in_pending || sign_in_with_access_code_pending }
 					isOpen={ exists(password) || (!user && show) }
 					close={ this.hide }>
 
 					<Authentication_form
-						busy={ registration_pending || sign_in_pending }/>
+						close={ this.hide }/>
 				</Modal>
 			</div>
 		)
@@ -141,9 +142,8 @@ export default class Authentication extends Component
 				<Button
 					submit
 					className="sign-out sign-out--fallback"
-					style={style.sign_out}>
-
-					{translate(messages.sign_out)}
+					style={ styles.sign_out }>
+					{ translate(messages.sign_out) }
 				</Button>
 			</Form>
 		)
@@ -159,19 +159,19 @@ export default class Authentication extends Component
 		const user_info =
 		(
 			<Link
-				to={User.url(user)}
-				style={style.user_menu_toggler}>
+				to={ User.url(user) }
+				style={ styles.user_menu_toggler }>
 
 				{/* User name */}
 				<span
 					className="user-name">
-					{user.name}
+					{ user.name }
 				</span>
 
 				{/* User picture */}
 				<User_picture
 					className="user-picture--header"
-					user={user}/>
+					user={ user }/>
 			</Link>
 		)
 
@@ -182,15 +182,15 @@ export default class Authentication extends Component
 				{/* Dropdown */}
 				<Select
 					menu
-					toggler={user_info}
+					toggler={ user_info }
 					alignment="right">
 
 					{/* Profile */}
-					<Link key="profile" to={User.url(user)}>
+					<Link key="profile" to={ User.url(user) }>
 						{/* Icon */}
 						<i className="material-icons dropdown-item__icon">account_box</i>
 						{/* Text */}
-						{translate(messages.profile)}
+						{ translate(messages.profile) }
 					</Link>
 
 					{/* Settings */}
@@ -198,7 +198,7 @@ export default class Authentication extends Component
 						{/* Icon */}
 						<i className="material-icons dropdown-item__icon">settings</i>
 						{/* Text */}
-						{translate(messages.settings)}
+						{ translate(messages.settings) }
 					</Link>
 
 					{/* Feed */}
@@ -206,7 +206,7 @@ export default class Authentication extends Component
 						{/* Icon */}
 						<i className="material-icons dropdown-item__icon">notifications</i>
 						{/* Text */}
-						{translate(messages.notifications)}
+						{ translate(messages.notifications) }
 					</Link>
 
 					{/* Messages */}
@@ -214,21 +214,21 @@ export default class Authentication extends Component
 						{/* Icon */}
 						<i className="material-icons dropdown-item__icon">chat_bubble_outline</i>
 						{/* Text */}
-						{translate(messages.messages)}
+						{ translate(messages.messages) }
 					</Link>
 
 					{/* Separator */}
 					<Select.Separator/>
 
 					{/* Sign out */}
-					<div key="sign_out" onClick={this.sign_out}>
+					<div key="sign_out" onClick={ this.sign_out }>
 						{/* Icon */}
 						<i className="material-icons material-icons--empty dropdown-item__icon"></i>
 						{/* Text */}
 						<Button
 							className="sign-out"
-							style={style.sign_out}>
-							{translate(messages.sign_out)}
+							style={ styles.sign_out }>
+							{ translate(messages.sign_out) }
 						</Button>
 					</div>
 				</Select>
@@ -248,11 +248,6 @@ export default class Authentication extends Component
 		window.location = location.pathname + (location.search || '') + (location.hash || '')
 	}
 
-	change_user_picture()
-	{
-		alert('to do')
-	}
-
 	show()
 	{
 		this.setState({ show: true }, () =>
@@ -267,14 +262,20 @@ export default class Authentication extends Component
 	}
 }
 
-const style = styler
+const styles = style
 `
 	sign_out
-		display: inline-block
+		// Black instead of white
+		color      : inherit
+		// So that the CSS animation for ".rrui__select__option"
+		// doesn't conflict with the CSS animation for ".rrui__button"
+		transition : none
 
 	user_menu_toggler
 		display     : flex
 		align-items : center
+		// Black instead of white
+		color       : inherit
 `
 
 export const messages = defineMessages

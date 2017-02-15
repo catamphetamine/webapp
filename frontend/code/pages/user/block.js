@@ -1,5 +1,5 @@
 import React, { Component, PropTypes }    from 'react'
-import { title, preload, redirect, Link } from 'react-isomorphic-render'
+import { Title, preload, redirect, Link } from 'react-isomorphic-render'
 import { connect }                        from 'react-redux'
 import styler                             from 'react-styling'
 import classNames                         from 'classnames'
@@ -99,7 +99,7 @@ const messages = defineMessages
 		dispatch)
 	})
 )
-@international()
+@international
 export default class User_profile extends Component
 {
 	constructor()
@@ -150,7 +150,7 @@ export default class User_profile extends Component
 					className="content-section">
 
 					{/* "Block user" */}
-					{title(translate(self ? messages.header_self : messages.header))}
+					<Title>{ translate(self ? messages.header_self : messages.header) }</Title>
 
 					{/* "Blocking user ..." */}
 					<FormattedMessage

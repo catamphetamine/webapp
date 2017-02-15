@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { title, Link }      from 'react-isomorphic-render'
+import { Title, Link }      from 'react-isomorphic-render'
 import { connect }          from 'react-redux'
 
 import styler from 'react-styling'
@@ -20,7 +20,7 @@ const messages = defineMessages
 	}
 })
 
-@international()
+@international
 export default class Generic_error extends Component
 {
 	render()
@@ -30,7 +30,7 @@ export default class Generic_error extends Component
 		const markup =
 		(
 			<section className="content error-page">
-				{title(translate(messages.header))}
+				<Title>{ translate(messages.header) }</Title>
 
 				<h1>
 					{translate(messages.header)}

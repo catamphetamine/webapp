@@ -14,7 +14,7 @@ import international from '../international/internationalize'
 	// or provide `submitting` property
 	submitting: (state, props) => props.saving
 })
-@international()
+@international
 export default class Editable_field extends Component
 {
 	state = {}

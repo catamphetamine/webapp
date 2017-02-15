@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { title, preload }              from 'react-isomorphic-render'
+import { Title, preload }              from 'react-isomorphic-render'
 import { connect }                     from 'react-redux'
 import styler                          from 'react-styling'
 import classNames                      from 'classnames'
@@ -49,7 +49,7 @@ import Authentication_tokens from './settings authentication tokens'
 		dispatch)
 	})
 )
-@international()
+@international
 export default class Settings_page extends Component
 {
 	state = {}
@@ -121,7 +121,7 @@ export default class Settings_page extends Component
 		(
 			<div className="content user-settings">
 				{/* "Settings" */}
-				{title(translate(messages.header))}
+				<Title>{ translate(messages.header) }</Title>
 
 				{/* General settings */}
 				<div className="row row--content-sections">

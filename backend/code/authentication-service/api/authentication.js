@@ -1,23 +1,37 @@
-import moment from 'moment'
+import set_seconds from 'date-fns/set_seconds'
 import { http, errors, jwt } from 'web-service'
 
 import store               from '../store/store'
 import online_status_store from '../store/online/online store'
+import Throttling          from '../../common/throttling'
 
-import { check_password } from './authentication.check'
+const throttling = new Throttling
+({
+	succeeded : store.clear_latest_failed_authentication_attempt.bind(store),
+	failed    : store.set_latest_failed_authentication_attempt.bind(store)
+},
+'Access code attempts limit exceeded')
 
 const latest_activity_time_refresh_interval = 60 * 1000 // one minute
 
 export default function(api)
 {
 	// Issues a new access token for this user
-	api.post('/token', async function(user, { ip, keys })
+	api.post('/token', async function({ user, access_code }, { ip, keys })
 	{
-		// Check the password
-		if (!await check_password(user.id, user.password))
+		// Verify the access code
+		const user_id = await http.get(`${address_book.access_code_service}/verify`, access_code)
+
+		if (!user_id)
 		{
-			throw new errors.Input_rejected(`Wrong password`, { field: 'password' })
+			throw new errors.Access_denied('Wrong access code', { field: 'access_code' })
 		}
+
+		// // Check the password
+		// if (!await check_password(user.id, user.password))
+		// {
+		// 	throw new errors.Input_rejected(`Wrong password`, { field: 'password' })
+		// }
 
 		// Add a new JWT token to the list of valid tokens for this user
 		const jwt_id = await store.add_authentication_token(user.id, ip)
@@ -27,22 +41,6 @@ export default function(api)
 
 		// Issue JWT token
 		return jwt({ payload, keys, user_id: user.id, jwt_id })
-	})
-
-	api.post('/authentication-data', async function({ id, password })
-	{
-		// Hash the password.
-		//
-		// Hashing a password is a CPU-intensive lengthy operation.
-		// takes about 60 milliseconds on my machine.
-		//
-		// Maybe could be offloaded from node.js
-		// to some another multithreaded backend.
-		//
-		password = await hash_password(password)
-
-		// Add the hashed password to the dabase
-		await store.create_authentication_data(id, { password })
 	})
 
 	api.get('/tokens', async function({}, { user, authentication_token_id })
@@ -161,63 +159,6 @@ export default function(api)
 		await revoke_token(id, user.id)
 	})
 
-	api.get('/password/check', async function({ password }, { user })
-	{
-		if (!user)
-		{
-			throw new errors.Unauthenticated()
-		}
-
-		if (!exists(password))
-		{
-			throw new errors.Input_rejected(`"password" is required`)
-		}
-
-		// Check if the password matches
-		const matches = await check_password(user.id, password)
-
-		// If the password is wrong, return an error
-		if (!matches)
-		{
-			throw new errors.Input_rejected(`Wrong password`, { field: 'password' })
-		}
-	})
-
-	api.patch('/password', async function({ old_password, new_password }, { user })
-	{
-		if (!user)
-		{
-			throw new errors.Unauthenticated()
-		}
-
-		if (!old_password)
-		{
-			throw new errors.Input_rejected(`"old_password" is required`)
-		}
-
-		if (!new_password)
-		{
-			throw new errors.Input_rejected(`"new_password" is required`)
-		}
-
-		// Check if the old password matches
-		const matches = await check_password(user.id, old_password)
-
-		// If the old password is wrong, return an error
-		if (!matches)
-		{
-			throw new errors.Input_rejected(`Wrong password`)
-		}
-
-		// Hashing a password is a CPU-intensive lengthy operation.
-		// takes about 60 milliseconds on my machine.
-		//
-		new_password = await hash_password(new_password)
-
-		// Change password to the new one
-		await store.update_password(user.id, new_password)
-	})
-
 	api.get('/latest-recent-activity/:id', async function({ id })
 	{
 		return await online_status_store.get_latest_access_time(id)
@@ -281,11 +222,5 @@ async function record_access(user_id, authentication_token_id, ip, internal_http
 // user's latest activity time accuracy
 function round_user_access_time(time)
 {
-	return new Date(moment(time).seconds(0).unix() * 1000)
-}
-
-// Hashes a password
-async function hash_password(password)
-{
-	return (await http.get(`${address_book.password_service}/hash`, { password })).hash
+	return set_seconds(time, 0)
 }

@@ -86,20 +86,27 @@ export default function start()
 
 						if (token)
 						{
-							const user = await http.get
-							(
-								`${address_book.user_service}`,
-								{ bot: true },
-								{ headers: { Authorization: `Bearer ${token}` } }
-							)
-
-							if (user)
+							try
 							{
-								socket.user = user
-								socket.token = token
+								user = await http.get
+								(
+									`${address_book.user_service}`,
+									{ bot: true },
+									{ headers: { Authorization: `Bearer ${token}` } }
+								)
 
-								response.user = user
-								response.notifications = []
+								if (user)
+								{
+									socket.user = user
+									socket.token = token
+
+									response.user = user
+									response.notifications = []
+								}
+							}
+							catch (error)
+							{
+								log.error(error)
 							}
 						}
 
@@ -147,7 +154,7 @@ export default function start()
 		log.error(error)
 	})
 
-	log.info(`Realtime service is listening at port ${configuration.realtime_service.websocket.port}`)
+	log.info(`Realtime service WebSocket is listening at port ${configuration.realtime_service.websocket.port}`)
 }
 
 // These counters ("state") could be stored somewhere in Redis,

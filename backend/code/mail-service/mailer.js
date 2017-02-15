@@ -1,18 +1,13 @@
 import path from 'path'
 import nodemailer from 'nodemailer'
-import EmailTemplates from 'swig-email-templates'
+import { merge } from 'lodash'
+
+import Templates from './templates'
 import translator, { escape_html } from './translate'
 
-// Can use `nunjucks` templates instead of `swig` ones,
-// because `swig` is no longer maintained.
-
-const templates = new EmailTemplates
+const templates = new Templates
 ({
-	root: path.join(__dirname, 'templates'),
-	swig:
-	{
-		cache: process.env.NODE_ENV === 'production' ? 'memory' : undefined // Don't cache swig templates in development mode
-	}
+	root: path.join(__dirname, 'templates')
 })
 
 let transporter
@@ -41,7 +36,7 @@ export default function connect_to_email_server()
 
 		transporter =
 		{
-			send(options)
+			sendMail(options)
 			{
 				log.info(`Email wasn't sent. Configure SMTP server connection to be able to send emails.`)
 				log.info(``)
@@ -71,13 +66,13 @@ export default function connect_to_email_server()
 								return reject(error)
 							}
 
-							const { text, html } = result
+							const { text, html, subject } = result
 
 							log.info(`Email wasn't sent. Configure SMTP server connection to be able to send emails.`)
 							log.info(``)
 							log.info(`From:`, options.from)
 							log.info(`To:`, options.to)
-							log.info(`Subject:`, options.subject)
+							log.info(`Subject:`, subject || options.subject)
 							log.info(``)
 							log.info(`Text:`)
 							log.info(``)
@@ -108,10 +103,10 @@ export default function connect_to_email_server()
 //     messageId: '1466966180973-163d30e0-385d833d-b4fd9ecf@blurdybloop.com'
 //   }
 
-export function send(options, template, parameters, locale)
+// Returns a `Promise`
+export async function send(options, template, parameters, locale)
 {
-	const translate = translator(locale)
-
+	// For simple plaintext emails, without using templates
 	if (!template)
 	{
 		if (!options.from)
@@ -119,39 +114,10 @@ export function send(options, template, parameters, locale)
 			options.from = configuration.mail_service.mail.from
 		}
 
-		return transporter.send(options)
+		return transporter.sendMail(options)
 	}
 
-	const send = transporter.templateSender
-	({
-		render: function(parameters, callback)
-		{
-			templates.render(`${template}.html`, parameters, function(error, html, text)
-			{
-				if (error)
-				{
-					return callback(error)
-				}
-
-				callback(undefined, { html, text })
-			})
-		}
-	},
-	{
-		from: configuration.mail_service.mail.from,
-		attachments:
-		[{
-			filename: 'logo.png',
-			path: path.join(__dirname, 'templates/assets/logo.png'),
-			cid: 'logo-content-id' // same cid value as in the html img src
-		}]
-	})
-
-	options =
-	{
-		...options,
-		subject : translate(options.subject)
-	}
+	const translate = translator(locale)
 
 	const original_parameters = parameters
 
@@ -168,5 +134,21 @@ export function send(options, template, parameters, locale)
 		translate
 	}
 
-	return send(options, parameters)
+	const rendered = await templates.render(template, parameters)
+
+	const mail_data = merge
+	({
+		from    : options.from || configuration.mail_service.mail.from,
+		to      : options.to,
+		subject : options.subject && translate(options.subject),
+		attachments:
+		[{
+			filename: 'logo.png',
+			path: path.join(__dirname, 'templates/assets/logo.png'),
+			cid: 'logo-content-id' // same cid value as in the html img src
+		}]
+	},
+	rendered)
+
+	return await transporter.sendMail(mail_data)
 }

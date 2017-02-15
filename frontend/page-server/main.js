@@ -44,7 +44,7 @@ const initializing_javascript =
 		{
 			websocket:
 			{
-				host: "${configuration.realtime_service.websocket.host}",
+				host: "${configuration.realtime_service.websocket.host || 'localhost'}",
 				port: ${configuration.realtime_service.websocket.port}
 			}
 		}
@@ -73,7 +73,7 @@ const server = webpage_server(settings,
 	// Http host and port for executing all client-side ajax requests on server-side
 	application:
 	{
-		host: configuration.web_server.http.host,
+		host: configuration.web_server.http.host || 'localhost',
 		port: configuration.web_server.http.port
 	},
 
@@ -83,7 +83,7 @@ const server = webpage_server(settings,
 	//
 	// Also a website "favicon".
 	//
-	assets: (url) =>
+	assets(url)
 	{
 		if (process.env.NODE_ENV !== 'production')
 		{
@@ -94,10 +94,10 @@ const server = webpage_server(settings,
 
 		const result =
 		{
-			entry      : 'main',
+			entries    : ['main'],
 
 			javascript : assets.javascript,
-			style      : assets.styles,
+			styles     : assets.styles,
 
 			icon : html_assets.icon()
 		}
@@ -109,7 +109,16 @@ const server = webpage_server(settings,
 	// (will be written to Redux store)
 	initialize: async (http, { request }) =>
 	{
-		const user = await http.get(`/users`)
+		let user
+
+		try
+		{
+			user = await http.get(`/users`)
+		}
+		catch (error)
+		{
+			log.error(user)
+		}
 
 		const state =
 		{

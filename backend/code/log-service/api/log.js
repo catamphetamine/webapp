@@ -6,7 +6,7 @@ const ip_limiter = new IP_limiter(5)
 
 export default function(api)
 {
-	api.get('/', function()
+	api.get('/', function({}, {user})
 	{
 		this.role('administrator')
 

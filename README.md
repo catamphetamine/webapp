@@ -723,6 +723,23 @@ Troubleshooting
 To do
 ====================
 
+график отправленных email'ов за сутки
+
+проверить троттлинг access code по user - на проверку
+
+сделать access code в смене почты
+
+добавить google authenticator - двухфакторную аутентикацию
+
+проверить npm run production
+
+проверить без knexfile
+
+проверить profile на всех размерах экрана
+
+
+
+
 use svg icons instead of google font
 
 

@@ -34,7 +34,7 @@ const messages = defineMessages
 })
 
 @connect(state => ({ locale : state.locale.locale }), { set_locale })
-@international()
+@international
 @withRouter
 export default class Locale_switcher extends Component
 {

@@ -72,9 +72,7 @@ select,
 .date-picker
 {
 	display : block;
-
 	padding : 0;
-
 	border        : none;
 	border-bottom : var(--input-border-width) solid var(--gray-color-light);
 	transition    : border 0.1s;
@@ -93,15 +91,12 @@ input[type="password"],
 textarea
 {
 	margin: 0;
-
 	appearance: none;
-
 	box-sizing: border-box;
 
 	&:focus
 	{
 		outline: none;
-
 		border-bottom: var(--input-border-width) solid var(--accent-color);
 	}
 
@@ -153,7 +148,6 @@ select
 	&:focus
 	{
 		outline: none;
-
 		border-bottom: var(--input-border-width) solid var(--base-color-darker);
 	}
 }
@@ -184,8 +178,6 @@ button
 	white-space: nowrap;
 
 	color: var(--base-color-darker);
-
-	transition: color 30ms ease-out;
 
 	&:active
 	{

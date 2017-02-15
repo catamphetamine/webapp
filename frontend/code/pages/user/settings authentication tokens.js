@@ -96,7 +96,7 @@ const messages = defineMessages
 		revoke_authentication_token
 	}
 )
-@international()
+@international
 export default class Authentication_tokens extends Component
 {
 	constructor()

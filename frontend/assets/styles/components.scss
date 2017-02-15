@@ -90,7 +90,7 @@ header .rrui__menu
 	height: 100%;
 
 	// centers children vertically
-	display     : flex !important;
+	display     : flex;
 	align-items : center;
 }
 
@@ -318,31 +318,11 @@ header .rrui__menu
 	border-top-right-radius : var(--card-border-radius);
 }
 
-// https://material-design.storage.googleapis.com/publish/material_v_9/0Bzhp5Z4wHba3dEZTUF9idzBHMWc/patterns_errors_userinput19.png
-.rrui__form__error
-{
-	background-color : var(--gray-color-lighter);
-
-	// box shadow on top and bottom
-	box-shadow:
-		inset 0px  1em 0.18em -1em rgba(0, 0, 0, 0.2),
-		inset 0px -1em 0.18em -1em rgba(0, 0, 0, 0.2);
-}
-
-.rrui__modal
-{
-	.rrui__form__error
-	{
-		margin-left  : calc(-1 * var(--modal-padding));
-		margin-right : calc(-1 * var(--modal-padding));
-		padding      : var(--modal-padding);
-	}
-}
-
 .realtime-service-indicator
 {
 	width  : 0.6em;
 	height : 0.6em;
+	margin-right : 0.4em;
 	stroke : var(--white-color);
 }
 
@@ -350,19 +330,9 @@ header .rrui__menu
 {
 	color : var(--accent-color);
 
-	button:active
+	&:active
 	{
 		color : var(--accent-color-lighter);
-	}
-}
-
-.button--button
-{
-	height : calc(var(--unit) * 6);
-
-	.rrui__button__button
-	{
-		height : 100%;
 	}
 }
 
@@ -397,9 +367,20 @@ header .rrui__menu
 	}
 }
 
-.rrui__button
+.rrui__button,
+.rrui__button__button
 {
 	height : auto;
+}
+
+.button--button
+{
+	height : calc(var(--unit) * 6);
+
+	.rrui__button__button
+	{
+		height : 100%;
+	}
 }
 
 .rrui__checkbox__checkmark

@@ -1,14 +1,26 @@
 import { http, errors } from 'web-service'
-import moment from 'moment'
+import add_weeks from 'date-fns/add_weeks'
+import is_before from 'date-fns/is_before'
 
 import store from '../store/store'
-import { get_user, sign_in, sign_out, register, own_user } from './user.base'
+
+import
+{
+	get_user,
+	sign_in,
+	sign_in_with_access_code,
+	sign_out,
+	register,
+	own_user
+}
+from './user.base'
 
 import can from '../../../../code/permissions'
 
 export default function(api)
 {
 	api.post('/sign-in', sign_in)
+	api.post('/sign-in-with-access-code', sign_in_with_access_code)
 	api.post('/sign-out', sign_out)
 	api.post('/register', register)
 
@@ -58,7 +70,7 @@ export default function(api)
 	api.post('/ping', () => {})
 
 	// Get currently logged in user (if any)
-	api.get('/', async function({}, { user, internal_http, get_cookie, set_cookie })
+	api.get('/', async function({}, { user })
 	{
 		// If no valid JWT token present,
 		// then assume this user is not authenticated.
@@ -96,7 +108,7 @@ export default function(api)
 
 		const block_user_token = await store.generate_block_user_token(user.id, { self: true })
 
-		internal_http.post(`${address_book.mail_service}`,
+		http.post(`${address_book.mail_service}`,
 		{
 			to         : user.email,
 			subject    : 'mail.email_changed.title',
@@ -109,7 +121,7 @@ export default function(api)
 			locale     : user.locale
 		})
 
-		internal_http.post(`${address_book.mail_service}`,
+		http.post(`${address_book.mail_service}`,
 		{
 			to         : email,
 			subject    : 'mail.email_changed.title',
@@ -229,7 +241,7 @@ export default function(api)
 		}
 
 		// Check if the token expired (is valid for a week)
-		if (moment(token.created_at).add(1, 'weeks').isBefore(new Date()))
+		if (is_before(add_weeks(token.created_at, 1), new Date()))
 		{
 			throw new errors.Not_found(`Token expired`)
 		}

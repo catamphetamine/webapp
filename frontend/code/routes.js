@@ -40,12 +40,13 @@ import Unauthorized     from './pages/errors/unauthorized'
 import Generic_error    from './pages/errors/generic'
 import Home             from './pages/home'
 import Sign_in          from './pages/sign in'
-import Register         from './pages/register'
 import Menu             from './pages/menu'
 import Block_user       from './pages/user/block'
 import Profile          from './pages/user/profile'
 import Settings         from './pages/user/settings'
 import Log              from './pages/log'
+import User_agreement   from './pages/legal/user agreement'
+import Privacy_policy   from './pages/legal/privacy policy'
 
 const routes =
 (
@@ -58,13 +59,12 @@ const routes =
 		</Route>
 
 		<Route path="settings" component={ Settings }/>
-
 		<Route path="logs" component={ Log }/>
-
-		<Route path="sign-in"  component={ Sign_in }/>
-		<Route path="register" component={ Register }/>
-
+		<Route path="sign-in" component={ Sign_in }/>
 		<Route path="menu" component={ Menu }/>
+
+		<Route path=":language/legal/user-agreement" component={ User_agreement }/>
+		<Route path=":language/legal/privacy-policy" component={ Privacy_policy }/>
 
 		<Route path="unauthenticated" status={ 401 } component={ Unauthenticated }/>
 		<Route path="unauthorized"    status={ 403 } component={ Unauthorized }/>

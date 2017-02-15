@@ -18,7 +18,11 @@ const temporary_image_expiration_interval = parse_interval(configuration.image_s
 const clean_up_interval                   = parse_interval(configuration.image_service.clean_up_interval)
 
 const dummy_date = new Date()
+
+// `clean_up_interval` example: `{ hours: 1 }`
+// (can only have a single key)
 const before = moment(dummy_date).subtract(configuration.image_service.clean_up_interval)
+
 const clean_up_interval_in_milliseconds = dummy_date.getTime() - before.toDate().getTime()
 
 // parses { days: 1 } into { units: 'days', value: 1 }

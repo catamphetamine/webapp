@@ -1,0 +1,20 @@
+{
+  "name": "webapp-access-code-service",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Issues access codes (e.g. SMS login codes) to a user trying to log in (and verifies the codes issued)",
+  "main": "entry.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/halt-hammerzeit/webapp.git"
+  },
+  "homepage": "https://github.com/halt-hammerzeit/webapp",
+  "dependencies": {
+    "uid-safe": "^2.1.0"
+  },
+  "author": "Halt Hammerzeit",
+  "license": "MIT",
+  "engines": {
+    "node": "6.0.0"
+  }
+}

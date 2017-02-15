@@ -7,9 +7,9 @@ export default function()
 	const server = tcp_server
 	({
 		name: 'Log service',
-		host: configuration.log_service.tcp.host,
+		host: configuration.log_service.tcp.host || 'localhost',
 		port: configuration.log_service.tcp.port,
-		access_list: configuration.log_service.tcp.access_list
+		// access_list: configuration.log_service.tcp.access_list
 	})
 
 	server.on('error', error =>

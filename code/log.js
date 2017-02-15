@@ -3,10 +3,10 @@ import fs            from 'fs-extra'
 import bunyan        from 'bunyan'
 import stream        from 'stream'
 import util          from 'util'
-import moment        from 'moment'
+import format        from 'date-fns/format'
 import { terminal }  from 'print-error'
-import levels        from './log levels'
 
+import levels from './log levels'
 import { client as tcp_client } from './tcp'
 
 // import colors from 'colors/safe'
@@ -84,7 +84,7 @@ function colorize(text, style)
 
 function preamble(source, level, time)
 {
-	time = moment(time).format("dddd, MMMM Do YYYY, hh:mm:ss")
+	time = format(time, 'dddd, MMMM Do YYYY, hh:mm:ss')
 
 	let preamble = `[${source}] ${time} `
 	if (level !== 'Generic')

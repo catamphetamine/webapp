@@ -9,7 +9,6 @@ module.exports =
 	{
 		http:
 		{
-			host: '127.0.0.1',
 			port: 3006
 		}
 	},
@@ -17,7 +16,6 @@ module.exports =
 	{
 		http:
 		{
-			host: '127.0.0.1',
 			port: 3007
 		}
 	},
@@ -25,7 +23,6 @@ module.exports =
 	{
 		http:
 		{
-			host: '127.0.0.1',
 			port: 3008
 		}
 	},
@@ -33,12 +30,12 @@ module.exports =
 	{
 		http:
 		{
-			host: '127.0.0.1',
 			port: 3003
 		},
 		files_directory: 'storage/images',
 		temporary_files_directory: 'temporary_storage',
 		temporary_image_expiration_interval: { days: 1 },
+		// Can only have a single key
 		clean_up_interval: { hours: 1 },
 		file_size_limit: '10mb',
 		//
@@ -80,7 +77,6 @@ module.exports =
 	{
 		http:
 		{
-			host: '127.0.0.1',
 			port: 3004
 		}
 	},
@@ -88,7 +84,6 @@ module.exports =
 	{
 		http:
 		{
-			host: '127.0.0.1',
 			port: 3000
 		},
 		image_service_path: '/images'
@@ -97,30 +92,19 @@ module.exports =
 	{
 		http:
 		{
-			host: '127.0.0.1',
 			port: 3005
 		},
 		tcp:
 		{
-			host: '127.0.0.1',
-			port: 3200,
-			// Allowed IP subnets.
-			// For more security set to local IPs only,
-			// excluding the router IP (exclusions start with an exclamation sign)
-			access_list: ['127.0.0.1/32', '192.168.0.0/16']
+			port: 3200
 		}
 	},
 	mail_service:
 	{
 		http:
 		{
-			host: '127.0.0.1',
 			port: 3009
 		},
-		// Allowed IP subnets.
-		// For more security set to local IPs only,
-		// excluding the router IP (exclusions start with an exclamation sign),
-		access_list: ['127.0.0.1/32', '192.168.0.0/16'],
 		mail:
 		{
 			from: 'Webapp Robot <robot@webapp.com>'
@@ -139,17 +123,18 @@ module.exports =
 	{
 		http:
 		{
-			host: '127.0.0.1',
-			port: 3010,
-			// Allowed IP subnets.
-			// For more security set to local IPs only,
-			// excluding the router IP (exclusions start with an exclamation sign)
-			access_list: ['127.0.0.1/32', '192.168.0.0/16']
+			port: 3010
 		},
 		websocket:
 		{
-			host: '127.0.0.1',
 			port: 3100
+		}
+	},
+	access_code_service:
+	{
+		http:
+		{
+			port: 3002
 		}
 	},
 	web_service_secret_keys: ['hammertime'],
@@ -159,7 +144,6 @@ module.exports =
 		{
 			development_server:
 			{
-				host: '127.0.0.1',
 				port: 3001
 			},
 			isomorphic_tools:

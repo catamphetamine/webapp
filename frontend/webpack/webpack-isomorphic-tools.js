@@ -27,9 +27,9 @@ module.exports =
 				'svg'
 			]
 		},
-		html:
+		markdown:
 		{
-			extension: 'html'
+			extension: 'md'
 		},
 		fonts:
 		{

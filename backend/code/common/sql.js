@@ -179,6 +179,7 @@ export default class Sql
 			.map(Sql.json)
 	}
 
+	// Counts matching entries in the database.
 	async count(example)
 	{
 		let query = knex(this.table)
@@ -191,6 +192,8 @@ export default class Sql
 		return parseInt(await query.count())
 	}
 
+	// Creates an entry in the database.
+	// Returns the ID of the created entry.
 	async create(data)
 	{
 		const ids = await knex.insert(data).into(this.table).returning(this.id)
@@ -198,16 +201,37 @@ export default class Sql
 		return ids[0]
 	}
 
+	// Updates an entry in the database.
 	async update(where, data)
 	{
+		if (!data)
+		{
+			// Not using `is_object` here due to `node-postgres`
+			// queried objects being non-objects.
+			// https://github.com/brianc/node-postgres/issues/1131
+			if (where && where[this.id])
+			{
+				data = {}
+
+				for (const key of Object.keys(where))
+				{
+					if (key !== this.id)
+					{
+						data[key] = where[key]
+					}
+				}
+
+				where = where[this.id]
+			}
+			else
+			{
+				throw new Error(`No properties supplied for SQL update`)
+			}
+		}
+
 		if (!is_object(where))
 		{
 			where = { [this.id]: where }
-		}
-
-		if (!data)
-		{
-			throw new Error(`No properties supplied for SQL update`)
 		}
 
 		const count = await knex(this.table).where(where).update(data)
@@ -215,14 +239,19 @@ export default class Sql
 		return count > 0
 	}
 
-	remove(id)
+	delete(where)
 	{
-		if (!id)
+		if (!is_object(where))
 		{
-			throw new Error(`"${this.id}" not supplied for SQL .remove()`)
+			where = { [this.id]: where }
 		}
 
-		return knex(this.table).where({ [this.id]: id }).del()
+		if (!where)
+		{
+			throw new Error(`No argument supplied for SQL .delete()`)
+		}
+
+		return knex(this.table).where(where).del()
 	}
 }
 

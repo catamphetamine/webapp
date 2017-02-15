@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { title }            from 'react-isomorphic-render'
+import { Title }            from 'react-isomorphic-render'
 import { connect }          from 'react-redux'
 
 import styler from 'react-styling'
@@ -17,7 +17,7 @@ const messages = defineMessages
 	}
 })
 
-@international()
+@international
 export default class Page_not_found extends Component
 {
 	render()
@@ -27,7 +27,7 @@ export default class Page_not_found extends Component
 		const markup =
 		(
 			<section className="content error-page">
-				{title(translate(messages.header))}
+				<Title>{ translate(messages.header) }</Title>
 
 				<h1>
 					{translate(messages.header)}

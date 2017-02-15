@@ -18,9 +18,9 @@ export default class Sql_store
 		this.block_user_tokens = new Sql('block_user_tokens')
 	}
 
-	async create_user(user)
+	create_user(user)
 	{
-		return (await this.users.create(user)).id
+		return this.users.create(user)
 	}
 
 	// Finds user by `id` or `alias`
@@ -154,7 +154,7 @@ export default class Sql_store
 
 		if (alias_history_entry)
 		{
-			await this.user_alias_history.remove(alias_history_entry.id)
+			await this.user_alias_history.delete(alias_history_entry.id)
 		}
 	}
 
@@ -208,6 +208,6 @@ export default class Sql_store
 
 	remove_block_user_token(id)
 	{
-		return this.block_user_tokens.remove(id)
+		return this.block_user_tokens.delete(id)
 	}
 }

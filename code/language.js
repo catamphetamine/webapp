@@ -30,7 +30,7 @@ Object.extend = function(...objects)
 	{
 		return
 	}
-	
+
 	if (objects.length === 1)
 	{
 		return objects[0]
@@ -185,8 +185,8 @@ Object.defineProperty(Array.prototype, 'remove_at',
 Object.defineProperty(Array.prototype, 'first',
 {
 	enumerable: false,
-	value: function() 
-	{ 
+	value: function()
+	{
 		return this[0]
 	}
 })
@@ -194,40 +194,40 @@ Object.defineProperty(Array.prototype, 'first',
 Object.defineProperty(Array.prototype, 'has',
 {
 	enumerable: false,
-	value: function(element) 
-	{ 
+	value: function(element)
+	{
 		return this.indexOf(element) >= 0
 	}
 })
 
-Object.defineProperty(Array.prototype, 'not_empty', 
+Object.defineProperty(Array.prototype, 'not_empty',
 {
 	enumerable: false,
-	value: function() 
-	{ 
+	value: function()
+	{
 		return this.length > 0
 	}
 })
 
-Object.defineProperty(Array.prototype, 'is_empty', 
+Object.defineProperty(Array.prototype, 'is_empty',
 {
 	enumerable: false,
-	value: function() 
-	{ 
-		return this.length == 0 
+	value: function()
+	{
+		return this.length == 0
 	}
 })
 
-Object.defineProperty(Array.prototype, 'clone', 
+Object.defineProperty(Array.prototype, 'clone',
 {
 	enumerable: false,
-	value: function() 
-	{ 
+	value: function()
+	{
 		return this.slice(0)
 	}
 })
 
-Object.defineProperty(Array.prototype, 'last', 
+Object.defineProperty(Array.prototype, 'last',
 {
 	enumerable: false,
 	value: function()
@@ -239,7 +239,7 @@ Object.defineProperty(Array.prototype, 'last',
 	}
 })
 
-Object.defineProperty(Array.prototype, 'remove', 
+Object.defineProperty(Array.prototype, 'remove',
 {
 	enumerable: false,
 	value: function(element)
@@ -253,7 +253,7 @@ Object.defineProperty(Array.prototype, 'remove',
 	}
 })
 
-Object.defineProperty(Array.prototype, 'find_by', 
+Object.defineProperty(Array.prototype, 'find_by',
 {
 	enumerable: false,
 	value: function(example)
@@ -277,7 +277,16 @@ Object.defineProperty(Array.prototype, 'find_by',
 	}
 })
 
-Object.defineProperty(String.prototype, 'starts_with', 
+Object.defineProperty(Array.prototype, 'random',
+{
+	enumerable: false,
+	value: function()
+	{
+		return this[Math.floor(Math.random() * this.length)]
+	}
+})
+
+Object.defineProperty(String.prototype, 'starts_with',
 {
 	enumerable: false,
 	value: function(substring)
@@ -303,7 +312,7 @@ Object.defineProperty(String.prototype, 'starts_with',
 	}
 })
 
-Object.defineProperty(String.prototype, 'ends_with', 
+Object.defineProperty(String.prototype, 'ends_with',
 {
 	enumerable: false,
 	value: function(substring)
@@ -337,7 +346,7 @@ RegExp.escape = function(string)
 	return string.replace(specials, "\\$&")
 }
 
-Object.defineProperty(String.prototype, 'replace_all', 
+Object.defineProperty(String.prototype, 'replace_all',
 {
 	enumerable: false,
 	value: function(what, with_what)
@@ -347,7 +356,7 @@ Object.defineProperty(String.prototype, 'replace_all',
 	}
 })
 
-Object.defineProperty(String.prototype, 'has', 
+Object.defineProperty(String.prototype, 'has',
 {
 	enumerable: false,
 	value: function(what)
@@ -356,7 +365,7 @@ Object.defineProperty(String.prototype, 'has',
 	}
 })
 
-Object.defineProperty(String.prototype, 'before', 
+Object.defineProperty(String.prototype, 'before',
 {
 	enumerable: false,
 	value: function(what)
@@ -370,7 +379,7 @@ Object.defineProperty(String.prototype, 'before',
 	}
 })
 
-Object.defineProperty(String.prototype, 'after', 
+Object.defineProperty(String.prototype, 'after',
 {
 	enumerable: false,
 	value: function(what)
@@ -384,7 +393,7 @@ Object.defineProperty(String.prototype, 'after',
 	}
 })
 
-Object.defineProperty(String.prototype, 'is_empty', 
+Object.defineProperty(String.prototype, 'is_empty',
 {
 	enumerable: false,
 	value: function()
@@ -393,7 +402,7 @@ Object.defineProperty(String.prototype, 'is_empty',
 	}
 })
 
-Object.defineProperty(String.prototype, 'is_blank', 
+Object.defineProperty(String.prototype, 'is_blank',
 {
 	enumerable: false,
 	value: function()
@@ -402,7 +411,7 @@ Object.defineProperty(String.prototype, 'is_blank',
 	}
 })
 
-Object.defineProperty(String.prototype, 'repeat', 
+Object.defineProperty(String.prototype, 'repeat',
 {
 	enumerable: false,
 	value: function(times)
@@ -474,7 +483,7 @@ Object.defineProperty(String.prototype, 'repeat',
 //     if (typeof resolver !== "function") {
 //         throw new TypeError("the promise...<omitted>...
 // }
-Object.defineProperty(Function.prototype, 'delay_for', 
+Object.defineProperty(Function.prototype, 'delay_for',
 {
 	enumerable: false,
 	value: function(time)
@@ -483,7 +492,7 @@ Object.defineProperty(Function.prototype, 'delay_for',
 	}
 })
 
-Object.defineProperty(Function.prototype, 'periodical', 
+Object.defineProperty(Function.prototype, 'periodical',
 {
 	enumerable: false,
 	value: function (interval)

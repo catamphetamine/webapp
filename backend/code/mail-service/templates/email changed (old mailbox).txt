@@ -1,7 +1,7 @@
 {%- extends "base.txt" -%}
 
 {%- block title -%}
-{{ translate('mail.email_changed.title', { escape: false }) }}
+{{ translate('mail.email_changed.title') }}
 {%- endblock -%}
 
 {%- block content -%}

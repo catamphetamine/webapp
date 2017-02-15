@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 // import { StickyContainer, Sticky } from 'react-sticky'
 import { PageAndMenu, Page, Menu, MenuButton, Snackbar, DragAndDrop } from 'react-responsive-ui'
 import { flat as style }                  from 'react-styling'
-import { preload, head, Link, IndexLink } from 'react-isomorphic-render'
+import { preload, Title, Meta, Link, IndexLink } from 'react-isomorphic-render'
 import { connect }                        from 'react-redux'
 import { defineMessages }                 from 'react-intl'
 import classNames                         from 'classnames'
@@ -21,7 +21,7 @@ import Preloading      from '../components/preloading'
 	}),
 	dispatch => ({ dispatch })
 )
-@international()
+@international
 @DragAndDrop()
 export default class Layout extends Component
 {
@@ -81,8 +81,8 @@ export default class Layout extends Component
 			<PageAndMenu
 				className={classNames('layout', { 'layout--dragging': isDragging })}>
 
-				{/* <head/> */}
-				{head(title, meta)}
+				<Title>{ title }</Title>
+				<Meta>{ meta }</Meta>
 
 				{/* navigation for small screens (will slide out) */}
 				{/* main menu */}
@@ -167,6 +167,7 @@ const styles = style
 `
 	home
 		text-decoration : none
+		color : inherit
 
 		active
 			cursor : default

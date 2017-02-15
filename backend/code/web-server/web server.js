@@ -48,7 +48,7 @@ export default function start_web_server()
 	web.listen(configuration.web_server.http.port).then(() =>
 	{
 		log.info(`Web server is listening`)
-		log.info(`Now go to http://${configuration.web_server.http.host}:${configuration.web_server.http.port}`)
+		log.info(`Now go to http://${configuration.web_server.http.host || 'localhost'}:${configuration.web_server.http.port}`)
 	},
 	error =>
 	{

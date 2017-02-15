@@ -27,7 +27,7 @@ import { Form } from 'react-responsive-ui'
 import Redux_form, { Field } from 'simpler-redux-form'
 
 import default_messages from '../../components/messages'
-import { messages as authentication_messages } from '../../components/authentication form'
+// import { messages as authentication_messages } from '../../components/authentication form'
 import { messages as change_password_messages } from './settings change password'
 
 const messages = defineMessages
@@ -86,7 +86,7 @@ const messages = defineMessages
 		dispatch)
 	})
 )
-@international()
+@international
 export default class Change_email extends Component
 {
 	state = {}
@@ -143,7 +143,7 @@ export default class Change_email extends Component
 			<Editable_field
 				name="email"
 				email={true}
-				label={translate(authentication_messages.email)}
+				label={'translate(authentication_messages.email)'}
 				value={new_email || user.email}
 				validate={this.validate_email}
 				save={this.save_new_email}
@@ -226,7 +226,7 @@ export default class Change_email extends Component
 	}
 }
 
-@international()
+@international
 @connect
 (
 	model =>
@@ -457,7 +457,7 @@ class Check_password extends Component
 		// due to "Wrong password" error.
 		if (error && error.status === http_status_codes.Input_rejected)
 		{
-			return translate(authentication_messages.wrong_password)
+			// return translate(authentication_messages.wrong_password)
 		}
 	}
 }

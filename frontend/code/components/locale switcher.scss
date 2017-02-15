@@ -13,14 +13,6 @@
 
 .language
 {
-// 	margin-top: 0.1em;
-// 	margin-right: 1.5em;
-
-	.rrui__select
-	{
-		text-align: right !important;
-	}
-
 	.rrui__select__selected
 	{
 		border: none;
@@ -41,12 +33,6 @@
 	{
 		padding-top: 0;
 		padding-bottom: 0;
-	}
-
-	.rrui__select__arrow
-	{
-		// overrides inline css
-		margin-bottom : 0.25em !important;
 	}
 }
 
@@ -77,12 +63,6 @@
 		&, .rrui__select__options li, .rrui__select__option, .rrui__select__selected
 		{
 			line-height : normal;
-		}
-
-		.rrui__select__arrow
-		{
-			// overwrites inline css
-			margin-bottom : 0.1em !important;
 		}
 
 		.rrui__select__option

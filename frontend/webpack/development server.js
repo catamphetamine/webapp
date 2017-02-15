@@ -58,13 +58,13 @@ configuration.plugins = configuration.plugins.concat
 // Enable `webpack-dev-server` and `react-hot-loader`
 configuration.entry.main =
 [
-	`webpack-hot-middleware/client?path=http://${application_configuration.development.webpack.development_server.host}:${application_configuration.development.webpack.development_server.port}/__webpack_hmr`,
+	`webpack-hot-middleware/client?path=http://localhost:${application_configuration.development.webpack.development_server.port}/__webpack_hmr`,
 	'react-hot-loader/patch',
 	configuration.entry.main
 ]
 
 // Network path for static files: fetch all statics from webpack development server
-configuration.output.publicPath = `http://${application_configuration.development.webpack.development_server.host}:${application_configuration.development.webpack.development_server.port}${configuration.output.publicPath}`
+configuration.output.publicPath = `http://localhost:${application_configuration.development.webpack.development_server.port}${configuration.output.publicPath}`
 
 // Run `webpack-dev-server`
 

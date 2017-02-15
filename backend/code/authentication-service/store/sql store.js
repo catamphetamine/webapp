@@ -126,7 +126,7 @@ export default class Sql_store
 		// Remove excessive tokens one-by-one
 		for (let token of excessive_tokens)
 		{
-			await this.authentication_tokens.remove(token.id)
+			await this.authentication_tokens.delete(token.id)
 
 			if (!token.revoked_at)
 			{
@@ -200,16 +200,6 @@ export default class Sql_store
 		sort_tokens_by_relevance(tokens)
 
 		return tokens
-	}
-
-	// Is called on cooldown (with time),
-	// when a login attempt is requested.
-	async set_login_temperature(authentication_data_id, temperature)
-	{
-		return this.authentication_data.update(authentication_data_id,
-		{
-			authentication_attempt_temperature : temperature
-		})
 	}
 
 	// Is called on a failed login attempt

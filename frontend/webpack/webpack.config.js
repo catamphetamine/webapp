@@ -28,26 +28,29 @@ const configuration =
 	// resolve all relative paths from the project root folder
 	context: frontend_root_folder,
 
+	// Each "entry" can be divided into multiple chunks.
+	// Why multiple "entries" might be used?
+	// For example, for completely different website parts,
+	// like the public user-facing part and the private "admin" part.
 	entry:
 	{
+		// The "main" entry
 		main: './code/application.entry.js'
 	},
 
 	output:
 	{
-		// filesystem path for static files
+		// Filesystem path for static files
 		path: path.resolve(frontend_root_folder, 'build/assets'),
 
-		// network path for static files
+		// Network path for static files
 		publicPath: '/assets/',
 
-		// file name pattern for entry scripts
+		// Specifies the name of each output entry file
 		filename: '[name].[hash].js',
 
-		// file name pattern for chunk scripts
-		chunkFilename: '[name].[hash].js',
-
-		// sourceMapFilename: '[file].map'
+		// Specifies the name of each (non-entry) chunk file
+		chunkFilename: '[name].[hash].js'
 	},
 
 	module:
@@ -86,13 +89,24 @@ const configuration =
 					loader : 'style-loader'
 				},
 				{
-					loader : 'css-loader?importLoaders=2&sourceMap'
+					loader : 'css-loader',
+					options:
+					{
+						importLoaders : 2,
+						sourceMap     : true
+					}
 				},
 				{
 					loader : 'postcss-loader'
 				},
 				{
-					loader : 'sass-loader?outputStyle=expanded&sourceMap=true&sourceMapContents=true'
+					loader : 'sass-loader',
+					options:
+					{
+						outputStyle       : 'expanded',
+						sourceMap         : true,
+						sourceMapContents : true
+					}
 				}]
 			},
 			// {
@@ -108,7 +122,11 @@ const configuration =
 				include : assets_source_folder,
 				use     :
 				[{
-					loader : 'url-loader?limit=10240' // Any png-image or woff-font below or equal to 10K will be converted to inline base64 instead
+					loader : 'url-loader',
+					options:
+					{
+						limit: 10240 // Any png-image or woff-font below or equal to 10K will be converted to inline base64 instead
+					}
 				}]
 			},
 			{
@@ -116,15 +134,21 @@ const configuration =
 				include : assets_source_folder,
 				use     :
 				[{
-					loader : 'url-loader?limit=10240' // Any png-image or woff-font below or equal to 10K will be converted to inline base64 instead
+					loader : 'url-loader',
+					options:
+					{
+						limit: 10240 // Any png-image or woff-font below or equal to 10K will be converted to inline base64 instead
+					}
 				}]
 			},
 			{
-				test    : webpack_isomorphic_tools_plugin.regular_expression('html'),
-				include : assets_source_folder,
-				use     :
+				test: /\.md$/,
+				use:
 				[{
-					loader : 'file-loader'
+					loader: 'html-loader'
+				},
+				{
+					loader: 'markdown-loader'
 				}]
 			}
 		]

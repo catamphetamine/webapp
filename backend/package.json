@@ -24,8 +24,9 @@
     "web-service": "^0.4.4"
   },
   "scripts": {
-    "development": "npm-run-all --parallel development:log-service:delayed development:authentication-service:delayed development:user-service:delayed development:password-service:delayed development:image-service:delayed development:mail-service:delayed development:realtime-service:delayed development:web-server:delayed",
+    "development": "npm-run-all --parallel development:log-service:delayed development:authentication-service:delayed development:user-service:delayed development:password-service:delayed development:image-service:delayed development:mail-service:delayed development:realtime-service:delayed development:access-code-service:delayed development:web-server:delayed",
     "development:log-service": "better-npm-run development:log-service",
+    "development:access-code-service": "better-npm-run development:access-code-service",
     "development:realtime-service": "better-npm-run development:realtime-service",
     "development:authentication-service": "better-npm-run development:authentication-service",
     "development:user-service": "better-npm-run development:user-service",
@@ -34,6 +35,7 @@
     "development:mail-service": "better-npm-run development:mail-service",
     "development:web-server": "better-npm-run development:web-server",
     "development:log-service:delayed": "npm-run-all delay development:log-service",
+    "development:access-code-service:delayed": "npm-run-all delay delay development:access-code-service",
     "development:image-service:delayed": "npm-run-all delay delay delay development:image-service",
     "development:password-service:delayed": "npm-run-all delay delay delay delay development:password-service",
     "development:authentication-service:delayed": "npm-run-all delay delay delay delay delay development:authentication-service",
@@ -42,8 +44,9 @@
     "development:realtime-service:delayed": "npm-run-all delay delay delay delay delay delay delay delay development:realtime-service",
     "development:web-server:delayed": "npm-run-all delay delay delay delay delay delay delay delay delay development:web-server",
     "delay": "node ./code/sleep 600",
-    "production": "npm-run-all --parallel production:log-service production:authentication-service production:user-service production:password-service production:image-service production:mail-service production:realtime-service production:web-server",
+    "production": "npm-run-all --parallel production:log-service production:authentication-service production:user-service production:password-service production:image-service production:mail-service production:realtime-service production:access-code-service production:web-server",
     "production:log-service": "better-npm-run production:log-service",
+    "production:access-code-service": "better-npm-run production:access-code-service",
     "production:authentication-service": "better-npm-run production:authentication-service",
     "production:user-service": "better-npm-run production:user-service",
     "production:password-service": "better-npm-run production:password-service",
@@ -119,6 +122,13 @@
         "BABEL_ENV": "server"
       }
     },
+    "development:access-code-service": {
+      "command": "\"../node_modules/.bin/nodemon\" ./code/access-code-service/entry.js --watch ./code/access-code-service --watch ./code/common",
+      "env": {
+        "NODE_ENV": "development",
+        "BABEL_ENV": "server"
+      }
+    },
     "production:web-server": {
       "command": "node --harmony ./code/web-server/entry.js",
       "env": {
@@ -170,6 +180,13 @@
     },
     "production:log-service": {
       "command": "node --harmony ./code/log-service/entry.js",
+      "env": {
+        "NODE_ENV": "production",
+        "BABEL_ENV": "server"
+      }
+    },
+    "production:access-code-service": {
+      "command": "node --harmony ./code/access-code-service/entry.js",
       "env": {
         "NODE_ENV": "production",
         "BABEL_ENV": "server"

@@ -302,7 +302,7 @@ export default function start_web_service()
 
 	web.listen(configuration.image_service.http.port).then(() =>
 	{
-		log.info(`Image service is listening at http://${configuration.image_service.http.host}:${configuration.image_service.http.port}`)
+		log.info(`Image service is listening at http://${configuration.image_service.http.host || 'localhost'}:${configuration.image_service.http.port}`)
 	},
 	error =>
 	{

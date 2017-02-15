@@ -1,6 +1,6 @@
 // TCP client and server messaging.
 //
-// Has no durability guarantees 
+// Has no durability guarantees
 // (messages will be lost in case of connection issues)
 //
 // Usage:
@@ -149,7 +149,7 @@ class Messenger extends EventEmitter
 
 		this.incoming = this.incoming.bind(this)
 
-		// create a buffering writable stream 
+		// create a buffering writable stream
 		// that's available right away
 		// (which, for example, can used for bunyan logging)
 
@@ -216,7 +216,7 @@ class Messenger extends EventEmitter
 
 		const message =
 		{
-			_message_id:  id || this.next_message_id(), 
+			_message_id:  id || this.next_message_id(),
 			data
 		}
 
@@ -254,7 +254,7 @@ class Messenger extends EventEmitter
 		// wait for response
 		const promise = new Promise((resolve, reject) =>
 		{
-			this.promises[message._message_id] = 
+			this.promises[message._message_id] =
 			{
 				resolve,
 				reject
@@ -296,7 +296,7 @@ class Messenger extends EventEmitter
 		this.stream.unpipe(this.output)
 	}
 
-	// When the underlying connection (e.g. TCP) 
+	// When the underlying connection (e.g. TCP)
 	// has been established (or reestablished)
 	// start the initialization sequence.
 	//
@@ -407,7 +407,7 @@ class Messenger extends EventEmitter
 		// is this a reply to a previous message
 		const promise = this.promises[message._message_id]
 
-		// if not, then just emit 'message' event 
+		// if not, then just emit 'message' event
 		// along with a `reply()` function
 		if (!promise)
 		{
@@ -535,7 +535,7 @@ export function client({ name, server_name, host, port })
 			socket.emit('error', error)
 		})
 
-		// receive JSON messages on TCP socket	
+		// receive JSON messages on TCP socket
 		socket.pipe(message_decoder)
 
 		// reset internal state
@@ -554,7 +554,7 @@ export function client({ name, server_name, host, port })
 		}
 	})
 
-	// Emitted when an error occurs on the TCP socket. 
+	// Emitted when an error occurs on the TCP socket.
 	// The 'close' event will be called directly following this event.
 	socket.on('error', function(error)
 	{
@@ -601,7 +601,7 @@ export function client({ name, server_name, host, port })
 			return messenger.ended(new Error('Reconnection not allowed'))
 		}
 
-		// if was trying to reconnect to the server 
+		// if was trying to reconnect to the server
 		// prior to receiving the TCP socket 'close' event,
 		// then it means that reconnection attempt failed.
 		if (reconnecting)
@@ -660,7 +660,7 @@ export function client({ name, server_name, host, port })
 	// 		return callback(new Error('Message lost due to connection issues'))
 	// 	}
 	//
-	// 	// encode the JSON message into a utf-8 string 
+	// 	// encode the JSON message into a utf-8 string
 	// 	// and send it down the TCP socket
 	// 	message_encoder.write(object, undefined, callback)
 	// }
@@ -670,7 +670,7 @@ export function client({ name, server_name, host, port })
 	//
 	// }
 
-	// // All JSON objects written to the stream 
+	// // All JSON objects written to the stream
 	// // will be encoded and sent to the TCP server
 	// message_stream.pipe(message_encoder)
 
@@ -705,27 +705,27 @@ export function server({ name, host, port, access_list })
 
 	// const message_stream = new Stream()
 
-	// If an Access Control List is set,
-	// then allow only IPs from the list of subnets.
-	const ip_access_list = new acl(access_list)
+	// // If an Access Control List is set,
+	// // then allow only IPs from the list of subnets.
+	// const ip_access_list = new acl(access_list)
 
 	// set up a TCP server
 
 	const server = net.createServer(socket =>
 	{
-		// If an Access Control List is set,
-		// then allow only IPs from the list of subnets.
-		//
-		// No local TCP proxying is set up 
-		// so `socket.remoteAddress` check should be enough.
-		if (!ip_access_list.test(socket.remoteAddress))
-		{
-			throw new Error(`Access denied for ip ${socket.remoteAddress}`)
-		}
+		// // If an Access Control List is set,
+		// // then allow only IPs from the list of subnets.
+		// //
+		// // No local TCP proxying is set up
+		// // so `socket.remoteAddress` check should be enough.
+		// if (!ip_access_list.test(socket.remoteAddress))
+		// {
+		// 	throw new Error(`Access denied for ip ${socket.remoteAddress}`)
+		// }
 
 		// the data will be interpreted as UTF-8 data, and returned as strings
 		socket.setEncoding('utf8')
-		
+
 		// decodes textual message representation into a JSON object message
 		const message_decoder = new Message_decoder()
 
@@ -755,7 +755,7 @@ export function server({ name, host, port, access_list })
 		// temporary variable
 		let _error
 
-		// Emitted when an error occurs on the TCP socket. 
+		// Emitted when an error occurs on the TCP socket.
 		// The 'close' event will be called directly following this event.
 		socket.on('error', function(error)
 		{

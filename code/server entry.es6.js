@@ -39,9 +39,9 @@ for (let key of Object.keys(global.configuration))
 
 	const value = global.configuration[key]
 
-	if (is_object(value) && is_object(value.http) && value.http.host && value.http.port)
+	if (is_object(value) && is_object(value.http) && value.http.port)
 	{
-		global.address_book[key] = `http://${value.http.host}:${value.http.port}`
+		global.address_book[key] = `http://${value.http.host || 'localhost'}:${value.http.port}`
 	}
 }
 

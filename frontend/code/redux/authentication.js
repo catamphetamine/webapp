@@ -7,11 +7,11 @@ export const sign_in = action
 ({
 	namespace : 'user',
 	event     : 'sign in',
-	promise   : (credentials, http) => http.post(`/users/sign-in`, credentials)
+	action    : (credentials, http) => http.post(`/users/sign-in`, credentials),
 	// Not updating user data in Redux state
 	// to prevent a sense of "lagging"
 	// (the page will be refreshed anyway)
-	// result : 'user'
+	result    : 'access_code_id'
 },
 handler)
 
@@ -19,7 +19,7 @@ export const sign_out = action
 ({
 	namespace : 'user',
 	event     : 'sign out',
-	promise   : (http) => http.post(`/users/sign-out`)
+	action    : (http) => http.post(`/users/sign-out`)
 	// Not updating user data in Redux state
 	// to prevent a sense of "lagging"
 	// (the page will be refreshed anyway)
@@ -27,23 +27,48 @@ export const sign_out = action
 },
 handler)
 
+export const sign_in_with_access_code = action
+({
+	namespace : 'user',
+	event     : 'sign in with access code',
+	promise   : (info, http) => http.post(`/users/sign-in-with-access-code`, info)
+},
+handler)
+
 export const register = action
 ({
 	namespace : 'user',
 	event     : 'register',
-	promise   : (info, http) => http.post(`/users/register`, info)
+	promise   : (info, http) => http.post(`/users/register`, info),
+	result    : 'access_code_id'
 },
 handler)
 
-export const sign_in_reset_error = () =>
+export const reset_sign_in_error = () =>
 ({
-	type: 'user: sign in: reset error'
+	type  : 'user: sign in: error',
+	error : null
 })
 
-export const register_reset_error = () =>
+export const reset_sign_in_with_access_code_error = () =>
 ({
-	type: 'user: register: reset error'
+	type  : 'user: sign in with access code: error',
+	error : null
 })
+
+export const reset_register_error = () =>
+({
+	type  : 'user: register: error',
+	error : null
+})
+
+export const reset_authentication = action
+({
+	namespace : 'user',
+	event     : 'reset authentication',
+	result    : 'access_code_id'
+},
+handler)
 
 // Updates user picture in the user bar when it is changed on the profile page
 handler.handle('user: update user picture: done', (state, result) =>

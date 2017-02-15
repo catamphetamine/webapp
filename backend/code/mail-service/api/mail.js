@@ -9,13 +9,8 @@ import { send } from '../mailer'
 
 export default function(api)
 {
-	api.post('/', async function({ to, subject, template, parameters, locale }, { user })
+	api.post('/', async function({ to, subject, template, parameters, locale })
 	{
-		// if (!user)
-		// {
-		// 	throw new errors.Unauthenticated()
-		// }
-
 		if (!locale)
 		{
 			throw new errors.Input_rejected(`"locale" is required`)

@@ -148,6 +148,16 @@ exports.up = function(knex, Promise)
 		table.bigint('from').notNullable().references('users.id')
 		table.bigint('to'  ).notNullable().references('users.id')
 	})
+
+	.createTable('access_codes', function(table)
+	{
+		table.bigIncrements('id').primary().unsigned()
+		table.text('code').notNullable()
+		table.bigint('user').notNullable().unique().references('users.id').onDelete('CASCADE')
+		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
+		table.timestamp('latest_attempt')
+		table.bigint('temperature')
+	})
 }
 
 exports.down = function(knex, Promise)

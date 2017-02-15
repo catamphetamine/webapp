@@ -49,6 +49,11 @@ header
 	display: block;
 }
 
+.rrui__slideout-menu-button__icon-path
+{
+	fill : var(--white-color);
+}
+
 .menu-button-container
 {
 	position : absolute;
@@ -86,7 +91,7 @@ header
 		justify-content : flex-start;
 	}
 
-	header > .rrui__menu
+	header .rrui__menu
 	{
 		display: inline-block;
 	}
@@ -148,7 +153,6 @@ header
 	.rrui__slideout-menu,
 	.rrui__slideout-menu-button
 	{
-		// overwrites XS size settings
-		display: none !important;
+		display: none;
 	}
 }

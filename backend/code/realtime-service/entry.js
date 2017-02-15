@@ -1,3 +1,3 @@
 require('../../../code/server entry')
-require('../../../code/log').default('user service')
+require('../../../code/log').default('realtime service')
 require('./entry.es6')

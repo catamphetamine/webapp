@@ -5,7 +5,7 @@ import { bindActionCreators as bind_action_creators } from 'redux'
 import { connect }        from 'react-redux'
 import { defineMessages } from 'react-intl'
 import styler             from 'react-styling'
-import { title, preload } from 'react-isomorphic-render'
+import { Title, preload } from 'react-isomorphic-render'
 import { FormattedDate }  from 'react-intl'
 
 import { get as get_log, connector } from '../redux/log'
@@ -62,7 +62,7 @@ export const messages = defineMessages
 	}),
 	{ get_log }
 )
-@international()
+@international
 export default class Log extends Component
 {
 	state =
@@ -85,7 +85,7 @@ export default class Log extends Component
 		const markup =
 		(
 			<div>
-				{title(this.props.translate(layout_messages.menu_log))}
+				<Title>{ translate(layout_messages.menu_log) }</Title>
 
 				<section className="content">
 					<table style={style.log}>

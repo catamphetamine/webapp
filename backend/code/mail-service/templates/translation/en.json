@@ -7,5 +7,9 @@
 
 	"mail.reset_password.title": "Password reset",
 	"mail.reset_password.invitation": "To reset your password go to the {password_reset_page}",
-	"mail.reset_password.password_reset_page": "password reset page"
+	"mail.reset_password.password_reset_page": "password reset page",
+
+	"mail.sign_in_code.title": "Sign in code",
+	"mail.sign_in_code.subject": "Code: {code}",
+	"mail.sign_in_code.text": "Your sign in code is {code}"
 }

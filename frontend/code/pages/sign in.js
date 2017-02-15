@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { title, redirect }             from 'react-isomorphic-render'
+import { Title, redirect }             from 'react-isomorphic-render'
 import { connect }                     from 'react-redux'
 import styler                          from 'react-styling'
 import { defineMessages }              from 'react-intl'
@@ -11,8 +11,8 @@ import international from '../international/internationalize'
 
 import http_status_codes from '../tools/http status codes'
 
-import { messages as user_bar_messages }                           from '../components/user bar'
-import Authentication_form, { messages as authentication_form_messages } from '../components/authentication form'
+import { messages as user_bar_messages } from '../components/user bar'
+import Authentication_form from '../components/authentication form'
 
 const messages = defineMessages
 ({
@@ -35,7 +35,7 @@ const messages = defineMessages
 		redirect
 	}
 )
-@international()
+@international
 @withRouter
 export default class Sign_in extends Component
 {
@@ -84,8 +84,8 @@ export default class Sign_in extends Component
 
 		const markup =
 		(
-			<section className="content">
-				{title(translate(user_bar_messages.sign_in))}
+			<section className="content sign-in-page">
+				<Title>{ translate(user_bar_messages.sign_in) }</Title>
 
 				<Authentication_form
 					sign_in
@@ -127,22 +127,12 @@ export default class Sign_in extends Component
 
 		if (error === '"email" is required')
 		{
-			return translate(authentication_form_messages.authentication_email_is_required)
-		}
-
-		if (error === '"password" is required')
-		{
-			return translate(authentication_form_messages.authentication_password_is_required)
+			// return translate(authentication_form_messages.authentication_email_is_required)
 		}
 
 		if (error_status === http_status_codes.Not_found)
 		{
 			return translate(messages.user_with_email_not_found, { email: this.props.email })
-		}
-
-		if (error_status === http_status_codes.Input_rejected)
-		{
-			return translate(authentication_form_messages.wrong_password)
 		}
 
 		if (error === 'Login attempts limit exceeded')

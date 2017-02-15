@@ -18,24 +18,17 @@
 	"authentication.sign_out"            : "Выйти",
 	"authentication.register"            : "Зарегистрироваться",
 
-	"authentication.sign_in_or_register" : "или",
-	"authentication.name"                : "Имя",
 	"authentication.email"               : "Почта",
-	"authentication.password"            : "Пароль",
-	"authentication.forgot_password"     : "Забыли пароль?",
+	"authentication.access_code"         : "Код доступа",
+	"authentication.enter_access_code"   : "Введите код доступа из письма, которое сейчас придёт вам на электронную почту",
 
-	"registration.i_accept"             : "Я принимаю",
-	"registration.the_terms_of_service" : "условия обслуживания",
+	"registration.name"                  : "Имя",
+	"registration.user_agreement"        : "Пользовательское соглашение",
+	"registration.privacy_notice"        : "Уведомлением о защите конфиденциальности пользователя",
+	"registration.terms_of_service"      : "Регистрируясь, вы подтверждаете, что ознакомились и приняли наше {user_agreement}, вам исполнилось, как минимум, 18 лет, и вы соглашаетесь с {privacy_notice}, а также на получение наших маркетинговых сообщений.",
 
-	"registration.name_is_required"                        : "Введите ваше имя",
-	"registration.email_is_required"                       : "Для регистрации требуется ваша почта",
-	"registration.password_is_required"                    : "Придумайте себе пароль",
-	"registration.terms_of_service_acceptance_is_required" : "Для регистрации вам необоходимо принять наши условия обслуживания",
-	"registration.email_already_registered"                : "Этот почтовый адрес уже был зарегистрирован ранее",
-	"registration.error"                                   : "Не удалось зарегистрироваться",
-
-	"authentication.email_is_required"                   : "Введите вашу почту",
-	"authentication.password_is_required"                : "Введите ваш пароль",
+	"authentication.error.email.is_required"             : "Введите вашу почту",
+	"authentication.error.access_code.is_required"       : "Введите код доступа",
 	"authentication.error"                               : "Не удалось войти",
 	"authentication.error.user_is_self_blocked"          : "Вы добровольно временно заблокировали свою учётную запись {details}",
 	"authentication.error.user_is_self_blocked_details"  : "{blocked_at}",
@@ -43,11 +36,10 @@
 	"authentication.error.user_is_blocked_details"       : "{blocked_at} пользователем {blocked_by} по причине: «{blocked_reason}»",
 	"authentication.unblock_instructions"                : "По вопросам разблокировки вы можете связаться со службой поддержки по адресу {support_email}",
 	"authentication.login_attempts_limit_exceeded_error" : "Превышено допустимое количество попыток входа. Попробуйте войти ещё раз чуть позже.",
+	"authentication.error.access_code.mismatch"          : "Неверный код доступа",
 
-	"authentication.user_not_found" : "Нет пользователя с такой почтой",
-	"authentication.wrong_password" : "Неверный пароль",
-
-	"sign_in.error.user_with_email_not_found" : "Пользователь с почтой «{email}» не найден",
+	"registration.error.name.is_required"                : "Введите ваше имя",
+	"registration.error"                                 : "Не удалось зарегистрироваться",
 
 	"menu.log"                 : "Журнал",
 

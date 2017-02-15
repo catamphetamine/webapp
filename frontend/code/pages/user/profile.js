@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { title, preload, redirect }    from 'react-isomorphic-render'
+import { Title, preload, redirect }    from 'react-isomorphic-render'
 import { connect }                     from 'react-redux'
 import { flat as style }               from 'react-styling'
 import classNames                      from 'classnames'
@@ -78,7 +78,7 @@ const Latest_activity_time_refresh_interval = 60 * 1000 // once in a minute
 		dispatch)
 	})
 )
-@international()
+@international
 export default class User_profile extends Component
 {
 	state = {}
@@ -193,7 +193,7 @@ export default class User_profile extends Component
 		const markup =
 		(
 			<div className="content user-profile">
-				{title(user.name)}
+				<Title>{ user.name }</Title>
 
 				{/* Left column */}
 				<div className="column-m-6-of-12">

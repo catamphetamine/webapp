@@ -19,7 +19,7 @@ import Editable_field  from '../../components/editable field'
 import Modal from '../../components/modal'
 import Steps, { Text_input_step } from '../../components/steps'
 import default_messages from '../../components/messages'
-import { messages as authentication_messages } from '../../components/authentication form'
+// import { messages as authentication_messages } from '../../components/authentication form'
 
 import http_status_codes from '../../tools/http status codes'
 
@@ -96,7 +96,7 @@ export const messages = defineMessages
 	}
 })
 
-@international()
+@international
 export default class Change_password extends Component
 {
 	state = {}
@@ -119,7 +119,7 @@ export default class Change_password extends Component
 		const markup =
 		(
 			<Editable_field
-				label={translate(authentication_messages.password)}
+				label={'translate(authentication_messages.password)'}
 				edit={this.change_password}>
 
 				{/* Change password popup */}
@@ -146,13 +146,13 @@ export default class Change_password extends Component
 	{
 		if (!value)
 		{
-			return this.props.translate(authentication_messages.registration_password_is_required)
+			// return this.props.translate(authentication_messages.registration_password_is_required)
 		}
 	}
 }
 
 // {/* Change password popup */}
-@international()
+@international
 @connect
 (
 	(state) =>
@@ -408,7 +408,7 @@ class Change_password_step_1 extends Component
 		// due to "Wrong password" error.
 		if (error.status === http_status_codes.Input_rejected)
 		{
-			return translate(authentication_messages.wrong_password)
+			// return translate(authentication_messages.wrong_password)
 		}
 	}
 

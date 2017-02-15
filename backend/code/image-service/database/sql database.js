@@ -66,6 +66,6 @@ export default class Sql_store
 
 	delete(id)
 	{
-		return this.images.remove(id)
+		return this.images.delete(id)
 	}
 }

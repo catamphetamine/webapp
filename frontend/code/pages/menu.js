@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
-import { title }                       from 'react-isomorphic-render'
+import { Title }                       from 'react-isomorphic-render'
 import { connect }                     from 'react-redux'
-import styler                          from 'react-styling'
+import { flat as style }               from 'react-styling'
 import { defineMessages }              from 'react-intl'
 
 import international from '../international/internationalize'
@@ -20,7 +20,7 @@ const messages = defineMessages
 	}
 })
 
-@international()
+@international
 export default class Menu_page extends Component
 {
 	render()
@@ -29,14 +29,14 @@ export default class Menu_page extends Component
 
 		const markup =
 		(
-			<section className="content menu-page" style={{ padding: '1.6em' }}>
-				{title(translate(messages.title))}
+			<section className="content menu-page" style={ styles.container }>
+				<Title>{ translate(messages.title) }</Title>
 
-				<h1 style={style.header}>
-					{translate(messages.title)}
+				<h1 style={ styles.header}>
+					{ translate(messages.title) }
 				</h1>
 
-				<Menu items={menu_entries(translate)} style={style.menu}/>
+				<Menu items={ menu_entries(translate) }/>
 			</section>
 		)
 
@@ -44,13 +44,11 @@ export default class Menu_page extends Component
 	}
 }
 
-const style = styler
+const styles = style
 `
+	container
+		padding: 1.6em
+
 	header
 		text-align: center
-
-	menu
-		// overrides inline css
-		display: block !important
-		z-index: 1
 `
