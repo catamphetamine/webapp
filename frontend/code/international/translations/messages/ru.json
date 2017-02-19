@@ -20,6 +20,7 @@
 
 	"authentication.email"               : "Почта",
 	"authentication.access_code"         : "Код доступа",
+	"authentication.password"            : "Пароль",
 	"authentication.enter_access_code"   : "Введите код доступа из письма, которое сейчас придёт вам на электронную почту",
 
 	"registration.name"                  : "Имя",
@@ -29,19 +30,21 @@
 
 	"authentication.error.email.is_required"             : "Введите вашу почту",
 	"authentication.error.access_code.is_required"       : "Введите код доступа",
+	"authentication.error.password.is_required"          : "Введите пароль",
 	"authentication.error"                               : "Не удалось войти",
 	"authentication.error.user_is_self_blocked"          : "Вы добровольно временно заблокировали свою учётную запись {details}",
 	"authentication.error.user_is_self_blocked_details"  : "{blocked_at}",
 	"authentication.error.user_is_blocked"               : "Ваша учётная запись была заблокирована {details}",
 	"authentication.error.user_is_blocked_details"       : "{blocked_at} пользователем {blocked_by} по причине: «{blocked_reason}»",
 	"authentication.unblock_instructions"                : "По вопросам разблокировки вы можете связаться со службой поддержки по адресу {support_email}",
-	"authentication.login_attempts_limit_exceeded_error" : "Превышено допустимое количество попыток входа. Попробуйте войти ещё раз чуть позже.",
+	"authentication.error.login_attempts_limit_exceeded" : "Превышено допустимое количество попыток входа. Попробуйте войти ещё раз {cooldown}.",
 	"authentication.error.access_code.mismatch"          : "Неверный код доступа",
+	"authentication.error.password.mismatch"             : "Неверный пароль",
 
 	"registration.error.name.is_required"                : "Введите ваше имя",
 	"registration.error"                                 : "Не удалось зарегистрироваться",
 
-	"menu.log"                 : "Журнал",
+	"menu.log" : "Журнал",
 
 	"home.header": "Собака",
 

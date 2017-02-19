@@ -1,24 +1,25 @@
-import { http, errors } from 'web-service'
-
-// No login attempts will be allowed
-// past this temperature threshold
-// (this is for password bruteforce protection)
-const The_hottest_allowed_temperature = 1000
-
-// How fast does temperature cool down
-const Temperature_half_life = 15 * 60 // in seconds
-
-// If two consecutive failed attempts
-// were attempted within `Penalty_interval`
-// then penalty (temperature raise) will be imposed.
-const Penalty_interval = 15 * 60 // in seconds
-
+// By default it gives a user 4 tries
+// with the fifth try after 20 minutes cooldown
+// and then the cooldown increases for each failed attempt.
 export default class Throttling
 {
-	constructor(store, error_message)
+	// Temperature cooling coefficient
+	k = 0.0001
+
+	// Max "temperature"
+	hottest_allowed_temperature = 10
+
+	constructor(store, options = {})
 	{
+		const { overheat } = options
+
+		// Reads and writes latest attempt date and temperature
 		this.store = store
-		this.error_message = error_message
+
+		if (overheat)
+		{
+			this.hottest_allowed_temperature = overheat
+		}
 	}
 
 	// Each failed login attempt increases the `temperature` twice.
@@ -27,7 +28,7 @@ export default class Throttling
 	// The temperature cools down to a half of its value every 15 minutes.
 	async attempt(info, check)
 	{
-		let temperature
+		let temperature = 0
 
 		// If no login attempts failed so far
 		// then allow the next login attempt.
@@ -35,7 +36,7 @@ export default class Throttling
 		{
 			// Fast forward temperature cooldown
 			// since the latest failed login attempt till now.
-			temperature = fast_forward_cool_down_temperature(info)
+			temperature = this.fast_forward_temperature_cooldown(info)
 
 			// If the temperature is still too hot
 			// then deny login attempts
@@ -43,33 +44,49 @@ export default class Throttling
 			// (if too many login attempts have been made
 			//  for this user recently, then impose a short cooldown period)
 			//
-			if (temperature > The_hottest_allowed_temperature)
+			if (temperature > this.hottest_allowed_temperature)
 			{
-				throw new errors.Access_denied(this.error_message)
+				const result =
+				{
+					throttled : true,
+					cooldown  : this.cooldown_estimate(info)
+				}
+
+				return result
 			}
 		}
 
+		const result =
+		{
+			throttled : false
+		}
+
 		// Absence of `check` may be used
-		// to limit function call count
+		// to just limit function call frequency
 		if (!check)
 		{
+			// Increase attempts counter and the temperature
 			await this.failed(info, temperature)
-			return
+			return result
 		}
 
 		// Check if the password matches
 		const passed = await check()
 
-		// If the password is wrong, return an error
-		if (!passed)
+		if (passed)
 		{
+			// Reset threshold for login attempt count limiter
+			await this.succeeded(info)
+			result.result = passed || true
+		}
+		else
+		{
+			// Increase attempts counter and the temperature
 			await this.failed(info, temperature)
-			return false
+			result.result = false
 		}
 
-		// Reset threshold for login attempt count limiter
-		const result = await this.succeeded(info)
-		return passed || true
+		return result
 	}
 
 	async succeeded(info)
@@ -79,57 +96,66 @@ export default class Throttling
 
 	async failed(info, temperature)
 	{
-		if (temperature)
-		{
-			const when = info.latest_attempt.getTime()
-
-			// If the two consecutive failed login attempts weren't close enough to each other
-			// then don't penalize for attempt failure and don't double the temperature.
-			if (Date.now() > when + Penalty_interval * 1000)
-			{
-				// no penalty
-			}
-			// Otherwise impose penalty
-			else
-			{
-				// Double the temperature
-				temperature *= 2
-			}
-		}
-		else
-		{
-			// The initial temperature is 2
-			// for the first failed attempt
-			temperature = 2
-		}
-
-		// Register this failed login attempt
-		await this.store.failed(info.id, temperature)
-	}
-}
-
-// Fast forwards temperature cooldown
-// since the latest failed login attempt till now.
-function fast_forward_cool_down_temperature(info)
-{
-	let temperature = info.temperature
-	let when        = info.latest_attempt.getTime()
-	const now       = Date.now()
-
-	while (now >= when + Temperature_half_life * 1000)
-	{
-		// Cool down the temperature to a half of its value
-		temperature /= 2
-		when += Temperature_half_life * 1000
-
-		// Consider all temperatures below 1 to equal 0
-		// because it doesn't really matter and saves CPU cycles
 		if (temperature < 1)
 		{
-			temperature = 0
-			break
+			temperature = 1
 		}
+
+		temperature *= 2
+
+		// Register this failed attempt
+		await this.store.failed(info.id, info.attempts + 1, temperature)
 	}
 
-	return temperature
+	// Fast forwards temperature cooldown
+	// since the latest failed login attempt till now.
+	fast_forward_temperature_cooldown(info)
+	{
+		const time_passed = Date.now() - info.latest_attempt.getTime()
+
+		// http://formulas.tutorvista.com/physics/newton-s-law-of-cooling-formula.html
+		//
+		// The temperature is gonna be:
+		//
+		// * 2 (after first failed attempt)
+		// * 4 (after second attempt)
+		// * 8 (after third attempt)
+		// * 16 (after fourth attempt)
+		// * Now over the 10 threshold, so it will cool down for 20 minutes
+		// * Now again over the threshold, this time it will cool down for an hour
+		// * Again over the threshold, this time it will cool down for 2 hours
+		// * Again over the threshold, this time it will cool down for 5 hours
+		// * Again over the threshold, this time it will cool down for 8 hours
+		// * Again over the threshold, this time it will cool down for 12 hours
+		// * Again over the threshold, this time it will cool down for 20 hours
+		// * Again over the threshold, this time it will cool down for a day
+		// * Again over the threshold, this time it will cool down for a day and a half
+		// * Again over the threshold, this time it will cool down for 2 days
+		// * Again over the threshold, this time it will cool down for 3 days
+		// * Again over the threshold, this time it will cool down for 4 days
+		// * ...
+		//
+		return info.temperature * Math.exp(-1 * this.k * (1 / Math.pow(info.attempts, 4)) * time_passed)
+	}
+
+	// How much cooldown left until the next attempt can be made
+	cooldown_estimate(info)
+	{
+		// Sanity check
+		if (info.temperature <= this.hottest_allowed_temperature)
+		{
+			return 0
+		}
+
+		// Sanity check
+		if (!info.latest_attempt)
+		{
+			return 0
+		}
+
+		const cooldown_since_latest_attempt = Math.floor(Math.log(this.hottest_allowed_temperature / info.temperature) / (-1 * this.k * (1 / Math.pow(info.attempts, 4))))
+		const time_passed_since_latest_attempt = Date.now() - info.latest_attempt.getTime()
+
+		return cooldown_since_latest_attempt - time_passed_since_latest_attempt
+	}
 }

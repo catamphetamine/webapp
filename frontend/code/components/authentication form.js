@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import Register from './authentication form/register'
 import Sign_in from './authentication form/sign in'
 import Sign_in_with_access_code from './authentication form/sign in with access code'
+import Sign_in_with_password from './authentication form/sign in with password'
 
 import
 {
@@ -60,7 +61,7 @@ export default class Authentication_form extends Component
 	{
 		const
 		{
-			access_code_id
+			authentication
 		}
 		= this.props
 
@@ -72,7 +73,12 @@ export default class Authentication_form extends Component
 		}
 		= this.state
 
-		if (access_code_id)
+		if (authentication && authentication.type === 'password')
+		{
+			return <Sign_in_with_password/>
+		}
+
+		if (authentication && authentication.type === 'access code')
 		{
 			return <Sign_in_with_access_code signed_in={ this.signed_in }/>
 		}

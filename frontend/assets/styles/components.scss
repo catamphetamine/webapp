@@ -176,7 +176,7 @@ header .rrui__menu
 
 .user-profile
 {
-	input[type="text"]
+	.rrui__text-input__input
 	{
 		width: 100%;
 	}
@@ -365,6 +365,12 @@ header .rrui__menu
 	{
 		margin-bottom: 0;
 	}
+}
+
+.rrui__form__field-description
+{
+	margin-top    : 0;
+	margin-bottom : calc(var(--unit) * 1);
 }
 
 .rrui__button,

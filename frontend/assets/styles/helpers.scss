@@ -93,16 +93,11 @@
 // http://caniuse.com/#search=css%20var
 @mixin set_css_variable_input_width($value)
 {
-	input[type="text"],
-	input[type="tel"],
-	input[type="number"],
-	input[type="email"],
-	input[type="password"],
-	textarea,
 	select,
+	.rrui__text-input__input,
 	.date-picker
 	{
-		width   : $value;
+		width : $value;
 	}
 }
 

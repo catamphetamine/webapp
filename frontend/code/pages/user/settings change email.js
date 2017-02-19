@@ -3,16 +3,18 @@ import styler                          from 'react-styling'
 import classNames                      from 'classnames'
 import { defineMessages }              from 'react-intl'
 import { connect }                     from 'react-redux'
-import { bindActionCreators as bind_action_creators } from 'redux'
 
 import
 {
 	check_password,
 	reset_check_password_error,
 	change_email,
+	reset_change_email_error,
 	connector
 }
 from '../../redux/user/settings/main'
+
+import { snack } from '../../redux/snackbar'
 
 import http_status_codes from '../../tools/http status codes'
 
@@ -27,64 +29,21 @@ import { Form } from 'react-responsive-ui'
 import Redux_form, { Field } from 'simpler-redux-form'
 
 import default_messages from '../../components/messages'
-// import { messages as authentication_messages } from '../../components/authentication form'
+import { messages as authentication_messages } from '../../components/authentication form/sign in'
+import { messages as password_authentication_messages } from '../../components/authentication form/sign in with password'
 import { messages as change_password_messages } from './settings change password'
-
-const messages = defineMessages
-({
-	enter_new_email:
-	{
-		id             : 'user.settings.change_email.enter_new_email',
-		description    : `An error message stating that new email hasn't been entered`,
-		defaultMessage : `Enter new email`
-	},
-	password_check:
-	{
-		id             : 'user.settings.check_password.title',
-		description    : `Check password popup title`,
-		defaultMessage : `Security check`
-	},
-	enter_password:
-	{
-		id             : 'user.settings.check_password.enter_password',
-		description    : `An invitation for a user to enter his current password`,
-		defaultMessage : `Enter you password`
-	},
-	password:
-	{
-		id             : 'user.settings.check_password.password',
-		description    : `User's current password`,
-		defaultMessage : `Password`
-	},
-	email_updated:
-	{
-		id             : 'user.settings.change_email.email_updated',
-		description    : `User's new email has been saved`,
-		defaultMessage : `Email updated`
-	},
-	change_email_failed:
-	{
-		id             : 'user.settings.change_email.failed',
-		description    : `An error stating that the user's email couldn't be changed to the new one`,
-		defaultMessage : `Couldn't update your email`
-	}
-})
 
 @connect
 (
-	(state) =>
+	({ user_settings }) =>
 	({
-		...connector(state.user_settings.main)
+		...connector(user_settings.main)
 	}),
-	dispatch =>
-	({
-		dispatch,
-		...bind_action_creators
-		({
-			change_email
-		},
-		dispatch)
-	})
+	{
+		change_email,
+		reset_change_email_error,
+		snack
+	}
 )
 @international
 export default class Change_email extends Component
@@ -104,7 +63,9 @@ export default class Change_email extends Component
 
 	reset_error()
 	{
-		this.props.dispatch({ type: 'user settings: change email: reset error'})
+		const { reset_change_email_error } = this.props
+
+		reset_change_email_error()
 	}
 
 	error_message(error)
@@ -142,8 +103,8 @@ export default class Change_email extends Component
 		(
 			<Editable_field
 				name="email"
-				email={true}
-				label={'translate(authentication_messages.email)'}
+				email
+				label={translate(authentication_messages.email)}
 				value={new_email || user.email}
 				validate={this.validate_email}
 				save={this.save_new_email}
@@ -199,12 +160,12 @@ export default class Change_email extends Component
 
 	async update_email(password)
 	{
-		const { change_email, translate, dispatch } = this.props
+		const { change_email, translate, snack } = this.props
 		const { new_email } = this.state
 
 		await change_email(new_email, password)
 
-		dispatch({ type: 'snack', snack: translate(messages.email_updated) })
+		snack(translate(messages.email_updated))
 
 		this.setState({ changing_email : false })
 	}
@@ -229,17 +190,15 @@ export default class Change_email extends Component
 @international
 @connect
 (
-	model =>
+	({ user_settings }) =>
 	({
-		check_password_pending : model.user_settings.main.check_password_pending,
-		check_password_error   : model.user_settings.main.check_password_error,
+		check_password_pending : user_settings.main.check_password_pending,
+		check_password_error   : user_settings.main.check_password_error,
 	}),
-	dispatch => bind_action_creators
-	({
+	{
 		check_password,
 		reset_check_password_error
-	},
-	dispatch)
+	}
 )
 class Check_password_popup extends Component
 {
@@ -249,13 +208,7 @@ class Check_password_popup extends Component
 	{
 		isOpen  : PropTypes.bool,
 		close   : PropTypes.func.isRequired,
-		done    : PropTypes.func.isRequired,
-
-		check_password_pending : PropTypes.bool,
-		check_password_error   : PropTypes.object,
-
-		check_password             : PropTypes.func.isRequired,
-		reset_check_password_error : PropTypes.func.isRequired
+		done    : PropTypes.func.isRequired
 	}
 
 	constructor()
@@ -289,7 +242,7 @@ class Check_password_popup extends Component
 				isOpen={isOpen}
 				close={close}
 				reset={reset_check_password_error}
-				cancel={true}
+				cancel
 				busy={check_password_pending}
 				actions=
 				{[{
@@ -370,7 +323,7 @@ class Check_password extends Component
 
 				<TextInput
 					name="input"
-					password={true}
+					password
 					description={translate(messages.enter_password)}
 					placeholder={translate(messages.password)}
 					error={this.password_error()}
@@ -457,7 +410,47 @@ class Check_password extends Component
 		// due to "Wrong password" error.
 		if (error && error.status === http_status_codes.Input_rejected)
 		{
-			// return translate(authentication_messages.wrong_password)
+			return translate(password_authentication_messages.wrong_password)
 		}
 	}
 }
+
+const messages = defineMessages
+({
+	enter_new_email:
+	{
+		id             : 'user.settings.change_email.enter_new_email',
+		description    : `An error message stating that new email hasn't been entered`,
+		defaultMessage : `Enter new email`
+	},
+	password_check:
+	{
+		id             : 'user.settings.check_password.title',
+		description    : `Check password popup title`,
+		defaultMessage : `Security check`
+	},
+	enter_password:
+	{
+		id             : 'user.settings.check_password.enter_password',
+		description    : `An invitation for a user to enter his current password`,
+		defaultMessage : `Enter you password`
+	},
+	password:
+	{
+		id             : 'user.settings.check_password.password',
+		description    : `User's current password`,
+		defaultMessage : `Password`
+	},
+	email_updated:
+	{
+		id             : 'user.settings.change_email.email_updated',
+		description    : `User's new email has been saved`,
+		defaultMessage : `Email updated`
+	},
+	change_email_failed:
+	{
+		id             : 'user.settings.change_email.failed',
+		description    : `An error stating that the user's email couldn't be changed to the new one`,
+		defaultMessage : `Couldn't update your email`
+	}
+})

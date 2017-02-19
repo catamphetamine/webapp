@@ -490,7 +490,12 @@ export default class User_profile extends Component
 	{
 		const { dispatch } = this.props
 
-		dispatch({ type: 'user profile: upload user picture: reset error' })
+		dispatch
+		({
+			type  : 'user profile: upload user picture: error',
+			error : null
+		})
+
 		dispatch({ type: 'user profile: upload user picture: error: too big: reset' })
 		dispatch({ type: 'user profile: upload user picture: error: unsupported file: reset' })
 	}

@@ -956,7 +956,8 @@ but introduces page width jumps.
 	color: var(--error-color-darker);
 }
 
-.rrui__text-input__input--invalid
+.rrui__text-input__input--invalid,
+.rrui__text-input__input--invalid:focus
 {
 	border-color: var(--error-color);
 }

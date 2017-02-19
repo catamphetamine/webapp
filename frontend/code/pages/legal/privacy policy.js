@@ -47,5 +47,10 @@ export function most_suitable_language(language)
 		return language
 	}
 
-	return 'en'
+	if (privacy_policy.en)
+	{
+		return 'en'
+	}
+
+	return Object.keys(privacy_policy)[0]
 }

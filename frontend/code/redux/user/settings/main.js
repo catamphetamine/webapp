@@ -53,6 +53,12 @@ export const change_email = action
 },
 handler)
 
+export const reset_change_email_error = () =>
+({
+	type  : 'user settings: change email: error',
+	error : null
+})
+
 export const change_alias = action
 ({
 	namespace : 'user settings',
@@ -74,6 +80,12 @@ export const change_alias = action
 },
 handler)
 
+export const reset_change_alias_error = () =>
+({
+	type  : 'user settings: change alias: error',
+	error : null
+})
+
 export const check_password = action
 ({
 	namespace : 'user settings',
@@ -84,8 +96,25 @@ handler)
 
 export const reset_check_password_error = () =>
 ({
-	type : 'user settings: check password: reset error'
+	type  : 'user settings: check password: error',
+	error : null
 })
+
+export const set_load_advanced_settings_pending = action
+({
+	namespace : 'user settings',
+	event     : 'load advanced settings: pending',
+	result    : 'load_advanced_settings_pending'
+},
+handler)
+
+export const set_load_advanced_settings_error = action
+({
+	namespace : 'user settings',
+	event     : 'load advanced settings: error',
+	result    : 'load_advanced_settings_error'
+},
+handler)
 
 export const get_user_authentication_tokens = action
 ({

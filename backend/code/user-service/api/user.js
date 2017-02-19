@@ -7,9 +7,6 @@ import store from '../store/store'
 import
 {
 	get_user,
-	sign_in,
-	sign_in_with_access_code,
-	sign_out,
 	register,
 	own_user
 }
@@ -19,10 +16,38 @@ import can from '../../../../code/permissions'
 
 export default function(api)
 {
-	api.post('/sign-in', sign_in)
-	api.post('/sign-in-with-access-code', sign_in_with_access_code)
-	api.post('/sign-out', sign_out)
 	api.post('/register', register)
+
+	api.post('/sign-in', async function({ email, phone })
+	{
+		let user
+
+		if (exists(email))
+		{
+			user = await store.find_user_by_email(email)
+
+			if (!user)
+			{
+				throw new errors.Not_found(`No user registered with this email`, { field: 'email' })
+			}
+		}
+		else if (exists(phone))
+		{
+			// Currently not implemented
+			user = await store.find_user_by_phone(phone)
+
+			if (!user)
+			{
+				throw new errors.Not_found(`No user registered with this phone number`, { field: 'phone' })
+			}
+		}
+		else
+		{
+			throw new errors.Input_rejected(`"email" or "phone" is required`)
+		}
+
+		return await http.post(`${address_book.authentication_service}/sign-in`, user)
+	})
 
 	// Get user's "was online at" time
 	api.get('/was-online-at/:id', async ({ id }) =>

@@ -11,7 +11,7 @@ export const sign_in = action
 	// Not updating user data in Redux state
 	// to prevent a sense of "lagging"
 	// (the page will be refreshed anyway)
-	result    : 'access_code_id'
+	result    : 'authentication'
 },
 handler)
 
@@ -19,7 +19,7 @@ export const sign_out = action
 ({
 	namespace : 'user',
 	event     : 'sign out',
-	action    : (http) => http.post(`/users/sign-out`)
+	action    : (http) => http.post(`/authentication/sign-out`)
 	// Not updating user data in Redux state
 	// to prevent a sense of "lagging"
 	// (the page will be refreshed anyway)
@@ -31,7 +31,16 @@ export const sign_in_with_access_code = action
 ({
 	namespace : 'user',
 	event     : 'sign in with access code',
-	promise   : (info, http) => http.post(`/users/sign-in-with-access-code`, info)
+	promise   : (data, http) => http.post(`/authentication/sign-in-finish-with-access-code`, data)
+},
+handler)
+
+export const sign_in_with_password = action
+({
+	namespace : 'user',
+	event     : 'sign in with password',
+	promise   : (data, http) => http.post(`/authentication/sign-in-proceed-with-password`, data),
+	result    : 'authentication'
 },
 handler)
 
@@ -40,7 +49,7 @@ export const register = action
 	namespace : 'user',
 	event     : 'register',
 	promise   : (info, http) => http.post(`/users/register`, info),
-	result    : 'access_code_id'
+	result    : 'authentication'
 },
 handler)
 
@@ -53,6 +62,12 @@ export const reset_sign_in_error = () =>
 export const reset_sign_in_with_access_code_error = () =>
 ({
 	type  : 'user: sign in with access code: error',
+	error : null
+})
+
+export const reset_sign_in_with_password_error = () =>
+({
+	type  : 'user: sign in with password: error',
 	error : null
 })
 

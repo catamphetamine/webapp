@@ -78,16 +78,20 @@ exports.up = function(knex, Promise)
 		table.bigint('user').notNullable().references('users.id').onDelete('CASCADE')
 	})
 
-	.createTable('authentication_data', function(table)
+	.createTable('authentication', function(table)
 	{
 		table.bigIncrements('id').primary().unsigned()
 
-		table.text('password').notNullable()
+		table.string('type', 32).notNullable()
+		table.text('value').notNullable()
 
-		table.timestamp('authentication_attempt_failed_at')
-		table.integer('authentication_attempt_temperature')
+		table.timestamp('latest_attempt')
+		table.float('temperature').notNullable.defaultTo(0)
+		table.integer('attempts').notNullable.defaultTo(0)
 
 		table.bigint('user').notNullable().unique().references('users.id').onDelete('CASCADE')
+
+		table.index('type')
 	})
 
 	.createTable('authentication_tokens', function(table)
@@ -156,7 +160,8 @@ exports.up = function(knex, Promise)
 		table.bigint('user').notNullable().unique().references('users.id').onDelete('CASCADE')
 		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
 		table.timestamp('latest_attempt')
-		table.bigint('temperature')
+		table.float('temperature').notNullable.defaultTo(0)
+		table.integer('attempts').notNullable.defaultTo(0)
 	})
 }
 

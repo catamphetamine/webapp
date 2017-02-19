@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react'
-import styler from 'react-styling'
+import { flat as style } from 'react-styling'
 import classNames from 'classnames'
 
 import { Form, TextInput } from 'react-responsive-ui'
-import Redux_form, { Field } from 'simpler-redux-form'
+import { Form as Redux_form, Field } from 'simpler-redux-form'
 
 export default class Steps extends Component
 {
@@ -116,6 +116,9 @@ export default class Steps extends Component
 }
 
 @Redux_form
+({
+	methods: ['submit']
+})
 export class Text_input_step extends Component
 {
 	state = {}
@@ -139,9 +142,9 @@ export class Text_input_step extends Component
 		style       : PropTypes.object
 	}
 
-	constructor(props, context)
+	constructor()
 	{
-		super(props, context)
+		super()
 
 		this.submit = this.submit.bind(this)
 	}
@@ -168,22 +171,27 @@ export class Text_input_step extends Component
 		const markup =
 		(
 			<Form
-				ref={ref => this.form = ref}
-				busy={busy}
-				action={submit(reset_error, action)}
-				error={error}>
+				ref={ ref => this.form = ref }
+				busy={ busy }
+				action={ submit(reset_error, action) }
+				error={ error }>
+
+				{ description &&
+					<p className="rrui__form__field-description">
+						{ description }
+					</p>
+				}
 
 				<Field
-					component={TextInput}
+					component={ TextInput }
 					name="input"
-					email={email}
-					password={password}
-					description={description}
-					placeholder={placeholder}
-					value={value}
-					disabled={busy}
-					error={input_error}
-					validate={validate}/>
+					email={ email }
+					password={ password }
+					placeholder={ placeholder }
+					value={ value }
+					disabled={ busy }
+					error={ input_error }
+					validate={ validate }/>
 			</Form>
 		)
 

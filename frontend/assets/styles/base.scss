@@ -41,34 +41,29 @@ ul
 	list-style-type : none;
 }
 
-input[type="checkbox"], input[type="radio"]
-{
-	width: 0.9em;
-	height: 0.9em;
+// input[type="checkbox"], input[type="radio"]
+// {
+// 	width: 0.9em;
+// 	height: 0.9em;
+//
+// 	margin-right: 0.3em;
+// 	margin-bottom: 0.2em;
+//
+// 	vertical-align: bottom;
+// }
 
-	margin-right: 0.3em;
-	margin-bottom: 0.2em;
+// input[type="checkbox"]
+// {
+// 	margin-bottom: 0.2em;
+// }
 
-	vertical-align: bottom;
-}
+// input[type="radio"]
+// {
+// 	margin-bottom: 0.16em;
+// }
 
-input[type="checkbox"]
-{
-	margin-bottom: 0.2em;
-}
-
-input[type="radio"]
-{
-	margin-bottom: 0.16em;
-}
-
-input[type="text"],
-input[type="tel"],
-input[type="number"],
-input[type="email"],
-input[type="password"],
-textarea,
 select,
+.rrui__text-input__input,
 .date-picker
 {
 	display : block;
@@ -83,12 +78,7 @@ select,
 // // http://caniuse.com/#search=css%20var
 // set_css_variable_input_width(var(--input-width));
 
-input[type="text"],
-input[type="tel"],
-input[type="number"],
-input[type="email"],
-input[type="password"],
-textarea
+.rrui__text-input__input
 {
 	margin: 0;
 	appearance: none;
@@ -98,11 +88,6 @@ textarea
 	{
 		outline: none;
 		border-bottom: var(--input-border-width) solid var(--accent-color);
-	}
-
-	&[disabled]
-	{
-		background-color : white;
 	}
 
 	// When changing this placeholder color
@@ -141,6 +126,16 @@ textarea
 		color   : var(--gray-color-dark);
 		opacity : 1 !important;
 	}
+}
+
+.rrui__text-input__input--disabled
+{
+	background-color : white;
+}
+
+.rrui__text-input__input--invalid:focus
+{
+	border-color: var(--error-color);
 }
 
 select

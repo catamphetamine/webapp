@@ -1,7 +1,7 @@
 var fs = require('fs')
 
-var Min_length = 6
-var Max_length = 6
+var Min_length = 0
+var Max_length = Infinity
 
 var words = fs.readFileSync('input.txt', 'utf8').split('\n')
 

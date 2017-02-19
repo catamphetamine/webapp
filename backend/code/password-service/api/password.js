@@ -27,7 +27,7 @@ export default function(api)
 		return { hash: await hash_password(password) }
 	})
 
-	api.get('/check', async function({ password, hashed_password })
+	api.get('/matches', async function({ password, hashed_password })
 	{
 		return await check_password(password, hashed_password)
 	})

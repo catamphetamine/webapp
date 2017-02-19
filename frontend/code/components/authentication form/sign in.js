@@ -4,6 +4,7 @@ import { flat as style } from 'react-styling'
 import { defineMessages, FormattedMessage } from 'react-intl'
 import { Form, Button } from 'react-responsive-ui'
 import Redux_form from 'simpler-redux-form'
+import React_time_ago from 'react-time-ago'
 
 import Submit     from '../form/submit'
 import Text_input from '../form/text input'
@@ -27,7 +28,8 @@ from '../../redux/authentication'
 (
 	state =>
 	({
-		...connector(state.authentication)
+		...connector(state.authentication),
+		locale : state.locale.locale
 	}),
 	{
 		sign_in,
@@ -41,8 +43,14 @@ export default class Sign_in extends Component
 	{
 		super()
 
-		this.sign_in        = this.sign_in.bind(this)
-		this.validate_email = this.validate_email.bind(this)
+		this.sign_in = this.sign_in.bind(this)
+	}
+
+	componentWillUnmount()
+	{
+		const { reset_sign_in_error } = this.props
+
+		reset_sign_in_error()
 	}
 
 	render()
@@ -64,7 +72,7 @@ export default class Sign_in extends Component
 				action={ submit(reset_sign_in_error, this.sign_in) }
 				busy={ submitting }
 				error={ this.sign_in_error(sign_in_error) }
-				post="/users/legacy/sign-in">
+				post="/authentication/legacy/sign-in">
 
 				{/* "Sign in" */}
 				<h2 style={ styles.form_title }>
@@ -128,7 +136,7 @@ export default class Sign_in extends Component
 
 	sign_in_error(error)
 	{
-		const { translate } = this.props
+		const { translate, locale } = this.props
 
 		if (!error)
 		{
@@ -142,7 +150,7 @@ export default class Sign_in extends Component
 
 		if (error.message === 'Access code attempts limit exceeded')
 		{
-			return translate(messages.login_attempts_limit_exceeded_error)
+			return login_attempts_limit_exceeded_error(error)
 		}
 
 		if (error.status === http_status_codes.Access_denied)
@@ -192,11 +200,13 @@ export default class Sign_in extends Component
 		return translate(messages.sign_in_error)
 	}
 
-	validate_email(value)
+	validate_email = (value) =>
 	{
+		const { translate } = this.props
+
 		if (!value)
 		{
-			return this.props.translate(messages.authentication_email_is_required)
+			return translate(messages.authentication_email_is_required)
 		}
 	}
 }
@@ -259,9 +269,9 @@ export const messages = defineMessages
 	},
 	login_attempts_limit_exceeded_error:
 	{
-		id             : 'authentication.login_attempts_limit_exceeded_error',
-		description    : `The user's login attempts limit has been reached. The user shold try again in 15 minutes or so.`,
-		defaultMessage : 'Login attempts limit exceeded. Try again later.'
+		id             : 'authentication.error.login_attempts_limit_exceeded',
+		description    : `The user's login attempts limit has been reached. The user should try again in 15 minutes or so. "cooldown" variable is relative time like "in 5 minutes" or "in an hour"`,
+		defaultMessage : 'Login attempts limit exceeded. Try again {cooldown}.'
 	}
 })
 
@@ -273,3 +283,13 @@ const unblock_message = <FormattedMessage
 		support_email: <a href={ `mailto:${configuration.support.email}` }>{ configuration.support.email }</a>
 	} }
 	tagName="p"/>
+
+export function login_attempts_limit_exceeded_error(error)
+{
+	return <FormattedMessage
+		{ ...messages.login_attempts_limit_exceeded_error }
+		values={ {
+			cooldown: <React_time_ago>{ Date.now() + error.cooldown }</React_time_ago>
+		} }
+		tagName="p"/>
+}

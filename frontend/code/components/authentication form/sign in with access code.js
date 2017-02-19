@@ -7,6 +7,7 @@ import { Form, Button } from 'react-responsive-ui'
 import { redirect } from 'react-isomorphic-render'
 import Redux_form from 'simpler-redux-form'
 
+import { login_attempts_limit_exceeded_error } from './sign in'
 import { should_redirect_to } from '../../helpers/redirection'
 import { preload_started } from '../../redux/preload'
 import { messages as user_bar_messages } from '../user bar'
@@ -32,7 +33,8 @@ from '../../redux/authentication'
 (
 	state =>
 	({
-		...connector(state.authentication)
+		...connector(state.authentication),
+		locale : state.locale.locale
 	}),
 	{
 		sign_in_with_access_code,
@@ -82,7 +84,7 @@ export default class Sign_in_with_access_code extends Component
 				action={ submit(reset_sign_in_with_access_code_error, this.sign_in_with_access_code) }
 				busy={ submitting }
 				error={ this.sign_in_with_access_code_error(sign_in_with_access_code_error) }
-				post="/users/legacy/sign-in">
+				post="/authentication/legacy/sign-in">
 
 				{/* "Sign in" */}
 				<h2 style={ styles.form_title }>
@@ -122,7 +124,7 @@ export default class Sign_in_with_access_code extends Component
 		{
 			const
 			{
-				access_code_id,
+				authentication,
 				sign_in_with_access_code,
 				signed_in,
 				preload_started,
@@ -137,7 +139,7 @@ export default class Sign_in_with_access_code extends Component
 
 			await sign_in_with_access_code
 			({
-				id   : access_code_id,
+				id   : authentication.id,
 				code : fields.code
 			})
 
@@ -170,21 +172,21 @@ export default class Sign_in_with_access_code extends Component
 
 	sign_in_with_access_code_error(error)
 	{
-		const { translate } = this.props
+		const { translate, locale } = this.props
 
 		if (!error)
 		{
 			return
 		}
 
-		if (error.field === 'access_code')
+		if (error.field === 'code')
 		{
 			return
 		}
 
 		if (error.message === 'Access code attempts limit exceeded')
 		{
-			return translate(sign_in_messages.login_attempts_limit_exceeded_error)
+			return login_attempts_limit_exceeded_error(error)
 		}
 
 		return translate(sign_in_messages.sign_in_error)
@@ -199,12 +201,12 @@ export default class Sign_in_with_access_code extends Component
 			return
 		}
 
-		if (error.field !== 'access_code')
+		if (error.field !== 'code')
 		{
 			return
 		}
 
-		if (error.status === http_status_codes.Access_denied)
+		if (error.status === http_status_codes.Input_rejected)
 		{
 			return translate(messages.wrong_access_code)
 		}

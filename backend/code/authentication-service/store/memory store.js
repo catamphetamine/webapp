@@ -3,30 +3,12 @@ import uid from 'uid-safe'
 import { sort_tokens_by_relevance } from './store'
 import online_status_store from './online/online store'
 
-// if no MongoDB connection is configured,
-// then use in-memory store for demoing
 export default class Memory_store
 {
-	users = new Map()
 	tokens = []
 
 	async ready()
 	{
-	}
-
-	async create_authentication_data(user_id, data)
-	{
-		this.users.set(user_id, data)
-	}
-
-	async get_authentication_data(user_id)
-	{
-		return this.users.get(user_id)
-	}
-
-	async update_password(user_id, password)
-	{
-		this.users.get(user_id).password = password
 	}
 
 	async get_all_valid_tokens(user_id)
@@ -43,6 +25,15 @@ export default class Memory_store
 	{
 		const token = await this.find_token_by_id(token_id)
 		token.revoked_at = new Date()
+	}
+
+	async remove_excessive_tokens(user_id)
+	{
+	}
+
+	async remove_token(token_id, user_id)
+	{
+		this.tokens = this.tokens.filter(token => token.id !== token_id)
 	}
 
 	async add_authentication_token(user_id, ip)

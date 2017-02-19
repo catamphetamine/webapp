@@ -3,6 +3,12 @@ import settings from '../react-isomorphic-render-async'
 
 const handler = createHandler(settings)
 
+export const snack = (snack) =>
+({
+	type: 'snack',
+	snack
+})
+
 handler.handle('snack', (state, result) =>
 ({
 	...state,

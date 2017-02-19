@@ -1,8 +1,26 @@
 import { http, errors } from 'web-service'
 
+import store from '../store/authentication/store'
+
 export default function(api)
 {
-	api.post('/authentication-data', async function({ id, password })
+	// Checks password
+	api.get('/password/check', async function({ password }, { user })
+	{
+		if (!user)
+		{
+			throw new errors.Input_rejected()
+		}
+
+		// Check if the password matches
+		if (!await check_password(user.id, password))
+		{
+			throw new errors.Input_rejected('Wrong password', { field: 'password' })
+		}
+	})
+
+	// Creates a "password" authentication for a user
+	api.post('/password', async function({ id, password })
 	{
 		// Hash the password.
 		//
@@ -15,47 +33,14 @@ export default function(api)
 		password = await hash_password(password)
 
 		// Add the hashed password to the dabase
-		await store.create_authentication_data(id, { password })
-	})
-
-	api.get('/password/check', async function({ password }, { user })
-	{
-		if (!user)
+		await store.create(id,
 		{
-			throw new errors.Unauthenticated()
-		}
-
-		if (!exists(password))
-		{
-			throw new errors.Input_rejected(`"password" is required`)
-		}
-
-		// Get authentication data by user's `id`
-		const authentication_data = await this.store.get_info(user_id)
-
-		const throttling_info =
-		{
-			temperature    : authentication_data.authentication_attempt_temperature,
-			latest_attempt : authentication_data.authentication_attempt_failed_at
-		}
-
-		// Check if the password matches
-		const matches = await throttling.attempt(throttling_info, async () =>
-		{
-			return await http.get(`${address_book.password_service}/check`,
-			{
-				password,
-				hashed_password : authentication_data.password
-			})
+			type  : 'password',
+			value : password
 		})
-
-		// If the password is wrong, return an error
-		if (!matches)
-		{
-			throw new errors.Input_rejected(`Wrong password`, { field: 'password' })
-		}
 	})
 
+	// (`new` is a reserved word, therefore `new_password`)
 	api.patch('/password', async function({ old_password, new_password }, { user })
 	{
 		if (!user)
@@ -96,4 +81,11 @@ export default function(api)
 async function hash_password(password)
 {
 	return (await http.get(`${address_book.password_service}/hash`, { password })).hash
+}
+
+async function check_password(user_id, password)
+{
+	const authentication = await store.get_user_password_authentication(user_id)
+	const hashed_password = authentication.value
+	return await http.get(`${address_book.password_service}/matches`, { password, hashed_password })
 }

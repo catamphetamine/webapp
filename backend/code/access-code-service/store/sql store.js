@@ -37,16 +37,17 @@ export default class Sql_store
 		return this.access_codes.find({ user: user_id })
 	}
 
-	succeeded(id)
+	succeeded = (id) =>
 	{
 		return this.access_codes.delete(id)
 	}
 
-	failed(id, temperature)
+	failed = (id, attempts, temperature) =>
 	{
 		return this.access_codes.update(id,
 		{
 			latest_attempt : new Date(),
+			attempts,
 			temperature
 		})
 	}

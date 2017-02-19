@@ -14,7 +14,8 @@ handler)
 
 export const update_user_reset_error = () =>
 ({
-	type : 'user profile: update user info: reset error'
+	type  : 'user profile: update user info: error',
+	error : null
 })
 
 export const get_user = action
@@ -63,7 +64,7 @@ export const update_user_picture = action
 },
 handler)
 
-handler.addStateProperties
+handler.add_state_properties
 (
 	'uploaded_picture',
 	'uploaded_user_picture_is_too_big_error',

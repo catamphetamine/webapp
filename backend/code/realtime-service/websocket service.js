@@ -88,7 +88,7 @@ export default function start()
 						{
 							try
 							{
-								user = await http.get
+								const user = await http.get
 								(
 									`${address_book.user_service}`,
 									{ bot: true },

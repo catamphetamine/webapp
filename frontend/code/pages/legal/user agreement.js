@@ -47,5 +47,10 @@ export function most_suitable_language(language)
 		return language
 	}
 
-	return 'en'
+	if (user_agreement.en)
+	{
+		return 'en'
+	}
+
+	return Object.keys(user_agreement)[0]
 }

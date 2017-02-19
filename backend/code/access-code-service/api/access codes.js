@@ -5,12 +5,7 @@ import store      from '../store/store'
 import Throttling from '../../common/throttling'
 import get_word   from '../dictionaries/dictionary'
 
-const throttling = new Throttling
-({
-	succeeded : store.succeeded.bind(store),
-	failed    : store.failed.bind(store)
-},
-'Access code attempts limit exceeded')
+const throttling = new Throttling(store)
 
 export default function(api)
 {
@@ -22,7 +17,12 @@ export default function(api)
 		// Limit access code request frequency for a user
 		if (entry)
 		{
-			await throttling.attempt(entry)
+			const { throttled, cooldown } = await throttling.attempt(entry)
+
+			if (throttled)
+			{
+				throw new errors.Access_denied('Access code attempts limit exceeded', { cooldown })
+			}
 		}
 
 		let id
@@ -51,16 +51,31 @@ export default function(api)
 			throw new errors.Not_found()
 		}
 
-		return await throttling.attempt(entry, async () =>
+		const { throttled, cooldown, result } = await throttling.attempt(entry, async () =>
 		{
+			// If the code doesn't match
 			if (entry.code !== code)
 			{
+				// Maximum tries count reached
+				if (entry.attempts_left === 0)
+				{
+					await store.lock(entry)
+				}
+
 				return
 			}
 
+			// The code matches. Reset cooldown.
 			store.delete(id)
 			return entry.user
 		})
+
+		if (throttled)
+		{
+			throw new errors.Access_denied('Access code attempts limit exceeded', { cooldown })
+		}
+
+		return result
 	})
 
 	// Gets user id by access code id

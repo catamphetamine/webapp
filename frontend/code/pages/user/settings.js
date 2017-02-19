@@ -4,8 +4,7 @@ import { connect }                     from 'react-redux'
 import styler                          from 'react-styling'
 import classNames                      from 'classnames'
 import { defineMessages }              from 'react-intl'
-
-import { bindActionCreators as bind_action_creators } from 'redux'
+import { Button }                      from 'react-responsive-ui'
 
 import international from '../../international/internationalize'
 
@@ -16,13 +15,16 @@ import
 	get_own_user,
 	get_user_authentication_tokens,
 	change_alias,
+	reset_change_alias_error,
+	set_load_advanced_settings_pending,
+	set_load_advanced_settings_error,
 	connector
 }
 from '../../redux/user/settings/main'
 
-import default_messages from '../../components/messages'
+import { snack } from '../../redux/snackbar'
 
-import { Button } from 'react-responsive-ui'
+import default_messages from '../../components/messages'
 
 import Content_section from '../../components/content section'
 import Editable_field  from '../../components/editable field'
@@ -34,20 +36,17 @@ import Authentication_tokens from './settings authentication tokens'
 @preload(({ dispatch }) => dispatch(get_own_user()))
 @connect
 (
-	(state) =>
+	({ user_settings }) =>
 	({
-		...connector(state.user_settings.main)
+		...connector(user_settings.main)
 	}),
-	dispatch =>
-	({
-		dispatch,
-		...bind_action_creators
-		({
-			get_user_authentication_tokens,
-			change_alias
-		},
-		dispatch)
-	})
+	{
+		get_user_authentication_tokens,
+		change_alias,
+		reset_change_alias_error,
+		set_load_advanced_settings_pending,
+		set_load_advanced_settings_error
+	}
 )
 @international
 export default class Settings_page extends Component
@@ -66,7 +65,9 @@ export default class Settings_page extends Component
 
 	reset_change_alias_error()
 	{
-		this.props.dispatch({ type: 'user settings: change alias: reset error' })
+		const { reset_change_alias_error } = this.props
+
+		reset_change_alias_error()
 	}
 
 	change_alias_error_message(error)
@@ -197,27 +198,35 @@ export default class Settings_page extends Component
 
 	async update_alias(alias)
 	{
-		const { change_alias, translate, dispatch } = this.props
+		const { change_alias, translate, snack } = this.props
 
 		await change_alias(alias)
 
-		dispatch({ type: 'snack', snack: translate(messages.alias_updated) })
+		snack(translate(messages.alias_updated))
 	}
 
 	async load_advanced_settings()
 	{
+		const
+		{
+			set_load_advanced_settings_pending,
+			set_load_advanced_settings_error,
+			get_user_authentication_tokens
+		}
+		= this.props
+
 		try
 		{
-			this.props.dispatch({ type: 'user settings: load advanced settings pending' })
+			set_load_advanced_settings_pending(true)
 
-			await this.props.get_user_authentication_tokens()
+			await get_user_authentication_tokens()
 
-			this.props.dispatch({ type: 'user settings: load advanced settings done' })
+			set_load_advanced_settings_pending(false)
 		}
 		catch (error)
 		{
 			console.error(error)
-			return this.props.dispatch({ type: 'user settings: load advanced settings failed', error: true })
+			return set_load_advanced_settings_error(error)
 		}
 
 		this.setState({ showing_advanced_settings: true })

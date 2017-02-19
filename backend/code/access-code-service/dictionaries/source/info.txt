@@ -1,0 +1,14 @@
+ru
+==
+
+http://blog.harrix.org/article/3334
+34 010 words
+
+en
+==
+
+http://www.mieliestronk.com/wordlist.html
+58 000 words
+
+This password generating algorythm can provide 10^3^5 = 10^15 passphrases:
+https://github.com/aaronbassett/Pass-phrase

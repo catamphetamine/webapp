@@ -16,28 +16,12 @@ export default class Sql_store
 	async connect()
 	{
 		this.users = new Sql('users')
-		this.authentication_data = new Sql('authentication_data')
 		this.authentication_token_access_history = new Sql('authentication_token_access_history')
 		this.authentication_tokens = new Sql('authentication_tokens',
 		{
 			history: Sql.has_many(this.authentication_token_access_history, 'token'),
 			user: Sql.belong_to(this.users)
 		})
-	}
-
-	create_authentication_data(user_id, data)
-	{
-		return this.authentication_data.create({ ...data, user: user_id })
-	}
-
-	get_authentication_data(user_id)
-	{
-		return this.authentication_data.find({ user: user_id })
-	}
-
-	update_password(user_id, password)
-	{
-		return this.authentication_data.update({ user: user_id }, { password })
 	}
 
 	get_all_valid_tokens(user_id)
@@ -126,13 +110,18 @@ export default class Sql_store
 		// Remove excessive tokens one-by-one
 		for (let token of excessive_tokens)
 		{
-			await this.authentication_tokens.delete(token.id)
+			await this.remove_token(token.id, user_id)
 
 			if (!token.revoked_at)
 			{
 				await online_status_store.clear_access_token_validity(user_id, token.id)
 			}
 		}
+	}
+
+	async remove_token(token_id, user_id)
+	{
+		await this.authentication_tokens.delete(token_id, user_id)
 	}
 
 	async record_access(user_id, authentication_token_id, ip, time)
@@ -200,26 +189,6 @@ export default class Sql_store
 		sort_tokens_by_relevance(tokens)
 
 		return tokens
-	}
-
-	// Is called on a failed login attempt
-	set_latest_failed_authentication_attempt(authentication_data_id, temperature)
-	{
-		return this.authentication_data.update(authentication_data_id,
-		{
-			authentication_attempt_failed_at   : new Date(),
-			authentication_attempt_temperature : temperature
-		})
-	}
-
-	// Is called on a successfull login
-	clear_latest_failed_authentication_attempt(authentication_data_id)
-	{
-		return this.authentication_data.update(authentication_data_id,
-		{
-			authentication_attempt_failed_at   : null,
-			authentication_attempt_temperature : null
-		})
 	}
 }
 

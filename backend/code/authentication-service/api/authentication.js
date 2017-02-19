@@ -1,46 +1,154 @@
 import set_seconds from 'date-fns/set_seconds'
 import { http, errors, jwt } from 'web-service'
 
-import store               from '../store/store'
-import online_status_store from '../store/online/online store'
-import Throttling          from '../../common/throttling'
-
-const throttling = new Throttling
-({
-	succeeded : store.clear_latest_failed_authentication_attempt.bind(store),
-	failed    : store.set_latest_failed_authentication_attempt.bind(store)
-},
-'Access code attempts limit exceeded')
+import store                from '../store/store'
+import online_status_store  from '../store/online/online store'
+import authentication_store from '../store/authentication/store'
+import Throttling from '../../common/throttling'
 
 const latest_activity_time_refresh_interval = 60 * 1000 // one minute
 
+const throttling = new Throttling(authentication_store)
+
 export default function(api)
 {
-	// Issues a new access token for this user
-	api.post('/token', async function({ user, access_code }, { ip, keys })
+	api.post('/sign-in', async function(user)
+	{
+		// Check if the user is blocked
+		if (user.blocked_at)
+		{
+			await user_is_blocked(user)
+		}
+
+		// Check if the user has two-factor authentication set up
+		const authentication = await authentication_store.get_by_user(user.id)
+
+		// If the user has two-factor authentication set up
+		// then request password input.
+		if (authentication)
+		{
+			if (authentication.type === 'password')
+			{
+				return password_authentication_response(authentication)
+			}
+
+			throw new Error(`Unknown authentication type: ${authentication.type}`)
+		}
+
+		// Generate access code
+		return await access_code_authentication_response(user)
+	})
+
+	// Generates access code if the password matches
+	api.post('/sign-in-proceed-with-password', async function({ id, password }, { ip, keys })
+	{
+		const authentication = await authentication_store.get(id)
+
+		// Check if the password matches
+		const { throttled, cooldown, result } = await throttling.attempt(authentication, async () =>
+		{
+			return await http.get(`${address_book.password_service}/matches`,
+			{
+				password,
+				hashed_password : authentication.value
+			})
+		})
+
+		if (throttled)
+		{
+			throw new errors.Access_denied('Password attempts limit exceeded', { cooldown })
+		}
+
+		// If the password is wrong, return an error
+		if (!result)
+		{
+			throw new errors.Input_rejected(`Wrong password`, { field: 'password' })
+		}
+
+		// Get user's private info using the temporary token
+		const user = await get_user_info(authentication.user, { ip, keys })
+
+		// // Check if the user is blocked
+		// if (user.blocked_at)
+		// {
+		// 	await user_is_blocked(user)
+		// }
+
+		// Generate access code
+		return await access_code_authentication_response(user)
+	})
+
+	api.post('/sign-in-finish-with-access-code', async function({ id, code }, { ip, keys, set_cookie })
 	{
 		// Verify the access code
-		const user_id = await http.get(`${address_book.access_code_service}/verify`, access_code)
+		const user_id = await http.get(`${address_book.access_code_service}/verify`, { id, code })
 
 		if (!user_id)
 		{
-			throw new errors.Access_denied('Wrong access code', { field: 'access_code' })
+			throw new errors.Input_rejected('Wrong access code', { field: 'code' })
 		}
 
-		// // Check the password
-		// if (!await check_password(user.id, user.password))
-		// {
-		// 	throw new errors.Input_rejected(`Wrong password`, { field: 'password' })
-		// }
+		// Get user's private info using the temporary token
+		const user = await get_user_info(user_id, { ip, keys })
 
 		// Add a new JWT token to the list of valid tokens for this user
 		const jwt_id = await store.add_authentication_token(user.id, ip)
 
-		// Generate real JWT token payload
+		// Generate JWT token payload (the real one's)
 		const payload = configuration.authentication_token_payload.write(user)
 
-		// Issue JWT token
-		return jwt({ payload, keys, user_id: user.id, jwt_id })
+		// Issue JWT token (the real one)
+		const token = jwt({ payload, keys, user_id: user.id, jwt_id })
+
+		// If there was an almost impossible race condition
+		// when the user was blocked while obtaining an access token,
+		// then immediately revoke that token.
+		//
+		// (or, say, if an attacker managed to send an access code request
+		//  directly to the `access-code-service` bypassing `user-service`)
+		//
+		// If we got here, then the token is already written to the database,
+		// hence if the user is gonna be blocked right now
+		// then this token will be rendered invalid.
+		// So this second "just to make sure" check
+		// prevents all possible user blocking race conditions.
+		// (when a user is being blocked first its `blocked`
+		// flag is set to `true` in the database
+		// and then all his access tokens are rendered invalid)
+
+		const user_blocked_check = await http.get
+		(
+			`${address_book.user_service}`,
+			{ bot: true },
+			{ headers: { 'Authorization': `Bearer ${token}` } }
+		)
+
+		if (user_blocked_check.blocked_at)
+		{
+			await revoke_token(jwt_id, user_id)
+			await user_is_blocked(user_blocked_check)
+		}
+
+		// Write JWT token to a cookie
+		set_cookie('authentication', token, { signed: false })
+
+		return user
+	})
+
+	// Revokes access token and clears authentication cookie
+	api.post('/sign-out', async function({}, { user, authentication_token_id, destroy_cookie, internal_http })
+	{
+		// Must be logged in
+		if (!user)
+		{
+			return new errors.Unauthenticated()
+		}
+
+		// Revoke access token
+		await internal_http.post(`${address_book.authentication_service}/token/${authentication_token_id}/revoke`)
+
+		// Clear authentcication cookie
+		destroy_cookie('authentication')
 	})
 
 	api.get('/tokens', async function({}, { user, authentication_token_id })
@@ -219,8 +327,80 @@ async function record_access(user_id, authentication_token_id, ip, internal_http
 	}
 }
 
-// user's latest activity time accuracy
+// User's latest activity time accuracy
 function round_user_access_time(time)
 {
 	return set_seconds(time, 0)
+}
+
+// Generates access code
+async function generate_access_code(user)
+{
+	// Generate an access code
+	const { id, code } = await http.post(`${address_book.access_code_service}`,
+	{
+		user   : user.id,
+		locale : user.locale
+	})
+
+	// Send the access code via email
+	await http.post(`${address_book.mail_service}`,
+	{
+		to         : user.email,
+		template   : 'sign in code',
+		locale     : user.locale,
+		parameters :
+		{
+			code
+		}
+	})
+
+	// Return access code id
+	return id
+}
+
+// Generates access code API response
+const access_code_authentication_response = async (user) =>
+({
+	type : 'access code',
+	id   : await generate_access_code(user)
+})
+
+// Generates password API response
+const password_authentication_response = async (authentication) =>
+({
+	type : 'password',
+	id   : authentication.id
+})
+
+async function get_user_info(user_id, { ip, keys })
+{
+	// Construct a temporary JWT token
+	// just to get the user's private info
+
+	// Add a new JWT token to the list of valid tokens for this user
+	const temporary_token_id = await store.add_authentication_token(user_id, ip)
+
+	// Generate temporary JWT token
+	const temporary_token = jwt
+	({
+		payload: {},
+		keys,
+		user_id: user_id,
+		jwt_id: temporary_token_id
+	})
+
+	// Get user's private info using the temporary token
+	const user = await http.get
+	(
+		`${address_book.user_service}`,
+		{ bot: true },
+		{ headers: { 'Authorization': `Bearer ${temporary_token}` } }
+	)
+
+	// Revoke and delete the temporary token
+	await revoke_token(temporary_token_id, user_id)
+	await store.remove_token(temporary_token_id, user_id)
+
+	return user
 }

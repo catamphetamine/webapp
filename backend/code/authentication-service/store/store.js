@@ -1,4 +1,3 @@
-// import Mongodb_store from './mongodb store'
 import Memory_store  from './memory store'
 import Sql_store     from './sql store'
 
