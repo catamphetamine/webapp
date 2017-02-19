@@ -70,13 +70,6 @@ export const update_user_picture = action
 },
 handler)
 
-handler.add_state_properties
-(
-	'uploaded_picture',
-	'uploaded_user_picture_is_too_big_error',
-	'unsupported_uploaded_user_picture_file_error'
-)
-
 // `upload_user_picture_pending` will be set to `false`
 // when the image is prefetched
 // to avoid a flash of a not yet loaded image.
@@ -89,14 +82,19 @@ export const set_uploaded_user_picture = action
 	namespace : 'user profile',
 	event     : 'reset uploaded user picture',
 	payload   : picture => ({ picture }),
-	result    : (state, result) =>
+	result    : (state, { picture }) =>
 	({
 		...state,
-		upload_user_picture_pending : result.picture ? false : state.upload_user_picture_pending,
-		uploaded_picture            : result.picture
+		upload_user_picture_pending : picture ? false : state.upload_user_picture_pending,
+		uploaded_picture            : picture
 	})
 },
 handler)
+
+handler.add_state_properties
+(
+	'uploaded_picture'
+)
 
 export const set_upload_user_picture_other_error = action
 ({

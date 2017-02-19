@@ -12,14 +12,18 @@ import Locale_switcher from '../components/locale switcher'
 import User_bar        from '../components/user bar'
 import Preloading      from '../components/preloading'
 
+import { snack as set_snack } from '../redux/snackbar'
+
 @connect
 (
-	model =>
+	({ locale, snackbar }) =>
 	({
-		locale : model.locale.locale,
-		snack  : model.snackbar.snack
+		locale : locale.locale,
+		snack  : snackbar.snack
 	}),
-	dispatch => ({ dispatch })
+	{
+		set_snack
+	}
 )
 @international
 @DragAndDrop()
@@ -44,7 +48,9 @@ export default class Layout extends Component
 
 	reset_snack()
 	{
-		this.props.dispatch({ type: 'snack: reset' })
+		const { set_snack } = this.props
+
+		set_snack()
 	}
 
 	render()

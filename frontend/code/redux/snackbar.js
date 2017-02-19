@@ -3,23 +3,18 @@ import settings from '../react-isomorphic-render-async'
 
 const handler = createHandler(settings)
 
-export const snack = (snack) =>
+export const snack = action
 ({
-	type: 'snack',
-	snack
-})
-
-handler.handle('snack', (state, result) =>
-({
-	...state,
-	snack : typeof result.snack === 'string' ? { text: result.snack } : result.snack
-}))
-
-handler.handle('snack: reset', (state, result) =>
-({
-	...state,
-	snack : undefined
-}))
+	namespace : 'snack',
+	event     : 'set',
+	payload   : snack => ({ snack }),
+	result    : (state, { snack }) =>
+	({
+		...state,
+		snack : typeof snack === 'string' ? { text: snack } : snack
+	})
+},
+handler)
 
 handler.addStateProperties('snack')
 

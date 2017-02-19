@@ -45,7 +45,8 @@ import Authentication_tokens from './settings authentication tokens'
 		change_alias,
 		reset_change_alias_error,
 		set_load_advanced_settings_pending,
-		set_load_advanced_settings_error
+		set_load_advanced_settings_error,
+		snack
 	}
 )
 @international
@@ -198,11 +199,18 @@ export default class Settings_page extends Component
 
 	async update_alias(alias)
 	{
-		const { change_alias, translate, snack } = this.props
+		try
+		{
+			const { change_alias, translate, snack } = this.props
 
-		await change_alias(alias)
+			await change_alias(alias)
 
-		snack(translate(messages.alias_updated))
+			snack(translate(messages.alias_updated))
+		}
+		catch (error)
+		{
+			console.error(error)
+		}
 	}
 
 	async load_advanced_settings()
