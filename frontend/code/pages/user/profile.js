@@ -6,7 +6,6 @@ import classNames                      from 'classnames'
 import Redux_form                      from 'simpler-redux-form'
 
 import { defineMessages, FormattedMessage } from 'react-intl'
-import { bindActionCreators as bind_action_creators } from 'redux'
 import { Form, Button, FileUpload, ActivityIndicator, File, CanDrop } from 'react-responsive-ui'
 
 import
@@ -17,6 +16,9 @@ import
 	update_user_reset_error,
 	upload_user_picture,
 	update_user_picture,
+	set_uploaded_user_picture,
+	reset_upload_user_picture_error,
+	set_upload_user_picture_other_error,
 	connector
 }
 from '../../redux/user/profile'
@@ -27,6 +29,8 @@ import
 	unblock_user
 }
 from '../../redux/user/block'
+
+import { snack } from '../../redux/snackbar'
 
 import Text_input   from '../../components/form/text input'
 import Submit       from '../../components/form/submit'
@@ -55,28 +59,27 @@ const Latest_activity_time_refresh_interval = 60 * 1000 // once in a minute
 })
 @connect
 (
-	(state) =>
+	({ authentication, user_profile, locale }) =>
 	({
-		current_user: state.authentication.user,
-		...connector(state.user_profile),
-		locale : state.locale.locale
+		...connector(user_profile),
+		current_user : authentication.user,
+		locale : locale.locale
 	}),
-	dispatch =>
-	({
-		dispatch,
-		...bind_action_creators
-		({
-			get_user,
-			update_user,
-			update_user_reset_error,
-			upload_user_picture,
-			update_user_picture,
-			get_users_latest_activity_time,
-			generate_block_user_token,
-			unblock_user
-		},
-		dispatch)
-	})
+	{
+		get_user,
+		update_user,
+		update_user_reset_error,
+		upload_user_picture,
+		reset_upload_user_picture_error,
+		set_upload_user_picture_other_error,
+		update_user_picture,
+		get_users_latest_activity_time,
+		generate_block_user_token,
+		unblock_user,
+		snack,
+		redirect,
+		set_uploaded_user_picture
+	}
 )
 @international
 export default class User_profile extends Component
@@ -177,8 +180,7 @@ export default class User_profile extends Component
 			update_user_info_error,
 			update_user_picture_error,
 			upload_user_picture_error,
-			uploaded_user_picture_is_too_big_error,
-			unsupported_uploaded_user_picture_file_error,
+			upload_user_picture_other_error,
 
 			update_user_info_pending,
 			upload_user_picture_pending,
@@ -234,8 +236,7 @@ export default class User_profile extends Component
 						{ (update_user_info_error
 							|| update_user_picture_error
 							|| upload_user_picture_error
-							|| uploaded_user_picture_is_too_big_error
-							|| unsupported_uploaded_user_picture_file_error)
+							|| upload_user_picture_other_error)
 							&&
 							<ul
 								style={ styles.own_profile_actions_errors }
@@ -256,13 +257,18 @@ export default class User_profile extends Component
 								}
 
 								{/* User picture file's too big */}
-								{ uploaded_user_picture_is_too_big_error &&
+								{ upload_user_picture_other_error === 'oversized' &&
 									<li>{ translate(messages.uploaded_user_picture_is_too_big_error) }</li>
 								}
 
 								{/* User picture file's format is not supported */}
-								{ unsupported_uploaded_user_picture_file_error &&
+								{ upload_user_picture_other_error === 'unsupported' &&
 									<li>{ translate(messages.unsupported_uploaded_user_picture_file_error) }</li>
+								}
+
+								{/* Other errors */}
+								{ upload_user_picture_other_error === true &&
+									<li>{ translate(messages.user_picture_upload_error) }</li>
 								}
 							</ul>
 						}
@@ -440,12 +446,12 @@ export default class User_profile extends Component
 
 	cancel_profile_edits()
 	{
-		const { dispatch } = this.props
+		const { set_uploaded_user_picture } = this.props
 
 		this.reset_user_info_edit_errors()
 
 		this.setState({ edit: false })
-		dispatch({ type: 'user profile: reset uploaded user picture' })
+		set_uploaded_user_picture()
 	}
 
 	async save_profile_edits(values)
@@ -457,7 +463,7 @@ export default class User_profile extends Component
 			uploaded_picture,
 			update_user_picture,
 			update_user,
-			dispatch
+			set_uploaded_user_picture
 		}
 		= this.props
 
@@ -475,7 +481,7 @@ export default class User_profile extends Component
 
 		this.setState({ edit: false })
 
-		dispatch({ type: 'user profile: reset uploaded user picture' })
+		set_uploaded_user_picture()
 	}
 
 	reset_user_info_edit_errors()
@@ -488,38 +494,37 @@ export default class User_profile extends Component
 
 	reset_upload_user_picture_errors()
 	{
-		const { dispatch } = this.props
+		const
+		{
+			reset_upload_user_picture_error,
+			set_upload_user_picture_other_error
+		}
+		= this.props
 
-		dispatch
-		({
-			type  : 'user profile: upload user picture: error',
-			error : null
-		})
-
-		dispatch({ type: 'user profile: upload user picture: error: too big: reset' })
-		dispatch({ type: 'user profile: upload user picture: error: unsupported file: reset' })
+		reset_upload_user_picture_error()
+		set_upload_user_picture_other_error()
 	}
 
 	async block_user()
 	{
-		const { user, get_user, generate_block_user_token, dispatch } = this.props
+		const { user, get_user, generate_block_user_token, redirect } = this.props
 
 		const token_id = await generate_block_user_token(user.id)
 
 		await get_user(user.id)
 
-		dispatch(redirect(`/user/block/${token_id}`))
+		redirect(`/user/block/${token_id}`)
 	}
 
 	async unblock_user()
 	{
-		const { user, get_user, unblock_user, translate, dispatch } = this.props
+		const { user, get_user, unblock_user, translate, snack } = this.props
 
 		await unblock_user(user.id)
 
 		await get_user(user.id)
 
-		dispatch({ type: 'snack', snack: translate(messages.user_unblocked) })
+		snack(translate(messages.user_unblocked))
 	}
 
 	send_message()
@@ -537,7 +542,8 @@ export default class User_profile extends Component
 		const
 		{
 			upload_user_picture,
-			dispatch
+			set_upload_user_picture_other_error,
+			set_uploaded_user_picture
 		}
 		=
 		this.props
@@ -545,13 +551,13 @@ export default class User_profile extends Component
 		// Check file format
 		if (!['image/jpeg', 'image/png', 'image/svg+xml'].has(file.type))
 		{
-			return dispatch({ type: 'user profile: upload user picture: error: unsupported file' })
+			return set_upload_user_picture_other_error('unsupported')
 		}
 
 		// Check file size limit
 		if (file.size > configuration.image_service.file_size_limit)
 		{
-			return dispatch({ type: 'user profile: upload user picture: error: too big' })
+			return set_upload_user_picture_other_error('oversized')
 		}
 
 		// Upload the image
@@ -561,8 +567,8 @@ export default class User_profile extends Component
 
 		const image = new Image()
 
-		image.onload  = () => dispatch({ type: 'user profile: upload user picture: prefetch: done', result: uploaded_picture })
-		image.onerror = () => dispatch({ type: 'user profile: upload user picture: prefetch: error' })
+		image.onload  = () => set_uploaded_user_picture(uploaded_picture)
+		image.onerror = () => set_upload_user_picture_other_error(true)
 
 		image.src = url(get_preferred_size(uploaded_picture.sizes, this.user_picture.decoratedComponentInstance.width()))
 	}

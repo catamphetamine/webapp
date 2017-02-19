@@ -723,6 +723,8 @@ Troubleshooting
 To do
 ====================
 
+мб придумать какой-нибудь reset_error для asynchronous_action_handler
+
 в login attempts exceeded добавить ещё, что можно связаться с техподдержкой (ссылку на mailto)
 
 вести счётчик failed_attempts, который будет коэффициентом замедления остывания.

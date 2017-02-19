@@ -17,6 +17,8 @@ import
 }
 from '../../redux/user/block'
 
+import { snack } from '../../redux/snackbar'
+
 import { Form } from 'react-responsive-ui'
 
 import Submit                 from '../../components/form/submit'
@@ -24,58 +26,6 @@ import Text_input             from '../../components/form/text input'
 import User                   from '../../components/user'
 
 import international from '../../international/internationalize'
-
-const messages = defineMessages
-({
-	header:
-	{
-		id             : `user.block.header`,
-		description    : `Block user page header`,
-		defaultMessage : `Block user`
-	},
-	header_self:
-	{
-		id             : `user.block.header_self`,
-		description    : `Block user page header when blocking self`,
-		defaultMessage : `Block my account`
-	},
-	blocking_user:
-	{
-		id             : `user.block.blocking_user`,
-		description    : `Description of which user is gonna be blocked`,
-		defaultMessage : `Blocking user {name}`
-	},
-	blocking_self:
-	{
-		id             : `user.block.blocking_self`,
-		description    : `Description asking if the user is sure about temporarily blocking his own account`,
-		defaultMessage : `Are you sure you want to temporarily block your account?`
-	},
-	reason:
-	{
-		id             : `user.block.reason`,
-		description    : `A title of a text input with description of the reason why the user is being blocked`,
-		defaultMessage : `Reason`
-	},
-	reason_required:
-	{
-		id             : `user.block.reason.required`,
-		description    : `A hint that blocking reason is required`,
-		defaultMessage : `Specify a reason for blocking this user`
-	},
-	submit:
-	{
-		id             : `user.block.submit`,
-		description    : `Block user page submit button text`,
-		defaultMessage : `Block`
-	},
-	user_blocked:
-	{
-		id             : `user.block.done`,
-		description    : `An info message confirming the user has been blocked`,
-		defaultMessage : `User has been blocked`
-	}
-})
 
 @Redux_form
 @preload(({ dispatch, getState, location, parameters }) =>
@@ -94,7 +44,9 @@ const messages = defineMessages
 		dispatch,
 		...bind_action_creators
 		({
-			block_user
+			block_user,
+			snack,
+			redirect
 		},
 		dispatch)
 	})
@@ -122,7 +74,7 @@ export default class User_profile extends Component
 
 	async submit(values)
 	{
-		const { block_user_token, params, block_user, dispatch, translate } = this.props
+		const { block_user_token, params, block_user, snack, redirect, translate } = this.props
 
 		const user = block_user_token.user
 
@@ -130,9 +82,9 @@ export default class User_profile extends Component
 
 		await block_user(user.id, token_id, values.reason)
 
-		dispatch({ type: 'snack', snack: translate(messages.user_blocked) })
+		snack(translate(messages.user_blocked))
 
-		dispatch(redirect(User.url(user)))
+		redirect(User.url(user))
 	}
 
 	render()
@@ -188,3 +140,55 @@ export default class User_profile extends Component
 const styles = styler
 `
 `
+
+const messages = defineMessages
+({
+	header:
+	{
+		id             : `user.block.header`,
+		description    : `Block user page header`,
+		defaultMessage : `Block user`
+	},
+	header_self:
+	{
+		id             : `user.block.header_self`,
+		description    : `Block user page header when blocking self`,
+		defaultMessage : `Block my account`
+	},
+	blocking_user:
+	{
+		id             : `user.block.blocking_user`,
+		description    : `Description of which user is gonna be blocked`,
+		defaultMessage : `Blocking user {name}`
+	},
+	blocking_self:
+	{
+		id             : `user.block.blocking_self`,
+		description    : `Description asking if the user is sure about temporarily blocking his own account`,
+		defaultMessage : `Are you sure you want to temporarily block your account?`
+	},
+	reason:
+	{
+		id             : `user.block.reason`,
+		description    : `A title of a text input with description of the reason why the user is being blocked`,
+		defaultMessage : `Reason`
+	},
+	reason_required:
+	{
+		id             : `user.block.reason.required`,
+		description    : `A hint that blocking reason is required`,
+		defaultMessage : `Specify a reason for blocking this user`
+	},
+	submit:
+	{
+		id             : `user.block.submit`,
+		description    : `Block user page submit button text`,
+		defaultMessage : `Block`
+	},
+	user_blocked:
+	{
+		id             : `user.block.done`,
+		description    : `An info message confirming the user has been blocked`,
+		defaultMessage : `User has been blocked`
+	}
+})

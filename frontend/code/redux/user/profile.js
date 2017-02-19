@@ -47,6 +47,12 @@ export const upload_user_picture = action
 },
 handler)
 
+export const reset_upload_user_picture_error = () =>
+({
+	type  : 'user profile: upload user picture: error',
+	error : null
+})
+
 export const update_user_picture = action
 ({
 	namespace : 'user',
@@ -76,50 +82,29 @@ handler.add_state_properties
 // to avoid a flash of a not yet loaded image.
 handler.handle('user profile: upload user picture: done', (state, result) => state)
 
-// Prefetching is done to avoid a flash of a not yet loaded image
-handler.handle('user profile: upload user picture: prefetch: done', (state, result) =>
+// `set_uploaded_user_picture` is called after the uploaded image is prefetched.
+// Prefetching is done to avoid a flash of a not yet loaded image.
+export const set_uploaded_user_picture = action
 ({
-	...state,
-	upload_user_picture_pending : false,
-	uploaded_picture            : result
-}))
+	namespace : 'user profile',
+	event     : 'reset uploaded user picture',
+	payload   : picture => ({ picture }),
+	result    : (state, result) =>
+	({
+		...state,
+		upload_user_picture_pending : result.picture ? false : state.upload_user_picture_pending,
+		uploaded_picture            : result.picture
+	})
+},
+handler)
 
-handler.handle('user profile: upload user picture: prefetch: error', (state, error) =>
+export const set_upload_user_picture_other_error = action
 ({
-	...state,
-	upload_user_picture_pending : false,
-	upload_user_picture_error   : { message: 'Prefetch failed' },
-}))
-
-handler.handle('user profile: reset uploaded user picture', (state, result) =>
-({
-	...state,
-	uploaded_picture : undefined
-}))
-
-handler.handle('user profile: upload user picture: error: too big', (state, result) =>
-({
-	...state,
-	uploaded_user_picture_is_too_big_error : true
-}))
-
-handler.handle('user profile: upload user picture: error: too big: reset', (state, result) =>
-({
-	...state,
-	uploaded_user_picture_is_too_big_error : undefined
-}))
-
-handler.handle('user profile: upload user picture: error: unsupported file', (state, result) =>
-({
-	...state,
-	unsupported_uploaded_user_picture_file_error : true
-}))
-
-handler.handle('user profile: upload user picture: error: unsupported file: reset', (state, result) =>
-({
-	...state,
-	unsupported_uploaded_user_picture_file_error : undefined
-}))
+	namespace : 'user profile',
+	event     : 'upload user picture: other error',
+	result    : 'upload_user_picture_other_error'
+},
+handler)
 
 // A little helper for Redux `@connect()`
 export const connector = stateConnector(handler)
