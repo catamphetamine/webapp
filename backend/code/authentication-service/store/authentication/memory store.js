@@ -27,6 +27,11 @@ export default class Memory_store
 		}
 	}
 
+	get_user_authentication(user_id)
+	{
+		return this.get_user_password_authentication(user_id)
+	}
+
 	async get_user_password_authentication(user_id)
 	{
 		return this.user_authentication.get(user_id)

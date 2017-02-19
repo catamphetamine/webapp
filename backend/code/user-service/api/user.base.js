@@ -75,7 +75,8 @@ export async function register({ name, email, locale }, { internal_http })
 
 	return await internal_http.post(`${address_book.authentication_service}/sign-in`,
 	{
-		email
+		...user,
+		id
 	})
 }
 

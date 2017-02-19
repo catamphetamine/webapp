@@ -22,6 +22,14 @@ export default class Sql_store
 		return this.authentication.find(id)
 	}
 
+	get_user_authentication(user_id)
+	{
+		return this.authentication.find
+		({
+			user : user_id
+		})
+	}
+
 	get_user_password_authentication(user_id)
 	{
 		return this.authentication.find

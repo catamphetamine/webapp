@@ -21,7 +21,7 @@ export default function(api)
 		}
 
 		// Check if the user has two-factor authentication set up
-		const authentication = await authentication_store.get_by_user(user.id)
+		const authentication = await authentication_store.get_user_authentication(user.id)
 
 		// If the user has two-factor authentication set up
 		// then request password input.
