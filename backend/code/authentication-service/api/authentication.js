@@ -39,7 +39,13 @@ export default function(api)
 		return await access_code_authentication_response(user)
 	})
 
-	// Generates access code if the password matches
+	// Generates access code if the password matches.
+	//
+	// Could have been called from within "user-service"
+	// but in that case it would need `user_id`
+	// which is not disclosed to prevent finding users
+	// by private info like an email or a phone number.
+	//
 	api.post('/sign-in-proceed-with-password', async function({ id, password }, { ip, keys })
 	{
 		const authentication = await authentication_store.get(id)
@@ -78,6 +84,13 @@ export default function(api)
 		return await access_code_authentication_response(user)
 	})
 
+	// Logs in the user if the access code matches.
+	//
+	// Could have been called from within "user-service"
+	// but in that case it would need `user_id`
+	// which is not disclosed to prevent finding users
+	// by private info like an email or a phone number.
+	//
 	api.post('/sign-in-finish-with-access-code', async function({ id, code }, { ip, keys, set_cookie })
 	{
 		// Verify the access code
@@ -373,6 +386,7 @@ const password_authentication_response = async (authentication) =>
 	id   : authentication.id
 })
 
+// A "hacky" solution to get user's private info from "user-service"
 async function get_user_info(user_id, { ip, keys })
 {
 	// Construct a temporary JWT token
