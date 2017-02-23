@@ -1,7 +1,7 @@
-import { action, createHandler, stateConnector } from 'react-isomorphic-render'
+import { action, reset_error, create_handler, state_connector } from 'react-isomorphic-render'
 import settings from '../react-isomorphic-render-async'
 
-const handler = createHandler(settings)
+const handler = create_handler(settings)
 
 export const sign_in = action
 ({
@@ -53,29 +53,33 @@ export const register = action
 },
 handler)
 
-export const reset_sign_in_error = () =>
+export const reset_sign_in_error = reset_error
 ({
-	type  : 'user: sign in: error',
-	error : null
-})
+	namespace : 'user',
+	event     : 'sign in'
+},
+handler)
 
-export const reset_sign_in_with_access_code_error = () =>
+export const reset_sign_in_with_access_code_error = reset_error
 ({
-	type  : 'user: sign in with access code: error',
-	error : null
-})
+	namespace : 'user',
+	event     : 'sign in with access code'
+},
+handler)
 
-export const reset_sign_in_with_password_error = () =>
+export const reset_sign_in_with_password_error = reset_error
 ({
-	type  : 'user: sign in with password: error',
-	error : null
-})
+	namespace : 'user',
+	event     : 'sign in with password'
+},
+handler)
 
-export const reset_register_error = () =>
+export const reset_register_error = reset_error
 ({
-	type  : 'user: register: error',
-	error : null
-})
+	namespace : 'user',
+	event     : 'register'
+},
+handler)
 
 export const reset_authentication = action
 ({
@@ -123,7 +127,7 @@ handler.handle('user profile: update user info: done', (state, result) =>
 handler.addStateProperties('user')
 
 // A little helper for Redux `@connect()`
-export const connector = stateConnector(handler)
+export const connector = state_connector(handler)
 
 // This is the Redux reducer which now
 // handles the asynchronous actions defined above.

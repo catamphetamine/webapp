@@ -1,8 +1,8 @@
 import { Preload_started, Preload_finished, Preload_failed } from 'react-isomorphic-render'
-import { action, createHandler, stateConnector } from 'react-isomorphic-render'
+import { action, create_handler, state_connector } from 'react-isomorphic-render'
 import settings from '../react-isomorphic-render-async'
 
-const handler = createHandler(settings)
+const handler = create_handler(settings)
 
 export const preload_started = () =>
 ({
@@ -32,7 +32,7 @@ handler.handle(Preload_failed, (state, result) =>
 }))
 
 // A little helper for Redux `@connect()`
-export const connector = stateConnector(handler)
+export const connector = state_connector(handler)
 
 // This is the Redux reducer
 export default handler.reducer()

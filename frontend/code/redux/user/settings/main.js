@@ -1,7 +1,7 @@
-import { action, createHandler, stateConnector } from 'react-isomorphic-render'
+import { action, create_handler, state_connector, reset_error } from 'react-isomorphic-render'
 import settings from '../../../react-isomorphic-render-async'
 
-const handler = createHandler(settings)
+const handler = create_handler(settings)
 
 export const get_own_user = action
 ({
@@ -53,11 +53,12 @@ export const change_email = action
 },
 handler)
 
-export const reset_change_email_error = () =>
+export const reset_change_email_error = reset_error
 ({
-	type  : 'user settings: change email: error',
-	error : null
-})
+	namespace : 'user settings',
+	event     : 'change email'
+},
+handler)
 
 export const change_alias = action
 ({
@@ -80,11 +81,12 @@ export const change_alias = action
 },
 handler)
 
-export const reset_change_alias_error = () =>
+export const reset_change_alias_error = reset_error
 ({
-	type  : 'user settings: change alias: error',
-	error : null
-})
+	namespace : 'user settings',
+	event     : 'change alias'
+},
+handler)
 
 export const check_password = action
 ({
@@ -94,11 +96,12 @@ export const check_password = action
 },
 handler)
 
-export const reset_check_password_error = () =>
+export const reset_check_password_error = reset_error
 ({
-	type  : 'user settings: check password: error',
-	error : null
-})
+	namespace : 'user settings',
+	event     : 'check password'
+},
+handler)
 
 export const set_load_advanced_settings_pending = action
 ({
@@ -137,7 +140,7 @@ export const get_user_authentication_tokens = action
 handler)
 
 // A little helper for Redux `@connect()`
-export const connector = stateConnector(handler)
+export const connector = state_connector(handler)
 
 // This is the Redux reducer which now
 // handles the asynchronous actions defined above.

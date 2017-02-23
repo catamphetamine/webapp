@@ -1,7 +1,7 @@
-import { action, createHandler, stateConnector } from 'react-isomorphic-render'
+import { action, create_handler, state_connector, reset_error } from 'react-isomorphic-render'
 import settings from '../../react-isomorphic-render-async'
 
-const handler = createHandler(settings)
+const handler = create_handler(settings)
 
 export const update_user = action
 ({
@@ -12,11 +12,12 @@ export const update_user = action
 },
 handler)
 
-export const update_user_reset_error = () =>
+export const update_user_reset_error = reset_error
 ({
-	type  : 'user profile: update user info: error',
-	error : null
-})
+	namespace : 'user profile',
+	event     : 'update user info'
+},
+handler)
 
 export const get_user = action
 ({
@@ -47,11 +48,12 @@ export const upload_user_picture = action
 },
 handler)
 
-export const reset_upload_user_picture_error = () =>
+export const reset_upload_user_picture_error = reset_error
 ({
-	type  : 'user profile: upload user picture: error',
-	error : null
-})
+	namespace : 'user profile',
+	event     : 'upload user picture'
+},
+handler)
 
 export const update_user_picture = action
 ({
@@ -105,7 +107,7 @@ export const set_upload_user_picture_other_error = action
 handler)
 
 // A little helper for Redux `@connect()`
-export const connector = stateConnector(handler)
+export const connector = state_connector(handler)
 
 // This is the Redux reducer which now
 // handles the asynchronous actions defined above.

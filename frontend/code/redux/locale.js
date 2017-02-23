@@ -1,7 +1,7 @@
-import { action, createHandler, stateConnector } from 'react-isomorphic-render'
+import { action, create_handler, state_connector } from 'react-isomorphic-render'
 import settings from '../react-isomorphic-render-async'
 
-const handler = createHandler(settings)
+const handler = create_handler(settings)
 
 handler.handle('locale', (state, result) =>
 ({
@@ -23,7 +23,7 @@ export const set_locale = action
 handler)
 
 // A little helper for Redux `@connect()`
-export const connector = stateConnector(handler)
+export const connector = state_connector(handler)
 
 // This is the Redux reducer
 export default handler.reducer()

@@ -37,7 +37,7 @@
 	"authentication.error.user_is_blocked"               : "Ваша учётная запись была заблокирована {details}",
 	"authentication.error.user_is_blocked_details"       : "{blocked_at} пользователем {blocked_by} по причине: «{blocked_reason}»",
 	"authentication.unblock_instructions"                : "По вопросам разблокировки вы можете связаться со службой поддержки по адресу {support_email}",
-	"authentication.error.login_attempts_limit_exceeded" : "Превышено допустимое количество попыток входа. Попробуйте войти ещё раз {cooldown}.",
+	"authentication.error.login_attempts_limit_exceeded" : "Превышено допустимое количество попыток входа. Попробуйте войти ещё раз {cooldown}. Если вы не можете разобраться и не знаете, что делать, свяжитесь с техподдержкой по почте: {support_email}",
 	"authentication.error.access_code.mismatch"          : "Неверный код доступа",
 	"authentication.error.password.mismatch"             : "Неверный пароль",
 

@@ -1,8 +1,8 @@
 import { Preload_started, Preload_finished, Preload_failed } from 'react-isomorphic-render'
-import { action, createHandler, stateConnector } from 'react-isomorphic-render'
+import { action, create_handler } from 'react-isomorphic-render'
 import settings from '../react-isomorphic-render-async'
 
-const handler = createHandler(settings)
+const handler = create_handler(settings)
 
 export const connected = action
 ({

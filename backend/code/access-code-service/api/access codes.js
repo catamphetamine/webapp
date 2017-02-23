@@ -17,7 +17,10 @@ export default function(api)
 		// Limit access code request frequency for a user
 		if (entry)
 		{
-			const { throttled, cooldown } = await throttling.attempt(entry)
+			// Check that there's room for 2 attempts,
+			// one of which is immediately "failed"
+			// to throttle sending access codes.
+			const { throttled, cooldown } = await throttling.attempt(entry, undefined, { count: 2 })
 
 			if (throttled)
 			{
