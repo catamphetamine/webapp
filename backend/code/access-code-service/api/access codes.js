@@ -7,6 +7,8 @@ import get_word   from '../dictionaries/dictionary'
 
 const throttling = new Throttling(store)
 
+const lifetime = 24 * 60 * 60 * 1000 // a day (about 20 attempts)
+
 export default function(api)
 {
 	// Issues a new access code
@@ -20,7 +22,7 @@ export default function(api)
 			// Check that there's room for 2 attempts,
 			// one of which is immediately "failed"
 			// to throttle sending access codes.
-			const { throttled, cooldown } = await throttling.attempt(entry, undefined, { count: 2 })
+			const { throttled, cooldown } = await throttling.attempt(entry, { count: 2 })
 
 			if (throttled)
 			{
@@ -33,12 +35,12 @@ export default function(api)
 
 		if (entry)
 		{
-			await store.update_code(entry.id, code)
+			await store.update_code(entry.id, code, lifetime)
 			id = entry.id
 		}
 		else
 		{
-			id = await store.create(code, user)
+			id = await store.create(code, user, lifetime)
 		}
 
 		return { id, code }
@@ -52,6 +54,12 @@ export default function(api)
 		if (!entry)
 		{
 			throw new errors.Not_found()
+		}
+
+		// Check if the access code expired
+		if (entry.expires.getTime() <= Date.now())
+		{
+			throw new errors.Access_denied('Access code attempts limit exceeded')
 		}
 
 		const { throttled, cooldown, result } = await throttling.attempt(entry, async () =>

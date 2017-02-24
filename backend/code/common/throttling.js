@@ -9,6 +9,10 @@ export default class Throttling
 	// Max "temperature"
 	hottest_allowed_temperature = 5
 
+	// Currently attempted entry ids
+	// (to counter massive simultaneous attempts)
+	in_progress = {}
+
 	constructor(store, options = {})
 	{
 		const { overheat } = options
@@ -26,8 +30,16 @@ export default class Throttling
 	// Once the temperature reaches the maximum threshold
 	// all further login attempts will be denied.
 	// The temperature cools down to a half of its value every 15 minutes.
-	async attempt(info, check, options = {})
+	async attempt(info, check, options)
 	{
+		if (typeof check !== 'function')
+		{
+			options = check
+			check = undefined
+		}
+
+		options = options || {}
+
 		let temperature = 0
 
 		// If no login attempts failed so far
@@ -83,6 +95,26 @@ export default class Throttling
 			throttled : false
 		}
 
+		// Check that this entry is not "in progress"
+		if (info.id)
+		{
+			// If it's already "in progress",
+			// then don't allow multiple simultaneous attempts.
+			if (this.in_progress[info.id])
+			{
+				const result =
+				{
+					throttled : true,
+					cooldown  : 0
+				}
+
+				return result
+			}
+
+			// Mark this entry as "in progress"
+			this.in_progress[info.id] = true
+		}
+
 		// Absence of `check` may be used
 		// to just limit function call frequency
 		if (!check)
@@ -106,6 +138,12 @@ export default class Throttling
 			// Increase attempts counter and the temperature
 			await this.failed(info, temperature)
 			result.result = false
+		}
+
+		// Mark this entry as no longer "in progress"
+		if (info.id)
+		{
+			delete this.in_progress[info.id]
 		}
 
 		return result

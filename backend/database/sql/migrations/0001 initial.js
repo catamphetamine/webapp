@@ -162,6 +162,7 @@ exports.up = function(knex, Promise)
 		table.timestamp('latest_attempt')
 		table.float('temperature').notNullable.defaultTo(0)
 		table.integer('attempts').notNullable.defaultTo(0)
+		table.timestamp('expires').notNullable()
 	})
 }
 

@@ -12,9 +12,14 @@ export default class Sql_store
 		this.access_codes = new Sql('access_codes')
 	}
 
-	create(code, user_id)
+	create(code, user_id, lifetime)
 	{
-		return this.access_codes.create({ code, user: user_id })
+		return this.access_codes.create
+		({
+			code,
+			user    : user_id,
+			expires : new Date(Date.now() + lifetime)
+		})
 	}
 
 	get(id)
@@ -27,9 +32,13 @@ export default class Sql_store
 		return this.access_codes.delete(id)
 	}
 
-	update_code(id, code)
+	update_code(id, code, lifetime)
 	{
-		return this.access_codes.update(id, { code })
+		return this.access_codes.update(id,
+		{
+			code,
+			expires : new Date(Date.now() + lifetime)
+		})
 	}
 
 	get_by_user_id(user_id)

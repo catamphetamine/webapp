@@ -7,7 +7,7 @@ export default class Memory_store
 	{
 	}
 
-	async create(code, user_id)
+	async create(code, user_id, lifetime)
 	{
 		const id = this.id++
 		this.codes.set(id, { id, code, user: user_id })
@@ -23,7 +23,7 @@ export default class Memory_store
 		this.codes.delete(id)
 	}
 
-	async update_code(id, code)
+	async update_code(id, code, lifetime)
 	{
 		this.codes.get(entry.id).code = code
 	}

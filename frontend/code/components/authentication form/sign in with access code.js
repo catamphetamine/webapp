@@ -186,6 +186,11 @@ export default class Sign_in_with_access_code extends Component
 
 		if (error.message === 'Access code attempts limit exceeded')
 		{
+			if (!error.cooldown)
+			{
+				return translate(messages.access_code_expired)
+			}
+
 			return login_attempts_limit_exceeded_error(error)
 		}
 
@@ -254,5 +259,11 @@ export const messages = defineMessages
 		id             : 'authentication.error.access_code.mismatch',
 		description    : 'The access code doesn\'t match the one sent in the message',
 		defaultMessage : 'Wrong access code'
+	},
+	access_code_expired:
+	{
+		id             : 'authentication.error.access_code.expired',
+		description    : 'The access code has expired and the user should generate a new one',
+		defaultMessage : 'This access code has expired. Start signing in all over again.'
 	}
 })
