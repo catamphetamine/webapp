@@ -7,6 +7,17 @@ import { errors } from 'web-service'
 
 import { send } from '../mailer'
 
+import start_metrics from '../../../../code/metrics'
+
+const metrics = start_metrics
+({
+	statsd:
+	{
+		...configuration.statsd,
+		prefix : 'mail'
+	}
+})
+
 export default function(api)
 {
 	api.post('/', async function({ to, subject, template, parameters, locale })
@@ -15,6 +26,8 @@ export default function(api)
 		{
 			throw new errors.Input_rejected(`"locale" is required`)
 		}
+
+		metrics.increment('count')
 
 		send({ to, subject }, template, parameters, locale)
 	})

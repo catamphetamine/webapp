@@ -397,7 +397,8 @@ export default class User_profile extends Component
 							<div>
 								{/* "Subscribe" */}
 								<Button
-									action={this.subscribe}>
+									action={this.subscribe}
+									style={styles.user_action}>
 
 									{/* Icon */}
 									<i className="material-icons">person_add</i>
@@ -407,7 +408,8 @@ export default class User_profile extends Component
 
 								{/* "Send message" */}
 								<Button
-									action={this.send_message}>
+									action={this.send_message}
+									style={styles.user_action}>
 
 									{/* Icon */}
 									<i className="material-icons">chat_bubble_outline</i>
@@ -736,6 +738,9 @@ const styles = style
 
 	latest_activity
 		cursor : default
+
+	user_action
+		display : block
 `
 
 const messages = defineMessages

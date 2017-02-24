@@ -14,6 +14,17 @@ from './user.base'
 
 import can from '../../../../code/permissions'
 
+import start_metrics from '../../../../code/metrics'
+
+const metrics = start_metrics
+({
+	statsd:
+	{
+		...configuration.statsd,
+		prefix : 'users'
+	}
+})
+
 export default function(api)
 {
 	api.post('/register', register)

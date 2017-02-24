@@ -47,7 +47,7 @@
     "react-dnd-html5-backend": "^2.1.2",
     "react-dom": "^15.4.2",
     "react-intl": "^2.1.2",
-    "react-isomorphic-render": "^10.1.6",
+    "react-isomorphic-render": "^10.1.7",
     "react-redux": "^5.0.2",
     "react-responsive-ui": "^0.2.34",
     "react-router": "^3.0.0",

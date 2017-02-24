@@ -147,7 +147,7 @@ const server = webpage_server(settings,
 	//
 	stats({ url, route, time: { initialize, preload, render, total } })
 	{
-		metrics.increment(`count`)
+		metrics.increment('count')
 
 		metrics.time('initialize', Math.round(initialize))
 		metrics.time('preload', Math.round(preload))

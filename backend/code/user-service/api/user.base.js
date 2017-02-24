@@ -3,6 +3,17 @@ import { http, errors } from 'web-service'
 import store from '../store/store'
 import generate_alias from '../alias'
 
+import start_metrics from '../../../../code/metrics'
+
+const metrics = start_metrics
+({
+	statsd:
+	{
+		...configuration.statsd,
+		prefix : 'users'
+	}
+})
+
 export async function register({ name, email, locale }, { internal_http })
 {
 	if (!exists(name))
@@ -72,6 +83,8 @@ export async function register({ name, email, locale }, { internal_http })
 	// 	id,
 	// 	password
 	// })
+
+	metrics.increment('count')
 
 	return await internal_http.post(`${address_book.authentication_service}/sign-in`,
 	{
@@ -151,17 +164,4 @@ export function own_user(user)
 	}
 
 	return result
-}
-
-async function user_is_blocked(user)
-{
-	const self_block = user.blocked_by === user.id
-
-	throw new errors.Access_denied(`You are blocked`,
-	{
-		self_block,
-		blocked_by     : !self_block && public_user(await store.find_user_by_id(user.blocked_by)),
-		blocked_at     : user.blocked_at,
-		blocked_reason : user.blocked_reason
-	})
 }

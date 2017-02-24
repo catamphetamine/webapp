@@ -5,6 +5,17 @@ import store      from '../store/store'
 import Throttling from '../../common/throttling'
 import get_word   from '../dictionaries/dictionary'
 
+import start_metrics from '../../../../code/metrics'
+
+const metrics = start_metrics
+({
+	statsd:
+	{
+		...configuration.statsd,
+		prefix : 'access_codes'
+	}
+})
+
 const throttling = new Throttling(store)
 
 const lifetime = 24 * 60 * 60 * 1000 // a day (about 20 attempts)
@@ -26,6 +37,7 @@ export default function(api)
 
 			if (throttled)
 			{
+				metrics.increment('invalid')
 				throw new errors.Access_denied('Access code attempts limit exceeded', { cooldown })
 			}
 		}
@@ -42,6 +54,8 @@ export default function(api)
 		{
 			id = await store.create(code, user, lifetime)
 		}
+
+		metrics.increment('count')
 
 		return { id, code }
 	})
@@ -83,6 +97,7 @@ export default function(api)
 
 		if (throttled)
 		{
+			metrics.increment('invalid')
 			throw new errors.Access_denied('Access code attempts limit exceeded', { cooldown })
 		}
 

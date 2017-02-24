@@ -105,7 +105,7 @@ export default class Layout extends Component
 				<Page className="page">
 					{/* header */}
 					{/* <Sticky> */}
-						<header className="card rrui__fixed-full-width">
+						<header className="main-header card rrui__fixed-full-width">
 							{/* menu button for small screens */}
 							<div className="menu-button-container">
 								<MenuButton link="/menu"/>
