@@ -37,7 +37,6 @@ exports.up = function(knex, Promise)
 		table.string('role', 256)
 		table.string('locale', 128)
 
-		table.bigint('picture').references('images.id')
 		table.jsonb('picture_sizes')
 
 		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
@@ -86,8 +85,8 @@ exports.up = function(knex, Promise)
 		table.text('value').notNullable()
 
 		table.timestamp('latest_attempt')
-		table.float('temperature').notNullable.defaultTo(0)
-		table.integer('attempts').notNullable.defaultTo(0)
+		table.float('temperature').notNullable().defaultTo(0)
+		table.integer('attempts').notNullable().defaultTo(0)
 
 		table.bigint('user').notNullable().unique().references('users.id').onDelete('CASCADE')
 
@@ -137,6 +136,11 @@ exports.up = function(knex, Promise)
 		table.bigint('user').notNullable().references('users.id')
 	})
 
+	.table('users', function(table)
+	{
+		table.bigint('picture').references('images.id')
+	})
+
 	// Add `coordinates` column
 	.raw(`ALTER TABLE images ADD COLUMN coordinates GEOMETRY(Point, 4326)`)
 
@@ -160,8 +164,8 @@ exports.up = function(knex, Promise)
 		table.bigint('user').notNullable().unique().references('users.id').onDelete('CASCADE')
 		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
 		table.timestamp('latest_attempt')
-		table.float('temperature').notNullable.defaultTo(0)
-		table.integer('attempts').notNullable.defaultTo(0)
+		table.float('temperature').notNullable().defaultTo(0)
+		table.integer('attempts').notNullable().defaultTo(0)
 		table.timestamp('expires').notNullable()
 	})
 }

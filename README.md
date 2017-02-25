@@ -282,13 +282,18 @@ To change the default PostgreSQL superuser password
 
 ```sh
 sudo -u postgres psql
+# or: psql postgres (for OS X)
 postgres=# \password postgres
+\q
 ```
 
 Then create a new user in PostgreSQL and a new database. For example, in OS X or Linux terminal, using these commands
 
 ```sh
 createuser --username=postgres --interactive USERNAME
+n
+n
+n
 createdb --username=postgres --encoding=utf8 --owner=USERNAME DATABASE_NAME --template=template0
 ```
 
@@ -722,8 +727,6 @@ Troubleshooting
 
 To do
 ====================
-
-на малом размере экрана меню dropdown не сразу под header'ом
 
 сделать access code в смене почты (и пароль, если он задан)
 
