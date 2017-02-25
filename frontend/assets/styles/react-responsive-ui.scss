@@ -81,7 +81,7 @@
 {
 	display    : inline-block;
 	cursor     : pointer;
-	transition : background-color 30ms ease-out, color 30ms ease-out, border-color 30ms ease-out;
+	transition : background-color var(--button-animation-duration) var(--button-animation-easing), color var(--button-animation-duration) var(--button-animation-easing), border-color var(--button-animation-duration) var(--button-animation-easing);
 }
 
 .rrui__button__button
@@ -138,7 +138,13 @@
 
 .rrui__select
 {
-	display : inline-block;
+	/*
+	Sometimes (e.g. when using mobile dropdown menus)
+	`position: relative` could be overridden to `static`
+	to allow for the menu stretching to full screen width.
+	*/
+	position : relative;
+	display  : inline-block;
 }
 
 .rrui__select__options
@@ -236,8 +242,8 @@
 	padding-bottom : calc(var(--unit) * 1);
 
 	box-sizing: border-box;
-
 	text-align: left;
+	white-space: nowrap;
 }
 
 .rrui__select__selected--disabled,
@@ -321,7 +327,7 @@
 .rrui__select__option
 {
 	color      : inherit;
-	transition : background-color 30ms ease-out, color 30ms ease-out;
+	transition : background-color var(--button-animation-duration) var(--button-animation-easing), color var(--button-animation-duration) var(--button-animation-easing);
 }
 
 .rrui__select__arrow

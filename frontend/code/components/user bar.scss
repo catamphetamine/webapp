@@ -6,6 +6,31 @@
 	}
 }
 
+.user-menu__entry
+{
+	display     : flex;
+	align-items : center;
+}
+
+.user-menu__icon
+{
+	width  : calc(var(--unit) * 3.5);
+	height : calc(var(--unit) * 3.5);
+
+	margin-bottom : var(--icon-liftup);
+	margin-right  : 0.5em;
+
+	transition : var(--button-icon-transition);
+}
+
+.user-menu__entry:active
+{
+	.user-menu__icon
+	{
+		fill: var(--white-color);
+	}
+}
+
 @include m
 {
 	.user-bar

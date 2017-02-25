@@ -20,6 +20,11 @@ import { bindActionCreators as bind_action_creators } from 'redux'
 import { sign_out, connector } from '../redux/authentication'
 import { preload_started } from '../redux/preload'
 
+import Person_icon   from '../../assets/images/icons/person.svg'
+import Settings_icon from '../../assets/images/icons/settings.svg'
+import Radio_icon    from '../../assets/images/icons/radio.svg'
+import Message_icon  from '../../assets/images/icons/message.svg'
+
 @connect
 (
 	(state) =>
@@ -89,7 +94,6 @@ export default class Authentication extends Component
 		const markup =
 		(
 			<div className="user-bar" style={ style }>
-
 				{/* WebSocket status indicator (client side only) */}
 				{ !realtime_service_is_connected &&
 					<ActivityIndicator
@@ -186,33 +190,45 @@ export default class Authentication extends Component
 					alignment="right">
 
 					{/* Profile */}
-					<Link key="profile" to={ User.url(user) }>
+					<Link
+						key="profile"
+						to={ User.url(user) }
+						className="user-menu__entry">
 						{/* Icon */}
-						<i className="material-icons dropdown-item__icon">account_box</i>
+						<Person_icon className="user-menu__icon"/>
 						{/* Text */}
 						{ translate(messages.profile) }
 					</Link>
 
 					{/* Settings */}
-					<Link key="settings" to="/settings">
+					<Link
+						key="settings"
+						to="/settings"
+						className="user-menu__entry">
 						{/* Icon */}
-						<i className="material-icons dropdown-item__icon">settings</i>
+						<Settings_icon className="user-menu__icon"/>
 						{/* Text */}
 						{ translate(messages.settings) }
 					</Link>
 
 					{/* Feed */}
-					<Link key="notifications" to="/feed">
+					<Link
+						key="notifications"
+						to="/feed"
+						className="user-menu__entry">
 						{/* Icon */}
-						<i className="material-icons dropdown-item__icon">notifications</i>
+						<Radio_icon className="user-menu__icon"/>
 						{/* Text */}
 						{ translate(messages.notifications) }
 					</Link>
 
 					{/* Messages */}
-					<Link key="messages" to="/messages">
+					<Link
+						key="messages"
+						to="/messages"
+						className="user-menu__entry">
 						{/* Icon */}
-						<i className="material-icons dropdown-item__icon">chat_bubble_outline</i>
+						<Message_icon className="user-menu__icon"/>
 						{/* Text */}
 						{ translate(messages.messages) }
 					</Link>
@@ -221,9 +237,12 @@ export default class Authentication extends Component
 					<Select.Separator/>
 
 					{/* Sign out */}
-					<div key="sign_out" onClick={ this.sign_out }>
+					<div
+						key="sign_out"
+						onClick={ this.sign_out }
+						className="user-menu__entry">
 						{/* Icon */}
-						<i className="material-icons material-icons--empty dropdown-item__icon"></i>
+						<div className="user-menu__icon"/>
 						{/* Text */}
 						<Button
 							className="sign-out"

@@ -150,6 +150,16 @@ const configuration =
 				{
 					loader: 'markdown-loader'
 				}]
+			},
+			{
+				test: /\.svg$/,
+				use:
+				[{
+					loader: 'babel-loader'
+				},
+				{
+					loader: 'svg-react-loader'
+				}]
 			}
 		]
 	},

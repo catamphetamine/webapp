@@ -8,6 +8,10 @@ import Redux_form                      from 'simpler-redux-form'
 import { defineMessages, FormattedMessage } from 'react-intl'
 import { Form, Button, FileUpload, ActivityIndicator, File, CanDrop } from 'react-responsive-ui'
 
+import Clock_icon      from '../../../assets/images/icons/clock.svg'
+import Message_icon    from '../../../assets/images/icons/message.svg'
+import Person_add_icon from '../../../assets/images/icons/person add.svg'
+
 import
 {
 	get_users_latest_activity_time,
@@ -379,13 +383,15 @@ export default class User_profile extends Component
 							{ !edit &&
 								<div>
 									{/* User's name */}
-									<h1 style={styles.user_name}>{user.name}</h1>
+									<h1 style={ styles.user_name }>
+										{ user.name }
+									</h1>
 
 									{/* User's place and country */}
 									{ (user.place || user.country) &&
 										<div
 											className="user-profile__location">
-											{this.whereabouts().join(', ')}
+											{ this.whereabouts().join(', ') }
 										</div>
 									}
 								</div>
@@ -394,38 +400,40 @@ export default class User_profile extends Component
 
 						{/* User actions: "Send message", "Subscribe" */}
 						{ !is_own_profile &&
-							<div>
+							<div className="user-profile__actions">
 								{/* "Subscribe" */}
-								<Button
-									action={this.subscribe}
-									style={styles.user_action}>
-
-									{/* Icon */}
-									<i className="material-icons">person_add</i>
-									{/* Text */}
-									{translate(messages.subscribe)}
-								</Button>
+								<div>
+									<Button
+										action={ this.subscribe }
+										className="user-profile__action">
+										{/* Icon */}
+										<Person_add_icon className="user-profile__action-icon"/>
+										{/* Text */}
+										{ translate(messages.subscribe) }
+									</Button>
+								</div>
 
 								{/* "Send message" */}
-								<Button
-									action={this.send_message}
-									style={styles.user_action}>
-
-									{/* Icon */}
-									<i className="material-icons">chat_bubble_outline</i>
-									{/* Text */}
-									{translate(messages.send_message)}
-								</Button>
+								<div>
+									<Button
+										action={ this.send_message }
+										className="user-profile__action">
+										{/* Icon */}
+										<Message_icon className="user-profile__action-icon"/>
+										{/* Text */}
+										{ translate(messages.send_message) }
+									</Button>
+								</div>
 							</div>
 						}
 
 						{/* Online status: "Last seen: an hour ago" */}
 						{ latest_activity_time &&
-							<div style={styles.latest_activity} className="user-profile__last-seen">
+							<div style={ styles.latest_activity } className="user-profile__last-seen">
 								{/* Icon */}
-								<i className="material-icons">schedule</i>
+								<Clock_icon className="user-profile__last-seen-icon"/>
 								{/* "an hour ago" */}
-								<Time_ago>{latest_activity_time}</Time_ago>
+								<Time_ago>{ latest_activity_time }</Time_ago>
 							</div>
 						}
 					</section>
@@ -738,9 +746,6 @@ const styles = style
 
 	latest_activity
 		cursor : default
-
-	user_action
-		display : block
 `
 
 const messages = defineMessages

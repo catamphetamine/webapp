@@ -23,9 +23,13 @@ module.exports =
 				'png',
 				'jpg',
 				'gif',
-				'ico',
-				'svg'
+				'ico'
 			]
+		},
+		svg:
+		{
+			extension: 'svg',
+			runtime: true
 		},
 		markdown:
 		{

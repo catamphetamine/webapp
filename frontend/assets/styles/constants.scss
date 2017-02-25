@@ -47,6 +47,13 @@
 	--shadow : 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
 
 	--modal-padding : calc(var(--unit) * 4);
+
+	--button-animation-duration : 30ms;
+	--button-animation-easing   : ease-out;
+	--button-icon-transition    : fill var(--button-animation-duration) var(--button-animation-easing);
+
+	--icon-liftup       : 0.05em;
+	--icon-right-margin : 0.3em;
 }
 
 $extra-large-screen-min-width : 1260pt;
