@@ -7,14 +7,29 @@ export const snack = action
 ({
 	namespace : 'snack',
 	event     : 'set',
-	payload   : snack => ({ snack }),
-	result    : (state, { snack }) =>
+	payload   : (snack, type) => ({ snack, snack_type: type }),
+	result    : (state, { snack, snack_type }) =>
 	({
 		...state,
-		snack : typeof snack === 'string' ? { text: snack } : snack
+		snack : normalize_snack(snack, snack_type)
 	})
 },
 handler)
+
+function normalize_snack(snack, snack_type)
+{
+	if (!snack)
+	{
+		return
+	}
+
+	if (typeof snack === 'object' && !snack.props)
+	{
+		return snack
+	}
+
+	return { content: snack, type: snack_type }
+}
 
 handler.addStateProperties('snack')
 

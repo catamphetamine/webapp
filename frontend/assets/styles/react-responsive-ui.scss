@@ -102,10 +102,10 @@
 
 .rrui__button__activity-indicator
 {
-	left   : calc(50% - 0.7em);
-	top    : calc(50% - 0.7em);
-	width  : 1.4em;
-	height : 1.4em;
+	left   : calc(50% - var(--button-activity-indicator-size) / 2);
+	top    : calc(50% - var(--button-activity-indicator-size) / 2);
+	width  : var(--button-activity-indicator-size);
+	height : var(--button-activity-indicator-size);
 
 	transition : opacity 200ms ease-out;
 }

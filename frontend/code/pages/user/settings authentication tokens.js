@@ -21,6 +21,223 @@ import
 }
 from '../../redux/user/settings/main'
 
+import { snack } from '../../redux/snackbar'
+
+@connect
+(
+	(state) =>
+	({
+		...connector(state.user_settings.main)
+	}),
+	{
+		get_user_authentication_tokens,
+		revoke_authentication_token,
+		snack
+	}
+)
+@international
+export default class Authentication_tokens extends Component
+{
+	constructor()
+	{
+		super()
+
+		this.revoke_authentication_token = this.revoke_authentication_token.bind(this)
+	}
+
+	render()
+	{
+		const
+		{
+			authentication_tokens,
+			revoke_authentication_token_pending,
+			translate
+		}
+		= this.props
+
+		const markup =
+		(
+			<Content_section
+				title={ translate(messages.authentication_tokens) }
+				padding={ false }>
+
+				{/* Authentication tokens list */}
+				<ul>
+					{ authentication_tokens.map((token, token_index) =>
+					{
+						const markup =
+						(
+							<li
+								key={ token_index }
+								className={ classNames('content-section-padding',
+								{
+									'background-color--gray-color-lightest' : token.revoked_at,
+									// 'background-color--base-color-lightest' : token.currently_used
+								}) }
+								style={ token.revoked_at ? style.authentication_token.revoked : style.authentication_token }>
+
+								{/* Divider line */}
+								{ token_index > 0 && <div className="content-section-divider"/> }
+
+								{/* Token id */}
+								<div style={ style.authentication_token.id }>
+									{ /* "Token" */ }
+									{ translate(messages.authentication_token_id) }
+									{ ' ' }
+									<code>{ token.id }</code>
+
+									{ /* Indicate if the token is being currently used (graphical) */ }
+									{ token.currently_used &&
+										<div
+											title={ translate(messages.currently_used_hint) }
+											className="background-color--base-color"
+											style={ style.authentication_token.currently_used }/>
+									}
+								</div>
+
+								{/* Token issued on */}
+								<div>
+									{ /* "Issued" */ }
+									{ translate(messages.authentication_token_issued) }
+									{ ' ' }
+									{ /* when */ }
+									<Time_ago style={ style.authentication_token.issued }>
+										{ token.created_at }
+									</Time_ago>
+								</div>
+
+								{/* Token status (valid, revoked) */}
+								{ !token.currently_used &&
+									<div style={ style.authentication_token.status }>
+										{ /* If the token was revoked, show revocation date */ }
+										{ token.revoked_at &&
+											<span>
+												{ /* "Revoked" */ }
+												{ translate(messages.authentication_token_revoked) }
+												{ ' ' }
+												{ /* when */ }
+												<Time_ago>
+													{ token.revoked_at }
+												</Time_ago>
+											</span>
+										}
+
+										{/* If the token wasn't revoked then it's valid */}
+										{ !token.revoked_at &&
+											<span>
+												{ /* "Valid" */ }
+												{ translate(messages.authentication_token_valid) }
+												{ ' ' }
+												{ /* "Revoke" */ }
+												{ /* (if this token is not being currently used) */ }
+												{ !token.currently_used &&
+													<Button
+														busy={ revoke_authentication_token_pending }
+														action={ () => this.revoke_authentication_token(token.id) }>
+														{ translate(messages.revoke_authentication_token) }
+													</Button>
+												}
+											</span>
+										}
+									</div>
+								}
+
+								{/* Latest activity */}
+								<div>
+									{ /* "Latest activity" */ }
+									{ translate(messages.authentication_token_latest_activity) }:
+
+									{/* For each different IP address show latest activity time */}
+									<ul style={ style.authentication_token.latest_activity }>
+										{ token.history.map((activity, activity_index) =>
+										{
+											{/* Latest activity time for this IP address */}
+											return <li key={ activity_index }>
+												{/* IP address, also resolving city and country */}
+												<code>
+													{ activity.ip }
+												</code>
+												{/* (city, country)*/}
+												,
+												{' '}
+												{ activity.place && activity.place.city && `${activity.place.city}, ${activity.place.country}, ` }
+												{' '}
+												{/* Latest activity time */}
+												<Time_ago>
+													{ activity.updated_at }
+												</Time_ago>
+											</li>
+										}) }
+									</ul>
+								</div>
+							</li>
+						)
+
+						return markup
+					}) }
+				</ul>
+			</Content_section>
+		)
+
+		return markup
+	}
+
+	async revoke_authentication_token(id)
+	{
+		const
+		{
+			revoke_authentication_token,
+			get_user_authentication_tokens,
+			snack,
+			translate
+		}
+		= this.props
+
+		try
+		{
+			await revoke_authentication_token(id)
+		}
+		catch (error)
+		{
+			return snack(translate(messages.revoke_authentication_token_failed), 'error')
+		}
+
+		get_user_authentication_tokens()
+	}
+}
+
+const style = styler
+`
+	authentication_tokens
+
+	authentication_token
+		position    : relative
+		// padding     : var(--content-section-padding)
+		line-height : 1.6em
+
+		&revoked
+			// color: var(--gray-color-darker)
+			// background-color: var(--gray-color-lightest)
+
+		issued
+			// display: block
+
+		latest_activity
+
+		id
+			position : relative
+
+		currently_used
+			position : absolute
+			top : 0.5em
+			right : 0
+
+			display : block
+			width  : 0.5em
+			height : 0.5em
+			border-radius : 50%
+`
+
 const messages = defineMessages
 ({
 	authentication_tokens:
@@ -84,194 +301,3 @@ const messages = defineMessages
 		defaultMessage : `You're currently using this authentication token`
 	}
 })
-
-@connect
-(
-	(state) =>
-	({
-		...connector(state.user_settings.main)
-	}),
-	{
-		get_user_authentication_tokens,
-		revoke_authentication_token
-	}
-)
-@international
-export default class Authentication_tokens extends Component
-{
-	constructor()
-	{
-		super()
-
-		this.revoke_authentication_token = this.revoke_authentication_token.bind(this)
-	}
-
-	render()
-	{
-		const { authentication_tokens, revoke_authentication_token_pending, translate } = this.props
-
-		const markup =
-		(
-			<Content_section
-				title={translate(messages.authentication_tokens)}
-				padding={false}>
-
-				{/* Authentication tokens list */}
-				<ul>
-					{authentication_tokens.map((token, token_index) =>
-					{
-						const markup =
-						(
-							<li
-								key={token_index}
-								className={classNames('content-section-padding',
-								{
-									'background-color--gray-color-lightest' : token.revoked_at,
-									// 'background-color--base-color-lightest' : token.currently_used
-								})}
-								style={token.revoked_at ? style.authentication_token.revoked : style.authentication_token}>
-
-								{/* Divider line */}
-								{ token_index > 0 && <div className="content-section-divider"/> }
-
-								{/* Token id */}
-								<div style={style.authentication_token.id}>
-									{/* "Token" */}
-									{translate(messages.authentication_token_id)}
-									{' '}
-									<code>{token.id}</code>
-
-									{/* Indicate if the token is being currently used (graphical) */}
-									{token.currently_used &&
-										<div
-											title={translate(messages.currently_used_hint)}
-											className="background-color--base-color"
-											style={style.authentication_token.currently_used}/>
-									}
-								</div>
-
-								{/* Token issued on */}
-								<div>
-									{/* "Issued" */}
-									{translate(messages.authentication_token_issued)}
-									{' '}
-									{/* when */}
-									<Time_ago style={style.authentication_token.issued}>{token.created_at}</Time_ago>
-								</div>
-
-								{/* Token status (valid, revoked) */}
-								{!token.currently_used &&
-									<div style={style.authentication_token.status}>
-										{/* If the token was revoked, show revocation date */}
-										{token.revoked_at &&
-											<span>
-												{/* "Revoked" */}
-												{translate(messages.authentication_token_revoked)}
-												{' '}
-												{/* when */}
-												<Time_ago>{token.revoked_at}</Time_ago>
-											</span>
-										}
-
-										{/* If the token wasn't revoked then it's valid */}
-										{!token.revoked_at &&
-											<span>
-												{/* "Valid" */}
-												{translate(messages.authentication_token_valid)}
-												{' '}
-												{/* "Revoke" */}
-												{/* (if this token is not being currently used) */}
-												{!token.currently_used &&
-													<Button
-														busy={revoke_authentication_token_pending}
-														action={() => this.revoke_authentication_token(token.id)}>
-														{translate(messages.revoke_authentication_token)}
-													</Button>
-												}
-											</span>
-										}
-									</div>
-								}
-
-								{/* Latest activity */}
-								<div>
-									{/* "Latest activity" */}
-									{translate(messages.authentication_token_latest_activity)}:
-
-									{/* For each different IP address show latest activity time */}
-									<ul style={style.authentication_token.latest_activity}>
-										{token.history.map((activity, activity_index) =>
-										{
-											{/* Latest activity time for this IP address */}
-											return <li key={activity_index}>
-												{/* IP address, also resolving city and country */}
-												<code>{activity.ip}</code>{/* (city, country)*/},
-												{' '}
-												{ activity.place && activity.place.city && `${activity.place.city}, ${activity.place.country}, ` }
-												{' '}
-												{/* Latest activity time */}
-												<Time_ago>{activity.updated_at}</Time_ago>
-											</li>
-										})}
-									</ul>
-								</div>
-							</li>
-						)
-
-						return markup
-					})}
-				</ul>
-			</Content_section>
-		)
-
-		return markup
-	}
-
-	async revoke_authentication_token(id)
-	{
-		const { revoke_authentication_token, get_user_authentication_tokens, translate } = this.props
-
-		try
-		{
-			await revoke_authentication_token(id)
-		}
-		catch (error)
-		{
-			return alert(translate(messages.revoke_authentication_token_failed))
-		}
-
-		get_user_authentication_tokens()
-	}
-}
-
-const style = styler
-`
-	authentication_tokens
-
-	authentication_token
-		position    : relative
-		// padding     : var(--content-section-padding)
-		line-height : 1.6em
-
-		&revoked
-			// color: var(--gray-color-darker)
-			// background-color: var(--gray-color-lightest)
-
-		issued
-			// display: block
-
-		latest_activity
-
-		id
-			position : relative
-
-		currently_used
-			position : absolute
-			top : 0.5em
-			right : 0
-
-			display : block
-			width  : 0.5em
-			height : 0.5em
-			border-radius : 50%
-`

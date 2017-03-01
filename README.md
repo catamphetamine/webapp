@@ -734,29 +734,6 @@ Troubleshooting
 To do
 ====================
 
-  // Proxy /access-tokens requests to API server
-  web.proxy('/access-tokens', address_book.access_token_service, { name: 'Access token service' })
-
-
-
-сделать кастомизацию профиля (и магазина) цветом (рассчитывать luminosity при сохранении для darker/lighter + серые цвета)
-
-
-
-скрыть доступ к access-token-service, и проксировать нужное через user
-
-удалить access_store/store.js
-
-проверить, какую ошибку выдаст при expired
-
-проверить, какую ошибку выдаст при attempts left === 0
-
-проверить токены (+ на странице /settings)
-
-убрать access-code-service, заменив его на message-delivery-service, который будет принимать medium, address, message (type), data.
-
-заменить в коде acess_codes на authentication, access_code_service на authentication_service, access-code-service на message-delivery-service.
-
 сделать access code в смене почты (и пароль, если он задан)
 
 сделать задание (и смену) пароля в настройках
@@ -799,6 +776,19 @@ https://developers.google.com/api-client-library/javascript/samples/samples#auth
 
 
 перейти на docker в продакшене
+
+
+
+
+
+
+
+сделать кастомизацию профиля (и магазина) цветом (рассчитывать luminosity при сохранении для darker/lighter + серые цвета)
+
+github.com/qix-/color
+
+
+
 
 
 

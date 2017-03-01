@@ -202,6 +202,18 @@ export default function(api)
 		set_cookie('authentication', token, { signed: false })
 	})
 
+	// Get a list of all user's access tokens
+	api.get('/access-tokens', async (parameters, { internal_http }) =>
+	{
+		return await internal_http.get(`${address_book.access_token_service}`, parameters)
+	})
+
+	// Revoke an access token
+	api.post('/access-tokens/:id/revoke', async ({ id }, { internal_http }) =>
+	{
+		return await internal_http.post(`${address_book.access_token_service}/${id}/revoke`)
+	})
+
 	// Get user's "was online at" time
 	api.get('/was-online-at/:id', async ({ id }) =>
 	{

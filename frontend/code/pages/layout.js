@@ -29,16 +29,6 @@ import { snack as set_snack } from '../redux/snackbar'
 @DragAndDrop()
 export default class Layout extends Component
 {
-	static propTypes =
-	{
-		snack : PropTypes.object
-	}
-
-	static defaultProps =
-	{
-		snack : {}
-	}
-
 	constructor()
 	{
 		super()
@@ -55,7 +45,15 @@ export default class Layout extends Component
 
 	render()
 	{
-		const { translate, isDragging, snack, locale, children } = this.props
+		const
+		{
+			translate,
+			isDragging,
+			snack,
+			locale,
+			children
+		}
+		= this.props
 
 		const title       = translate(messages.title)
 		const description = translate(messages.description)
@@ -85,20 +83,20 @@ export default class Layout extends Component
 		const markup =
 		(
 			<PageAndMenu
-				className={classNames('layout', { 'layout--dragging': isDragging })}>
+				className={ classNames('layout', { 'layout--dragging': isDragging }) }>
 
 				<Title>{ title }</Title>
 				<Meta>{ meta }</Meta>
 
 				{/* navigation for small screens (will slide out) */}
 				{/* main menu */}
-				<Menu slideout items={menu_entries(translate)} itemComponent={Menu_item}/>
+				<Menu slideout items={ menu_entries(translate) } itemComponent={ Menu_item }/>
 
 				{/* "page is preloading" spinner */}
 				<Preloading/>
 
 				{/* An application-wide global snackbar */}
-				<Snackbar value={snack.text} reset={this.reset_snack}/>
+				<Snackbar value={ snack } reset={ this.reset_snack }/>
 
 				{/* webpage */}
 				{/* <StickyContainer className="page" style={styles.page}> */}
@@ -113,14 +111,14 @@ export default class Layout extends Component
 
 							{/* home page link */}
 							<div className="logo" style={{ textAlign: 'center' }}>
-								<IndexLink to="/" style={styles.home} activeStyle={styles.home_active}>
-									{translate(messages.title)}
+								<IndexLink to="/" style={ styles.home } activeStyle={ styles.home_active }>
+									{ translate(messages.title) }
 								</IndexLink>
 							</div>
 
 							{/* navigation for wide screens */}
 							{/* main menu */}
-							<Menu items={menu_entries(translate)} itemComponent={Menu_item}/>
+							<Menu items={ menu_entries(translate) } itemComponent={ Menu_item }/>
 
 							{/* User accout section */}
 							<User_bar/>
@@ -139,7 +137,7 @@ export default class Layout extends Component
 
 						{/* language chooser */}
 						<div className="language-wrapper">
-							<Locale_switcher alignment="right" upward={true} style={styles.locale_switcher}/>
+							<Locale_switcher alignment="right" upward style={ styles.locale_switcher }/>
 						</div>
 					</footer>
 				</Page>

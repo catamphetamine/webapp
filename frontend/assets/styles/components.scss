@@ -397,3 +397,8 @@ header .rrui__menu
 	width  : 0.8em;
 	height : 0.8em;
 }
+
+.rrui__snackbar--error
+{
+	background-color : var(--error-color-darker);
+}

@@ -229,7 +229,7 @@ export default class Authentication extends Component
 
 					{/* Sign out */}
 					<div
-						key="sign_out"
+						key="sign-out"
 						onClick={ this.sign_out }
 						className="user-menu__entry">
 						{/* Icon */}

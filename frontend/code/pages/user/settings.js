@@ -132,18 +132,18 @@ export default class Settings_page extends Component
 
 						{/* "Settings" */}
 						<Content_section
-							title={translate(messages.header)}>
+							title={ translate(messages.header) }>
 
 							{/* Alias */}
 							<Editable_field
 								name="alias"
-								label={translate(messages.alias)}
-								hint={translate(messages.alias_hint)}
-								value={user.alias}
-								validate={this.validate_alias}
-								save={this.update_alias}
-								cancel={this.reset_change_alias_error}
-								error={this.change_alias_error_message(change_alias_error)}/>
+								label={ translate(messages.alias) }
+								hint={ translate(messages.alias_hint) }
+								value={ user.alias }
+								validate={ this.validate_alias }
+								save={ this.update_alias }
+								cancel={ this.reset_change_alias_error }
+								error={ this.change_alias_error_message(change_alias_error) }/>
 
 							{/* User's email */}
 							<Change_email/>
@@ -154,30 +154,30 @@ export default class Settings_page extends Component
 					</div>
 				</div>
 
-				{/* Aadvanced settings */}
+				{/* Advanced settings */}
 				<div className="row row--content-sections">
 					<div className="column-l-6-of-12">
-						{/* "Show advanced settings" */}
+						{ /* "Show advanced settings" */ }
 						{ !showing_advanced_settings &&
 							<div className="background-section">
-								{/* "Show advanced settings" button */}
-								{ !showing_advanced_settings &&
-									<Button
-										busy={load_advanced_settings_pending}
-										action={this.load_advanced_settings}
-										style={style.show_advanced_settings}>
-										{translate(messages.show_advanced_settings)}
-									</Button>
-								}
+								{ /* "Show advanced settings" button */ }
+								<Button
+									busy={ load_advanced_settings_pending }
+									action={ this.load_advanced_settings }
+									style={ style.show_advanced_settings }>
+									{ translate(messages.show_advanced_settings) }
+								</Button>
 
-								{/* Error while loading advanced settings */}
+								{ /* Error while loading advanced settings */ }
 								{ load_advanced_settings_error &&
-									<div className="error">{translate(default_messages.error)}</div>
+									<div className="error">
+										{ translate(default_messages.error) }
+									</div>
 								}
 							</div>
 						}
 
-						{/* Authentication tokens */}
+						{ /* Authentication tokens */ }
 						{ showing_advanced_settings &&
 							<Authentication_tokens/>
 						}
@@ -191,9 +191,11 @@ export default class Settings_page extends Component
 
 	validate_alias(value)
 	{
+		const { translate } = this.props
+
 		if (!value)
 		{
-			return this.props.translate(messages.enter_alias)
+			return translate(messages.enter_alias)
 		}
 	}
 
@@ -225,16 +227,18 @@ export default class Settings_page extends Component
 
 		try
 		{
+			set_load_advanced_settings_error()
 			set_load_advanced_settings_pending(true)
-
 			await get_user_authentication_tokens()
-
-			set_load_advanced_settings_pending(false)
 		}
 		catch (error)
 		{
 			console.error(error)
 			return set_load_advanced_settings_error(error)
+		}
+		finally
+		{
+			set_load_advanced_settings_pending(false)
 		}
 
 		this.setState({ showing_advanced_settings: true })

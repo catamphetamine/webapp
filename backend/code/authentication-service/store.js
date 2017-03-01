@@ -1,7 +1,7 @@
 import Sql from '../common/sql'
 
-// 15 minutes
-const Multifactor_authentication_lifetime = 15 * 60 * 1000
+// One minute
+const Multifactor_authentication_lifetime = 1 * 60 * 1000
 
 class Sql_store
 {

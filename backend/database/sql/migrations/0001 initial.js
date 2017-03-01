@@ -100,6 +100,9 @@ exports.up = function(knex, Promise)
 		table.float('temperature').notNullable().defaultTo(0)
 		table.integer('attempts').notNullable().defaultTo(0)
 		table.text('pending')
+
+		// Searching by UUID
+		table.index('uuid')
 	})
 
 	.createTable('authentication_tokens', function(table)
