@@ -5,11 +5,12 @@
 @import "fonts.scss";
 @import "base.scss";
 @import "layout.scss";
+@import "grid.scss";
 @import "react-responsive-ui.scss";
 @import "datepicker.css";
 @import "components.scss";
 
-@import "../../code/components/authentication form.scss";
+@import "../../code/components/sign in form/sign in form.scss";
 @import "../../code/components/locale switcher.scss";
 @import "../../code/components/user bar.scss";
 

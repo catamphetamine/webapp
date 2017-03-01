@@ -12,9 +12,11 @@ Promise.promisifyAll(fs)
 
 global.Root_folder = path.join(__dirname, '..')
 
-if (fs.existsSync(path.join(Root_folder, 'backend/knexfile.js')))
+const knexfile_path = path.join(global.Root_folder, 'backend/database/sql/knexfile.js')
+
+if (fs.existsSync(knexfile_path))
 {
-	global.knexfile = require(path.join(Root_folder, 'backend/knexfile.js'))
+	global.knexfile = require(knexfile_path)
 }
 else
 {

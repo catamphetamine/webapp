@@ -28,7 +28,7 @@ export const revoke_authentication_token = action
 ({
 	namespace : 'user settings',
 	event     : 'revoke authentication token',
-	action    : (token_id, http) => http.post(`/authentication/token/${token_id}/revoke`)
+	action    : (token_id, http) => http.post(`/access-tokens/${token_id}/revoke`)
 },
 handler)
 
@@ -125,7 +125,7 @@ export const get_user_authentication_tokens = action
 	event     : 'get user authentication tokens',
 	action    : async (http) =>
 	{
-		const tokens = await http.get(`/authentication/tokens`)
+		const tokens = await http.get(`/access-tokens`)
 
 		// Sort token history (most recently updated first)
 		for (let token of tokens)

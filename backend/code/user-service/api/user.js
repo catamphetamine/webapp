@@ -1,14 +1,14 @@
-import { http, errors } from 'web-service'
+import { http, errors, jwt } from 'web-service'
 import add_weeks from 'date-fns/add_weeks'
 import is_before from 'date-fns/is_before'
 
-import store from '../store/store'
+import store from '../store'
+import generate_alias from '../alias'
 
 import
 {
 	get_user,
-	register,
-	own_user
+	public_user
 }
 from './user.base'
 
@@ -27,15 +27,111 @@ const metrics = start_metrics
 
 export default function(api)
 {
-	api.post('/register', register)
+	api.post('/register', async ({ name, email, locale }) =>
+	{
+		if (!exists(name))
+		{
+			throw new errors.Input_rejected(`"name" is required`)
+		}
+
+		if (!exists(email))
+		{
+			throw new errors.Input_rejected(`"email" is required`)
+		}
+
+		// if (!exists(password))
+		// {
+		// 	throw new errors.Input_rejected(`"password" is required`)
+		// }
+
+		if (!exists(locale))
+		{
+			throw new errors.Input_rejected(`"locale" is required`)
+		}
+
+		if (await store.find_user_by_email(email))
+		{
+			throw new errors.Error(`User is already registered for this email`, { field: 'email' })
+		}
+
+		const privileges =
+		{
+			role          : 'administrator', // 'moderator', 'senior moderator' (starting from moderator)
+			// moderation    : [], // [1, 2, 3, ...] (starting from moderator)
+			// switches      : [], // ['read_only', 'disable_user_registration', ...] (starting from senior moderator)
+			// grant   : ['moderation', 'switches'] // !== true (starting from senior moderator)
+			// revoke  : ['moderation', 'switches'] // !== true (starting from senior moderator)
+		}
+
+		const user =
+		{
+			name,
+			email,
+			locale,
+			...privileges
+		}
+
+		// Try to derive a unique alias from email
+		try
+		{
+			const alias = await generate_alias(email, alias => store.can_take_alias(alias))
+
+			if (store.validate_alias(alias))
+			{
+				user.alias = alias
+			}
+		}
+		catch (error)
+		{
+			log.error(`Couldn't generate alias for email ${email}`, error)
+			// `alias` is not required
+		}
+
+		// Create user
+		user.id = await store.create_user(user)
+
+		// // Add authentication data (password) for this user
+		// await http.post(`${address_book.authentication_service}/authentication-data`,
+		// {
+		// 	id,
+		// 	password
+		// })
+
+		metrics.increment('count')
+
+		return await http.post(`${address_book.authentication_service}/authenticate`,
+		{
+			user,
+			using: 'email',
+			purpose: 'sign in'
+		})
+	})
+
+	// Revokes access token and clears authentication cookie
+	api.post('/sign-out', async function({}, { user, authentication_token_id, destroy_cookie, internal_http })
+	{
+		// Must be logged in
+		if (!user)
+		{
+			return new errors.Unauthenticated()
+		}
+
+		// Revoke access token
+		await internal_http.post(`${address_book.access_token_service}/${authentication_token_id}/revoke`)
+
+		// Clear authentcication cookie
+		destroy_cookie('authentication')
+	})
 
 	api.post('/sign-in', async function({ email, phone })
 	{
 		let user
+		let using
 
 		if (exists(email))
 		{
 			user = await store.find_user_by_email(email)
+			using = 'email'
 
 			if (!user)
 			{
@@ -46,6 +142,7 @@ export default function(api)
 		{
 			// Currently not implemented
 			user = await store.find_user_by_phone(phone)
+			using = 'phone'
 
 			if (!user)
 			{
@@ -57,7 +154,52 @@ export default function(api)
 			throw new errors.Input_rejected(`"email" or "phone" is required`)
 		}
 
-		return await http.post(`${address_book.authentication_service}/sign-in`, user)
+		// Check if the user is blocked
+		if (user.blocked_at)
+		{
+			await user_is_blocked(user)
+		}
+
+		return await http.post(`${address_book.authentication_service}/authenticate`,
+		{
+			user,
+			using,
+			purpose: 'sign in'
+		})
+	})
+
+	// Logs in the user if the multifactor authentication succeeded.
+	api.post('/sign-in-authenticated', async function({ id }, { ip, keys, set_cookie })
+	{
+		const multifactor_authentication = await http.get
+		(
+			`${address_book.authentication_service}`,
+			{ id, bot: true }
+		)
+
+		if (!multifactor_authentication)
+		{
+			throw new errors.Access_denied('The authentication is still pending')
+		}
+
+		if (multifactor_authentication.purpose !== 'sign in')
+		{
+			throw new errors.Access_denied('The authentication is not for sign in')
+		}
+
+		// Get full user info
+		const user = await store.find_user_by_id(multifactor_authentication.user)
+
+		// Issue JWT token (the real one)
+		const token = await http.post(`${address_book.access_token_service}`,
+		{
+			user_id : user.id,
+			payload : configuration.authentication_token_payload.write(user),
+			ip
+		})
+
+		// Write JWT token to a cookie
+		set_cookie('authentication', token, { signed: false })
 	})
 
 	// Get user's "was online at" time
@@ -65,7 +207,7 @@ export default function(api)
 	{
 		// Try to fetch user's latest activity time from the current session
 		// (is faster and more precise than from a database)
-		const latest_recent_activity = await http.get(`${address_book.authentication_service}/latest-recent-activity/${id}`)
+		const latest_recent_activity = await http.get(`${address_book.access_token_service}/latest-recent-activity/${id}`)
 
 		if (latest_recent_activity)
 		{
@@ -131,19 +273,29 @@ export default function(api)
 			throw new errors.Input_rejected('"email" is required', { field: 'email' })
 		}
 
-		if (!password)
+		// Get user authentication info (whether he has a password set, etc)
+		const authentication_info = await internal_http.get(`${address_book.authentication_service}`)
+
+		// If the user has a password set then check it
+		if (authentication_info.password)
 		{
-			throw new errors.Input_rejected('"password" is required', { field: 'password' })
+			if (!password)
+			{
+				throw new errors.Input_rejected('"password" is required', { field: 'password' })
+			}
+
+			// Check the supplied password
+			await internal_http.get(`${address_book.authentication_service}/password/check`, { password })
 		}
 
-		await internal_http.get(`${address_book.authentication_service}/password/check`, { password })
-
+		// To get things like user's `email` and `locale`
 		user = await store.find_user_by_id(user.id)
 
 		await store.update_user(user.id, { email })
 
 		const block_user_token = await store.generate_block_user_token(user.id, { self: true })
 
+		// Send a notification to the old mailbox
 		http.post(`${address_book.mail_service}`,
 		{
 			to         : user.email,
@@ -157,6 +309,7 @@ export default function(api)
 			locale     : user.locale
 		})
 
+		// Send a confirmation to the new mailbox
 		http.post(`${address_book.mail_service}`,
 		{
 			to         : email,
@@ -320,7 +473,7 @@ export default function(api)
 		// Revoke all user's tokens
 		await http.post
 		(
-			`${address_book.authentication_service}/token/*/revoke`,
+			`${address_book.access_token_service}/*/revoke`,
 			{ block_user_token_id : block_user_token.id }
 		)
 
@@ -357,5 +510,19 @@ export default function(api)
 	api.get('/:id', async function({ id })
 	{
 		return await get_user({ id })
+	})
+}
+
+// Throws "User is blocked" error
+async function user_is_blocked(user)
+{
+	const self_block = user.blocked_by === user.id
+
+	throw new errors.Access_denied('User is blocked',
+	{
+		self_block,
+		blocked_by     : !self_block && public_user(await store.find_user_by_id(user.blocked_by)),
+		blocked_at     : user.blocked_at,
+		blocked_reason : user.blocked_reason
 	})
 }

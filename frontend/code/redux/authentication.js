@@ -8,9 +8,6 @@ export const sign_in = action
 	namespace : 'user',
 	event     : 'sign in',
 	action    : (credentials, http) => http.post(`/users/sign-in`, credentials),
-	// Not updating user data in Redux state
-	// to prevent a sense of "lagging"
-	// (the page will be refreshed anyway)
 	result    : 'authentication'
 },
 handler)
@@ -19,7 +16,7 @@ export const sign_out = action
 ({
 	namespace : 'user',
 	event     : 'sign out',
-	action    : (http) => http.post(`/authentication/sign-out`)
+	action    : (http) => http.post(`/users/sign-out`)
 	// Not updating user data in Redux state
 	// to prevent a sense of "lagging"
 	// (the page will be refreshed anyway)
@@ -27,20 +24,53 @@ export const sign_out = action
 },
 handler)
 
-export const sign_in_with_access_code = action
+export const authenticate = action
 ({
 	namespace : 'user',
-	event     : 'sign in with access code',
-	promise   : (data, http) => http.post(`/authentication/sign-in-finish-with-access-code`, data)
+	event     : 'authenticate',
+	promise   : (data, http) => http.post(`/authentication`, data),
+	result    : (state, result) =>
+	{
+		if (!result)
+		{
+			const new_state =
+			{
+				...state,
+				authentication:
+				{
+					...state.authentication,
+					pending: []
+				}
+			}
+			return new_state
+		}
+
+		const new_state =
+		{
+			...state,
+			authentication:
+			{
+				...state.authentication,
+				pending: result
+			}
+		}
+		return new_state
+	}
 },
 handler)
 
-export const sign_in_with_password = action
+export const sign_in_authenticated = action
 ({
 	namespace : 'user',
-	event     : 'sign in with password',
-	promise   : (data, http) => http.post(`/authentication/sign-in-proceed-with-password`, data),
-	result    : 'authentication'
+	event     : 'sign in authenticated',
+	promise   : (id, http) => http.post(`/users/sign-in-authenticated`, { id })
+},
+handler)
+
+export const reset_sign_in_authenticated_error = reset_error
+({
+	namespace : 'user',
+	event     : 'sign in authenticated'
 },
 handler)
 
@@ -60,17 +90,10 @@ export const reset_sign_in_error = reset_error
 },
 handler)
 
-export const reset_sign_in_with_access_code_error = reset_error
+export const reset_authenticate_error = reset_error
 ({
 	namespace : 'user',
-	event     : 'sign in with access code'
-},
-handler)
-
-export const reset_sign_in_with_password_error = reset_error
-({
-	namespace : 'user',
-	event     : 'sign in with password'
+	event     : 'authenticate'
 },
 handler)
 
@@ -78,14 +101,6 @@ export const reset_register_error = reset_error
 ({
 	namespace : 'user',
 	event     : 'register'
-},
-handler)
-
-export const reset_authentication = action
-({
-	namespace : 'user',
-	event     : 'reset authentication',
-	result    : 'access_code_id'
 },
 handler)
 

@@ -24,11 +24,17 @@ Features
 * To be done: native Node.js clustering
 * // maybe: Protection against Cross Site Request Forgery attacks
 
-Quick Start
-===========
+Running
+=======
 
 * make sure you have [Node.js version >= 6.0.0](https://www.npmjs.com/package/babel-preset-node6) installed
+* make sure you have Postgresql and Redis installed and running
 * `npm run install-recursive` (runs `npm install` for all subdirectories recursively)
+* `cd backend`
+* `npm run postgresql-knex-init`
+* `nano database/sql/knexfile.js` (edit `database`, `username` and `password`)
+* `npm run postgresql-migrate`
+* `cd ..`
 * `npm run dev`
 * wait for it to finish the build (green stats will appear in the terminal, and it will say "Webpage server is listening at http://localhost:3004")
 * go to `http://127.0.0.1:3000`
@@ -308,14 +314,14 @@ CREATE EXTENSION postgis;
 \q
 ```
 
-Then create your `knexfile.js` file
+Then create your `database/sql/knexfile.js` file
 
 ```sh
 cd backend
 npm run postgresql-knex-init
 ```
 
-Then configure your `knexfile.js` file. An example of how it might look
+Then configure your `database/sql/knexfile.js` file. An example of how it might look
 
 ```
 var path = require('path')
@@ -727,6 +733,29 @@ Troubleshooting
 
 To do
 ====================
+
+  // Proxy /access-tokens requests to API server
+  web.proxy('/access-tokens', address_book.access_token_service, { name: 'Access token service' })
+
+
+
+сделать кастомизацию профиля (и магазина) цветом (рассчитывать luminosity при сохранении для darker/lighter + серые цвета)
+
+
+
+скрыть доступ к access-token-service, и проксировать нужное через user
+
+удалить access_store/store.js
+
+проверить, какую ошибку выдаст при expired
+
+проверить, какую ошибку выдаст при attempts left === 0
+
+проверить токены (+ на странице /settings)
+
+убрать access-code-service, заменив его на message-delivery-service, который будет принимать medium, address, message (type), data.
+
+заменить в коде acess_codes на authentication, access_code_service на authentication_service, access-code-service на message-delivery-service.
 
 сделать access code в смене почты (и пароль, если он задан)
 

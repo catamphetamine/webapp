@@ -124,13 +124,21 @@ header .rrui__menu
 
 .preloading--shown
 {
-	z-index : 1;
+	/* `2` is assigned to the main header */
+	/* `3` is assigned to the modal */
+	z-index : 4;
 
 	opacity : 1;
 	cursor  : wait;
 
 	transition-duration : 140ms;
 	transition-delay    : 500ms;
+}
+
+.ReactModal__Overlay
+{
+	/* `2` is assigned to the main header */
+	z-index : 3;
 }
 
 .preloading--immediate

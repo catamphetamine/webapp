@@ -12,7 +12,7 @@ import international from '../international/internationalize'
 import http_status_codes from '../tools/http status codes'
 
 import { messages as user_bar_messages } from '../components/user bar'
-import Authentication_form from '../components/authentication form'
+import Sign_in_form from '../components/sign in form/sign in form'
 
 const messages = defineMessages
 ({
@@ -87,7 +87,7 @@ export default class Sign_in extends Component
 			<section className="content sign-in-page">
 				<Title>{ translate(user_bar_messages.sign_in) }</Title>
 
-				<Authentication_form
+				<Sign_in_form
 					sign_in
 					values={this.fields}
 					focus_on={this.get_focused_element()}
@@ -137,7 +137,7 @@ export default class Sign_in extends Component
 
 		if (error === 'Login attempts limit exceeded')
 		{
-			return translate(authentication_form_messages.login_attempts_limit_exceeded_error)
+			return translate(authentication_form_messages.authentication_attempts_limit_exceeded_error)
 		}
 
 		return error

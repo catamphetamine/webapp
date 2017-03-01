@@ -10,10 +10,10 @@ import international from '../international/internationalize'
 
 import { Form, Button, Select, ActivityIndicator } from 'react-responsive-ui'
 
-import Modal               from './modal'
-import Authentication_form from './authentication form'
-import User                from './user'
-import User_picture        from './user picture'
+import Modal        from './modal'
+import Sign_in_form from './sign in form/sign in form'
+import User         from './user'
+import User_picture from './user picture'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
 
@@ -40,15 +40,7 @@ import Message_icon  from '../../assets/images/icons/message.svg'
 @international
 export default class Authentication extends Component
 {
-	state =
-	{
-		show : false
-	}
-
-	pristine_form_state =
-	{
-		register : false
-	}
+	state = {}
 
 	constructor()
 	{
@@ -57,8 +49,6 @@ export default class Authentication extends Component
 		this.hide = this.hide.bind(this)
 		this.show = this.show.bind(this)
 		this.sign_out = this.sign_out.bind(this)
-
-		extend(this.state, this.pristine_form_state)
 	}
 
 	componentWillReceiveProps(props)
@@ -123,7 +113,8 @@ export default class Authentication extends Component
 					isOpen={ exists(password) || (!user && show) }
 					close={ this.hide }>
 
-					<Authentication_form
+					<Sign_in_form
+						open={ this.hide }
 						close={ this.hide }/>
 				</Modal>
 			</div>
@@ -141,7 +132,7 @@ export default class Authentication extends Component
 		(
 			<Form
 				className="sign-out-form"
-				post="/authentication/legacy/sign-out">
+				post="/users/legacy/sign-out">
 
 				<Button
 					submit
@@ -259,25 +250,37 @@ export default class Authentication extends Component
 
 	async sign_out()
 	{
-		await this.props.sign_out()
+		const
+		{
+			preload_started,
+			preload_finished,
+			sign_out
+		}
+		= this.props
 
-		this.props.preload_started()
+		try
+		{
+			await sign_out()
 
-		// Refresh the current page after logout
-		window.location = location.pathname + (location.search || '') + (location.hash || '')
+			preload_started()
+
+			// Refresh the current page after logout
+			window.location = location.pathname + (location.search || '') + (location.hash || '')
+		}
+		catch (error)
+		{
+			preload_finished()
+		}
 	}
 
 	show()
 	{
-		this.setState({ show: true }, () =>
-		{
-			// this.refs.authentication_form.focus()
-		})
+		this.setState({ show: true })
 	}
 
 	hide()
 	{
-		this.setState({ show: false, ...this.pristine_form_state })
+		this.setState({ show: false })
 	}
 }
 

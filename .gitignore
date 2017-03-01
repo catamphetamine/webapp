@@ -36,4 +36,4 @@ coverage
 
 # ignore local machine configuration
 /configuration.js
-/backend/knexfile.js
+/backend/database/sql/knexfile.js

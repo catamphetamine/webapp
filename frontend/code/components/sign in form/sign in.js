@@ -2,9 +2,8 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { flat as style } from 'react-styling'
 import { defineMessages, FormattedMessage } from 'react-intl'
-import { Form, Button } from 'react-responsive-ui'
+import { Form } from 'react-responsive-ui'
 import Redux_form from 'simpler-redux-form'
-import React_time_ago from 'react-time-ago'
 
 import Submit     from '../form/submit'
 import Text_input from '../form/text input'
@@ -14,6 +13,7 @@ import Time_ago   from '../time ago'
 import http_status_codes from '../../tools/http status codes'
 import international from '../../international/internationalize'
 import { messages as user_bar_messages } from '../user bar'
+import { authentication_attempts_limit_exceeded_error } from '../authentication form/authentication form'
 
 import
 {
@@ -53,6 +53,21 @@ export default class Sign_in extends Component
 		reset_sign_in_error()
 	}
 
+	is_user_blocked(error)
+	{
+		if (!error)
+		{
+			return
+		}
+
+		if (error.status !== http_status_codes.Access_denied)
+		{
+			return
+		}
+
+		return error.message === 'User is blocked'
+	}
+
 	render()
 	{
 		const
@@ -68,7 +83,6 @@ export default class Sign_in extends Component
 		const markup =
 		(
 			<Form
-				className="authentication-form"
 				action={ submit(reset_sign_in_error, this.sign_in) }
 				busy={ submitting }
 				error={ this.sign_in_error(sign_in_error) }
@@ -91,7 +105,7 @@ export default class Sign_in extends Component
 				<Form.Error/>
 
 				{/* Unblock user instructions */}
-				{ sign_in_error && sign_in_error.status === http_status_codes.Access_denied &&
+				{ this.is_user_blocked(sign_in_error) &&
 					unblock_message
 				}
 
@@ -148,9 +162,9 @@ export default class Sign_in extends Component
 			return
 		}
 
-		if (error.message === 'Access code attempts limit exceeded')
+		if (error.message === 'Authentication attempts limit exceeded')
 		{
-			return login_attempts_limit_exceeded_error(error)
+			return authentication_attempts_limit_exceeded_error(error)
 		}
 
 		if (error.status === http_status_codes.Access_denied)
@@ -266,12 +280,6 @@ export const messages = defineMessages
 		id             : 'authentication.error',
 		description    : 'User sign in error',
 		defaultMessage : 'Couldn\'t sign in'
-	},
-	login_attempts_limit_exceeded_error:
-	{
-		id             : 'authentication.error.login_attempts_limit_exceeded',
-		description    : `The user's login attempts limit has been reached. The user should try again in 15 minutes or so. "cooldown" variable is relative time like "in 5 minutes" or "in an hour"`,
-		defaultMessage : `Login attempts limit exceeded. Try again {cooldown}. In case of feeling desperate contact support by email: {support_email}`
 	}
 })
 
@@ -283,14 +291,3 @@ const unblock_message = <FormattedMessage
 		support_email: <a href={ `mailto:${configuration.support.email}` }>{ configuration.support.email }</a>
 	} }
 	tagName="p"/>
-
-export function login_attempts_limit_exceeded_error(error)
-{
-	return <FormattedMessage
-		{ ...messages.login_attempts_limit_exceeded_error }
-		values={ {
-			cooldown: <React_time_ago>{ Date.now() + error.cooldown }</React_time_ago>,
-			support_email: <a href={ `mailto:${configuration.support.email}` }>{ configuration.support.email }</a>
-		} }
-		tagName="p"/>
-}

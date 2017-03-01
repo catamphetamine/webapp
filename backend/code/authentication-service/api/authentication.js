@@ -1,420 +1,292 @@
 import set_seconds from 'date-fns/set_seconds'
-import { http, errors, jwt } from 'web-service'
+import { http, errors } from 'web-service'
+import uuid from 'uuid'
 
-import store                from '../store/store'
-import online_status_store  from '../store/online/online store'
-import authentication_store from '../store/authentication/store'
+import store from '../store'
 import Throttling from '../../common/throttling'
+import start_metrics from '../../../../code/metrics'
+import get_word from '../dictionaries/dictionary'
 
+const access_code_lifetime = 24 * 60 * 60 * 1000 // a day (about 20 attempts)
+const access_code_max_attempts = 10
 const latest_activity_time_refresh_interval = 60 * 1000 // one minute
 
-const throttling = new Throttling(authentication_store)
+const throttling = new Throttling(store)
+
+const metrics = start_metrics
+({
+	statsd:
+	{
+		...configuration.statsd,
+		prefix : 'authentication'
+	}
+})
 
 export default function(api)
 {
-	api.post('/sign-in', async function(user)
+	// Returns multifactor authentication info,
+	// deleting it from the database if it succeeded.
+	// If it has not, returns `undefined`.
+	api.get('/', async function({ id })
 	{
-		// Check if the user is blocked
-		if (user.blocked_at)
+		const multifactor_authentication = await store.get_multifactor_authentication({ uuid: id })
+
+		// If this authentication is still pending, then return nothing.
+		if (multifactor_authentication.length > 0)
 		{
-			await user_is_blocked(user)
+			return
 		}
 
-		// Check if the user has two-factor authentication set up
-		const authentication = await authentication_store.get_user_authentication(user.id)
+		// If this authentication succeeded,
+		// then delete it from the database and return its data.
+		// (therefore a successful authentication can only be used once)
+		await store.delete_multifactor_authentication(multifactor_authentication.id)
 
-		// If the user has two-factor authentication set up
-		// then request password input.
-		if (authentication)
+		// Check if this authentication succeeded, but expired since then.
+		if (Date.now() >= multifactor_authentication.expires.getTime())
 		{
-			if (authentication.type === 'password')
-			{
-				return password_authentication_response(authentication)
-			}
-
-			throw new Error(`Unknown authentication type: ${authentication.type}`)
+			return
 		}
 
-		// Generate access code
-		return await access_code_authentication_response(user)
+		return multifactor_authentication
 	})
 
-	// Generates access code if the password matches.
-	//
-	// Could have been called from within "user-service"
-	// but in that case it would need `user_id`
-	// which is not disclosed to prevent finding users
-	// by private info like an email or a phone number.
-	//
-	api.post('/sign-in-proceed-with-password', async function({ id, password }, { ip, keys })
+	// Performs an authentication step of a multifactor authentication
+	api.post('/', async function({ multifactor_authentication_id, id, value })
 	{
-		const authentication = await authentication_store.get(id)
+		const multifactor_authentication = await store.get_multifactor_authentication({ uuid: multifactor_authentication_id })
 
-		// Check if the password matches
-		const { throttled, cooldown, result } = await throttling.attempt(authentication, async () =>
+		const authentication = await store.get(id)
+
+		if (!multifactor_authentication || !authentication)
 		{
-			return await http.get(`${address_book.password_service}/matches`,
+			throw new errors.Not_found()
+		}
+
+		// If it's a password then hash it
+		if (authentication.type === 'password')
+		{
+			value = await hash_password(value)
+		}
+
+		// Check if the authentication expired
+		if (authentication.expires && authentication.expires.getTime() <= Date.now())
+		{
+			throw new errors.Access_denied('Authentication expired')
+		}
+
+		// If maximum tries count reached
+		if (authentication.attempts_left === 0)
+		{
+			throw new errors.Access_denied('Maximum tries count reached')
+		}
+
+		const { throttled, cooldown, result } = await throttling.attempt(multifactor_authentication, async () =>
+		{
+			// If the authentication value doesn't match
+			if (authentication.value !== value)
 			{
-				password,
-				hashed_password : authentication.value
-			})
+				// Decrement attempts left
+				if (authentication.attempts_left !== null)
+				{
+					await store.update(authentication.id,
+					{
+						attempts_left: authentication.attempts_left - 1
+					})
+				}
+
+				// No match
+				return
+			}
+
+			// Authentication matches
+
+			// Clean up verified access codes
+			if (authentication.type === 'access code')
+			{
+				await store.delete(id)
+			}
+
+			// Remove this authentication from multifactor authentication items list
+			const pending = await store.update_multifactor_authentication_being_authenticated(multifactor_authentication_id, id)
+			return pending || true
 		})
 
 		if (throttled)
 		{
-			throw new errors.Access_denied('Password attempts limit exceeded', { cooldown })
+			metrics.increment('invalid')
+			throw new errors.Access_denied('Access code attempts limit exceeded', { cooldown })
 		}
 
-		// If the password is wrong, return an error
 		if (!result)
 		{
-			throw new errors.Input_rejected(`Wrong password`, { field: 'password' })
+			throw new errors.Input_rejected('No match')
 		}
 
-		// Get user's private info using the temporary token
-		const user = await get_user_info(authentication.user, { ip, keys })
+		// Return pending authentications list (or `undefined` if nothing's pending)
 
-		// // Check if the user is blocked
-		// if (user.blocked_at)
-		// {
-		// 	await user_is_blocked(user)
-		// }
-
-		// Generate access code
-		return await access_code_authentication_response(user)
-	})
-
-	// Logs in the user if the access code matches.
-	//
-	// Could have been called from within "user-service"
-	// but in that case it would need `user_id`
-	// which is not disclosed to prevent finding users
-	// by private info like an email or a phone number.
-	//
-	api.post('/sign-in-finish-with-access-code', async function({ id, code }, { ip, keys, set_cookie })
-	{
-		// Verify the access code
-		const user_id = await http.get(`${address_book.access_code_service}/verify`, { id, code })
-
-		if (!user_id)
+		if (result === true)
 		{
-			throw new errors.Input_rejected('Wrong access code', { field: 'code' })
-		}
-
-		// Get user's private info using the temporary token
-		const user = await get_user_info(user_id, { ip, keys })
-
-		// Add a new JWT token to the list of valid tokens for this user
-		const jwt_id = await store.add_authentication_token(user.id, ip)
-
-		// Generate JWT token payload (the real one's)
-		const payload = configuration.authentication_token_payload.write(user)
-
-		// Issue JWT token (the real one)
-		const token = jwt({ payload, keys, user_id: user.id, jwt_id })
-
-		// If there was an almost impossible race condition
-		// when the user was blocked while obtaining an access token,
-		// then immediately revoke that token.
-		//
-		// (or, say, if an attacker managed to send an access code request
-		//  directly to the `access-code-service` bypassing `user-service`)
-		//
-		// If we got here, then the token is already written to the database,
-		// hence if the user is gonna be blocked right now
-		// then this token will be rendered invalid.
-		// So this second "just to make sure" check
-		// prevents all possible user blocking race conditions.
-		// (when a user is being blocked first its `blocked`
-		// flag is set to `true` in the database
-		// and then all his access tokens are rendered invalid)
-
-		const user_blocked_check = await http.get
-		(
-			`${address_book.user_service}`,
-			{ bot: true },
-			{ headers: { 'Authorization': `Bearer ${token}` } }
-		)
-
-		if (user_blocked_check.blocked_at)
-		{
-			await revoke_token(jwt_id, user_id)
-			await user_is_blocked(user_blocked_check)
-		}
-
-		// Write JWT token to a cookie
-		set_cookie('authentication', token, { signed: false })
-
-		return user
-	})
-
-	// Revokes access token and clears authentication cookie
-	api.post('/sign-out', async function({}, { user, authentication_token_id, destroy_cookie, internal_http })
-	{
-		// Must be logged in
-		if (!user)
-		{
-			return new errors.Unauthenticated()
-		}
-
-		// Revoke access token
-		await internal_http.post(`${address_book.authentication_service}/token/${authentication_token_id}/revoke`)
-
-		// Clear authentcication cookie
-		destroy_cookie('authentication')
-	})
-
-	api.get('/tokens', async function({}, { user, authentication_token_id })
-	{
-		if (!user)
-		{
-			throw new errors.Unauthenticated()
-		}
-
-		const tokens = await store.get_tokens(user.id)
-
-		// Mark the currently used token
-		for (let token of tokens)
-		{
-			if (token.id === authentication_token_id)
-			{
-				token.currently_used = true
-			}
-		}
-
-		return tokens
-	})
-
-	api.get('/token/valid', async function({ bot }, { ip, authentication_token_id, user, internal_http })
-	{
-		// The user will be populated inside `common/web server`
-		// out of the token data if the token is valid.
-		// (only for `/token/valid` http get requests)
-		//
-		// If the user isn't populated from the token data
-		// then it means that token data is corrupt.
-		// (token data is encrypted and in this case decryption fails)
-		//
-		if (!user)
-		{
-			return { valid: false }
-		}
-
-		// Token data is valid.
-		// The next step is to check that the token hasn't been revoked.
-
-		// Try to get token validity status from cache
-		const is_valid = await online_status_store.check_access_token_validity(user.id, authentication_token_id)
-
-		// If such a key exists in Redis, then the token is valid.
-		// Else, query the database for token validity
-		if (!is_valid)
-		{
-			const token = await store.find_token_by_id(authentication_token_id)
-
-			const valid = token && !token.revoked_at
-
-			// Cache access token validity.
-			//
-			// Theoretically there could be a small race condition here,
-			// when a token validity is not cached, and that token is revoked
-			// between the token validity being read from the database
-			// and the token validition being cached, but I assume exploitability
-			// of this race condition practically equal to zero.
-			//
-			await online_status_store.set_access_token_validity(user.id, authentication_token_id, valid)
-
-			if (!valid)
-			{
-				return { valid }
-			}
-		}
-
-		// If it's not an automated Http request,
-		// then update this authentication token's last access IP and time
-		if (!bot)
-		{
-			record_access(user.id, authentication_token_id, ip, internal_http)
-		}
-
-		// The token is considered valid
-		return { valid: true }
-	})
-
-	api.post('/token/:id/revoke', async function({ id, block_user_token_id }, { user, authentication_token_id })
-	{
-		// Special case for "revoke all tokens".
-		// (e.g. when blocking a user)
-		if (id === '*')
-		{
-			if (!block_user_token_id)
-			{
-				throw new errors.Input_rejected(`"block_user_token_id" is required`)
-			}
-
-			const block_user_token = await http.get(`${address_book.user_service}/block-user-token/${block_user_token_id}`)
-
-			if (!block_user_token)
-			{
-				throw new errors.Not_found('Block user token not found')
-			}
-
-			for (let token of await store.get_all_valid_tokens(block_user_token.user.id))
-			{
-				await revoke_token(token.id, block_user_token.user.id)
-			}
-
 			return
 		}
 
+		return result
+	})
+
+	// Authenticates a user with things like a password and an access code
+	api.post('/authenticate', async function(input, { user })
+	{
+		const { using, purpose } = input
+
+		// If the user is using authentication to sign in
+		// then get user's private info from the supplied input.
 		if (!user)
 		{
-			throw new errors.Unauthenticated()
+			user = input.user
 		}
 
-		if (id === 'current')
+		// Check unfinished multifactor authentications for this user
+		let multifactor_authentication = await store.get_user_multifactor_authentication(user.id, 'sign in')
+
+		// Limit authentication request frequency for a user.
+		// (A finished multifactor authentication gets deleted right away)
+		if (multifactor_authentication)
 		{
-			id = authentication_token_id
+			// Check that there's room for 2 attempts,
+			// one of which is immediately "failed" here
+			// to throttle things like sending access codes.
+			const { throttled, cooldown } = await throttling.attempt(multifactor_authentication, { count: 2 })
+
+			if (throttled)
+			{
+				metrics.increment('invalid')
+				throw new errors.Access_denied('Authentication attempts limit exceeded', { cooldown })
+			}
+
+			// Update the new penalized temperature, etc
+			multifactor_authentication = await store.get_multifactor_authentication(multifactor_authentication.id)
+
+			// There can only be one multifactor authentication pending
+			// with a given `purpose` (for simplicity).
+			await store.delete_multifactor_authentication(multifactor_authentication.id)
 		}
 
-		await revoke_token(id, user.id)
-	})
+		// Collect authentications for the new multifactor authentication
+		const authentications = []
 
-	api.get('/latest-recent-activity/:id', async function({ id })
-	{
-		return await online_status_store.get_latest_access_time(id)
-	})
-}
+		// Check if the user has a password set up
+		const password = await store.get_user_authentication(user.id, 'password')
 
-async function revoke_token(id, revoking_user_id)
-{
-	const token = await store.find_token_by_id(id)
-
-	if (!token)
-	{
-		throw new errors.Not_found()
-	}
-
-	if (token.user !== revoking_user_id)
-	{
-		throw new errors.Unauthorized()
-	}
-
-	await store.revoke_token(id)
-	await online_status_store.clear_access_token_validity(token.user, id)
-}
-
-async function record_access(user_id, authentication_token_id, ip, internal_http)
-{
-	try
-	{
-		const now = Date.now()
-
-		// Update latest access time: both for this (token, IP) pair and for the user
-		await online_status_store.update_latest_access_time(user_id, authentication_token_id, ip, now)
-
-		// When was the last time it was persisted to the database for this (token, IP) pair
-		const persisted_at = await online_status_store.get_latest_access_time_persisted_at(authentication_token_id, ip)
-
-		// If enough time has passed to update the persisted latest activity time
-		// for this (token, IP) pair, then do it.
-		if (!persisted_at || now - persisted_at >= latest_activity_time_refresh_interval)
+		// If the user has a password set up
+		// then request the password.
+		if (password)
 		{
-			// Update the time it was persisted to the database for this (token, IP) pair
-			await online_status_store.set_latest_access_time_persisted_at(authentication_token_id, ip, now)
-
-			// Fuzzy latest access time
-			const was_online_at = round_user_access_time(now)
-
-			// Update latest access time for this (token, IP) pair
-			await store.record_access(user_id, authentication_token_id, ip, was_online_at)
-
-			// Also update the redundant `was_online_at` field in the `users` table
-			await internal_http.post(`${address_book.user_service}/was-online-at`, { date: was_online_at })
+			authentications.push
+			({
+				type : 'password',
+				id   : password.id
+			})
 		}
-	}
-	catch (error)
-	{
-		log.error(error)
-		throw error
-	}
-}
 
-// User's latest activity time accuracy
-function round_user_access_time(time)
-{
-	return set_seconds(time, 0)
+		// Generate access code
+		authentications.push
+		({
+			type : 'access code',
+			id   : await generate_access_code(user, using)
+		})
+
+		// Report stats
+		metrics.increment('count')
+
+		// Create multifactor authentication
+		const id = uuid.v4()
+		await store.create_multifactor_authentication(id, user.id, 'sign in', authentications, multifactor_authentication)
+
+		// Return multifactor authentication info
+		const result =
+		{
+			id,
+			pending: authentications
+		}
+
+		return result
+	})
 }
 
 // Generates access code
-async function generate_access_code(user)
+// (must only be called from throttled handlers)
+async function generate_access_code(user, using)
 {
 	// Generate an access code
-	const { id, code } = await http.post(`${address_book.access_code_service}`,
-	{
-		user   : user.id,
-		locale : user.locale
-	})
 
-	// Send the access code via email
-	await http.post(`${address_book.mail_service}`,
+	const code = get_word(user.locale)
+
+	const data =
 	{
-		to         : user.email,
-		template   : 'sign in code',
-		locale     : user.locale,
-		parameters :
+		user    : user.id,
+		type    : 'access code',
+		value   : code,
+		expires : new Date(Date.now() + access_code_lifetime),
+		attempts_left : access_code_max_attempts
+	}
+
+	const id = await store.create(data)
+
+	// Determine access code delivery type (if not specified)
+	if (!using)
+	{
+		if (user.email)
 		{
-			code
+			using = 'email'
 		}
-	})
+		else if (user.phone)
+		{
+			using = 'phone'
+		}
+	}
+
+	// Deliver the access code to the user
+	switch (using)
+	{
+		case 'email':
+			// Send the access code via email
+			await http.post(`${address_book.mail_service}`,
+			{
+				to         : user.email,
+				template   : 'sign in code',
+				locale     : user.locale,
+				parameters :
+				{
+					code
+				}
+			})
+			break
+
+		case 'phone':
+			throw new Error('Sending access codes via SMS is not currently implemented')
+			// await http.post(`${address_book.message_delivery_service}`,
+			// {
+			// 	medium     : 'phone',
+			// 	to         : user.phone,
+			// 	template   : 'sign in code',
+			// 	locale     : user.locale,
+			// 	parameters :
+			// 	{
+			// 		code
+			// 	}
+			// })
+			break
+
+		default:
+			throw new Error(`Unknown access code delivery type: ${using}`)
+	}
 
 	// Return access code id
 	return id
 }
 
-// Generates access code API response
-const access_code_authentication_response = async (user) =>
-({
-	type : 'access code',
-	id   : await generate_access_code(user)
-})
-
-// Generates password API response
-const password_authentication_response = async (authentication) =>
-({
-	type : 'password',
-	id   : authentication.id
-})
-
-// A "hacky" solution to get user's private info from "user-service"
-async function get_user_info(user_id, { ip, keys })
+// Hashes a password
+async function hash_password(password)
 {
-	// Construct a temporary JWT token
-	// just to get the user's private info
-
-	// Add a new JWT token to the list of valid tokens for this user
-	const temporary_token_id = await store.add_authentication_token(user_id, ip)
-
-	// Generate temporary JWT token
-	const temporary_token = jwt
-	({
-		payload: {},
-		keys,
-		user_id: user_id,
-		jwt_id: temporary_token_id
-	})
-
-	// Get user's private info using the temporary token
-	const user = await http.get
-	(
-		`${address_book.user_service}`,
-		{ bot: true },
-		{ headers: { 'Authorization': `Bearer ${temporary_token}` } }
-	)
-
-	// Revoke and delete the temporary token
-	await revoke_token(temporary_token_id, user_id)
-	await store.remove_token(temporary_token_id, user_id)
-
-	return user
+	return (await http.get(`${address_book.password_service}/hash`, { password })).hash
 }

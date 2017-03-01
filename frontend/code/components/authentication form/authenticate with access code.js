@@ -1,33 +1,27 @@
 import React, { Component, PropTypes } from 'react'
-import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { flat as style } from 'react-styling'
 import { defineMessages, FormattedMessage } from 'react-intl'
-import { Form, Button } from 'react-responsive-ui'
-import { redirect } from 'react-isomorphic-render'
+import { Form } from 'react-responsive-ui'
 import Redux_form from 'simpler-redux-form'
+import classNames from 'classnames'
 
-import { login_attempts_limit_exceeded_error } from './sign in'
-import { should_redirect_to } from '../../helpers/redirection'
-import { preload_started } from '../../redux/preload'
-import { messages as user_bar_messages } from '../user bar'
+import { authentication_attempts_limit_exceeded_error } from './authentication form'
 import http_status_codes from '../../tools/http status codes'
 
 import Submit     from '../form/submit'
 import Text_input from '../form/text input'
 
 import international from '../../international/internationalize'
-import { messages as sign_in_messages } from './sign in'
 
 import
 {
-	sign_in_with_access_code,
-	reset_sign_in_with_access_code_error,
+	authenticate,
+	reset_authenticate_error,
 	connector
 }
 from '../../redux/authentication'
 
-@withRouter
 @Redux_form
 @connect
 (
@@ -37,20 +31,18 @@ from '../../redux/authentication'
 		locale : state.locale.locale
 	}),
 	{
-		sign_in_with_access_code,
-		reset_sign_in_with_access_code_error,
-		preload_started
+		authenticate,
+		reset_authenticate_error
 	}
 )
 @international
-export default class Sign_in_with_access_code extends Component
+export default class Authenticate_with_access_code extends Component
 {
 	constructor()
 	{
 		super()
 
-		this.sign_in_with_access_code  = this.sign_in_with_access_code.bind(this)
-		this.validate_access_code      = this.validate_access_code.bind(this)
+		this.authenticate = this.authenticate.bind(this)
 	}
 
 	// Reset errors on modal dismissal
@@ -58,11 +50,11 @@ export default class Sign_in_with_access_code extends Component
 	{
 		const
 		{
-			reset_sign_in_with_access_code_error
+			reset_authenticate_error
 		}
 		= this.props
 
-		reset_sign_in_with_access_code_error()
+		reset_authenticate_error()
 	}
 
 	render()
@@ -70,25 +62,27 @@ export default class Sign_in_with_access_code extends Component
 		const
 		{
 			translate,
-			sign_in_with_access_code_error,
-			reset_sign_in_with_access_code_error,
+			authenticate_error,
+			reset_authenticate_error,
 			submit,
-			submitting
+			submitText,
+			title,
+			submitting,
+			className
 		}
 		= this.props
 
 		const markup =
 		(
 			<Form
-				className="authentication-form authentication-form-access-code"
-				action={ submit(reset_sign_in_with_access_code_error, this.sign_in_with_access_code) }
+				action={ submit(reset_authenticate_error, this.authenticate) }
 				busy={ submitting }
-				error={ this.sign_in_with_access_code_error(sign_in_with_access_code_error) }
+				error={ this.authenticate_error(authenticate_error) }
 				post="/authentication/legacy/sign-in">
 
 				{/* "Sign in" */}
 				<h2 style={ styles.form_title }>
-					{ translate(user_bar_messages.sign_in) }
+					{ title }
 				</h2>
 
 				<p>
@@ -99,7 +93,7 @@ export default class Sign_in_with_access_code extends Component
 					{/* "Access code" */}
 					<Text_input
 						name="code"
-						error={ this.access_code_error(sign_in_with_access_code_error) }
+						error={ this.access_code_error(authenticate_error) }
 						validate={ this.validate_access_code }
 						label={ translate(messages.access_code) }/>
 				</div>
@@ -109,7 +103,7 @@ export default class Sign_in_with_access_code extends Component
 				<Form.Actions className="rrui__form__actions--right">
 					{/* "Sign in" button */}
 					<Submit>
-						{ translate(user_bar_messages.sign_in) }
+						{ submitText }
 					</Submit>
 				</Form.Actions>
 			</Form>
@@ -118,51 +112,29 @@ export default class Sign_in_with_access_code extends Component
 		return markup
 	}
 
-	async sign_in_with_access_code(fields)
+	async authenticate(fields)
 	{
 		try
 		{
 			const
 			{
 				authentication,
-				sign_in_with_access_code,
-				signed_in,
-				preload_started,
-				focus,
-				clear,
-				router:
-				{
-					location
-				}
+				authenticate,
+				finished
 			}
 			= this.props
 
-			await sign_in_with_access_code
+			const result = await authenticate
 			({
-				id   : authentication.id,
-				code : fields.code
+				multifactor_authentication_id : authentication.id,
+				id    : authentication.pending.find_by({ type: 'access code' }).id,
+				value : fields.code
 			})
 
-			// Hide the modal
-			signed_in()
-
-			// Refresh the page so that `authentication_token`
-			// is applied to the `http` tool.
-
-			preload_started()
-
-			// Redirect to the original destination
-			// if got here due to not being authenticated, etc.
-			if (location.pathname === '/unauthenticated'
-				|| location.pathname === '/unauthorized'
-				|| location.pathname === '/sign-in'
-				|| location.pathname === '/register')
+			if (!result)
 			{
-				return window.location = should_redirect_to(location)
+				finished()
 			}
-
-			// Refresh the current page after login
-			window.location = location.pathname + (location.search || '') + (location.hash || '')
 		}
 		catch (error)
 		{
@@ -170,7 +142,7 @@ export default class Sign_in_with_access_code extends Component
 		}
 	}
 
-	sign_in_with_access_code_error(error)
+	authenticate_error(error)
 	{
 		const { translate, locale } = this.props
 
@@ -179,22 +151,27 @@ export default class Sign_in_with_access_code extends Component
 			return
 		}
 
-		if (error.field === 'code')
+		if (this.access_code_error(error))
 		{
 			return
 		}
 
-		if (error.message === 'Access code attempts limit exceeded')
+		if (error.message === 'Authentication expired')
 		{
-			if (!error.cooldown)
-			{
-				return translate(messages.access_code_expired)
-			}
-
-			return login_attempts_limit_exceeded_error(error)
+			return translate(messages.access_code_expired)
 		}
 
-		return translate(sign_in_messages.sign_in_error)
+		if (error.message === 'Maximum tries count reached')
+		{
+			return translate(messages.access_code_expired)
+		}
+
+		if (error.message === 'Authentication attempts limit exceeded')
+		{
+			return authentication_attempts_limit_exceeded_error(error)
+		}
+
+		return translate(messages.error)
 	}
 
 	access_code_error(error)
@@ -206,18 +183,13 @@ export default class Sign_in_with_access_code extends Component
 			return
 		}
 
-		if (error.field !== 'code')
-		{
-			return
-		}
-
 		if (error.status === http_status_codes.Input_rejected)
 		{
 			return translate(messages.wrong_access_code)
 		}
 	}
 
-	validate_access_code(value)
+	validate_access_code = (value) =>
 	{
 		const { translate } = this.props
 
@@ -236,6 +208,12 @@ const styles = style
 
 export const messages = defineMessages
 ({
+	error:
+	{
+		id             : 'authentication.access_code.error',
+		description    : 'A generic authentication failed message',
+		defaultMessage : `Couldn't authenticate with access code`
+	},
 	enter_access_code:
 	{
 		id             : 'authentication.enter_access_code',

@@ -7,7 +7,7 @@
 @include set_css_variable_content_section_margin(0);
 @include set_css_variable_content_section_padding(0.8rem);
 
-@include columns(xs);
+@include columns(xs-);
 
 .background-section
 {

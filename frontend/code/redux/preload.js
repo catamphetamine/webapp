@@ -10,6 +10,11 @@ export const preload_started = () =>
 	immediate : true
 })
 
+export const preload_finished = () =>
+({
+	type : Preload_finished
+})
+
 handler.handle(Preload_started, (state, result) =>
 ({
 	...state,
@@ -21,14 +26,16 @@ handler.handle(Preload_started, (state, result) =>
 handler.handle(Preload_finished, (state, result) =>
 ({
 	...state,
-	pending : false
+	pending   : false,
+	immediate : false
 }))
 
 handler.handle(Preload_failed, (state, result) =>
 ({
 	...state,
-	pending : false,
-	error   : true
+	pending   : false,
+	immediate : false,
+	error     : true
 }))
 
 // A little helper for Redux `@connect()`

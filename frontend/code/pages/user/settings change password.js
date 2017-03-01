@@ -20,7 +20,7 @@ import Editable_field  from '../../components/editable field'
 import Modal from '../../components/modal'
 import Steps, { Text_input_step } from '../../components/steps'
 import default_messages from '../../components/messages'
-import { messages as password_authentication_messages } from '../../components/authentication form/sign in with password'
+import { messages as password_authentication_messages } from '../../components/authentication form/authenticate with password'
 
 import http_status_codes from '../../tools/http status codes'
 

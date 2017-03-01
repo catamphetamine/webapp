@@ -131,7 +131,11 @@ export default class Layout extends Component
 					{ children }
 
 					<footer>
-						<div><a href="https://github.com/halt-hammerzeit">halt-hammerzeit@github.com</a></div>
+						<div>
+							<a href={ `mailto:${configuration.support.email}` }>
+								{ configuration.support.email }
+							</a>
+						</div>
 
 						{/* language chooser */}
 						<div className="language-wrapper">

@@ -1,6 +1,6 @@
 import web_service, { api as api_service, http } from 'web-service'
 
-const validate_token_url = '/token/valid'
+const validate_token_url = '/valid'
 
 const common_options =
 {
@@ -8,32 +8,32 @@ const common_options =
 	error_html : { font_size: '20pt' }
 }
 
-const authentication_options =
-{
+const authentication_options = (is_access_token_service) =>
+({
 	authentication : configuration.authentication_token_payload.read,
 	validate_token : async (token, ctx) =>
 	{
 		// Prevents recursion
-		if (ctx.path === validate_token_url)
+		if (is_access_token_service && ctx.path === validate_token_url)
 		{
 			return { valid: true }
 		}
 
 		return await http.get
 		(
-			`${address_book.authentication_service}${validate_token_url}`,
+			`${address_book.access_token_service}${validate_token_url}`,
 			{ bot: ctx.query.bot },
 			{ headers: { Authorization: `Bearer ${token}` } }
 		)
 	}
-}
+})
 
 export function api(name, host_port, api_modules, options = {})
 {
 	return api_service
 	({
 		...common_options,
-		...authentication_options,
+		...authentication_options(options.is_access_token_service),
 		...options,
 		api : api_modules,
 		// `log` global variable has been defined by now

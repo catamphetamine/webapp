@@ -1,0 +1,128 @@
+.row
+{
+	display        : flex;
+	flex-wrap      : wrap;
+	flex-direction : row;
+	box-sizing     : border-box;
+}
+
+@mixin columns($size_prefix)
+{
+	.column-#{$size_prefix}1-of-12,
+	.column-#{$size_prefix}2-of-12,
+	.column-#{$size_prefix}3-of-12,
+	.column-#{$size_prefix}4-of-12,
+	.column-#{$size_prefix}5-of-12,
+	.column-#{$size_prefix}6-of-12,
+	.column-#{$size_prefix}7-of-12,
+	.column-#{$size_prefix}8-of-12,
+	.column-#{$size_prefix}9-of-12,
+	.column-#{$size_prefix}10-of-12,
+	.column-#{$size_prefix}11-of-12,
+	.column-#{$size_prefix}12-of-12
+	{
+		flex-grow   : 0;
+		flex-shrink : 0;
+		box-sizing  : border-box;
+		// padding-left  : calc(var(--column-spacing) / 2);
+		// padding-right : calc(var(--column-spacing) / 2);
+	}
+
+	.column-#{$size_prefix}1-of-12
+	{
+		flex-basis : 8.333333%;
+		max-width  : 8.333333%;
+	}
+
+	.column-#{$size_prefix}2-of-12
+	{
+		flex-basis : 16.666667%;
+		max-width  : 16.666667%;
+	}
+
+	.column-#{$size_prefix}3-of-12
+	{
+		flex-basis : 25%;
+		max-width  : 25%;
+	}
+
+	.column-#{$size_prefix}4-of-12
+	{
+		flex-basis : 33.33333%;
+		max-width  : 33.33333%;
+	}
+
+	.column-#{$size_prefix}5-of-12
+	{
+		flex-basis : 41.666667%;
+		max-width  : 41.666667%;
+	}
+
+	.column-#{$size_prefix}6-of-12
+	{
+		flex-basis : 50%;
+		max-width  : 50%;
+	}
+
+	.column-#{$size_prefix}7-of-12
+	{
+		flex-basis : 58.333333%;
+		max-width  : 58.333333%;
+	}
+
+	.column-#{$size_prefix}8-of-12
+	{
+		flex-basis : 66.66666%;
+		max-width  : 66.66666%;
+	}
+
+	.column-#{$size_prefix}9-of-12
+	{
+		flex-basis : 75%;
+		max-width  : 75%;
+	}
+
+	.column-#{$size_prefix}10-of-12
+	{
+		flex-basis : 83.333333%;
+		max-width  : 83.333333%;
+	}
+
+	.column-#{$size_prefix}11-of-12
+	{
+		flex-basis : 91.666667%;
+		max-width  : 91.666667%;
+	}
+
+	.column-#{$size_prefix}12-of-12
+	{
+		flex-basis : 100%;
+		max-width  : 100%;
+	}
+
+	// .rows-#{$size_prefix}2-columns
+	// {
+	// 	> :nth-child(2n + 1)
+	// 	{
+	// 		clear: left;
+	// 	}
+	// }
+	//
+	// .rows-#{$size_prefix}3-columns
+	// {
+	// 	> :nth-child(3n + 1)
+	// 	{
+	// 		clear: left;
+	// 	}
+	// }
+	//
+	// .rows-#{$size_prefix}4-columns
+	// {
+	// 	> :nth-child(4n + 1)
+	// 	{
+	// 		clear: left;
+	// 	}
+	// }
+}
+
+@include columns('');

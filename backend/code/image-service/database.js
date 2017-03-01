@@ -1,6 +1,6 @@
-import Sql from '../../common/sql'
+import Sql from '../common/sql'
 
-export default class Sql_store
+class Sql_store
 {
 	ready()
 	{
@@ -69,3 +69,5 @@ export default class Sql_store
 		return this.images.delete(id)
 	}
 }
+
+export default new Sql_store()

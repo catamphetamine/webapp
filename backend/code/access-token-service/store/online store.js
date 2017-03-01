@@ -1,10 +1,9 @@
 // https://github.com/59naga/babel-plugin-transform-bluebird/pull/2
 import Promise from 'bluebird'
-
 import Redis from 'ioredis'
 
 // if Redis is installed and configured, use it
-export default class Redis_online_status_store
+class Redis_online_status_store
 {
 	static ttl = 10 * 60 // 10 minutes
 
@@ -115,3 +114,5 @@ export default class Redis_online_status_store
 			.exec()
 	}
 }
+
+export default new Redis_online_status_store()

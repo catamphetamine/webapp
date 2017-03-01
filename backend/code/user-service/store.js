@@ -1,10 +1,10 @@
 import uuid from 'uuid'
 
-import Sql from '../../common/sql'
+import Sql from '../common/sql'
 
 const Max_aliases_in_history = 10
 
-export default class Sql_store
+class Sql_store
 {
 	ready()
 	{
@@ -211,3 +211,5 @@ export default class Sql_store
 		return this.block_user_tokens.delete(id)
 	}
 }
+
+export default new Sql_store()

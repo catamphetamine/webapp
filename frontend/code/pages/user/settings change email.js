@@ -29,8 +29,8 @@ import { Form } from 'react-responsive-ui'
 import Redux_form, { Field } from 'simpler-redux-form'
 
 import default_messages from '../../components/messages'
-import { messages as authentication_messages } from '../../components/authentication form/sign in'
-import { messages as password_authentication_messages } from '../../components/authentication form/sign in with password'
+import { messages as authentication_messages } from '../../components/sign in form/sign in'
+import { messages as password_authentication_messages } from '../../components/authentication form/authenticate with password'
 import { messages as change_password_messages } from './settings change password'
 
 @connect

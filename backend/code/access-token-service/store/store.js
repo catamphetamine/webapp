@@ -1,12 +1,10 @@
 import { lookup_ip, can_lookup_ip } from '../../../../code/geocoding'
-
-import { sort_tokens_by_relevance } from './store'
-import online_status_store from './online/online store'
+import online_status_store from './online store'
 import Sql from '../../common/sql'
 
 // const authentication_token_access_history_table_name = 'authentication_token_access_history'
 
-export default class Sql_store
+class Sql_store
 {
 	ready()
 	{
@@ -81,9 +79,6 @@ export default class Sql_store
 
 		await this.authentication_token_access_history.create(history_entry)
 
-		// If there's too much tokens, then remove excessive revoked ones
-		await this.remove_excessive_tokens(user_id)
-
 		return authentication_token_id
 	}
 
@@ -95,6 +90,8 @@ export default class Sql_store
 		// Get a list of all authentication tokens for this user
 		const tokens = await this.authentication_tokens.find_all({ user: user_id }, { including: ['history'] })
 
+		// First the most active ones,
+		// then the most obsolete ones.
 		sort_tokens_by_relevance(tokens)
 
 		// If the token limit hasn't been exceeded, then remove no tokens
@@ -186,11 +183,15 @@ export default class Sql_store
 	{
 		const tokens = await this.authentication_tokens.find_all({ user: user_id }, { including: ['history'] })
 
+		// First the most active ones,
+		// then the most obsolete ones.
 		sort_tokens_by_relevance(tokens)
 
 		return tokens
 	}
 }
+
+export default new Sql_store()
 
 async function get_place_for_ip(ip)
 {
@@ -207,4 +208,49 @@ async function get_place_for_ip(ip)
 	{
 		log.error(error)
 	}
+}
+
+// Get authentication token's latest access date
+function get_latest_access_date(token)
+{
+	return token.history.reduce((most_recently_used, history_entry) =>
+	{
+		if (most_recently_used.getTime() > history_entry.updated_at.getTime())
+		{
+			return most_recently_used
+		}
+
+		return history_entry.updated_at
+	},
+	new Date(0))
+}
+
+// Sort tokens in the following order:
+//
+// not revoked tokens used recently,
+// not revoked tokens used a long time ago,
+// tokens revoked recently,
+// tokens revoked a long time ago.
+//
+export function sort_tokens_by_relevance(tokens)
+{
+	tokens.sort((a, b) =>
+	{
+		if (!a.revoked_at && !b.revoked_at)
+		{
+			return get_latest_access_date(b).getTime() - get_latest_access_date(a).getTime()
+		}
+
+		if (a.revoked_at && !b.revoked_at)
+		{
+			return 1
+		}
+
+		if (!a.revoked_at && b.revoked_at)
+		{
+			return -1
+		}
+
+		return b.revoked_at.getTime() - a.revoked_at.getTime()
+	})
 }

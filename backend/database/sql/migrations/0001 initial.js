@@ -80,17 +80,26 @@ exports.up = function(knex, Promise)
 	.createTable('authentication', function(table)
 	{
 		table.bigIncrements('id').primary().unsigned()
-
 		table.string('type', 32).notNullable()
 		table.text('value').notNullable()
+		table.bigint('user').notNullable().references('users.id').onDelete('CASCADE')
+		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
+		table.integer('attempts_left')
+		table.timestamp('expires')
+	})
 
+	.createTable('multifactor_authentication', function(table)
+	{
+		table.bigIncrements('id').primary().unsigned()
+		table.string('uuid', uuid_length).notNullable().unique()
+		table.bigint('user').notNullable().unique().references('users.id').onDelete('CASCADE')
+		table.string('purpose').notNullable()
+		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
 		table.timestamp('latest_attempt')
+		table.timestamp('expires')
 		table.float('temperature').notNullable().defaultTo(0)
 		table.integer('attempts').notNullable().defaultTo(0)
-
-		table.bigint('user').notNullable().unique().references('users.id').onDelete('CASCADE')
-
-		table.index('type')
+		table.text('pending')
 	})
 
 	.createTable('authentication_tokens', function(table)
@@ -155,18 +164,6 @@ exports.up = function(knex, Promise)
 
 		table.bigint('from').notNullable().references('users.id')
 		table.bigint('to'  ).notNullable().references('users.id')
-	})
-
-	.createTable('access_codes', function(table)
-	{
-		table.bigIncrements('id').primary().unsigned()
-		table.text('code').notNullable()
-		table.bigint('user').notNullable().unique().references('users.id').onDelete('CASCADE')
-		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
-		table.timestamp('latest_attempt')
-		table.float('temperature').notNullable().defaultTo(0)
-		table.integer('attempts').notNullable().defaultTo(0)
-		table.timestamp('expires').notNullable()
 	})
 }
 

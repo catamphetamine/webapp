@@ -1,8 +1,8 @@
 {
-  "name": "webapp-access-code-service",
+  "name": "webapp-access-token-service",
   "private": true,
   "version": "1.0.0",
-  "description": "Issues access codes (e.g. SMS login codes) to a user trying to log in (and verifies the codes issued)",
+  "description": "Manages JWT access tokens",
   "main": "entry.js",
   "repository": {
     "type": "git",

@@ -1,6 +1,6 @@
 import { http, errors } from 'web-service'
 
-import store from '../store/authentication/store'
+import store from '../store'
 
 export default function(api)
 {
@@ -73,7 +73,10 @@ export default function(api)
 		new_password = await hash_password(new_password)
 
 		// Change password to the new one
-		await store.update_password(user.id, new_password)
+		await store.update(user.id, 'password',
+		{
+			value: new_password
+		})
 	})
 }
 
@@ -85,7 +88,7 @@ async function hash_password(password)
 
 async function check_password(user_id, password)
 {
-	const authentication = await store.get_user_password_authentication(user_id)
+	const authentication = await store.get_user_authentication(user_id, 'password')
 	const hashed_password = authentication.value
 	return await http.get(`${address_book.password_service}/matches`, { password, hashed_password })
 }

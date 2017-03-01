@@ -24,9 +24,9 @@
     "web-service": "^0.4.4"
   },
   "scripts": {
-    "development": "npm-run-all --parallel development:log-service:delayed development:authentication-service:delayed development:user-service:delayed development:password-service:delayed development:image-service:delayed development:mail-service:delayed development:realtime-service:delayed development:access-code-service:delayed development:web-server:delayed",
+    "development": "npm-run-all --parallel development:log-service:delayed development:authentication-service:delayed development:user-service:delayed development:password-service:delayed development:image-service:delayed development:mail-service:delayed development:realtime-service:delayed development:access-token-service:delayed development:web-server:delayed",
     "development:log-service": "better-npm-run development:log-service",
-    "development:access-code-service": "better-npm-run development:access-code-service",
+    "development:access-token-service": "better-npm-run development:access-token-service",
     "development:realtime-service": "better-npm-run development:realtime-service",
     "development:authentication-service": "better-npm-run development:authentication-service",
     "development:user-service": "better-npm-run development:user-service",
@@ -35,7 +35,7 @@
     "development:mail-service": "better-npm-run development:mail-service",
     "development:web-server": "better-npm-run development:web-server",
     "development:log-service:delayed": "npm-run-all delay development:log-service",
-    "development:access-code-service:delayed": "npm-run-all delay delay development:access-code-service",
+    "development:access-token-service:delayed": "npm-run-all delay delay development:access-token-service",
     "development:image-service:delayed": "npm-run-all delay delay delay development:image-service",
     "development:password-service:delayed": "npm-run-all delay delay delay delay development:password-service",
     "development:authentication-service:delayed": "npm-run-all delay delay delay delay delay development:authentication-service",
@@ -44,9 +44,9 @@
     "development:realtime-service:delayed": "npm-run-all delay delay delay delay delay delay delay delay development:realtime-service",
     "development:web-server:delayed": "npm-run-all delay delay delay delay delay delay delay delay delay development:web-server",
     "delay": "node ./code/sleep 600",
-    "production": "npm-run-all --parallel production:log-service production:authentication-service production:user-service production:password-service production:image-service production:mail-service production:realtime-service production:access-code-service production:web-server",
+    "production": "npm-run-all --parallel production:log-service production:authentication-service production:user-service production:password-service production:image-service production:mail-service production:realtime-service production:access-token-service production:web-server",
     "production:log-service": "better-npm-run production:log-service",
-    "production:access-code-service": "better-npm-run production:access-code-service",
+    "production:access-token-service": "better-npm-run production:access-token-service",
     "production:authentication-service": "better-npm-run production:authentication-service",
     "production:user-service": "better-npm-run production:user-service",
     "production:password-service": "better-npm-run production:password-service",
@@ -54,12 +54,12 @@
     "production:mail-service": "better-npm-run production:mail-service",
     "production:realtime-service": "better-npm-run production:realtime-service",
     "production:web-server": "better-npm-run production:web-server",
-    "postgresql-knex-init": "knex init",
-    "postgresql-migrate": "knex migrate:latest",
-    "postgresql-rollback": "knex migrate:rollback",
-    "postgresql-checkpoint": "knex migrate:make",
-    "postgresql-make-seed": "knex seed:make",
-    "postgresql-seed": "knex seed:run",
+    "postgresql-knex-init": "node database/sql/knex-init.js",
+    "postgresql-migrate": "cd database/sql && knex migrate:latest",
+    "postgresql-rollback": "cd database/sql && knex migrate:rollback",
+    "postgresql-checkpoint": "cd database/sql && knex migrate:make",
+    "postgresql-make-seed": "cd database/sql && knex seed:make",
+    "postgresql-seed": "cd database/sql && knex seed:run",
     "mongodb-migrate": "./node_modules/.bin/mongo-migrate --runMongoMigrate --chdir database/mongodb --config mongodb-migrate.config.js --dbPropName database up",
     "mongodb-rollback": "./node_modules/.bin/mongo-migrate --runMongoMigrate --chdir database/mongodb --config mongodb-migrate.config.js --dbPropName database down",
     "mongodb-checkpoint": "./node_modules/.bin/mongo-migrate --runMongoMigrate --chdir database/mongodb --config mongodb-migrate.config.js --dbPropName database create",
@@ -122,8 +122,8 @@
         "BABEL_ENV": "server"
       }
     },
-    "development:access-code-service": {
-      "command": "\"../node_modules/.bin/nodemon\" ./code/access-code-service/entry.js --watch ./code/access-code-service --watch ./code/common",
+    "development:access-token-service": {
+      "command": "\"../node_modules/.bin/nodemon\" ./code/access-token-service/entry.js --watch ./code/access-token-service --watch ./code/common",
       "env": {
         "NODE_ENV": "development",
         "BABEL_ENV": "server"
@@ -185,8 +185,8 @@
         "BABEL_ENV": "server"
       }
     },
-    "production:access-code-service": {
-      "command": "node --harmony ./code/access-code-service/entry.js",
+    "production:access-token-service": {
+      "command": "node --harmony ./code/access-token-service/entry.js",
       "env": {
         "NODE_ENV": "production",
         "BABEL_ENV": "server"

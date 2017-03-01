@@ -75,7 +75,6 @@ export default class Register extends Component
 		const markup =
 		(
 			<Form
-				className="authentication-form authentication-form-register"
 				action={ submit(reset_register_error, this.register) }
 				busy={ submitting }
 				error={ this.registration_error(register_error) }
@@ -141,7 +140,8 @@ export default class Register extends Component
 			{
 				email,
 				register,
-				locale
+				locale,
+				finish
 			}
 			= this.props
 
@@ -151,6 +151,8 @@ export default class Register extends Component
 				email,
 				locale
 			})
+
+			finish()
 		}
 		catch (error)
 		{

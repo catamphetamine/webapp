@@ -23,12 +23,16 @@ export default class Preloading extends React.Component
 
 		const markup =
 		(
-			<div className={classNames('preloading',
+			<div className={ classNames('preloading',
 			{
-				'preloading--shown' : pending,
+				'preloading--shown'     : pending,
 				'preloading--immediate' : immediate
-			})}>
-				{pending && <div className="preloading-spinner-container"><ActivityIndicator/></div>}
+			}) }>
+				{ pending &&
+					<div className="preloading-spinner-container">
+						<ActivityIndicator/>
+					</div>
+				}
 			</div>
 		)
 

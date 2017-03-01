@@ -4,21 +4,20 @@ import { flat as style } from 'react-styling'
 import { defineMessages, FormattedMessage } from 'react-intl'
 import { Form, Button } from 'react-responsive-ui'
 import Redux_form from 'simpler-redux-form'
+import classNames from 'classnames'
 
-import { login_attempts_limit_exceeded_error } from './sign in'
-import { messages as user_bar_messages } from '../user bar'
+import { authentication_attempts_limit_exceeded_error } from './authentication form'
 import http_status_codes from '../../tools/http status codes'
 
 import Submit     from '../form/submit'
 import Text_input from '../form/text input'
 
 import international from '../../international/internationalize'
-import { messages as sign_in_messages } from './sign in'
 
 import
 {
-	sign_in_with_password,
-	reset_sign_in_with_password_error,
+	authenticate,
+	reset_authenticate_error,
 	connector
 }
 from '../../redux/authentication'
@@ -28,23 +27,21 @@ from '../../redux/authentication'
 (
 	state =>
 	({
-		...connector(state.authentication),
-		locale : state.locale.locale
+		...connector(state.authentication)
 	}),
 	{
-		sign_in_with_password,
-		reset_sign_in_with_password_error
+		authenticate,
+		reset_authenticate_error
 	}
 )
 @international
-export default class Sign_in_with_password extends Component
+export default class Authenticate_with_password extends Component
 {
 	constructor()
 	{
 		super()
 
-		this.sign_in_with_password  = this.sign_in_with_password.bind(this)
-		this.validate_password      = this.validate_password.bind(this)
+		this.authenticate = this.authenticate.bind(this)
 	}
 
 	// Reset errors on modal dismissal
@@ -52,11 +49,11 @@ export default class Sign_in_with_password extends Component
 	{
 		const
 		{
-			reset_sign_in_with_password_error
+			reset_authenticate_error
 		}
 		= this.props
 
-		reset_sign_in_with_password_error()
+		reset_authenticate_error()
 	}
 
 	render()
@@ -64,25 +61,27 @@ export default class Sign_in_with_password extends Component
 		const
 		{
 			translate,
-			sign_in_with_password_error,
-			reset_sign_in_with_password_error,
+			authenticate_error,
+			reset_authenticate_error,
 			submit,
-			submitting
+			submitText,
+			title,
+			submitting,
+			className
 		}
 		= this.props
 
 		const markup =
 		(
 			<Form
-				className="authentication-form authentication-form-password"
-				action={ submit(reset_sign_in_with_password_error, this.sign_in_with_password) }
+				action={ submit(reset_authenticate_error, this.authenticate) }
 				busy={ submitting }
-				error={ this.sign_in_with_password_error(sign_in_with_password_error) }
+				error={ this.authenticate_error(authenticate_error) }
 				post="/authentication/legacy/sign-in">
 
 				{/* "Sign in" */}
 				<h2 style={ styles.form_title }>
-					{ translate(user_bar_messages.sign_in) }
+					{ title }
 				</h2>
 
 				<div className="rrui__form__fields">
@@ -90,7 +89,7 @@ export default class Sign_in_with_password extends Component
 					<Text_input
 						password
 						name="password"
-						error={ this.password_error(sign_in_with_password_error) }
+						error={ this.password_error(authenticate_error) }
 						validate={ this.validate_password }
 						label={ translate(messages.password) }/>
 				</div>
@@ -100,7 +99,7 @@ export default class Sign_in_with_password extends Component
 				<Form.Actions className="rrui__form__actions--right">
 					{/* "Sign in" button */}
 					<Submit>
-						{ translate(user_bar_messages.sign_in) }
+						{ submitText }
 					</Submit>
 				</Form.Actions>
 			</Form>
@@ -109,22 +108,29 @@ export default class Sign_in_with_password extends Component
 		return markup
 	}
 
-	async sign_in_with_password(fields)
+	async authenticate(fields)
 	{
 		try
 		{
 			const
 			{
 				authentication,
-				sign_in_with_password
+				authenticate,
+				finished
 			}
 			= this.props
 
-			await sign_in_with_password
+			const result = await authenticate
 			({
-				id       : authentication.id,
-				password : fields.password
+				multifactor_authentication_id : authentication.id,
+				id    : authentication.pending.find_by({ type: 'password' }).id,
+				value : fields.password
 			})
+
+			if (!result)
+			{
+				finished()
+			}
 		}
 		catch (error)
 		{
@@ -132,7 +138,7 @@ export default class Sign_in_with_password extends Component
 		}
 	}
 
-	sign_in_with_password_error(error)
+	authenticate_error(error)
 	{
 		const { translate, locale } = this.props
 
@@ -141,18 +147,17 @@ export default class Sign_in_with_password extends Component
 			return
 		}
 
-		if (error.field === 'password')
+		if (this.password_error(error))
 		{
 			return
 		}
 
-		if (error.message === 'Password attempts limit exceeded' ||
-			error.message === 'Access code attempts limit exceeded')
+		if (error.message === 'Authentication attempts limit exceeded')
 		{
-			return login_attempts_limit_exceeded_error(error)
+			return authentication_attempts_limit_exceeded_error(error)
 		}
 
-		return translate(sign_in_messages.sign_in_error)
+		return translate(messages.error)
 	}
 
 	password_error(error)
@@ -164,18 +169,13 @@ export default class Sign_in_with_password extends Component
 			return
 		}
 
-		if (error.field !== 'password')
-		{
-			return
-		}
-
 		if (error.status === http_status_codes.Input_rejected)
 		{
 			return translate(messages.wrong_password)
 		}
 	}
 
-	validate_password(value)
+	validate_password = (value) =>
 	{
 		const { translate } = this.props
 
@@ -194,6 +194,12 @@ const styles = style
 
 export const messages = defineMessages
 ({
+	error:
+	{
+		id             : 'authentication.access_code.error',
+		description    : 'A generic authentication failed message',
+		defaultMessage : `Couldn't authenticate with access code`
+	},
 	password:
 	{
 		id             : 'authentication.password',

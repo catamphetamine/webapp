@@ -8,7 +8,7 @@ import promise_pipe from 'promisepipe'
 import get_image_info         from './image info'
 // import { resize, autorotate } from './image manipulation gm'
 import { resize, autorotate, image_stream } from './image manipulation sharp'
-import database               from './database/database'
+import database               from './database'
 import { clean_up }           from './cleaner'
 
 const upload_folder = path.resolve(Root_folder, configuration.image_service.temporary_files_directory)

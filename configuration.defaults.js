@@ -3,7 +3,7 @@ module.exports =
 	website: 'webapp.com',
 	support:
 	{
-		email: 'robot@webapp.com'
+		email: 'support@webapp.com'
 	},
 	authentication_service:
 	{
@@ -107,7 +107,7 @@ module.exports =
 		},
 		mail:
 		{
-			from: 'Webapp Robot <robot@webapp.com>'
+			from: 'Webapp Support <support@webapp.com>'
 		},
 		// e.g. SendGrid.com or MailGun.com
 		// smtp:
@@ -130,7 +130,7 @@ module.exports =
 			port: 3100
 		}
 	},
-	access_code_service:
+	access_token_service:
 	{
 		http:
 		{
@@ -195,5 +195,10 @@ module.exports =
 	// 		provider: 'google',
 	// 		key: '...'
 	// 	}
-	// }
+	// },
+	redis:
+	{
+		host : 'localhost',
+		port : 6379
+	},
 }
