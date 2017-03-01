@@ -9,7 +9,6 @@ import get_word from '../dictionaries/dictionary'
 
 const access_code_lifetime = 24 * 60 * 60 * 1000 // a day (about 20 attempts)
 const access_code_max_attempts = 10
-const latest_activity_time_refresh_interval = 60 * 1000 // one minute
 
 const throttling = new Throttling(store)
 

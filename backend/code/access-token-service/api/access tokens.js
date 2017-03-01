@@ -4,6 +4,8 @@ import { http, errors, jwt } from 'web-service'
 import store from '../store/store'
 import online_status_store from '../store/online store'
 
+const latest_activity_time_refresh_interval = 60 * 1000 // one minute
+
 export default function(api)
 {
 	// Returns a list of all tokens for this user

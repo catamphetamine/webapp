@@ -89,10 +89,10 @@ export default class Sign_in extends Component
 
 				<Sign_in_form
 					sign_in
-					values={this.fields}
-					focus_on={this.get_focused_element()}
-					style={style.form}
-					error={this.error_message()}/>
+					values={ this.fields }
+					focus_on={ this.get_focused_element() }
+					style={ style.form }
+					error={ this.error_message() }/>
 			</section>
 		)
 
@@ -204,4 +204,6 @@ const style = styler
 	form
 		margin-top    : 3rem
 		margin-bottom : 3rem
+		margin-left   : auto
+		margin-right  : auto
 `

@@ -32,6 +32,7 @@ from '../../redux/authentication'
 	}),
 	{
 		preload_started,
+		preload_finished,
 		sign_in_authenticated,
 		reset_sign_in_authenticated_error
 	}
@@ -68,6 +69,7 @@ export default class Sign_in_form extends Component
 			open,
 			close,
 			preload_started,
+			preload_finished,
 			router:
 			{
 				location
@@ -140,13 +142,14 @@ export default class Sign_in_form extends Component
 		const
 		{
 			sign_in_authenticated_pending,
-			sign_in_authenticated_error
+			sign_in_authenticated_error,
+			style
 		}
 		= this.props
 
 		const markup =
 		(
-			<div className="sign-in-form">
+			<div className="sign-in-form" style={ style }>
 				{ sign_in_authenticated_error &&
 					<div className="rrui__form__error">
 						{ this.sign_in_authenticated_error(sign_in_authenticated_error) }
