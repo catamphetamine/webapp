@@ -6,6 +6,18 @@
 	box-sizing     : border-box;
 }
 
+// For float columns.
+//
+// .row
+// {
+// 	&:after
+// 	{
+// 		content : "";
+// 		display : table;
+// 		clear   : both;
+// 	}
+// }
+
 @mixin columns($size_prefix)
 {
 	.column-#{$size_prefix}1-of-12,

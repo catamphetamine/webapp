@@ -7,7 +7,7 @@ export default function()
 	api
 	(
 		'Log service',
-		configuration.log_service.http.port,
+		configuration.log_service.http,
 		[
 			log_api
 		]

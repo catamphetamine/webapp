@@ -216,7 +216,7 @@ const style = styler
 		line-height : 1.6em
 
 		&revoked
-			// color: var(--gray-color-darker)
+			// color: var(--gray-color-darkest)
 			// background-color: var(--gray-color-lightest)
 
 		issued

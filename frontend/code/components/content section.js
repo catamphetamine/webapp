@@ -18,7 +18,7 @@ export default class Content_section extends Component
 		const markup =
 		(
 			<section
-				className={classNames
+				className={ classNames
 				(
 					className,
 					'content-section',
@@ -26,11 +26,15 @@ export default class Content_section extends Component
 						'content-section--busy'       : busy,
 						'content-section--no-padding' : padding === false
 					}
-				)}>
+				) }>
 
-				{ title && <h2 className="content-section-header">{title}</h2> }
+				{ title &&
+					<h2 className="content-section-header">
+						{ title }
+					</h2>
+				}
 
-				{children}
+				{ children }
 			</section>
 		)
 

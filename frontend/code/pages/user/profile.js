@@ -279,7 +279,7 @@ export default class User_profile extends Component
 
 						<Form
 							busy={ update_user_info_pending || update_user_picture_pending || upload_user_picture_pending }
-							action={ submit(this.save_profile_edits) }>
+							submit={ submit(this.save_profile_edits) }>
 
 							{/* Edit/Save own profile */}
 							{ is_own_profile &&

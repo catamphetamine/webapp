@@ -28,8 +28,6 @@ require('javascript-time-ago/load-all-locales')
 
 const initializing_javascript =
 `
-	document.body.classList.add('javascript-is-enabled')
-
 	window.configuration =
 	{
 		support:

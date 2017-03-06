@@ -110,8 +110,7 @@ export default class User_profile extends Component
 						values={{ name: <User>{user}</User> }}
 						tagName="p"/>
 
-					<Form
-						action={submit(this.submit)}>
+					<Form submit={submit(this.submit)}>
 
 						{/* "Reason" */}
 						{ !self &&

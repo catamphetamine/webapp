@@ -4,7 +4,7 @@ import { Form as Redux_form, Field, Submit } from 'simpler-redux-form'
 
 import default_messages from './messages'
 
-import { Form, Button, TextInput } from 'react-responsive-ui'
+import { Form, Button, TextInput, Switch } from 'react-responsive-ui'
 
 import international from '../international/internationalize'
 
@@ -22,8 +22,13 @@ export default class Editable_field extends Component
 	static propTypes =
 	{
 		label       : PropTypes.string,
+		emptyLabel  : PropTypes.string,
+		emptyEditLabel : PropTypes.string,
 		name        : PropTypes.string,
 		value       : PropTypes.any,
+		showValue   : PropTypes.bool.isRequired,
+		toggle      : PropTypes.bool.isRequired,
+		toggleState : PropTypes.bool.isRequired,
 		hint        : PropTypes.string,
 		error       : PropTypes.string,
 		saving      : PropTypes.bool,
@@ -40,6 +45,13 @@ export default class Editable_field extends Component
 		className   : PropTypes.string
 	}
 
+	static defaultProps =
+	{
+		showValue   : true,
+		toggle      : false,
+		toggleState : false
+	}
+
 	constructor(props, context)
 	{
 		super(props, context)
@@ -54,6 +66,8 @@ export default class Editable_field extends Component
 		const
 		{
 			label,
+			toggle,
+			toggleState,
 			hint,
 			editing,
 			submitting,
@@ -75,6 +89,9 @@ export default class Editable_field extends Component
 				{/* Field label */}
 				{ label }
 
+				{/* Toggler */}
+				{ toggle && <Switch value={ toggleState }/> }
+
 				{/* Hint */}
 				{ hint && <p>{ hint }</p> }
 
@@ -91,31 +108,35 @@ export default class Editable_field extends Component
 
 	render_not_editing()
 	{
-		const { value } = this.props
+		const { value, showValue, emptyLabel, emptyEditLabel } = this.props
 
 		const translate = this.props.intl.formatMessage
 
 		const elements = []
 
-		// Display field value
-		if (value !== undefined)
-		{
-			elements.push(<div key="value" className="editable-field__value">{value}</div>)
-		}
-		else
-		{
-			// Just so that the button is on the new line
-			elements.push(<div key="value"/>)
-		}
+		const is_empty = value === undefined || value === null || value === ''
+
+		// Show field value
+		elements.push
+		((
+			<div
+				key="value"
+				className={ classNames('editable-field__value',
+				{
+					'editable-field__value--empty' : is_empty
+				}) }>
+				{ showValue && (is_empty ? emptyLabel : value) }
+			</div>
+		))
 
 		// "Change" button
 		elements.push
 		(
 			<Button
 				key="change"
-				ref={ref => this.change_button = ref}
-				action={this.edit}>
-				{translate(default_messages.change).toLowerCase()}
+				ref={ ref => this.change_button = ref }
+				action={ this.edit }>
+				{ emptyEditLabel || translate(default_messages.change).toLowerCase() }
 			</Button>
 		)
 
@@ -144,7 +165,7 @@ export default class Editable_field extends Component
 		const markup =
 		(
 			<Form
-				action={submit(this.save)}
+				submit={submit(this.save)}
 				busy={submitting}
 				cancel={this.cancel}>
 
@@ -170,7 +191,7 @@ export default class Editable_field extends Component
 				{/* "Save" */}
 				<Submit
 					component={Button}
-					submit={true}
+					submit
 					className="editable-field__button--subsequent button--primary">
 					{translate(default_messages.save).toLowerCase()}
 				</Submit>

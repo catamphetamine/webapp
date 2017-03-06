@@ -3,7 +3,7 @@ import settings from '../../../react-isomorphic-render-async'
 
 const handler = create_handler(settings)
 
-export const get_own_user = action
+export const get_user_self = action
 ({
 	namespace : 'user settings',
 	event     : 'get user',
@@ -21,6 +21,15 @@ export const get_own_user = action
 		return user
 	},
 	result    : 'user'
+},
+handler)
+
+export const get_user_authentication = action
+({
+	namespace : 'user settings',
+	event     : 'get authentication configuration',
+	action    : http => http.get('/users/authentication'),
+	result    : 'authentication'
 },
 handler)
 

@@ -8,6 +8,7 @@ import generate_alias from '../alias'
 import
 {
 	get_user,
+	get_user_self,
 	public_user
 }
 from './user.base'
@@ -99,12 +100,7 @@ export default function(api)
 
 		metrics.increment('count')
 
-		return await http.post(`${address_book.authentication_service}/authenticate`,
-		{
-			user,
-			using: 'email',
-			purpose: 'sign in'
-		})
+		return await authenticate_user(user, 'email')
 	})
 
 	// Revokes access token and clears authentication cookie
@@ -126,12 +122,12 @@ export default function(api)
 	api.post('/sign-in', async function({ email, phone })
 	{
 		let user
-		let using
+		let medium
 
 		if (exists(email))
 		{
 			user = await store.find_user_by_email(email)
-			using = 'email'
+			medium = 'email'
 
 			if (!user)
 			{
@@ -142,7 +138,7 @@ export default function(api)
 		{
 			// Currently not implemented
 			user = await store.find_user_by_phone(phone)
-			using = 'phone'
+			medium = 'phone'
 
 			if (!user)
 			{
@@ -160,12 +156,7 @@ export default function(api)
 			await user_is_blocked(user)
 		}
 
-		return await http.post(`${address_book.authentication_service}/authenticate`,
-		{
-			user,
-			using,
-			purpose: 'sign in'
-		})
+		return authenticate_user(user, medium)
 	})
 
 	// Logs in the user if the multifactor authentication succeeded.
@@ -200,6 +191,38 @@ export default function(api)
 
 		// Write JWT token to a cookie
 		set_cookie('authentication', token, { signed: false })
+	})
+
+	// Returns user's authentication configuration
+	api.get('/authentication', async function({}, { user, internal_http })
+	{
+		if (!user)
+		{
+			throw new errors.Unauthenticated()
+		}
+
+		user = await get_user_self(user.id)
+
+		const authentications = await internal_http.get(`${address_book.authentication_service}/info`)
+
+		if (user.email)
+		{
+			authentications.push
+			({
+				type  : 'email',
+				value : user.email
+			})
+		}
+		else if (user.phone)
+		{
+			authentications.push
+			({
+				type  : 'phone',
+				value : user.phone
+			})
+		}
+
+		return authentications
 	})
 
 	// Get a list of all user's access tokens
@@ -269,7 +292,7 @@ export default function(api)
 			return
 		}
 
-		return await get_user({ id: user.id }, { user })
+		return await get_user_self(user.id)
 	})
 
 	// Change user's `email`
@@ -377,7 +400,7 @@ export default function(api)
 			place   : data.place
 		})
 
-		return await get_user({ id: user.id }, { user })
+		return await get_user_self(user.id)
 	})
 
 	// Change user picture
@@ -388,7 +411,7 @@ export default function(api)
 			throw new errors.Unauthenticated()
 		}
 
-		const user_data = await get_user(user, { user })
+		const user_data = await get_user_self(user.id)
 
 		// Save the uploaded picture
 		picture = await internal_http.post
@@ -457,7 +480,7 @@ export default function(api)
 
 		if (token.user)
 		{
-			token.user = await get_user({ id: token.user })
+			token.user = await get_user(token.user)
 		}
 
 		return token
@@ -521,7 +544,7 @@ export default function(api)
 	// it wasn't intended to match, so placing it in the end.
 	api.get('/:id', async function({ id })
 	{
-		return await get_user({ id })
+		return await get_user(id)
 	})
 }
 
@@ -536,5 +559,22 @@ async function user_is_blocked(user)
 		blocked_by     : !self_block && public_user(await store.find_user_by_id(user.blocked_by)),
 		blocked_at     : user.blocked_at,
 		blocked_reason : user.blocked_reason
+	})
+}
+
+function authenticate_user(user, medium)
+{
+	return http.post(`${address_book.authentication_service}/authenticate`,
+	{
+		user,
+		using:
+		[{
+			type: 'password'
+		},
+		{
+			type: 'access code',
+			medium
+		}],
+		purpose: 'sign in'
 	})
 }

@@ -103,7 +103,7 @@ export default class Layout extends Component
 				<Page className="page">
 					{/* header */}
 					{/* <Sticky> */}
-						<header className="main-header card rrui__fixed-full-width">
+						<nav className="main-header card rrui__fixed-full-width">
 							{/* menu button for small screens */}
 							<div className="menu-button-container">
 								<MenuButton link="/menu"/>
@@ -122,7 +122,7 @@ export default class Layout extends Component
 
 							{/* User accout section */}
 							<User_bar/>
-						</header>
+						</nav>
 					{/* </Sticky> */}
 
 					{/* page content */}

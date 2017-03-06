@@ -124,9 +124,7 @@ header .rrui__menu
 
 .preloading--shown
 {
-	/* `2` is assigned to the main header */
-	/* `3` is assigned to the modal */
-	z-index : 4;
+	z-index : var(--preloading-z-index);
 
 	opacity : 1;
 	cursor  : wait;
@@ -137,8 +135,7 @@ header .rrui__menu
 
 .ReactModal__Overlay
 {
-	/* `2` is assigned to the main header */
-	z-index : 3;
+	z-index : var(--modal-z-index);
 }
 
 .preloading--immediate
@@ -239,11 +236,23 @@ header .rrui__menu
 		margin-bottom: 0;
 	}
 
-	label
+	// label
+	// {
+	// 	display       : block;
+	// 	margin-bottom : calc(var(--unit) * 0.5);
+	// 	opacity       : 0.6;
+	// }
+
+	.rrui__switch
 	{
-		display       : block;
-		margin-bottom : calc(var(--unit) * 0.5);
-		opacity       : 0.6;
+		position : absolute;
+		top      : 0.15em;
+		left     : 0.5em;
+
+		.rrui__input
+		{
+			height: auto;
+		}
 	}
 
 	.editable-field__button--subsequent
@@ -262,8 +271,8 @@ header .rrui__menu
 		margin-bottom : var(--unit);
 
 		font-size : 85%;
-		color     : var(--gray-color-darker);
-		border-left: 0.1em solid var(--gray-color);
+		color     : var(--gray-color-darkest);
+		border-left: 0.1em solid var(--gray-color-darker);
 		padding-left: 0.4em;
 	}
 }
@@ -309,9 +318,9 @@ header .rrui__menu
 .content-section__errors
 {
 	color            : var(--error-color-darker);
-	background-color : var(--gray-color-lighter);
+	background-color : var(--gray-color-light);
 
-	border-bottom: 1px solid var(--gray-color);
+	border-bottom: 1px solid var(--gray-color-darker);
 }
 
 .content-section__errors--top
@@ -401,4 +410,9 @@ header .rrui__menu
 .rrui__snackbar--error
 {
 	background-color : var(--error-color-darker);
+}
+
+.editable-field__value--empty
+{
+	color: var(--gray-color-dark);
 }

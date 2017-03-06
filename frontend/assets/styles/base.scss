@@ -1,5 +1,12 @@
 @import "constants.scss";
 
+*,
+*:before,
+*:after
+{
+	box-sizing : border-box;
+}
+
 html
 {
 	// https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away
@@ -25,7 +32,7 @@ body
 // https://github.com/philipwalton/solved-by-flexbox/issues/79
 .page, body
 {
-	background-color: var(--gray-color-lighter);
+	background-color: var(--gray-color-light);
 }
 
 html, body, button, input, textarea, select
@@ -69,7 +76,7 @@ select,
 	display : block;
 	padding : 0;
 	border        : none;
-	border-bottom : var(--input-border-width) solid var(--gray-color-light);
+	border-bottom : var(--input-border-width) solid var(--gray-color);
 	transition    : border 0.1s;
 }
 

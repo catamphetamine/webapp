@@ -8,8 +8,8 @@ export default function ModalWindow(props, context)
 	const translate = context.intl.formatMessage
 
 	return <Modal
-		{ ...props }
-		cancelLabel={ translate(default_messages.cancel) }/>
+		closeLabel={ translate(default_messages.cancel) }
+		{ ...props }/>
 }
 
 ModalWindow.contextTypes =

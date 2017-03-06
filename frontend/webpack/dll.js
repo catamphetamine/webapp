@@ -53,7 +53,6 @@ const third_party_libraries =
 	'react-dom',
 	'react-intl',
 	'react-isomorphic-render',
-	'react-modal',
 	'react-responsive-ui',
 	'react-redux',
 	'react-router',

@@ -173,7 +173,7 @@ export class Text_input_step extends Component
 			<Form
 				ref={ ref => this.form = ref }
 				busy={ busy }
-				action={ submit(reset_error, action) }
+				submit={ submit(reset_error, action) }
 				error={ error }>
 
 				{ description &&

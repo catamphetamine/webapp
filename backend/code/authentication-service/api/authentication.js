@@ -50,6 +50,21 @@ export default function(api)
 		return multifactor_authentication
 	})
 
+	// Returns user's authentication configuration
+	api.get('/info', async function({}, { user })
+	{
+		const authentications = []
+
+		const password_authentication = await get_authentication({ type: 'password' }, user)
+
+		if (password_authentication)
+		{
+			authentications.push({ type: 'password' })
+		}
+
+		return authentications
+	})
+
 	// Performs an authentication step of a multifactor authentication
 	api.post('/', async function({ multifactor_authentication_id, id, value })
 	{
@@ -171,28 +186,18 @@ export default function(api)
 		}
 
 		// Collect authentications for the new multifactor authentication
+
 		const authentications = []
 
-		// Check if the user has a password set up
-		const password = await store.get_user_authentication(user.id, 'password')
-
-		// If the user has a password set up
-		// then request the password.
-		if (password)
+		for (const authentication_description of using)
 		{
-			authentications.push
-			({
-				type : 'password',
-				id   : password.id
-			})
-		}
+			const authentication = await get_authentication(authentication_description, user)
 
-		// Generate access code
-		authentications.push
-		({
-			type : 'access code',
-			id   : await generate_access_code(user, using)
-		})
+			if (authentication)
+			{
+				authentications.push(authentication)
+			}
+		}
 
 		// Report stats
 		metrics.increment('count')
@@ -214,7 +219,7 @@ export default function(api)
 
 // Generates access code
 // (must only be called from throttled handlers)
-async function generate_access_code(user, using)
+async function generate_access_code(user, medium)
 {
 	// Generate an access code
 
@@ -232,20 +237,24 @@ async function generate_access_code(user, using)
 	const id = await store.create(data)
 
 	// Determine access code delivery type (if not specified)
-	if (!using)
+	if (!medium)
 	{
 		if (user.email)
 		{
-			using = 'email'
+			medium = 'email'
 		}
 		else if (user.phone)
 		{
-			using = 'phone'
+			medium = 'phone'
+		}
+		else
+		{
+			throw new Error('The user has neither "email" not "phone" set up to receive an access code')
 		}
 	}
 
 	// Deliver the access code to the user
-	switch (using)
+	switch (medium)
 	{
 		case 'email':
 			// Send the access code via email
@@ -277,7 +286,7 @@ async function generate_access_code(user, using)
 			break
 
 		default:
-			throw new Error(`Unknown access code delivery type: ${using}`)
+			throw new Error(`Unknown access code delivery medium: ${medium}`)
 	}
 
 	// Return access code id
@@ -288,4 +297,48 @@ async function generate_access_code(user, using)
 async function hash_password(password)
 {
 	return (await http.get(`${address_book.password_service}/hash`, { password })).hash
+}
+
+async function get_authentication(authentication_description, user)
+{
+	// The returned result, because javascript
+	// doesn't know how to parse newline returns.
+	let authentication
+
+	switch (authentication_description.type)
+	{
+		case 'password':
+
+			// Check if the user has a password set up
+			const password = await store.get_user_authentication(user.id, 'password')
+
+			// If the user has a password set up
+			// then request the password.
+			if (!password)
+			{
+				return
+			}
+
+			authentication =
+			{
+				type : 'password',
+				id   : password.id
+			}
+
+			return authentication
+
+		case 'access code':
+
+			// Generate access code
+			authentication =
+			{
+				type : 'access code',
+				id   : await generate_access_code(user, authentication_description.medium)
+			}
+
+			return authentication
+
+		default:
+			throw new Error(`Unknown authentication type: ${authentication_description.type}`)
+	}
 }

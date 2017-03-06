@@ -3,7 +3,7 @@ import { http, errors } from 'web-service'
 import store from '../store'
 
 // May possibly add something like { alias } in the future
-export async function get_user({ id }, options = {})
+export async function get_user(id, options = {})
 {
 	const user_data = await store.find_user(id)
 
@@ -21,13 +21,18 @@ export async function get_user({ id }, options = {})
 		}
 		else
 		{
-			user_data.blocked_by = await get_user({ id: user_data.blocked_by })
+			user_data.blocked_by = await get_user(user_data.blocked_by)
 		}
 	}
 
-	const { user } = options
-	const self = user && id === String(user.id)
+	const { self } = options
 	return self ? own_user(user_data) : public_user(user_data)
+}
+
+export function get_user_self(id, options = {})
+{
+	options.self = true
+	return get_user(id, options)
 }
 
 export function public_user(user)

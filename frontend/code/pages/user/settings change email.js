@@ -4,6 +4,9 @@ import classNames                      from 'classnames'
 import { defineMessages }              from 'react-intl'
 import { connect }                     from 'react-redux'
 
+import { Form } from 'react-responsive-ui'
+import Redux_form, { Field } from 'simpler-redux-form'
+
 import
 {
 	check_password,
@@ -23,10 +26,7 @@ import international from '../../international/internationalize'
 import Modal          from '../../components/modal'
 import Editable_field from '../../components/editable field'
 import TextInput      from '../../components/form/text input'
-
-import { Form } from 'react-responsive-ui'
-
-import Redux_form, { Field } from 'simpler-redux-form'
+import Submit         from '../../components/form/submit'
 
 import default_messages from '../../components/messages'
 import { messages as authentication_messages } from '../../components/sign in form/sign in'
@@ -104,20 +104,21 @@ export default class Change_email extends Component
 			<Editable_field
 				name="email"
 				email
-				label={translate(authentication_messages.email)}
-				value={new_email || user.email}
-				validate={this.validate_email}
-				save={this.save_new_email}
-				cancel={this.cancel_change_email}
-				editing={changing_email}
-				saving={change_email_pending}
-				error={this.error_message(change_email_error)}>
+				label={ translate(authentication_messages.email) }
+				emptyLabel={ translate(messages.email_not_set) }
+				value={ new_email || user.email }
+				validate={ this.validate_email }
+				save={ this.save_new_email }
+				cancel={ this.cancel_change_email }
+				editing={ changing_email }
+				saving={ change_email_pending }
+				error={ this.error_message(change_email_error) }>
 
 				{/* Password check popup */}
 				<Check_password_popup
-					isOpen={this.state.check_password}
-					close={this.dismiss_check_password}
-					done={this.update_email}/>
+					isOpen={ this.state.check_password }
+					close={ this.dismiss_check_password }
+					done={ this.update_email }/>
 			</Editable_field>
 		)
 
@@ -238,26 +239,20 @@ class Check_password_popup extends Component
 		const markup =
 		(
 			<Modal
-				title={translate(messages.password_check)}
-				isOpen={isOpen}
-				close={close}
-				reset={reset_check_password_error}
-				cancel
-				busy={check_password_pending}
-				actions=
-				{[{
-					text      : translate(default_messages.done),
-					action    : () => this.check_password.ref().submit(),
-					className : 'button--primary',
-					busy      : check_password_pending
-				}]}>
+				isOpen={ isOpen }
+				close={ close }
+				reset={ reset_check_password_error }
+				busy={ check_password_pending }>
+
+				<h2>
+					{ translate(messages.password_check) }
+				</h2>
 
 				<Check_password
-					ref={ref => this.check_password = ref}
-					submit_form={this.done}
-					action={check_password}
-					error={check_password_error}
-					reset_error={reset_check_password_error}/>
+					submit_form={ this.done }
+					action={ check_password }
+					error={ check_password_error }
+					reset_error={ reset_check_password_error }/>
 			</Modal>
 		)
 
@@ -266,8 +261,10 @@ class Check_password_popup extends Component
 
 	done(password)
 	{
-		this.props.done(password)
-		this.props.close()
+		const { done, close } = this.props
+
+		done(password)
+		close()
 	}
 }
 
@@ -289,12 +286,11 @@ class Check_password extends Component
 		intl : PropTypes.object
 	}
 
-	constructor(props, context)
+	constructor()
 	{
-		super(props, context)
+		super()
 
 		this.validate_password = this.validate_password.bind(this)
-		this.submit            = this.submit.bind(this)
 		this.submit_form       = this.submit_form.bind(this)
 		this.reset_error       = this.reset_error.bind(this)
 	}
@@ -316,28 +312,27 @@ class Check_password extends Component
 		const markup =
 		(
 			<Form
-				ref={ref => this.form = ref}
-				busy={submitting}
-				action={submit(this.reset_error, this.submit_form)}
-				error={error && this.error_message(error)}>
+				busy={ submitting }
+				submit={ submit(this.reset_error, this.submit_form) }
+				error={ error && this.error_message(error) }>
 
 				<TextInput
 					name="input"
 					password
-					description={translate(messages.enter_password)}
-					placeholder={translate(messages.password)}
-					error={this.password_error()}
-					validate={this.validate_password}/>
+					description={ translate(messages.enter_password) }
+					placeholder={ translate(messages.password) }
+					error={ this.password_error() }
+					validate={ this.validate_password }/>
+
+				<Form.Actions>
+					<Submit>
+						{ translate(default_messages.done) }
+					</Submit>
+				</Form.Actions>
 			</Form>
 		)
 
 		return markup
-	}
-
-	// Public API
-	submit()
-	{
-		this.form.submit()
 	}
 
 	// Reset form error before running form field validation
@@ -419,7 +414,7 @@ const messages = defineMessages
 ({
 	enter_new_email:
 	{
-		id             : 'user.settings.change_email.enter_new_email',
+		id             : 'user.settings.email.enter_new_email',
 		description    : `An error message stating that new email hasn't been entered`,
 		defaultMessage : `Enter new email`
 	},
@@ -441,15 +436,21 @@ const messages = defineMessages
 		description    : `User's current password`,
 		defaultMessage : `Password`
 	},
+	email_not_set:
+	{
+		id             : 'user.settings.email.not_set',
+		description    : `The user hasn't specified his email address`,
+		defaultMessage : `not specified`
+	},
 	email_updated:
 	{
-		id             : 'user.settings.change_email.email_updated',
+		id             : 'user.settings.email.updated',
 		description    : `User's new email has been saved`,
 		defaultMessage : `Email updated`
 	},
 	change_email_failed:
 	{
-		id             : 'user.settings.change_email.failed',
+		id             : 'user.settings.email.update_failed',
 		description    : `An error stating that the user's email couldn't be changed to the new one`,
 		defaultMessage : `Couldn't update your email`
 	}

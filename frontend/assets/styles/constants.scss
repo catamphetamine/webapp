@@ -5,32 +5,32 @@
 
 :root
 {
-	--base-color            : #fa9c20;
-	--base-color-lighter    : #FFB24B;
 	--base-color-lightest   : #FFC474;
+	--base-color-lighter    : #FFB24B;
+	--base-color            : #fa9c20;
 	--base-color-darker     : #D07904;
 	--base-color-darkest    : #A45E00;
 
-	--accent-color          : #03B2CB;
-	--accent-color-lighter  : #53D5E7;
 	--accent-color-lightest : #94EBF7;
+	--accent-color-lighter  : #53D5E7;
+	--accent-color          : #03B2CB;
 	--accent-color-darker   : #018395;
 	--accent-color-darkest  : #016674;
 
 	--gray-color-lightest   : #FAF8F6;
-	--gray-color-lighter    : #f6f1ec;
-	--gray-color-lighter-   : #E8DED3;
-	--gray-color-light      : #E0D3C5;
-	--gray-color            : #c4bfb8;
+	--gray-color-light      : #f6f1ec;
+	--gray-color-lighter    : #E8DED3;
+	--gray-color            : #E0D3C5;
+	--gray-color-darker     : #c4bfb8;
 	--gray-color-dark       : #B3AA9F;
-	--gray-color-darker     : #918d88;
+	--gray-color-darkest    : #918d88;
 
-	--black-color : #4e3d27;
-	--white-color : #ffffff;
+	--black-color           : #4e3d27;
+	--white-color           : #ffffff;
 
-	--error-color         : #EB2010;
-	--error-color-lighter : #FF1300;
-	--error-color-darker  : #D30F00;
+	--error-color-lighter   : #FF1300;
+	--error-color           : #EB2010;
+	--error-color-darker    : #D30F00;
 
 	--unit : 0.3rem;
 
@@ -55,6 +55,10 @@
 
 	--icon-liftup       : 0.05em;
 	--icon-right-margin : 0.3em;
+
+	--main-header-z-index : 1;
+	--modal-z-index       : 2;
+	--preloading-z-index  : 3;
 }
 
 $extra-large-screen-min-width : 1260pt;

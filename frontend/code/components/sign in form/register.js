@@ -75,7 +75,7 @@ export default class Register extends Component
 		const markup =
 		(
 			<Form
-				action={ submit(reset_register_error, this.register) }
+				submit={ submit(reset_register_error, this.register) }
 				busy={ submitting }
 				error={ this.registration_error(register_error) }
 				post="/users/legacy/register">

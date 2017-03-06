@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react'
 import shallow_not_equal from 'react-addons-shallow-compare'
 
+const transparent_pixel = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
+
 export default class Image extends React.Component
 {
 	static propTypes =
@@ -20,9 +22,9 @@ export default class Image extends React.Component
 
 	state = {}
 
-	constructor(props, context)
+	constructor(props)
 	{
-		super(props, context)
+		super(props)
 
 		if (props.sizes)
 		{
@@ -111,10 +113,10 @@ export default class Image extends React.Component
 		const { src, style, className } = this.props
 
 		return <img
-			ref={ref => this.image = ref}
-			src={src || this.url()}
-			style={style}
-			className={className}/>
+			ref={ ref => this.image = ref }
+			src={ typeof window === 'undefined' ? transparent_pixel : (src || this.url()) }
+			style={ style }
+			className={ className }/>
 	}
 
 	refresh_size(sizes = this.props.sizes, force)

@@ -87,6 +87,7 @@
 	"user.profile.latest_activity_time" : "{gender, select, male {Заходил} female {Заходила} other {В сети:}}",
 
 	"user.settings.header"                               : "Настройки",
+	"user.settings.authentication"                       : "Проверка личности",
 	"user.settings.show_advanced_settings"               : "Показать прочие настройки",
 	"user.settings.authentication_tokens"                : "Ключи доступа",
 	"user.settings.authentication_token.revoke"          : "Отозвать",
@@ -117,9 +118,10 @@
 	"user.settings.check_password.enter_password" : "Введите ваш пароль",
 	"user.settings.check_password.password"       : "Пароль",
 
-	"user.settings.change_email.enter_new_email" : "Введите новую почту",
-	"user.settings.change_email.email_updated"   : "Почта изменена",
-	"user.settings.change_email.failed"          : "Не удалось изменить вашу почту",
+	"user.settings.email.not_set"         : "Не указана",
+	"user.settings.email.enter_new_email" : "Введите новую почту",
+	"user.settings.email.updated"         : "Почта изменена",
+	"user.settings.email.update_failed"   : "Не удалось изменить вашу почту",
 
 	"user.settings.alias"                     : "Адресное имя",
 	"user.settings.alias.hint"                : "Адресное имя — это уникальный текстовый id пользователя, который используется в адресе страницы вашего профиля",

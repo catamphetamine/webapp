@@ -17,7 +17,7 @@
 	align-items : center;
 
 	margin-top : calc(var(--unit) * 4);
-	color : var(--gray-color-darker);
+	color : var(--gray-color-darkest);
 }
 
 .user-profile__last-seen-icon
@@ -25,7 +25,7 @@
 	margin-bottom : var(--icon-liftup);
 	margin-right  : var(--icon-right-margin);
 
-	fill : var(--gray-color-darker);
+	fill : var(--gray-color-darkest);
 }
 
 .user-profile__actions

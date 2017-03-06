@@ -3,6 +3,7 @@ import styler                          from 'react-styling'
 import classNames                      from 'classnames'
 import { defineMessages }              from 'react-intl'
 import { connect }                     from 'react-redux'
+import { Form }                        from 'react-responsive-ui'
 
 import
 {
@@ -18,6 +19,7 @@ import { snack } from '../../redux/snackbar'
 
 import Editable_field  from '../../components/editable field'
 import Modal from '../../components/modal'
+import Submit from '../../components/form/submit'
 import Steps, { Text_input_step } from '../../components/steps'
 import default_messages from '../../components/messages'
 import { messages as password_authentication_messages } from '../../components/authentication form/authenticate with password'
@@ -29,6 +31,11 @@ import international from '../../international/internationalize'
 @international
 export default class Change_password extends Component
 {
+	static propTypes =
+	{
+		password_set : PropTypes.bool.isRequired
+	}
+
 	state = {}
 
 	constructor()
@@ -41,7 +48,7 @@ export default class Change_password extends Component
 
 	render()
 	{
-		const { translate } = this.props
+		const { password_set, translate } = this.props
 		const { changing_password } = this.state
 
 		// {/* User's password */}
@@ -49,13 +56,16 @@ export default class Change_password extends Component
 		const markup =
 		(
 			<Editable_field
-				label={translate(password_authentication_messages.password)}
-				edit={this.change_password}>
+				label={ translate(password_authentication_messages.password) }
+				showValue={ false }
+				toggle
+				toggleState={ password_set }
+				edit={ this.change_password }>
 
 				{/* Change password popup */}
 				<Change_password_popup
-					isOpen={changing_password}
-					close={this.cancel_change_password}/>
+					isOpen={ changing_password }
+					close={ this.cancel_change_password }/>
 			</Editable_field>
 		)
 
@@ -113,11 +123,15 @@ class Change_password_popup extends Component
 	{
 		super()
 
-		this.change_password_steps_actions = this.change_password_steps_actions.bind(this)
-
+		this.submit        = this.submit.bind(this)
 		this.set_last_step = this.set_last_step.bind(this)
 		this.finished      = this.finished.bind(this)
 		this.reset_modal   = this.reset_modal.bind(this)
+	}
+
+	submit()
+	{
+		this.change_password_steps.submit()
 	}
 
 	render()
@@ -141,16 +155,23 @@ class Change_password_popup extends Component
 		}
 		= this.props
 
+		const
+		{
+			is_last_step
+		}
+		= this.state
+
 		const markup =
 		(
 			<Modal
-				title={translate(messages.change_password)}
 				isOpen={isOpen}
 				close={close}
 				reset={this.reset_modal}
-				cancel={true}
-				busy={check_current_password_pending || change_password_pending}
-				actions={this.change_password_steps_actions()}>
+				busy={check_current_password_pending || change_password_pending}>
+
+				<h2>
+					{translate(messages.change_password)}
+				</h2>
 
 				{/* Change password steps */}
 				<Steps
@@ -175,31 +196,19 @@ class Change_password_popup extends Component
 						error={change_password_error}
 						reset_error={reset_change_password_error}/>
 				</Steps>
+
+				<Form.Actions>
+					<Submit
+						className="button--primary"
+						action={ this.submit }
+						busy={ check_current_password_pending || change_password_pending }>
+						{ is_last_step ? translate(default_messages.done) : translate(default_messages.next) }
+					</Submit>
+				</Form.Actions>
 			</Modal>
 		)
 
 		return markup
-	}
-
-	change_password_steps_actions()
-	{
-		const
-		{
-			check_current_password_pending,
-			change_password_pending,
-			translate
-		}
-		= this.props
-
-		const result =
-		[{
-			text      : this.state.is_last_step ? translate(default_messages.done) : translate(default_messages.next),
-			action    : () => this.change_password_steps.submit(),
-			className : 'button--primary',
-			busy      : check_current_password_pending || change_password_pending
-		}]
-
-		return result
 	}
 
 	set_last_step(is_last_step)
@@ -550,7 +559,6 @@ class Change_password_step_3 extends Component
 
 export const messages = defineMessages
 ({
-	// Change password popup
 	change_password:
 	{
 		id             : 'user.settings.password.change',

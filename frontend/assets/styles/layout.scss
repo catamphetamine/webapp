@@ -3,7 +3,7 @@
 .content-section
 {
 	background-color : var(--white-color);
-	border-bottom    : 1px solid var(--gray-color);
+	border-bottom    : 1px solid var(--gray-color-darker);
 }
 
 .content-section--no-padding
@@ -27,7 +27,7 @@
 {
 	padding-top      : 0.5em;
 	padding-bottom   : 0.45em;
-	border-bottom    : 1pt solid var(--gray-color-light);
+	border-bottom    : 1pt solid var(--gray-color);
 	font-size        : 1.3rem;
 	text-align       : left;
 	background-color : var(--gray-color-lightest);
@@ -38,7 +38,7 @@
 	position         : absolute;
 	top              : 0;
 	height           : 1pt;
-	background-color : var(--gray-color-light);
+	background-color : var(--gray-color);
 }
 
 // // This will be replaced with the contents of the mixin
@@ -49,39 +49,6 @@
 .card, .rrui__select__options--expanded
 {
 	box-shadow: var(--shadow);
-}
-
-.main-header
-{
-	z-index  : 2;
-
-	display        : flex;
-	flex-direction : row;
-	align-items    : center;
-
-	padding-left  : 1em;
-	padding-right : 1em;
-
-	background-color : var(--base-color-darker);
-
-	// border-bottom : 1px solid $header-border-color;
-	// box-sizing    : border-box;
-
-	.sign-in,
-	// .sign-out--fallback,
-	.rrui__menu__item,
-	// .rrui__button,
-	// .rrui__select__selected,
-	.rrui__select__toggler,
-	.logo
-	{
-		color: var(--white-color);
-
-		&:active
-		{
-			color: var(--base-color-lightest);
-		}
-	}
 }
 
 section
@@ -132,20 +99,10 @@ footer
     min-height: 100vh;
 }
 
-.row
-{
-	&:after
-	{
-		content : "";
-		display : table;
-		clear   : both;
-	}
-}
-
-.row--content-sections + .row--content-sections
-{
-	position : relative;
-}
+// .row--content-sections + .row--content-sections
+// {
+// 	position : relative;
+// }
 
 .page__text-content
 {

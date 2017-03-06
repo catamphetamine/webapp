@@ -3,7 +3,7 @@
 // http://caniuse.com/#search=css%20var
 @mixin set_css_variable_header_height($value)
 {
-	header, .user-picture--header
+	.main-header, .user-picture--header
 	{
 		min-height: $value;
 		max-height: $value;
@@ -56,14 +56,25 @@
 {
 	.content-section, .background-section
 	{
-		margin : $value;
+		margin : calc(#{$value} / 2);
 	}
 
-	.row--content-sections + .row--content-sections
+	.sections
 	{
-		top           : calc(-1 * #{$value});
-		margin-bottom : calc(-1 * #{$value});
+		margin     : calc(#{$value} / 2);
+		margin-top : calc(-#{$value} / 2);
+
+		&:first-child
+		{
+			margin-top : calc(#{$value} / 2);
+		}
 	}
+
+	// .row--content-sections + .row--content-sections
+	// {
+	// 	top           : calc(-1 * #{$value});
+	// 	margin-bottom : calc(-1 * #{$value});
+	// }
 }
 
 // Could be achieved using CSS native variables ("CSS custom properties")
@@ -94,14 +105,15 @@
 
 		.content-section-header
 		{
-			margin-top    : 0; // $value;
+			margin-top : 0; // $value;
 		}
 	}
 
 	.background-section
 	{
-		padding-left  : $value;
-		padding-right : $value;
+		// padding-left  : $value;
+		// padding-right : $value;
+		padding : $value;
 	}
 
 	.content-section-header

@@ -27,14 +27,38 @@
 	}
 }
 
-header
+.main-header
 {
-	text-align      : center;
+	z-index  : var(--main-header-z-index);
+
+	display         : flex;
+	flex-direction  : row;
+	align-items     : center;
 	justify-content : center;
 
-	// Setting `z-index` to `0`
-	// so that it doesn't overlap with `.rrui__modal`
-	z-index : 0;
+	padding-left  : 1em;
+	padding-right : 1em;
+
+	background-color : var(--base-color-darker);
+
+	// border-bottom : 1px solid $header-border-color;
+	// box-sizing    : border-box;
+
+	.sign-in,
+	// .sign-out--fallback,
+	.rrui__menu__item,
+	// .rrui__button,
+	// .rrui__select__selected,
+	.rrui__select__toggler,
+	.logo
+	{
+		color: var(--white-color);
+
+		&:active
+		{
+			color: var(--base-color-lightest);
+		}
+	}
 }
 
 // Show collapsible menu instead of full-sized menu (for small screens)
@@ -85,13 +109,13 @@ header
 
 @include l
 {
-	header
+	.main-header
 	{
 		text-align: left;
 		justify-content : flex-start;
 	}
 
-	header .rrui__menu
+	.main-header .rrui__menu
 	{
 		display: inline-block;
 	}

@@ -75,7 +75,7 @@ export default class Authenticate_with_access_code extends Component
 		const markup =
 		(
 			<Form
-				action={ submit(reset_authenticate_error, this.authenticate) }
+				submit={ submit(reset_authenticate_error, this.authenticate) }
 				busy={ submitting }
 				error={ this.authenticate_error(authenticate_error) }
 				post="/authentication/legacy/sign-in">

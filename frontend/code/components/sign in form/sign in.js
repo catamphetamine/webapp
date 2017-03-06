@@ -83,7 +83,7 @@ export default class Sign_in extends Component
 		const markup =
 		(
 			<Form
-				action={ submit(reset_sign_in_error, this.sign_in) }
+				submit={ submit(reset_sign_in_error, this.sign_in) }
 				busy={ submitting }
 				error={ this.sign_in_error(sign_in_error) }
 				post="/authentication/legacy/sign-in">

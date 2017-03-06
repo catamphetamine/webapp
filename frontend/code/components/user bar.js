@@ -67,7 +67,7 @@ export default class Authentication extends Component
 			user,
 			register_pending,
 			sign_in_pending,
-			sign_in_with_access_code_pending,
+			authenticate_pending,
 			translate,
 			style,
 			realtime_service_is_connected
@@ -109,7 +109,7 @@ export default class Authentication extends Component
 
 				{/* Sign in / Register popup */}
 				<Modal
-					busy={ register_pending || sign_in_pending || sign_in_with_access_code_pending }
+					busy={ register_pending || sign_in_pending || authenticate_pending }
 					isOpen={ exists(password) || (!user && show) }
 					close={ this.hide }>
 

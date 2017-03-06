@@ -12,7 +12,8 @@ import http_status_codes from '../../tools/http status codes'
 
 import
 {
-	get_own_user,
+	get_user_self,
+	get_user_authentication,
 	get_user_authentication_tokens,
 	change_alias,
 	reset_change_alias_error,
@@ -33,7 +34,14 @@ import Change_email    from './settings change email'
 import Change_password from './settings change password'
 import Authentication_tokens from './settings authentication tokens'
 
-@preload(({ dispatch }) => dispatch(get_own_user()))
+@preload(({ dispatch }) =>
+{
+	return Promise.all
+	([
+		dispatch(get_user_self()),
+		dispatch(get_user_authentication())
+	])
+})
 @connect
 (
 	({ user_settings }) =>
@@ -103,6 +111,7 @@ export default class Settings_page extends Component
 		const
 		{
 			user,
+			authentication,
 			authentication_tokens,
 			translate,
 			change_alias_pending,
@@ -126,10 +135,9 @@ export default class Settings_page extends Component
 				<Title>{ translate(messages.header) }</Title>
 
 				{/* General settings */}
-				<div className="row row--content-sections">
-					<div className="column-l-6-of-12">
-						{/* User's personal info */}
-
+				<div className="row sections">
+					{/* User's personal info */}
+					<div className="column-12-of-12 column-m-6-of-12">
 						{/* "Settings" */}
 						<Content_section
 							title={ translate(messages.header) }>
@@ -147,16 +155,24 @@ export default class Settings_page extends Component
 
 							{/* User's email */}
 							<Change_email/>
+						</Content_section>
+					</div>
+
+					<div className="column-12-of-12 column-m-6-of-12">
+						{/* "Authentication" */}
+						<Content_section
+							title={ translate(messages.authentication) }>
 
 							{/* User's password */}
-							<Change_password/>
+							<Change_password
+								password_set={ exists(authentication.find_by({ type: 'password' })) }/>
 						</Content_section>
 					</div>
 				</div>
 
 				{/* Advanced settings */}
-				<div className="row row--content-sections">
-					<div className="column-l-6-of-12">
+				<div className="row sections">
+					<div className="column-12-of-12 column-l-6-of-12">
 						{ /* "Show advanced settings" */ }
 						{ !showing_advanced_settings &&
 							<div className="background-section">
@@ -264,6 +280,12 @@ const messages = defineMessages
 		id             : 'user.settings.header',
 		description    : 'User account settings page header',
 		defaultMessage : 'Settings'
+	},
+	authentication:
+	{
+		id             : 'user.settings.authentication',
+		description    : 'User account settings page authentication section header',
+		defaultMessage : 'Authentication'
 	},
 	show_advanced_settings:
 	{

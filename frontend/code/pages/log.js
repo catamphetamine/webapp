@@ -1,12 +1,10 @@
 import React, { Component, PropTypes } from 'react'
-
-import { bindActionCreators as bind_action_creators } from 'redux'
-
 import { connect }        from 'react-redux'
 import { defineMessages } from 'react-intl'
 import styler             from 'react-styling'
 import { Title, preload } from 'react-isomorphic-render'
 import { FormattedDate }  from 'react-intl'
+import { Form }  from 'react-responsive-ui'
 
 import { get as get_log, connector } from '../redux/log'
 import log_levels         from '../../../code/log levels'
@@ -107,24 +105,17 @@ export default class Log extends Component
 
 				{/* Error stack trace */}
 				<Modal
-					isOpen={this.state.show_stack_trace}
-					close={this.hide_stack_trace}
-					style={style.stack_trace_modal}
-					scroll
-					title={this.state.error_message}
-					actions=
-					{[{
-						action       : this.hide_stack_trace,
-						text         : translate(messages.hide_stack_trace),
-						buttonStyle  : style.stack_trace_modal.button
-					}]}>
+					isOpen={ this.state.show_stack_trace }
+					close={ this.hide_stack_trace }
+					style={ style.stack_trace_modal }
+					closeLabel={ translate(messages.hide_stack_trace) }>
 
 					{this.state.stack_trace && this.state.stack_trace.map((stack, stack_index) =>
 					{
 						const markup =
 						(
 							<div key={stack_index} style={style.stack_trace}>
-								<h2 style={style.stack_trace.stack.title}>{stack.title}</h2>
+								<h1 style={style.stack_trace.stack.title}>{stack.title}</h1>
 
 								<ul style={style.stack_trace.stack}>
 									{stack.lines.map((line, line_index) =>
