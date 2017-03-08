@@ -520,11 +520,13 @@
 	box-shadow    : inset 0 0 0 0.0625em #d7d7d7;
 	border-radius : 0.5em;
 	transition    : all 0.40s cubic-bezier(.17,.67,.43,.98);
+
+	color : #4cd964;
 }
 
 .rrui__switch__groove--on
 {
-	box-shadow : inset 0 0 0 0.73em #4cd964;
+	box-shadow : inset 0 0 0 0.73em currentColor;
 }
 
 .rrui__switch__knob

@@ -15,6 +15,12 @@ export default function(error, { path, url, redirect, dispatch, getState, server
 		return redirect(add_redirect('/unauthorized', url))
 	}
 
+	// Not found
+	if (error.status === 404)
+	{
+		return redirect(add_redirect('/not-found', url));
+	}
+
 	// Log the error
 	if (server)
 	{

@@ -69,6 +69,7 @@ const routes =
 		<Route path="unauthenticated" status={ 401 } component={ Unauthenticated }/>
 		<Route path="unauthorized"    status={ 403 } component={ Unauthorized }/>
 		<Route path="error"           status={ 500 } component={ Generic_error }/>
+		<Route path="not-found"       status={ 404 } component={ Not_found }/>
 		<Route path="*"               status={ 404 } component={ Not_found }/>
 	</Route>
 )

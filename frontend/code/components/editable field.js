@@ -1,20 +1,25 @@
 import React, { Component, PropTypes } from 'react'
 import classNames from 'classnames'
-import { Form as Redux_form, Field, Submit } from 'simpler-redux-form'
+import { Form as Redux_form, Field } from 'simpler-redux-form'
+import { Form, Button, Switch } from 'react-responsive-ui'
 
+import TextInput from './form/text input'
+import Submit from './form/submit'
 import default_messages from './messages'
-
-import { Form, Button, TextInput, Switch } from 'react-responsive-ui'
-
 import international from '../international/internationalize'
 
+const switch_slide_animation_duration = 250 // ms
+
+@international
 @Redux_form
 ({
 	// Either return a `Promise` from the action
 	// or provide `submitting` property
-	submitting: (state, props) => props.saving
+	submitting: (state, props) => props.saving,
+
+	// Exposing a public `.cancel()` method
+	methods: ['cancel']
 })
-@international
 export default class Editable_field extends Component
 {
 	state = {}
@@ -26,9 +31,9 @@ export default class Editable_field extends Component
 		emptyEditLabel : PropTypes.string,
 		name        : PropTypes.string,
 		value       : PropTypes.any,
-		showValue   : PropTypes.bool.isRequired,
-		toggle      : PropTypes.bool.isRequired,
-		toggleState : PropTypes.bool.isRequired,
+		hideValue   : PropTypes.bool.isRequired,
+		enabled     : PropTypes.bool,
+		disable     : PropTypes.func,
 		hint        : PropTypes.string,
 		error       : PropTypes.string,
 		saving      : PropTypes.bool,
@@ -47,18 +52,29 @@ export default class Editable_field extends Component
 
 	static defaultProps =
 	{
-		showValue   : true,
-		toggle      : false,
-		toggleState : false
+		hideValue : false
 	}
 
-	constructor(props, context)
+	constructor(props)
 	{
-		super(props, context)
+		super(props)
 
-		this.cancel = this.cancel.bind(this)
-		this.save   = this.save.bind(this)
-		this.edit   = this.edit.bind(this)
+		const { enabled } = this.props
+
+		if (enabled !== undefined)
+		{
+			this.state.enabled = enabled
+		}
+
+		this.save = this.save.bind(this)
+	}
+
+	componentWillReceiveProps(new_props)
+	{
+		if (new_props.enabled !== this.props.enabled)
+		{
+			this.setState({ enabled: new_props.enabled })
+		}
 	}
 
 	render()
@@ -66,11 +82,10 @@ export default class Editable_field extends Component
 		const
 		{
 			label,
-			toggle,
-			toggleState,
 			hint,
 			editing,
 			submitting,
+			value,
 			error,
 			style,
 			className,
@@ -78,7 +93,16 @@ export default class Editable_field extends Component
 		}
 		= this.props
 
-		const { edit } = this.state
+		const
+		{
+			edit,
+			enabled,
+			toggle_animation_pending
+		}
+		= this.state
+
+		const is_disabled = enabled !== undefined
+		const is_editing = edit || editing || submitting || error
 
 		const markup =
 		(
@@ -90,13 +114,18 @@ export default class Editable_field extends Component
 				{ label }
 
 				{/* Toggler */}
-				{ toggle && <Switch value={ toggleState }/> }
+				{ enabled !== undefined &&
+					<Switch
+						value={ enabled }
+						onChange={ this.enable_disable }
+						disabled={ toggle_animation_pending }/>
+				}
 
 				{/* Hint */}
 				{ hint && <p>{ hint }</p> }
 
 				{/* Field value and actions */}
-				{ (edit || editing || submitting || error) ? this.render_editing() : this.render_not_editing() }
+				{ !is_disabled && value && (is_editing ? this.render_editing() : this.render_not_editing()) }
 
 				{/* Can be used for relevant <Modal/>s */}
 				{ children }
@@ -108,9 +137,21 @@ export default class Editable_field extends Component
 
 	render_not_editing()
 	{
-		const { value, showValue, emptyLabel, emptyEditLabel } = this.props
+		const
+		{
+			value,
+			hideValue,
+			emptyLabel,
+			emptyEditLabel,
+			translate
+		}
+		= this.props
 
-		const translate = this.props.intl.formatMessage
+		const
+		{
+			toggle_animation_pending
+		}
+		= this.state
 
 		const elements = []
 
@@ -125,7 +166,7 @@ export default class Editable_field extends Component
 				{
 					'editable-field__value--empty' : is_empty
 				}) }>
-				{ showValue && (is_empty ? emptyLabel : value) }
+				{ !hideValue && (is_empty ? emptyLabel : value) }
 			</div>
 		))
 
@@ -135,7 +176,8 @@ export default class Editable_field extends Component
 			<Button
 				key="change"
 				ref={ ref => this.change_button = ref }
-				action={ this.edit }>
+				action={ this.edit }
+				disabled={ toggle_animation_pending }>
 				{ emptyEditLabel || translate(default_messages.change).toLowerCase() }
 			</Button>
 		)
@@ -156,44 +198,46 @@ export default class Editable_field extends Component
 			email,
 			password,
 			multiline,
-			submit
+			submit,
+			translate
 		}
 		= this.props
 
-		const translate = this.props.intl.formatMessage
+		const
+		{
+			toggle_animation_pending
+		}
+		= this.state
 
 		const markup =
 		(
 			<Form
-				submit={submit(this.save)}
-				busy={submitting}
-				cancel={this.cancel}>
+				submit={ submit(this.save) }
+				busy={ submitting || toggle_animation_pending }
+				cancel={ this.cancel }>
 
 				{/* Editable text field */}
-				<Field
-					component={TextInput}
-					name={name}
-					value={value}
-					email={email}
-					password={password}
-					multiline={multiline}
-					placeholder={label}
-					error={error}
-					validate={validate}/>
+				<TextInput
+					name={ name }
+					value={ value }
+					email={ email }
+					password={ password }
+					multiline={ multiline }
+					placeholder={ label }
+					error={ error }
+					validate={ validate }/>
 
 				{/* "Cancel" */}
 				<Button
-					action={this.cancel}
-					disabled={submitting}>
-					{translate(default_messages.cancel).toLowerCase()}
+					action={ this.cancel }
+					disabled={ submitting || toggle_animation_pending }>
+					{ translate(default_messages.cancel).toLowerCase() }
 				</Button>
 
 				{/* "Save" */}
 				<Submit
-					component={Button}
-					submit
-					className="editable-field__button--subsequent button--primary">
-					{translate(default_messages.save).toLowerCase()}
+					className="editable-field__button--subsequent">
+					{ translate(default_messages.save).toLowerCase() }
 				</Submit>
 			</Form>
 		)
@@ -201,16 +245,49 @@ export default class Editable_field extends Component
 		return markup
 	}
 
-	cancel()
+	cancel_editing = (callback) =>
 	{
-		if (this.props.cancel)
+		// When `edit: false` is rendered
+		// then the form is unmounted
+		// and its state is erased
+		// therefore the input field value
+		// will be cleared automatically.
+		this.setState
+		({
+			edit: false
+		},
+		callback)
+	}
+
+	cancel = () =>
+	{
+		const { cancel, enabled } = this.props
+
+		if (cancel)
 		{
-			this.props.cancel()
+			cancel()
 		}
 
-		this.setState({ edit: false }, () =>
+		// If tried to turn it on,
+		// then a modal popped up,
+		// but changed one's mind
+		// and closed the modal.
+		if (!enabled && this.state.enabled)
 		{
-			this.change_button.focus()
+			this.setState({ enabled })
+		}
+		// If tried to turn it off but changed one's mind
+		else if (enabled && !this.state.enabled)
+		{
+			this.setState({ enabled })
+		}
+
+		this.cancel_editing(() =>
+		{
+			if (this.change_button)
+			{
+				this.change_button.focus()
+			}
 		})
 	}
 
@@ -231,7 +308,7 @@ export default class Editable_field extends Component
 		}
 
 		// Exit editing mode
-		this.setState({ edit: false }, () =>
+		this.cancel_editing(() =>
 		{
 			// If `save` didn't retain edit mode,
 			// then focus on the "Change" button.
@@ -242,7 +319,7 @@ export default class Editable_field extends Component
 		})
 	}
 
-	edit()
+	edit = () =>
 	{
 		const { edit, name, validate, value, focus, set } = this.props
 
@@ -254,4 +331,49 @@ export default class Editable_field extends Component
 		set(name, value, validate(value))
 		this.setState({ edit: true }, () => focus(name))
 	}
+
+	enable_disable = (enabled) =>
+	{
+		const { disable } = this.props
+
+		this.setState
+		({
+			enabled,
+			toggle_animation_pending: true
+		},
+		() =>
+		{
+			setTimeout(() =>
+			{
+				this.setState
+				({
+					toggle_animation_pending: false
+				})
+
+				if (enabled)
+				{
+					this.edit()
+				}
+				else
+				{
+					this.cancel_editing()
+					disable()
+				}
+			},
+			switch_slide_animation_duration * 0.8)
+		})
+	}
+}
+
+// Calls `.cancel()` instance method
+Editable_field.cancel = (ref) =>
+{
+	// First `react-intl` wrapper
+	ref = ref.refs.wrappedInstance
+
+	// Then `@international` wrapper
+	ref = ref.wrappedInstance
+
+	// Then `simpler-redux-form` wrapper
+	return ref.cancel()
 }

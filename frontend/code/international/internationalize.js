@@ -9,12 +9,15 @@ export default function(Wrapped)
 	{
 		render()
 		{
-			return <Wrapped { ...this.props } translate={ this.props.intl.formatMessage }/>
+			return <Wrapped
+				ref={ ref => this.wrappedInstance = ref }
+				{ ...this.props }
+				translate={ this.props.intl.formatMessage }/>
 		}
 	}
 
 	// `this.intl` will be available for this component
-	const International = injectIntl(_International)
+	const International = injectIntl(_International, { withRef: true })
 
 	International.displayName = `International(${get_display_name(Wrapped)})`
 

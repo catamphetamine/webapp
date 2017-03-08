@@ -734,6 +734,14 @@ Troubleshooting
 To do
 ====================
 
+проверить сценарии:
+
+что будет, если editing, и жмёт на switch - сбрасывать всё (cancel editing)
+
+сделать отключение пароля (только первый шаг)
+
+
+
 Background section padding: - 2 * margin
 
 роль admin выдавать только первому пользователю

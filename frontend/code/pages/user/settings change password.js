@@ -4,6 +4,7 @@ import classNames                      from 'classnames'
 import { defineMessages }              from 'react-intl'
 import { connect }                     from 'react-redux'
 import { Form }                        from 'react-responsive-ui'
+import Redux_form                      from 'simpler-redux-form'
 
 import
 {
@@ -15,12 +16,19 @@ import
 }
 from '../../redux/user/settings/change password'
 
+import
+{
+	get_user_authentication
+}
+from '../../redux/user/settings/main'
+
 import { snack } from '../../redux/snackbar'
 
 import Editable_field  from '../../components/editable field'
 import Modal from '../../components/modal'
+import TextInput from '../../components/form/text input'
 import Submit from '../../components/form/submit'
-import Steps, { Text_input_step } from '../../components/steps'
+import { Steps, Step } from '../../components/steps'
 import default_messages from '../../components/messages'
 import { messages as password_authentication_messages } from '../../components/authentication form/authenticate with password'
 
@@ -38,48 +46,64 @@ export default class Change_password extends Component
 
 	state = {}
 
-	constructor()
-	{
-		super()
-
-		this.change_password        = this.change_password.bind(this)
-		this.cancel_change_password = this.cancel_change_password.bind(this)
-	}
-
 	render()
 	{
 		const { password_set, translate } = this.props
-		const { changing_password } = this.state
+		const { changing_password, turn_off } = this.state
 
 		// {/* User's password */}
 
 		const markup =
 		(
 			<Editable_field
+				ref={ ref => this.password = ref }
 				label={ translate(password_authentication_messages.password) }
-				showValue={ false }
-				toggle
-				toggleState={ password_set }
+				hideValue
+				enabled={ password_set }
+				disable={ this.turn_off_password }
 				edit={ this.change_password }>
 
 				{/* Change password popup */}
 				<Change_password_popup
+					password_set={ password_set }
+					turn_off={ turn_off }
 					isOpen={ changing_password }
-					close={ this.cancel_change_password }/>
+					close={ this.cancel_change_password }
+					reset={ this.reset }/>
 			</Editable_field>
 		)
 
 		return markup
 	}
 
-	change_password()
+	change_password = () =>
 	{
-		this.setState({ changing_password: true, step: 1 })
+		this.setState
+		({
+			changing_password : true
+		})
 	}
 
-	cancel_change_password()
+	cancel_change_password = (done) =>
 	{
-		this.setState({ changing_password: false })
+		this.setState
+		({
+			changing_password : false
+		})
+
+		if (!done)
+		{
+			Editable_field.cancel(this.password)
+		}
+	}
+
+	turn_off_password = () =>
+	{
+		this.setState
+		({
+			changing_password : true,
+			turn_off          : true
+		})
 	}
 
 	validate_password(value)
@@ -91,9 +115,92 @@ export default class Change_password extends Component
 			return translate(password_authentication_messages.password_is_required)
 		}
 	}
+
+	reset = () =>
+	{
+		this.setState
+		({
+			turn_off : false
+		})
+	}
 }
 
 // {/* Change password popup */}
+@international
+@connect
+(
+	({ user_settings }) =>
+	({
+		...connector(user_settings.change_password)
+	})
+)
+class Change_password_popup extends Component
+{
+	render()
+	{
+		const
+		{
+			password_set,
+			turn_off,
+			check_current_password_pending,
+			change_password_pending,
+			isOpen,
+			close,
+			reset,
+			translate
+		}
+		= this.props
+
+		const markup =
+		(
+			<Modal
+				isOpen={ isOpen }
+				close={ close }
+				reset={ reset }
+				busy={ check_current_password_pending || change_password_pending }>
+
+				<h2>
+					{ password_set ? (turn_off ? translate(messages.unset_password) : translate(messages.change_password)) : translate(messages.set_password) }
+				</h2>
+
+				{/* Change password steps */}
+				<Steps done={ this.finished }>
+
+					{/* Enter current password */}
+					{ (password_set || turn_off) &&
+						<Step key="current" component={ Enter_current_password } turn_off={ turn_off }/>
+					}
+
+					{/* Enter new password */}
+					{ !turn_off &&
+						<Step key="new" component={ Enter_new_password }/>
+					}
+
+					{/* Enter new password again */}
+					{ !turn_off &&
+						<Step key="new-again" component={ Enter_new_password_again }/>
+					}
+				</Steps>
+			</Modal>
+		)
+
+		return markup
+	}
+
+	finished = () =>
+	{
+		const
+		{
+			close
+		}
+		= this.props
+
+		close(true)
+	}
+}
+
+// Enter current password
+@Redux_form
 @international
 @connect
 (
@@ -106,117 +213,68 @@ export default class Change_password extends Component
 		reset_check_current_password_error,
 		change_password,
 		reset_change_password_error,
-		snack
+		snack,
+		get_user_authentication
 	}
 )
-class Change_password_popup extends Component
+class Enter_current_password extends Component
 {
-	state = {}
-
-	static propTypes =
-	{
-		isOpen : PropTypes.bool,
-		close  : PropTypes.func.isRequired
-	}
-
 	constructor()
 	{
 		super()
 
-		this.submit        = this.submit.bind(this)
-		this.set_last_step = this.set_last_step.bind(this)
-		this.finished      = this.finished.bind(this)
-		this.reset_modal   = this.reset_modal.bind(this)
+		this.submit = this.submit.bind(this)
 	}
 
-	submit()
+	componentWillUnmount()
 	{
-		this.change_password_steps.submit()
+		this.reset_errors()
 	}
 
 	render()
 	{
 		const
 		{
-			check_current_password,
 			check_current_password_pending,
 			check_current_password_error,
 			reset_check_current_password_error,
-
-			change_password,
 			change_password_pending,
 			change_password_error,
 			reset_change_password_error,
-
-			isOpen,
-			close,
-
+			submit,
+			submitButton,
 			translate
 		}
 		= this.props
 
-		const
-		{
-			is_last_step
-		}
-		= this.state
-
 		const markup =
 		(
-			<Modal
-				isOpen={isOpen}
-				close={close}
-				reset={this.reset_modal}
-				busy={check_current_password_pending || change_password_pending}>
+			<Form
+				busy={ check_current_password_pending || change_password_pending }
+				submit={ submit(this.reset_errors, this.submit) }
+				error={ this.get_error() && !this.password_error(this.get_error()) && this.error(this.get_error()) }>
 
-				<h2>
-					{translate(messages.change_password)}
-				</h2>
+				<p className="rrui__form__field-description">
+					{ translate(messages.enter_current_password) }
+				</p>
 
-				{/* Change password steps */}
-				<Steps
-					ref={ref => this.change_password_steps = ref}
-					set_last_step={this.set_last_step}
-					on_finished={this.finished}>
-
-					{/* Enter current password */}
-					<Change_password_step_1
-						busy={check_current_password_pending}
-						action={check_current_password}
-						error={check_current_password_error}
-						reset_error={reset_check_current_password_error}/>
-
-					{/* Enter new password */}
-					<Change_password_step_2/>
-
-					{/* Enter new password again */}
-					<Change_password_step_3
-						busy={change_password_pending}
-						action={change_password}
-						error={change_password_error}
-						reset_error={reset_change_password_error}/>
-				</Steps>
+				<TextInput
+					password
+					name="password"
+					placeholder={ translate(messages.current_password) }
+					error={ this.get_error() && this.password_error(this.get_error()) }
+					validate={ this.validate_password }/>
 
 				<Form.Actions>
-					<Submit
-						className="button--primary"
-						action={ this.submit }
-						busy={ check_current_password_pending || change_password_pending }>
-						{ is_last_step ? translate(default_messages.done) : translate(default_messages.next) }
-					</Submit>
+					{ submitButton }
 				</Form.Actions>
-			</Modal>
+			</Form>
 		)
 
 		return markup
 	}
 
-	set_last_step(is_last_step)
-	{
-		this.setState({ is_last_step })
-	}
-
-	reset_modal()
+	reset_errors = () =>
 	{
 		const
 		{
@@ -227,98 +285,69 @@ class Change_password_popup extends Component
 
 		reset_check_current_password_error()
 		reset_change_password_error()
-
-		this.setState({ is_last_step: false })
 	}
 
-	finished()
+	get_error = () =>
 	{
-		const { snack, translate, close } = this.props
+		const
+		{
+			check_current_password_error,
+			change_password_error
+		}
+		= this.props
 
-		snack(translate(messages.password_updated))
-		close()
-	}
-}
-
-// Enter current password
-class Change_password_step_1 extends Component
-{
-	static propTypes =
-	{
-		action      : PropTypes.func.isRequired,
-		busy        : PropTypes.bool,
-		error       : PropTypes.object,
-		reset_error : PropTypes.func.isRequired
+		return check_current_password_error || change_password_error
 	}
 
-	static contextTypes =
+	async submit({ password })
 	{
-		intl : PropTypes.object
-	}
-
-	constructor()
-	{
-		super()
-
-		this.validate_password = this.validate_password.bind(this)
-		this.submit            = this.submit.bind(this)
-		this.submit_step       = this.submit_step.bind(this)
-		this.reset_error       = this.reset_error.bind(this)
-	}
-
-	componentDidMount()
-	{
-		// Because the first step is mounted before
-		// the react-modal contents are mounted,
-		// focus after the modal has been mounted.
-		setTimeout(this.step.focus, 0)
-	}
-
-	render()
-	{
-		const { error, busy } = this.props
-
-		const translate = this.context.intl.formatMessage
-
-		const markup =
-		(
-			<Text_input_step
-				ref={ref => this.step = ref}
-				password
-				description={translate(messages.enter_current_password)}
-				error={error && !this.wrong_password(error) && this.error_message(error)}
-				input_error={error && this.wrong_password(error)}
-				validate={this.validate_password}
-				busy={busy}
-				placeholder={translate(messages.current_password)}
-				action={this.submit_step}
-				reset_error={this.reset_error}/>
-		)
-
-		return markup
-	}
-
-	// Public API
-	submit()
-	{
-		this.step.submit()
-	}
-
-	async submit_step(values)
-	{
-		const { submit, action, state } = this.props
-		const value = values.input
+		const
+		{
+			turn_off,
+			get_user_authentication,
+			change_password,
+			check_current_password,
+			next,
+			finish,
+			state,
+			clear,
+			focus,
+			snack,
+			translate
+		}
+		= this.props
 
 		try
 		{
 			// Check current password
-			await action(value)
+			await check_current_password(password)
 
-			// The current password matches, proceed to the next step
-			submit({ ...state, old_password: value })
+			if (!turn_off)
+			{
+				// The current password matches, proceed to the next step
+				return next({ ...state, old_password: password })
+			}
+
+			// Turn off the password
+			await change_password
+			({
+				old_password : password
+			})
+
+			// Notify the user
+			snack(translate(messages.password_unset))
+
+			// Refresh password status
+			await get_user_authentication()
+
+			// Finished
+			finish()
 		}
 		catch (error)
 		{
+			// Since Promise errors are swallowed
+			console.error(error)
+
 			// Swallows Http errors and Rest Api errors
 			// so that they're not output to the console
 			if (!error.status)
@@ -327,17 +356,17 @@ class Change_password_step_1 extends Component
 			}
 
 			// Focus password input field on wrong password
-			if (error.status === http_status_codes.Input_rejected)
+			if (error.status === http_status_codes.Input_rejected && error.field === 'password')
 			{
-				this.step.clear('input', this.validate_password())
-				this.step.focus()
+				clear('password', this.validate_password())
+				focus()
 			}
 		}
 	}
 
-	validate_password(value)
+	validate_password = (value) =>
 	{
-		const translate = this.context.intl.formatMessage
+		const { translate } = this.props
 
 		if (!value)
 		{
@@ -345,92 +374,92 @@ class Change_password_step_1 extends Component
 		}
 	}
 
-	wrong_password(error)
+	password_error = (error) =>
 	{
-		const translate = this.context.intl.formatMessage
+		const { translate } = this.props
 
 		// Don't show "Password required" when it's deliberately being reset
 		// due to "Wrong password" error.
-		if (error.status === http_status_codes.Input_rejected)
+		if (error.status === http_status_codes.Input_rejected && error.field === 'password')
 		{
 			return translate(password_authentication_messages.wrong_password)
 		}
 	}
 
-	error_message(error)
+	error = (error) =>
 	{
-		const translate = this.context.intl.formatMessage
+		const { translate } = this.props
 
 		return translate(messages.check_current_password_failed)
-	}
-
-	// Reset form error before running form field validation
-	reset_error()
-	{
-		this.props.reset_error()
 	}
 }
 
 // Enter new password
-class Change_password_step_2 extends Component
+@Redux_form
+@international
+class Enter_new_password extends Component
 {
-	state = {}
-
-	static contextTypes =
-	{
-		intl : PropTypes.object
-	}
-
 	constructor()
 	{
 		super()
 
-		this.validate_password = this.validate_password.bind(this)
-		this.submit            = this.submit.bind(this)
-		this.submit_step       = this.submit_step.bind(this)
-	}
-
-	componentDidMount()
-	{
-		setTimeout(this.step.focus, 0)
+		this.submit = this.submit.bind(this)
 	}
 
 	render()
 	{
-		const translate = this.context.intl.formatMessage
+		const
+		{
+			submit,
+			submitButton,
+			translate
+		}
+		= this.props
 
 		const markup =
 		(
-			<Text_input_step
-				ref={ref => this.step = ref}
-				password
-				description={translate(messages.enter_new_password)}
-				validate={this.validate_password}
-				placeholder={translate(messages.new_password)}
-				action={this.submit_step}/>
+			<Form
+				submit={ submit(this.submit) }>
+
+				<p className="rrui__form__field-description">
+					{ translate(messages.enter_new_password) }
+				</p>
+
+				<TextInput
+					password
+					name="password"
+					placeholder={ translate(messages.new_password) }
+					validate={ this.validate_password }/>
+
+				<Form.Actions>
+					{ submitButton }
+				</Form.Actions>
+			</Form>
 		)
 
 		return markup
 	}
 
-	// Public API
-	submit()
+	async submit({ password })
 	{
-		this.step.submit()
+		try
+		{
+			const { next, state } = this.props
+
+			next({ ...state, new_password: password })
+		}
+		catch (error)
+		{
+			// Since Promise errors are swallowed
+			console.error(error)
+
+			throw error
+		}
 	}
 
-	submit_step(values)
+	validate_password = (value) =>
 	{
-		const { submit, state } = this.props
-
-		const value = values.input
-
-		submit({ ...state, new_password: value })
-	}
-
-	validate_password(value)
-	{
-		const translate = this.context.intl.formatMessage
+		const { translate } = this.props
 
 		if (!value)
 		{
@@ -440,101 +469,147 @@ class Change_password_step_2 extends Component
 }
 
 // Enter new password again
-class Change_password_step_3 extends Component
+@Redux_form
+@international
+@connect
+(
+	({ user_settings }) =>
+	({
+		...connector(user_settings.change_password)
+	}),
+	{
+		get_user_authentication,
+		change_password,
+		reset_change_password_error,
+		snack
+	}
+)
+class Enter_new_password_again extends Component
 {
 	state = {}
-
-	static propTypes =
-	{
-		action      : PropTypes.func.isRequired,
-		busy        : PropTypes.bool,
-		error       : PropTypes.object,
-		reset_error : PropTypes.func.isRequired
-	}
-
-	static contextTypes =
-	{
-		intl : PropTypes.object
-	}
 
 	constructor()
 	{
 		super()
 
-		this.validate_password = this.validate_password.bind(this)
-		this.submit            = this.submit.bind(this)
-		this.submit_step       = this.submit_step.bind(this)
-		this.reset_error       = this.reset_error.bind(this)
+		this.submit = this.submit.bind(this)
 	}
 
-	componentDidMount()
+	componentWillUnmount()
 	{
-		setTimeout(this.step.focus, 0)
+		this.reset_error()
 	}
 
 	render()
 	{
-		const { busy, error } = this.props
+		const
+		{
+			change_password_pending,
+			change_password_error,
+			submit,
+			submitButton,
+			translate
+		}
+		= this.props
 
-		const translate = this.context.intl.formatMessage
+		const
+		{
+			error
+		}
+		= this.state
 
 		const markup =
 		(
-			<Text_input_step
-				ref={ref => this.step = ref}
-				password
-				description={translate(messages.enter_new_password_again)}
-				error={error && this.error_message(error)}
-				input_error={this.state.error}
-				validate={this.validate_password}
-				busy={busy}
-				placeholder={translate(messages.new_password)}
-				action={this.submit_step}
-				reset_error={this.reset_error}/>
+			<Form
+				busy={ change_password_pending }
+				submit={ submit(this.reset_error, this.submit) }
+				error={ change_password_error && this.error(change_password_error) }>
+
+				<p className="rrui__form__field-description">
+					{ translate(messages.enter_new_password_again) }
+				</p>
+
+				<TextInput
+					password
+					name="password"
+					placeholder={ translate(messages.new_password) }
+					error={ error }
+					validate={ this.validate_password }/>
+
+				<Form.Actions>
+					{ submitButton }
+				</Form.Actions>
+			</Form>
 		)
 
 		return markup
 	}
 
-	// Public API
-	submit()
+	async submit({ password })
 	{
-		this.step.submit()
-	}
-
-	async submit_step(values)
-	{
-		const translate = this.context.intl.formatMessage
-
-		const { action, state, submit } = this.props
-		const value = values.input
-
-		// If the new password is misspelled,
-		// then reset the input field
-		// and show "Password misspelled" error instead of "Missing input"
-		if (value !== state.new_password)
+		const
 		{
-			return this.setState({ value: '', error: undefined }, () =>
-			{
-				this.setState({ value: '', error: translate(messages.new_password_misspelled) })
-				this.step.focus()
-			})
+			change_password,
+			get_user_authentication,
+			finish,
+			state,
+			focus,
+			snack,
+			translate
 		}
+		= this.props
 
-		// Change password
-		await action
-		({
-			old_password : state.old_password,
-			new_password : state.new_password
-		})
+		try
+		{
+			// If the new password is misspelled,
+			// then reset the input field
+			// and show "Password misspelled" error instead of "Missing input"
+			if (password !== state.new_password)
+			{
+				// Makes sure the error change listener is triggered
+				// (e.g. when it's being misspelled the second time)
+				return this.setState({ value: '', error: undefined }, () =>
+				{
+					this.setState({ value: '', error: translate(messages.new_password_misspelled) })
+					focus()
+				})
+			}
 
-		// Finished
-		submit()
+			// Change password
+			await change_password
+			({
+				old_password : state.old_password,
+				new_password : state.new_password
+			})
+
+			// Notify the user
+			if (state.old_password)
+			{
+				snack(translate(messages.password_updated))
+			}
+			else
+			{
+				snack(translate(messages.password_set))
+			}
+
+			// Refresh password status
+			await get_user_authentication()
+
+			// Finished
+			finish()
+		}
+		catch (error)
+		{
+			// Since Promise errors are swallowed
+			console.error(error)
+
+			throw error
+		}
 	}
 
-	validate_password(value)
+	validate_password = (value) =>
 	{
-		const translate = this.context.intl.formatMessage
+		const { translate } = this.props
 
 		if (!value)
 		{
@@ -542,18 +617,20 @@ class Change_password_step_3 extends Component
 		}
 	}
 
-	error_message(error)
+	error = (error) =>
 	{
-		const translate = this.context.intl.formatMessage
+		const { translate } = this.props
 
 		return translate(messages.change_password_failed)
 	}
 
 	// Reset form error before running form field validation
-	reset_error()
+	reset_error = () =>
 	{
+		const { reset_change_password_error } = this.props
+
 		this.setState({ error: undefined })
-		this.props.reset_error()
+		reset_change_password_error()
 	}
 }
 
@@ -564,6 +641,18 @@ export const messages = defineMessages
 		id             : 'user.settings.password.change',
 		description    : `Change user's own password popup title`,
 		defaultMessage : `Change password`
+	},
+	set_password:
+	{
+		id             : 'user.settings.password.set',
+		description    : `Set user's own password popup title`,
+		defaultMessage : `Set up a password`
+	},
+	unset_password:
+	{
+		id             : 'user.settings.password.unset',
+		description    : `Turn off user's own password popup title`,
+		defaultMessage : `Disable the password`
 	},
 	current_password:
 	{
@@ -592,8 +681,8 @@ export const messages = defineMessages
 	enter_new_password_again:
 	{
 		id             : 'user.settings.password.enter_new_again',
-		description    : `An invitation for a user to enter a new password again`,
-		defaultMessage : `Enter new password again`
+		description    : `An invitation for a user to enter the new password again`,
+		defaultMessage : `Enter the new password again`
 	},
 	password_is_required:
 	{
@@ -618,6 +707,18 @@ export const messages = defineMessages
 		id             : 'user.settings.password.change_failed',
 		description    : `Something went wrong while changing user's password`,
 		defaultMessage : `Couldn't change your password`
+	},
+	password_set:
+	{
+		id             : 'user.settings.password.password_set',
+		description    : `User's password has been set`,
+		defaultMessage : `Password set`
+	},
+	password_unset:
+	{
+		id             : 'user.settings.password.password_unset',
+		description    : `User's password has been disabled`,
+		defaultMessage : `Password disabled`
 	},
 	password_updated:
 	{

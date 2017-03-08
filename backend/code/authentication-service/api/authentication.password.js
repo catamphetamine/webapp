@@ -19,27 +19,6 @@ export default function(api)
 		}
 	})
 
-	// Creates a "password" authentication for a user
-	api.post('/password', async function({ id, password })
-	{
-		// Hash the password.
-		//
-		// Hashing a password is a CPU-intensive lengthy operation.
-		// takes about 60 milliseconds on my machine.
-		//
-		// Maybe could be offloaded from node.js
-		// to some another multithreaded backend.
-		//
-		password = await hash_password(password)
-
-		// Add the hashed password to the dabase
-		await store.create(id,
-		{
-			type  : 'password',
-			value : password
-		})
-	})
-
 	// (`new` is a reserved word, therefore `new_password`)
 	api.patch('/password', async function({ old_password, new_password }, { user })
 	{
@@ -48,23 +27,36 @@ export default function(api)
 			throw new errors.Unauthenticated()
 		}
 
-		if (!old_password)
+		// A previously set up password
+		const password = await store.get_user_authentication(user.id, 'password')
+
+		// If a password has been previously set up
+		if (password)
 		{
-			throw new errors.Input_rejected(`"old_password" is required`)
+			if (!old_password)
+			{
+				throw new errors.Input_rejected(`"old_password" is required`)
+			}
+
+			// Check if the old password matches
+			const matches = await check_password(user.id, old_password)
+
+			// If the old password is wrong, return an error
+			if (!matches)
+			{
+				throw new errors.Input_rejected(`Wrong password`)
+			}
 		}
 
+		// Turning off the password
 		if (!new_password)
 		{
-			throw new errors.Input_rejected(`"new_password" is required`)
-		}
+			if (password)
+			{
+				await store.delete(password.id)
+			}
 
-		// Check if the old password matches
-		const matches = await check_password(user.id, old_password)
-
-		// If the old password is wrong, return an error
-		if (!matches)
-		{
-			throw new errors.Input_rejected(`Wrong password`)
+			return
 		}
 
 		// Hashing a password is a CPU-intensive lengthy operation.
@@ -72,11 +64,24 @@ export default function(api)
 		//
 		new_password = await hash_password(new_password)
 
-		// Change password to the new one
-		await store.update(user.id, 'password',
+		if (password)
 		{
-			value: new_password
-		})
+			// Change password to the new one
+			await store.update(password.id,
+			{
+				value : new_password
+			})
+		}
+		else
+		{
+			// Create the password
+			await store.create
+			({
+				user  : user.id,
+				type  : 'password',
+				value : new_password
+			})
+		}
 	})
 }
 

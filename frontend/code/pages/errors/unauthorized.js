@@ -33,14 +33,14 @@ export default class Unauthorized extends Component
 				<Title>{ translate(messages.header) }</Title>
 
 				<h1>
-					{translate(messages.header)}
+					{ translate(messages.header) }
 				</h1>
 
 				<Link
-					to={should_redirect_to(location)}
+					to={ should_redirect_to(location) }
 					className="error-page__page-link">
 
-					{new Url(should_redirect_to(location)).to_relative_url()}
+					{ new Url(should_redirect_to(location)).to_relative_url() }
 				</Link>
 			</section>
 		)

@@ -245,9 +245,9 @@ header .rrui__menu
 
 	.rrui__switch
 	{
-		position : absolute;
-		top      : 0.15em;
-		left     : 0.5em;
+		position    : absolute;
+		margin-top  : 0.1em;
+		margin-left : 0.6em;
 
 		.rrui__input
 		{
@@ -415,4 +415,9 @@ header .rrui__menu
 .editable-field__value--empty
 {
 	color: var(--gray-color-dark);
+}
+
+.rrui__switch__groove
+{
+	color: var(--base-color-slightly-darker);
 }

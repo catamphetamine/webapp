@@ -5,202 +5,237 @@ import classNames from 'classnames'
 import { Form, TextInput } from 'react-responsive-ui'
 import { Form as Redux_form, Field } from 'simpler-redux-form'
 
-export default class Steps extends Component
+import Submit from './form/submit'
+
+import default_messages from './messages'
+import international from '../international/internationalize'
+
+@international
+export class Steps extends Component
 {
 	state =
 	{
-		step  : 1, // start with step No 1
 		store : {} // cumulative steps data
 	}
 
 	static propTypes =
 	{
-		set_last_step : PropTypes.func,
-		on_finished   : PropTypes.func.isRequired,
-		children      : PropTypes.node.isRequired,
-		style         : PropTypes.object,
-		className     : PropTypes.string
+		done      : PropTypes.func.isRequired,
+		children  : PropTypes.node.isRequired,
+		style     : PropTypes.object,
+		className : PropTypes.string
 	}
 
-	constructor(props, context)
+	constructor(props)
 	{
-		super(props, context)
+		super(props)
 
-		this.step   = this.step.bind(this)
-		this.submit = this.submit.bind(this)
-		this.next   = this.next.bind(this)
+		// Initialize first step `key`
+
+		const { children } = this.props
+
+		let first_child_key
+
+		React.Children.forEach(children, (child) =>
+		{
+			if (!child)
+			{
+				return
+			}
+
+			if (first_child_key)
+			{
+				return
+			}
+
+			if (!child.key)
+			{
+				throw new Error(`The first step doesn't have a "key" set`)
+			}
+
+			first_child_key = child.key
+		})
+
+		this.state.step = first_child_key
 	}
 
 	render()
 	{
-		const { className, style } = this.props
+		const { className, style, translate } = this.props
+
+		const submit_button =
+		(
+			<Submit className="button--primary">
+				{ this.is_last_step() ? translate(default_messages.done) : translate(default_messages.next) }
+			</Submit>
+		)
 
 		const markup =
 		(
-			<div className={className} style={style}>
-				{this.enhance_step(this.current_step_element())}
+			<div
+				className={ className }
+				style={ style }>
+
+				{ this.enhance_step(this.current_step(), submit_button) }
 			</div>
 		)
 
 		return markup
 	}
 
-	enhance_step(step)
+	is_last_step()
 	{
-		return React.cloneElement(step,
-		{
-			ref     : this.step,
-			submit  : this.next,
-			state   : this.state.store
-		})
-	}
-
-	current_step_element()
-	{
-		const step = React.Children.toArray(this.props.children).filter((child, index) =>
-		{
-			return index + 1 === this.state.step
-		})
-		[0]
-
-		if (!step)
-		{
-			throw new Error(`No step #${this.state.step} found`)
-		}
-
-		return step
-	}
-
-	step_count()
-	{
-		return React.Children.count(this.props.children)
-	}
-
-	// ref={this.step}
-	step(component)
-	{
-		// Will be .submit()-ted
-		this.current_step = component
-	}
-
-	submit()
-	{
-		this.current_step.submit()
-	}
-
-	next(store)
-	{
-		const { set_last_step, on_finished } = this.props
+		const { children } = this.props
 		const { step } = this.state
 
-		// If current step submission succeeded, then move on to the next step
+		let current_step_found
+		let has_more_steps
+
+		React.Children.forEach(children, (child) =>
+		{
+			if (!child)
+			{
+				return
+			}
+
+			if (child.key === step)
+			{
+				return current_step_found = true
+			}
+
+			if (current_step_found)
+			{
+				has_more_steps = true
+			}
+		})
+
+		return !has_more_steps
+	}
+
+	current_step()
+	{
+		const { children } = this.props
+		const { step } = this.state
+
+		let current_step
+
+		React.Children.forEach(children, (child) =>
+		{
+			if (!child)
+			{
+				return
+			}
+
+			if (current_step)
+			{
+				return
+			}
+
+			if (child.key === step)
+			{
+				current_step = child
+			}
+		})
+
+		return current_step
+	}
+
+	next_step_key()
+	{
+		const { children } = this.props
+		const { step } = this.state
+
+		let current_step
+		let next_step
+
+		React.Children.forEach(children, (child) =>
+		{
+			if (!child)
+			{
+				return
+			}
+
+			if (next_step)
+			{
+				return
+			}
+
+			if (child.key === step)
+			{
+				return current_step = child
+			}
+
+			if (current_step)
+			{
+				next_step = child
+			}
+		})
+
+		if (!next_step.key)
+		{
+			throw new Error(`The next step doesn't have a "key" set`)
+		}
+
+		return next_step.key
+	}
+
+	// Move on to the next step
+	next = (store) =>
+	{
 
 		// If there are no more steps left, then finished
-		if (step === this.step_count())
+		if (this.is_last_step())
 		{
-			this.setState({ store: {} })
-			on_finished(store)
-			return
+			return this.finish()
 		}
 
 		// Else, if there are more steps left, go to the next one
 		// updating the obtained `store` data.
-		this.setState({ store, step: step + 1 })
+		this.setState
+		({
+			store,
+			step : this.next_step_key()
+		})
+	}
 
-		// Check if the new step is gonna be the last one
-		if (set_last_step)
+	// Finish the current steps session ("Done")
+	finish = (store) =>
+	{
+		const { done } = this.props
+
+		this.setState
+		({
+			store: {}
+		})
+
+		done(store)
+	}
+
+	enhance_step(step, submit_button)
+	{
+		const { store } = this.state
+
+		return React.cloneElement(step,
 		{
-			set_last_step(step + 1 === this.step_count())
-		}
+			next   : this.next,
+			finish : this.finish,
+			state  : store,
+			submitButton : submit_button
+		})
 	}
 }
 
-@Redux_form
-({
-	methods: ['submit']
-})
-export class Text_input_step extends Component
+export class Step extends Component
 {
-	state = {}
-
 	static propTypes =
 	{
-		action      : PropTypes.func.isRequired,
-		submit      : PropTypes.func.isRequired,
-		value       : PropTypes.string,
-		description : PropTypes.string,
-		placeholder : PropTypes.string,
-		password    : PropTypes.bool,
-		email       : PropTypes.bool,
-		submit      : PropTypes.func.isRequired,
-		reset_error : PropTypes.func,
-		busy        : PropTypes.bool,
-		error       : PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
-		input_error : PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
-		validate    : PropTypes.func,
-		className   : PropTypes.string,
-		style       : PropTypes.object
-	}
-
-	constructor()
-	{
-		super()
-
-		this.submit = this.submit.bind(this)
+		component : PropTypes.func.isRequired
 	}
 
 	render()
 	{
-		const
-		{
-			value,
-			email,
-			password,
-			description,
-			placeholder,
-			error,
-			input_error,
-			validate,
-			busy,
-			action,
-			submit,
-			reset_error
-		}
-		= this.props
+		const { component, ...rest } = this.props
 
-		const markup =
-		(
-			<Form
-				ref={ ref => this.form = ref }
-				busy={ busy }
-				submit={ submit(reset_error, action) }
-				error={ error }>
-
-				{ description &&
-					<p className="rrui__form__field-description">
-						{ description }
-					</p>
-				}
-
-				<Field
-					component={ TextInput }
-					name="input"
-					email={ email }
-					password={ password }
-					placeholder={ placeholder }
-					value={ value }
-					disabled={ busy }
-					error={ input_error }
-					validate={ validate }/>
-			</Form>
-		)
-
-		return markup
-	}
-
-	// Public API
-	submit()
-	{
-		this.form.submit()
+		return React.createElement(component, rest)
 	}
 }
