@@ -52,51 +52,26 @@
 // Could be achieved using CSS native variables ("CSS custom properties")
 // if all major browsers supported that CSS feature.
 // http://caniuse.com/#search=css%20var
-@mixin set_css_variable_content_section_margin($value)
-{
-	.content-section, .background-section
-	{
-		margin : calc(#{$value} / 2);
-	}
-
-	.sections
-	{
-		margin     : calc(#{$value} / 2);
-		margin-top : calc(-#{$value} / 2);
-
-		&:first-child
-		{
-			margin-top : calc(#{$value} / 2);
-		}
-	}
-
-	// .row--content-sections + .row--content-sections
-	// {
-	// 	top           : calc(-1 * #{$value});
-	// 	margin-bottom : calc(-1 * #{$value});
-	// }
-}
-
-// Could be achieved using CSS native variables ("CSS custom properties")
-// if all major browsers supported that CSS feature.
-// http://caniuse.com/#search=css%20var
-@mixin set_css_variable_content_section_padding($value)
+//
+// (in "background content sections" padding and margin depend on each other)
+//
+@mixin set_css_variable_content_section_padding_and_margin($padding, $margin)
 {
 	.content-section, .content-section-padding
 	{
-		padding : $value;
+		padding : $padding;
 	}
 
 	.content-section__errors
 	{
-		margin-bottom : $value;
+		margin-bottom : $padding;
 	}
 
 	.content-section__errors--top
 	{
-		margin        : calc(-1 * #{$value});
-		margin-bottom : $value;
-		padding       : $value;
+		margin        : calc(-1 * #{$padding});
+		margin-bottom : $padding;
+		padding       : $padding;
 	}
 
 	.content-section--no-padding
@@ -105,29 +80,46 @@
 
 		.content-section-header
 		{
-			margin-top : 0; // $value;
+			margin-top : 0; // $padding;
 		}
 	}
 
 	.background-section
 	{
-		// padding-left  : $value;
-		// padding-right : $value;
-		padding : $value;
+		padding-left   : $padding;
+		padding-right  : $padding;
+		padding-top    : calc(#{$padding} - 2 * #{$margin});
+		padding-bottom : calc(#{$padding} - 2 * #{$margin});
 	}
 
 	.content-section-header
 	{
-		margin        : calc(-1 * #{$value});
-		margin-bottom : $value;
-		padding-left  : $value;
-		padding-right : $value;
+		margin        : calc(-1 * #{$padding});
+		margin-bottom : $padding;
+		padding-left  : $padding;
+		padding-right : $padding;
 	}
 
 	.content-section-divider
 	{
-		left             : $value;
-		right            : $value;
+		left  : $padding;
+		right : $padding;
+	}
+
+	.content-section, .background-section
+	{
+		margin : calc(#{$margin} / 2);
+	}
+
+	.sections
+	{
+		margin     : calc(#{$margin} / 2);
+		margin-top : calc(-#{$margin} / 2);
+
+		&:first-child
+		{
+			margin-top : calc(#{$margin} / 2);
+		}
 	}
 }
 

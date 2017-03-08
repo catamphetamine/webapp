@@ -218,7 +218,7 @@ export const messages = defineMessages
 	{
 		id             : 'authentication.enter_access_code',
 		description    : 'An instruction for a user to enter the access code he has just received in the email (or via SMS, in some future)',
-		defaultMessage : `Enter the access code from an email message you're gonna receive in a few moments`
+		defaultMessage : `Enter the access code from an email message you've just received (or gonna receive in a few moments)`
 	},
 	access_code:
 	{

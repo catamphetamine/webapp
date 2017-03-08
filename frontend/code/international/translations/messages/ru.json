@@ -21,7 +21,7 @@
 	"authentication.email"               : "Почта",
 	"authentication.access_code"         : "Код доступа",
 	"authentication.password"            : "Пароль",
-	"authentication.enter_access_code"   : "Введите код доступа из письма, которое сейчас придёт вам на электронную почту",
+	"authentication.enter_access_code"   : "Введите код доступа из письма, которое только что пришло (или сейчас придёт) вам на электронную почту",
 
 	"registration.name"                  : "Имя",
 	"registration.user_agreement"        : "Пользовательское соглашение",

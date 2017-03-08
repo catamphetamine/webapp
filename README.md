@@ -734,8 +734,6 @@ Troubleshooting
 To do
 ====================
 
-Background section padding: - 2 * margin
-
 сделать access code в смене почты (и пароль, если он задан)
 
 роль admin выдавать только первому пользователю

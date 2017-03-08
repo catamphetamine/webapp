@@ -77,11 +77,7 @@ export default function(api)
 			throw new errors.Not_found()
 		}
 
-		// If it's a password then hash it
-		if (authentication.type === 'password')
-		{
-			value = await hash_password(value)
-		}
+		const check = authentication_checker(authentication.type)
 
 		// Check if the authentication expired
 		if (authentication.expires && authentication.expires.getTime() <= Date.now())
@@ -98,7 +94,7 @@ export default function(api)
 		const { throttled, cooldown, result } = await throttling.attempt(multifactor_authentication, async () =>
 		{
 			// If the authentication value doesn't match
-			if (authentication.value !== value)
+			if (!await check(value, authentication.value))
 			{
 				// Decrement attempts left
 				if (authentication.attempts_left !== null)
@@ -293,12 +289,6 @@ async function generate_access_code(user, medium)
 	return id
 }
 
-// Hashes a password
-async function hash_password(password)
-{
-	return (await http.get(`${address_book.password_service}/hash`, { password })).hash
-}
-
 async function get_authentication(authentication_description, user)
 {
 	// The returned result, because javascript
@@ -340,5 +330,26 @@ async function get_authentication(authentication_description, user)
 
 		default:
 			throw new Error(`Unknown authentication type: ${authentication_description.type}`)
+	}
+}
+
+// Creates authentication checking function
+function authentication_checker(type)
+{
+	switch (type)
+	{
+		// If it's a password then hash it
+		case 'password':
+			return (input, against) =>
+			{
+				return http.get(`${address_book.password_service}/matches`,
+				{
+					password        : input,
+					hashed_password : against
+				})
+			}
+
+		default:
+			return async (input, against) => input === against
 	}
 }
