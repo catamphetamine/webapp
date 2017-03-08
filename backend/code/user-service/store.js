@@ -23,6 +23,11 @@ class Sql_store
 		return this.users.create(user)
 	}
 
+	get_user_count()
+	{
+		return this.users.count()
+	}
+
 	// Finds user by `id` or `alias`
 	find_user(id)
 	{

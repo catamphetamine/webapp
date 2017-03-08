@@ -40,11 +40,6 @@ export default function(api)
 			throw new errors.Input_rejected(`"email" is required`)
 		}
 
-		// if (!exists(password))
-		// {
-		// 	throw new errors.Input_rejected(`"password" is required`)
-		// }
-
 		if (!exists(locale))
 		{
 			throw new errors.Input_rejected(`"locale" is required`)
@@ -55,9 +50,11 @@ export default function(api)
 			throw new errors.Error(`User is already registered for this email`, { field: 'email' })
 		}
 
+		const is_the_first_user = await store.get_user_count() === 0
+
 		const privileges =
 		{
-			role          : 'administrator', // 'moderator', 'senior moderator' (starting from moderator)
+			role          : is_the_first_user ? 'administrator' : 'user', // 'moderator', 'senior moderator' (starting from moderator)
 			// moderation    : [], // [1, 2, 3, ...] (starting from moderator)
 			// switches      : [], // ['read_only', 'disable_user_registration', ...] (starting from senior moderator)
 			// grant   : ['moderation', 'switches'] // !== true (starting from senior moderator)

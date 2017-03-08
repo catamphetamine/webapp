@@ -189,7 +189,8 @@ export default class Sql
 			query = query.where(example)
 		}
 
-		return parseInt(await query.count())
+		const count = (await query.count())[0].count
+		return parseInt(count)
 	}
 
 	// Creates an entry in the database.
