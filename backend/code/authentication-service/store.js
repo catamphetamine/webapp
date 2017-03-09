@@ -43,11 +43,19 @@ class Sql_store
 		return this.multifactor_authentication.create(multifactor_authentication)
 	}
 
+	async update_multifactor_authentication_pending(id, pending)
+	{
+		await this.multifactor_authentication.update(id,
+		{
+			pending: JSON.stringify(pending)
+		})
+	}
+
 	// Removes this authentication from multifactor authentication items list
 	// and returns `true` if no more authentications are pending.
-	async update_multifactor_authentication_being_authenticated(uuid, authenticated_id)
+	async update_multifactor_authentication_being_authenticated(id, authenticated_id)
 	{
-		const multifactor_authentication = await this.multifactor_authentication.find({ uuid })
+		const multifactor_authentication = await this.multifactor_authentication.find(id)
 
 		if (multifactor_authentication.pending.length === 0)
 		{

@@ -101,7 +101,6 @@ export default class Editable_field extends Component
 		}
 		= this.state
 
-		const is_disabled = enabled !== undefined
 		const is_editing = edit || editing || submitting || error
 
 		const markup =
@@ -125,7 +124,7 @@ export default class Editable_field extends Component
 				{ hint && <p>{ hint }</p> }
 
 				{/* Field value and actions */}
-				{ !is_disabled && value && (is_editing ? this.render_editing() : this.render_not_editing()) }
+				{ value && (is_editing ? this.render_editing() : this.render_not_editing()) }
 
 				{/* Can be used for relevant <Modal/>s */}
 				{ children }

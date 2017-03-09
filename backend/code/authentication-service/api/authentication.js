@@ -55,7 +55,7 @@ export default function(api)
 	{
 		const authentications = []
 
-		const password_authentication = await get_authentication({ type: 'password' }, user)
+		const password_authentication = await store.get_user_authentication(user.id, 'password')
 
 		if (password_authentication)
 		{
@@ -118,7 +118,14 @@ export default function(api)
 			}
 
 			// Remove this authentication from multifactor authentication items list
-			const pending = await store.update_multifactor_authentication_being_authenticated(multifactor_authentication_id, id)
+			const pending = await store.update_multifactor_authentication_being_authenticated(multifactor_authentication.id, id)
+
+			// Activate the next authentication
+			if (pending)
+			{
+				await activate_authentication(multifactor_authentication.id, pending, multifactor_authentication.user)
+			}
+
 			return pending || true
 		})
 
@@ -140,17 +147,20 @@ export default function(api)
 			return
 		}
 
-		return result
+		return public_pending_authentications(result)
 	})
 
 	// Authenticates a user with things like a password and an access code
-	api.post('/authenticate', async function(input, { user })
+	api.post('/authenticate', async function(input, { user, internal_http })
 	{
 		const { using, purpose } = input
 
-		// If the user is using authentication to sign in
-		// then get user's private info from the supplied input.
-		if (!user)
+		// Get user's private info required for authentication purposes
+		if (user)
+		{
+			user = await internal_http.get(`${address_book.user_service}`)
+		}
+		else
 		{
 			user = input.user
 		}
@@ -182,31 +192,24 @@ export default function(api)
 		}
 
 		// Collect authentications for the new multifactor authentication
-
-		const authentications = []
-
-		for (const authentication_description of using)
-		{
-			const authentication = await get_authentication(authentication_description, user)
-
-			if (authentication)
-			{
-				authentications.push(authentication)
-			}
-		}
+		const authentications = await choose_authentications(user, using)
 
 		// Report stats
 		metrics.increment('count')
 
 		// Create multifactor authentication
-		const id = uuid.v4()
-		await store.create_multifactor_authentication(id, user.id, 'sign in', authentications, multifactor_authentication)
+		const UUID = uuid.v4()
+		const id = await store.create_multifactor_authentication(UUID, user.id, 'sign in', authentications, multifactor_authentication)
+
+		// Activate the first authentication
+		await activate_authentication(id, authentications, user.id)
 
 		// Return multifactor authentication info
 		const result =
 		{
-			id,
-			pending: authentications
+			id : UUID,
+			purpose,
+			pending: public_pending_authentications(authentications)
 		}
 
 		return result
@@ -215,15 +218,15 @@ export default function(api)
 
 // Generates access code
 // (must only be called from throttled handlers)
-async function generate_access_code(user, medium)
+async function generate_access_code(user_id, locale, medium, recepient)
 {
 	// Generate an access code
 
-	const code = get_word(user.locale)
+	const code = get_word(locale)
 
 	const data =
 	{
-		user    : user.id,
+		user    : user_id,
 		type    : 'access code',
 		value   : code,
 		expires : new Date(Date.now() + access_code_lifetime),
@@ -232,23 +235,6 @@ async function generate_access_code(user, medium)
 
 	const id = await store.create(data)
 
-	// Determine access code delivery type (if not specified)
-	if (!medium)
-	{
-		if (user.email)
-		{
-			medium = 'email'
-		}
-		else if (user.phone)
-		{
-			medium = 'phone'
-		}
-		else
-		{
-			throw new Error('The user has neither "email" not "phone" set up to receive an access code')
-		}
-	}
-
 	// Deliver the access code to the user
 	switch (medium)
 	{
@@ -256,9 +242,9 @@ async function generate_access_code(user, medium)
 			// Send the access code via email
 			await http.post(`${address_book.mail_service}`,
 			{
-				to         : user.email,
+				to         : recepient,
 				template   : 'sign in code',
-				locale     : user.locale,
+				locale     : locale,
 				parameters :
 				{
 					code
@@ -271,9 +257,9 @@ async function generate_access_code(user, medium)
 			// await http.post(`${address_book.message_delivery_service}`,
 			// {
 			// 	medium     : 'phone',
-			// 	to         : user.phone,
+			// 	to         : recepient,
 			// 	template   : 'sign in code',
-			// 	locale     : user.locale,
+			// 	locale     : locale,
 			// 	parameters :
 			// 	{
 			// 		code
@@ -289,51 +275,28 @@ async function generate_access_code(user, medium)
 	return id
 }
 
-async function get_authentication(authentication_description, user)
+// Sends an access code, for example
+async function activate_authentication(multifactor_authentication_id, authentications, user_id)
 {
-	// The returned result, because javascript
-	// doesn't know how to parse newline returns.
-	let authentication
+	const authentication = authentications[0]
 
-	switch (authentication_description.type)
+	switch (authentication.type)
 	{
-		case 'password':
-
-			// Check if the user has a password set up
-			const password = await store.get_user_authentication(user.id, 'password')
-
-			// If the user has a password set up
-			// then request the password.
-			if (!password)
-			{
-				return
-			}
-
-			authentication =
-			{
-				type : 'password',
-				id   : password.id
-			}
-
-			return authentication
-
 		case 'access code':
-
 			// Generate access code
-			authentication =
-			{
-				type : 'access code',
-				id   : await generate_access_code(user, authentication_description.medium)
-			}
-
-			return authentication
+			authentication.id = await generate_access_code(user_id, authentication.locale, authentication.medium, authentication.recepient)
+			break
 
 		default:
-			throw new Error(`Unknown authentication type: ${authentication_description.type}`)
+			return
 	}
+
+	// Update multifactor authentication
+	await store.update_multifactor_authentication_pending(multifactor_authentication_id, authentications)
 }
 
-// Creates authentication checking function
+// Creates authentication checking function:
+// `(input, against) => Promise`
 function authentication_checker(type)
 {
 	switch (type)
@@ -352,4 +315,154 @@ function authentication_checker(type)
 		default:
 			return async (input, against) => input === against
 	}
+}
+
+// Chooses a sufficient amount of authentications based on preferences
+async function choose_authentications(user, using)
+{
+	const authentications = []
+
+	let has_first_factor_authentication = false
+	let has_second_factor_authentication = false
+
+	const has_email = user.email
+	const has_phone = user.phone
+	const has_password = await store.get_user_authentication(user.id, 'password')
+
+	for (const authentication of Object.clone(using))
+	{
+		switch (authentication.type)
+		{
+			case 'access code':
+				// Only if `recepient` is not overridden
+				// this authentication is considered a valid user authentication.
+				// `recepient` may be overridden, say, when changing an email address.
+				if (!authentication.recepient)
+				{
+					has_first_factor_authentication = true
+				}
+				authentications.push(await fill_in_authentication(authentication, user))
+				break
+
+			case 'password':
+				has_second_factor_authentication = true
+				authentications.push(await fill_in_authentication(authentication, user))
+				break
+
+			default:
+				throw new Error(`Unknown authentication type: ${authentication.type}`)
+		}
+	}
+
+	if (!has_first_factor_authentication)
+	{
+		if (has_email || has_phone)
+		{
+			authentications.push(await fill_in_authentication({ type : 'access code' }, user))
+		}
+	}
+
+	if (!has_second_factor_authentication)
+	{
+		if (has_password)
+		{
+			authentications.push(await fill_in_authentication({ type: 'password' }, user))
+		}
+	}
+
+	if (authentications.is_empty())
+	{
+		throw new Error('No authentications available for this user')
+	}
+
+	return authentications
+}
+
+async function fill_in_authentication(authentication, user)
+{
+	switch (authentication.type)
+	{
+		case 'access code':
+
+			if (!authentication.medium)
+			{
+				if (user.email)
+				{
+					authentication.medium = 'email'
+				}
+				else if (user.phone)
+				{
+					authentication.medium = 'phone'
+				}
+				else
+				{
+					throw new Error('No authentication medium available for access code delivery')
+				}
+			}
+
+			if (!authentication.recepient)
+			{
+				switch (authentication.medium)
+				{
+					case 'email':
+						authentication.recepient = user.email
+						break
+
+					case 'phone':
+						authentication.recepient = user.phone
+						break
+
+					default:
+						throw new Error(`Unknown delivery medium ${authentication.medium}`)
+				}
+			}
+
+			if (!authentication.locale)
+			{
+				authentication.locale = user.locale
+			}
+
+			break
+
+		case 'password':
+
+			const password = await store.get_user_authentication(user.id, 'password')
+
+			if (!password)
+			{
+				throw new Error('The user has no password set up')
+			}
+
+			authentication.id = password.id
+
+			break
+
+		default:
+			throw new Error(`Unknown authentication type: ${authentication.type}`)
+	}
+
+	return authentication
+}
+
+// Strips sensitive data like exact email addresses and phone numbers
+function public_pending_authentications(authentications)
+{
+	authentications = Object.clone(authentications)
+
+	for (const authentication of authentications)
+	{
+		// `recepient` is used for access codes
+		if (authentication.recepient)
+		{
+			delete authentication.recepient
+		}
+
+		// `locale` is used for access codes
+		if (authentication.locale)
+		{
+			delete authentication.locale
+		}
+	}
+
+	return authentications
 }

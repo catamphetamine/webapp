@@ -3,7 +3,7 @@ import styler                          from 'react-styling'
 import classNames                      from 'classnames'
 import { defineMessages }              from 'react-intl'
 import { connect }                     from 'react-redux'
-import { Form }                        from 'react-responsive-ui'
+import { Form, Modal }                 from 'react-responsive-ui'
 import Redux_form                      from 'simpler-redux-form'
 
 import
@@ -25,7 +25,6 @@ from '../../redux/user/settings/main'
 import { snack } from '../../redux/snackbar'
 
 import Editable_field  from '../../components/editable field'
-import Modal from '../../components/modal'
 import TextInput from '../../components/form/text input'
 import Submit from '../../components/form/submit'
 import { Steps, Step } from '../../components/steps'
@@ -37,19 +36,34 @@ import http_status_codes from '../../tools/http status codes'
 import international from '../../international/internationalize'
 
 @international
+@connect
+(({ user_settings }) =>
+({
+	authentication : user_settings.main.authentication
+}))
 export default class Change_password extends Component
 {
-	static propTypes =
-	{
-		password_set : PropTypes.bool.isRequired
-	}
-
 	state = {}
 
 	render()
 	{
-		const { password_set, translate } = this.props
-		const { changing_password, turn_off } = this.state
+		const
+		{
+			check_current_password_pending,
+			change_password_pending,
+			authentication,
+			translate
+		}
+		= this.props
+
+		const
+		{
+			changing_password,
+			turn_off
+		}
+		= this.state
+
+		const password_set = exists(authentication.find_by({ type: 'password' }))
 
 		// {/* User's password */}
 
@@ -64,12 +78,18 @@ export default class Change_password extends Component
 				edit={ this.change_password }>
 
 				{/* Change password popup */}
-				<Change_password_popup
-					password_set={ password_set }
-					turn_off={ turn_off }
+				<Modal
 					isOpen={ changing_password }
 					close={ this.cancel_change_password }
-					reset={ this.reset }/>
+					reset={ this.reset }
+					busy={ check_current_password_pending || change_password_pending }
+					closeLabel={ translate(default_messages.cancel) }>
+
+					<Change_password_popup
+						password_set={ password_set }
+						turn_off={ turn_off }
+						close={ this.cancel_change_password }/>
+				</Modal>
 			</Editable_field>
 		)
 
@@ -136,29 +156,36 @@ export default class Change_password extends Component
 )
 class Change_password_popup extends Component
 {
+	componentWillReceiveProps(new_props)
+	{
+		const { password_set } = this.props
+
+		// If a password was either set or unset
+		if (new_props.password_set !== password_set)
+		{
+			// Component will be unmounted shortly afterwards
+			this.frozen = true
+		}
+	}
+
 	render()
 	{
 		const
 		{
 			password_set,
 			turn_off,
-			check_current_password_pending,
-			change_password_pending,
-			isOpen,
-			close,
-			reset,
 			translate
 		}
 		= this.props
 
+		if (this.frozen)
+		{
+			return this.snapshot
+		}
+
 		const markup =
 		(
-			<Modal
-				isOpen={ isOpen }
-				close={ close }
-				reset={ reset }
-				busy={ check_current_password_pending || change_password_pending }>
-
+			<div>
 				<h2>
 					{ password_set ? (turn_off ? translate(messages.unset_password) : translate(messages.change_password)) : translate(messages.set_password) }
 				</h2>
@@ -167,24 +194,28 @@ class Change_password_popup extends Component
 				<Steps done={ this.finished }>
 
 					{/* Enter current password */}
-					{ (password_set || turn_off) &&
-						<Step key="current" component={ Enter_current_password } turn_off={ turn_off }/>
-					}
+					<Step
+						key="current"
+						onlyIf={ password_set }
+						component={ Enter_current_password }
+						turn_off={ turn_off }/>
 
 					{/* Enter new password */}
-					{ !turn_off &&
-						<Step key="new" component={ Enter_new_password }/>
-					}
+					<Step
+						key="new"
+						onlyIf={ !turn_off }
+						component={ Enter_new_password }/>
 
 					{/* Enter new password again */}
-					{ !turn_off &&
-						<Step key="new-again" component={ Enter_new_password_again }/>
-					}
+					<Step
+						key="new-again"
+						onlyIf={ !turn_off }
+						component={ Enter_new_password_again }/>
 				</Steps>
-			</Modal>
+			</div>
 		)
 
-		return markup
+		return this.snapshot = markup
 	}
 
 	finished = () =>

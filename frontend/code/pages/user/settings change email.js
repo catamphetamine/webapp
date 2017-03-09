@@ -4,7 +4,7 @@ import classNames                      from 'classnames'
 import { defineMessages }              from 'react-intl'
 import { connect }                     from 'react-redux'
 
-import { Form } from 'react-responsive-ui'
+import { Form, Modal } from 'react-responsive-ui'
 import Redux_form, { Field } from 'simpler-redux-form'
 
 import
@@ -23,7 +23,6 @@ import http_status_codes from '../../tools/http status codes'
 
 import international from '../../international/internationalize'
 
-import Modal          from '../../components/modal'
 import Editable_field from '../../components/editable field'
 import TextInput      from '../../components/form/text input'
 import Submit         from '../../components/form/submit'
@@ -242,7 +241,8 @@ class Check_password_popup extends Component
 				isOpen={ isOpen }
 				close={ close }
 				reset={ reset_check_password_error }
-				busy={ check_password_pending }>
+				busy={ check_password_pending }
+				closeLabel={ translate(default_messages.cancel) }>
 
 				<h2>
 					{ translate(messages.password_check) }

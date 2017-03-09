@@ -3,14 +3,12 @@ import { Link }    from 'react-isomorphic-render'
 import classNames  from 'classnames'
 import { connect } from 'react-redux'
 import style       from 'react-styling'
-
 import { defineMessages } from 'react-intl'
+import { Form, Button, Select, ActivityIndicator, Modal } from 'react-responsive-ui'
 
 import international from '../international/internationalize'
+import default_messages from './messages'
 
-import { Form, Button, Select, ActivityIndicator } from 'react-responsive-ui'
-
-import Modal        from './modal'
 import Sign_in_form from './sign in form/sign in form'
 import User         from './user'
 import User_picture from './user picture'
@@ -111,7 +109,8 @@ export default class Authentication extends Component
 				<Modal
 					busy={ register_pending || sign_in_pending || authenticate_pending }
 					isOpen={ exists(password) || (!user && show) }
-					close={ this.hide }>
+					close={ this.hide }
+					closeLabel={ translate(default_messages.cancel) }>
 
 					<Sign_in_form
 						open={ this.hide }

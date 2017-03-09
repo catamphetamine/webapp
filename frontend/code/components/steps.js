@@ -48,6 +48,11 @@ export class Steps extends Component
 				return
 			}
 
+			if (!child.props.onlyIf)
+			{
+				return
+			}
+
 			if (!child.key)
 			{
 				throw new Error(`The first step doesn't have a "key" set`)
@@ -55,6 +60,11 @@ export class Steps extends Component
 
 			first_child_key = child.key
 		})
+
+		if (!first_child_key)
+		{
+			throw new Error('No steps')
+		}
 
 		this.state.step = first_child_key
 	}
@@ -103,7 +113,7 @@ export class Steps extends Component
 				return current_step_found = true
 			}
 
-			if (current_step_found)
+			if (current_step_found && child.props.onlyIf !== false)
 			{
 				has_more_steps = true
 			}
@@ -165,7 +175,7 @@ export class Steps extends Component
 				return current_step = child
 			}
 
-			if (current_step)
+			if (current_step && child.props.onlyIf !== false)
 			{
 				next_step = child
 			}
@@ -229,12 +239,23 @@ export class Step extends Component
 {
 	static propTypes =
 	{
-		component : PropTypes.func.isRequired
+		component : PropTypes.func.isRequired,
+		// onlyIf    : PropTypes.bool.isRequired
+	}
+
+	static defaultProps =
+	{
+		// onlyIf : true
 	}
 
 	render()
 	{
-		const { component, ...rest } = this.props
+		const { component, onlyIf, ...rest } = this.props
+
+		// if (!onlyIf)
+		// {
+		// 	return
+		// }
 
 		return React.createElement(component, rest)
 	}

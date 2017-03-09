@@ -4,7 +4,8 @@ import { defineMessages } from 'react-intl'
 import styler             from 'react-styling'
 import { Title, preload } from 'react-isomorphic-render'
 import { FormattedDate }  from 'react-intl'
-import { Form }  from 'react-responsive-ui'
+import { Form, Modal }    from 'react-responsive-ui'
+import { parse as parse_stack_trace } from 'print-error'
 
 import { get as get_log, connector } from '../redux/log'
 import log_levels         from '../../../code/log levels'
@@ -13,9 +14,6 @@ import { messages as layout_messages } from './layout'
 
 import international      from '../international/internationalize'
 
-import { parse as parse_stack_trace } from 'print-error'
-
-import Modal from '../components/modal'
 
 export const messages = defineMessages
 ({

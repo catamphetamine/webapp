@@ -13,6 +13,7 @@ import { should_redirect_to } from '../../helpers/redirection'
 import international from '../../international/internationalize'
 import { messages as user_bar_messages } from '../user bar'
 import { messages as sign_in_messages } from './sign in'
+import default_messages from '../messages'
 
 import { preload_started, preload_finished } from '../../redux/preload'
 
@@ -137,6 +138,20 @@ export default class Sign_in_form extends Component
 		reset_sign_in_authenticated_error()
 	}
 
+	componentWillReceiveProps(new_props)
+	{
+		const { authentication } = this.props
+
+		// When the user has authenticated
+		if (authentication && authentication.purpose === 'sign in' &&
+			new_props.authentication && new_props.authentication.purpose === 'sign in' &&
+			authentication.pending.length > 0 && new_props.authentication.pending.length === 0)
+		{
+			// Component will be unmounted shortly afterwards
+			this.frozen = true
+		}
+	}
+
 	render()
 	{
 		const
@@ -146,6 +161,11 @@ export default class Sign_in_form extends Component
 			style
 		}
 		= this.props
+
+		if (this.frozen)
+		{
+			return this.snapshot
+		}
 
 		const markup =
 		(
@@ -162,7 +182,7 @@ export default class Sign_in_form extends Component
 			</div>
 		)
 
-		return markup
+		return this.snapshot = markup
 	}
 
 	render_content()
@@ -182,6 +202,8 @@ export default class Sign_in_form extends Component
 		}
 		= this.state
 
+		const authentication_submit_text = authentication && authentication.pending.length > 1 ? translate(default_messages.next) : translate(default_messages.done)
+
 		if (register)
 		{
 			return <Register
@@ -189,21 +211,21 @@ export default class Sign_in_form extends Component
 				finish={ this.finish_registration }/>
 		}
 
-		if (authentication)
+		if (authentication && authentication.purpose === 'sign in' && authentication.pending.not_empty())
 		{
-			if (authentication.pending.find_by({ type: 'password' }))
-			{
-				return <Authenticate_with_password
-					title={ translate(user_bar_messages.sign_in) }
-					submitText={ translate(user_bar_messages.sign_in) }
-					finished={ this.sign_in }/>
-			}
-
-			if (authentication.pending.find_by({ type: 'access code' }))
+			if (authentication.pending[0].type === 'access code')
 			{
 				return <Authenticate_with_access_code
 					title={ translate(user_bar_messages.sign_in) }
-					submitText={ translate(user_bar_messages.sign_in) }
+					submitText={ authentication_submit_text }
+					finished={ this.sign_in }/>
+			}
+
+			if (authentication.pending[0].type === 'password')
+			{
+				return <Authenticate_with_password
+					title={ translate(user_bar_messages.sign_in) }
+					submitText={ authentication_submit_text }
 					finished={ this.sign_in }/>
 			}
 		}

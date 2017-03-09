@@ -111,7 +111,6 @@ export default class Settings_page extends Component
 		const
 		{
 			user,
-			authentication,
 			authentication_tokens,
 			translate,
 			change_alias_pending,
@@ -164,8 +163,7 @@ export default class Settings_page extends Component
 							title={ translate(messages.authentication) }>
 
 							{/* User's password */}
-							<Change_password
-								password_set={ exists(authentication.find_by({ type: 'password' })) }/>
+							<Change_password/>
 						</Content_section>
 					</div>
 				</div>

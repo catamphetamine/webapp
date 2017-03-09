@@ -566,9 +566,6 @@ function authenticate_user(user, medium)
 		user,
 		using:
 		[{
-			type: 'password'
-		},
-		{
 			type: 'access code',
 			medium
 		}],

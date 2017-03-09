@@ -12,6 +12,7 @@ import Time_ago   from '../time ago'
 
 import http_status_codes from '../../tools/http status codes'
 import international from '../../international/internationalize'
+import default_messages from '../messages'
 import { messages as user_bar_messages } from '../user bar'
 import { authentication_attempts_limit_exceeded_error } from '../authentication form/authentication form'
 
