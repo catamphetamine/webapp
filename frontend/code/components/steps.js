@@ -48,10 +48,10 @@ export class Steps extends Component
 				return
 			}
 
-			if (!child.props.onlyIf)
-			{
-				return
-			}
+			// if (child.props.onlyIf === false)
+			// {
+			// 	return
+			// }
 
 			if (!child.key)
 			{
@@ -113,10 +113,17 @@ export class Steps extends Component
 				return current_step_found = true
 			}
 
-			if (current_step_found && child.props.onlyIf !== false)
+			if (!current_step_found)
 			{
-				has_more_steps = true
+				return
 			}
+
+			// if (child.props.onlyIf === false)
+			// {
+			// 	return
+			// }
+
+			has_more_steps = true
 		})
 
 		return !has_more_steps
@@ -175,10 +182,17 @@ export class Steps extends Component
 				return current_step = child
 			}
 
-			if (current_step && child.props.onlyIf !== false)
+			if (!current_step)
 			{
-				next_step = child
+				return
 			}
+
+			// if (child.props.onlyIf === false)
+			// {
+			// 	return
+			// }
+
+			next_step = child
 		})
 
 		if (!next_step.key)

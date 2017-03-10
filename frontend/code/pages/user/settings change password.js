@@ -194,23 +194,26 @@ class Change_password_popup extends Component
 				<Steps done={ this.finished }>
 
 					{/* Enter current password */}
-					<Step
-						key="current"
-						onlyIf={ password_set }
-						component={ Enter_current_password }
-						turn_off={ turn_off }/>
+					{ password_set &&
+						<Step
+							key="current"
+							component={ Enter_current_password }
+							turn_off={ turn_off }/>
+					}
 
 					{/* Enter new password */}
-					<Step
-						key="new"
-						onlyIf={ !turn_off }
-						component={ Enter_new_password }/>
+					{ !turn_off &&
+						<Step
+							key="new"
+							component={ Enter_new_password }/>
+					}
 
 					{/* Enter new password again */}
-					<Step
-						key="new-again"
-						onlyIf={ !turn_off }
-						component={ Enter_new_password_again }/>
+					{ !turn_off &&
+						<Step
+							key="new-again"
+							component={ Enter_new_password_again }/>
+					}
 				</Steps>
 			</div>
 		)
