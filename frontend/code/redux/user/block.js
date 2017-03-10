@@ -7,7 +7,7 @@ export const generate_block_user_token = action
 ({
 	namespace : 'block user',
 	event     : 'generate token',
-	action    : (user_id, http) => http.post(`/users/block-user-token`, { user_id })
+	action    : (user_id, http) => http.post(`/users/${user_id}/block-user-token`)
 },
 handler)
 
@@ -15,7 +15,7 @@ export const get_block_user_token = action
 ({
 	namespace : 'block user',
 	event     : 'get token',
-	action    : (token_id, http) => http.get(`/users/block-user-token/${token_id}`),
+	action    : (user_id, token_id, http) => http.get(`/users/${user_id}/block-user-token/${token_id}`),
 	result    : 'token'
 },
 handler)
@@ -23,10 +23,9 @@ handler)
 export const block_user = action
 ({
 	event  : 'block user',
-	action : (id, token_id, reason, http) => http.post(`/users/block`,
+	action : (user_id, token_id, reason, http) => http.post(`/users/${user_id}/block`,
 	{
-		id,
-		token : token_id,
+		token_id,
 		reason
 	})
 },

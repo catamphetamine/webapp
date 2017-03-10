@@ -21,11 +21,11 @@ class Sql_store
 		return this.authentication.create(data)
 	}
 
-	create_multifactor_authentication(uuid, user_id, purpose, pending_authentications, previous_one)
+	create_multifactor_authentication(id, user_id, purpose, pending_authentications, previous_one)
 	{
 		const multifactor_authentication =
 		{
-			uuid,
+			id,
 			user: user_id,
 			purpose,
 			pending: JSON.stringify(pending_authentications)

@@ -30,7 +30,7 @@ import international from '../../international/internationalize'
 @Redux_form
 @preload(({ dispatch, getState, location, parameters }) =>
 {
-	return dispatch(get_block_user_token(parameters.token_id))
+	return dispatch(get_block_user_token(parameters.user_id, parameters.token_id))
 })
 @connect
 (

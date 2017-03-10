@@ -63,7 +63,7 @@ export const sign_in_authenticated = action
 ({
 	namespace : 'user',
 	event     : 'sign in authenticated',
-	promise   : (id, http) => http.post(`/users/sign-in-authenticated`, { id })
+	promise   : (id, http) => http.post(`/users/sign-in/authenticated`, { id })
 },
 handler)
 

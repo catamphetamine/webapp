@@ -69,8 +69,9 @@ exports.up = function(knex, Promise)
 	.createTable('block_user_tokens', function(table)
 	{
 		// "block_user_tokens_uuid" constraint name
-		// is used in user-service sql store.
-		table.string('id', alias_max_length).primary('block_user_tokens_uuid')
+		// is be used in user-service sql store
+		// to hande duplicate UUIDs (which is still extremely unlikely).
+		table.string('id', uuid_length).primary('block_user_tokens_uuid')
 
 		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
 		table.boolean('self').notNullable().defaultTo(false)
@@ -90,8 +91,10 @@ exports.up = function(knex, Promise)
 
 	.createTable('multifactor_authentication', function(table)
 	{
-		table.bigIncrements('id').primary().unsigned()
-		table.string('uuid', uuid_length).notNullable().unique()
+		// "multifactor_authentication_uuid" constraint name
+		// could be used in user-service sql store
+		// to hande duplicate UUIDs (which is extremely unlikely).
+		table.string('id', uuid_length).primary('multifactor_authentication_uuid')
 		table.bigint('user').notNullable().unique().references('users.id').onDelete('CASCADE')
 		table.string('purpose').notNullable()
 		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
@@ -100,9 +103,6 @@ exports.up = function(knex, Promise)
 		table.float('temperature').notNullable().defaultTo(0)
 		table.integer('attempts').notNullable().defaultTo(0)
 		table.text('pending')
-
-		// Searching by UUID
-		table.index('uuid')
 	})
 
 	.createTable('authentication_tokens', function(table)

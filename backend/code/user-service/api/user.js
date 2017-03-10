@@ -157,7 +157,7 @@ export default function(api)
 	})
 
 	// Logs in the user if the multifactor authentication succeeded.
-	api.post('/sign-in-authenticated', async function({ id }, { ip, keys, set_cookie })
+	api.post('/sign-in/authenticated', async function({ id }, { ip, keys, set_cookie })
 	{
 		const multifactor_authentication = await http.get
 		(
@@ -167,12 +167,18 @@ export default function(api)
 
 		if (!multifactor_authentication)
 		{
-			throw new errors.Access_denied('The authentication is still pending')
+			// The authentication is still pending or does not exist.
+			// (not returning an exact error message here
+			//  to not make it easier for hackers)
+			throw new errors.Access_denied()
 		}
 
 		if (multifactor_authentication.purpose !== 'sign in')
 		{
-			throw new errors.Access_denied('The authentication is not for sign in')
+			// The authentication is not for sign in.
+			// (not returning an exact error message here
+			//  to not make it easier for hackers)
+			throw new errors.Access_denied()
 		}
 
 		// Get full user info
@@ -292,8 +298,8 @@ export default function(api)
 		return await get_user_self(user.id)
 	})
 
-	// Change user's `email`
-	api.patch('/email', async function({ email, password }, { user, authentication_token, internal_http })
+	// Request a change for user's `email`
+	api.patch('/email', async function({ email }, { user })
 	{
 		if (!user)
 		{
@@ -305,26 +311,64 @@ export default function(api)
 			throw new errors.Input_rejected('"email" is required', { field: 'email' })
 		}
 
-		// Get user authentication info (whether he has a password set, etc)
-		const authentication_info = await internal_http.get(`${address_book.authentication_service}`)
-
-		// If the user has a password set then check it
-		if (authentication_info.password)
-		{
-			if (!password)
-			{
-				throw new errors.Input_rejected('"password" is required', { field: 'password' })
-			}
-
-			// Check the supplied password
-			await internal_http.get(`${address_book.authentication_service}/password/check`, { password })
-		}
-
 		// To get things like user's `email` and `locale`
 		user = await store.find_user_by_id(user.id)
 
+		return await http.post(`${address_book.authentication_service}/authenticate`,
+		{
+			user,
+			using:
+			[{
+				type      : 'access code',
+				medium    : 'email',
+				recepient : user.email
+			},
+			{
+				type      : 'access code',
+				medium    : 'email',
+				recepient : email
+			}],
+			purpose: 'change email'
+		})
+	})
+
+	// Changes user's email if the multifactor authentication succeeded.
+	api.patch('/email/authenticated', async function({ id }, { user })
+	{
+		const multifactor_authentication = await http.get
+		(
+			`${address_book.authentication_service}`,
+			{ id, bot: true }
+		)
+
+		if (!multifactor_authentication)
+		{
+			// The authentication is still pending or does not exist.
+			// (not returning an exact error message here
+			//  to not make it easier for hackers)
+			throw new errors.Access_denied()
+		}
+
+		if (multifactor_authentication.purpose !== 'change email')
+		{
+			// The authentication is not for email change.
+			// (not returning an exact error message here
+			//  to not make it easier for hackers)
+			throw new errors.Access_denied()
+		}
+
+		if (multifactor_authentication.user !== user.id)
+		{
+			// The authentication is for another user.
+			// (not returning an exact error message here
+			//  to not make it easier for hackers)
+			throw new errors.Access_denied()
+		}
+
+		// Update user's email
 		await store.update_user(user.id, { email })
 
+		// Generate a (self) block user token
 		const block_user_token = await store.generate_block_user_token(user.id, { self: true })
 
 		// Send a notification to the old mailbox
@@ -336,7 +380,7 @@ export default function(api)
 			parameters :
 			{
 				email,
-				block_account_link : `https://${configuration.website}/user/block/${block_user_token}`
+				block_account_link : `https://${configuration.website}/user/${user.id}/block/${block_user_token}`
 			},
 			locale     : user.locale
 		})
@@ -442,9 +486,16 @@ export default function(api)
 		}
 	})
 
-	api.post('/block-user-token', async ({ user_id }, { user }) =>
+	// Obtains a block user token
+	api.post('/:user_id/block-user-token', async ({ user_id }, { user }) =>
 	{
-		if (!can('block user', user))
+		if (!user)
+		{
+			throw new errors.Unauthenticated()
+		}
+
+		// Can block self, also admins or moderators can block other users.
+		if (!(user.id === user_id || can('block user', user)))
 		{
 			throw new errors.Unauthorized()
 		}
@@ -452,12 +503,15 @@ export default function(api)
 		return await store.generate_block_user_token(user_id)
 	})
 
-	api.get('/block-user-token/:token_id', async ({ token_id }, { user }) =>
+	// Gets extended block user token info
+	api.get('/:user_id/block-user-token/:token_id', async ({ user_id, token_id }, { user }) =>
 	{
 		const token = await store.get_block_user_token(token_id)
 
-		if (!token)
+		if (!token || token.user !== user_id)
 		{
+			// Not being specific on the error message here
+			// to not make it easier for hackers
 			throw new errors.Not_found()
 		}
 
@@ -467,50 +521,45 @@ export default function(api)
 			throw new errors.Not_found(`Token expired`)
 		}
 
-		if (user)
-		{
-			if (!(user.id === token.user || can('block user', user)))
-			{
-				throw new errors.Unauthorized()
-			}
-		}
-
-		if (token.user)
-		{
-			token.user = await get_user(token.user)
-		}
+		// Get extended user info (like name) for display on the page
+		token.user = await get_user(token.user)
 
 		return token
 	})
 
-	api.post('/block', async ({ token, reason }, { user }) =>
+	// Blocks a user
+	api.post('/:user_id/block', async ({ user_id, token_id, reason }, { user }) =>
 	{
 		// Verify block user token
 
-		const block_user_token = await store.get_block_user_token(token)
+		const token = await store.get_block_user_token(token_id)
 
-		if (!block_user_token)
+		if (!token || token.user !== user_id)
 		{
+			// Not being specific on the error message here
+			// to not make it easier for hackers
 			throw new errors.Not_found()
 		}
 
 		// Block the user
-		await store.update_user(block_user_token.user,
+		await store.update_user(token.user,
 		{
 			blocked_at     : new Date(),
-			blocked_by     : user ? user.id : block_user_token.user,
+			blocked_by     : user ? user.id : token.user,
 			blocked_reason : reason
 		})
 
 		// Revoke all user's tokens
+		// (is performed after marking the user as blocked
+		//  to prevent new access tokens being issued concurrently)
 		await http.post
 		(
 			`${address_book.access_token_service}/*/revoke`,
-			{ block_user_token_id : block_user_token.id }
+			{ block_user_token_id : token.id }
 		)
 
-		// Consume block user token
-		await store.remove_block_user_token(token)
+		// Consume this block user token
+		await store.remove_block_user_token(token.id)
 	})
 
 	api.post('/unblock', async ({ id }, { user }) =>

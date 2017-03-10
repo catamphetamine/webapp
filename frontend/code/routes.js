@@ -54,7 +54,7 @@ const routes =
 		<IndexRoute component={ Home }/>
 
 		<Route path="user">
-			<Route path="block/:token_id" component={ Block_user }/>
+			<Route path=":user_id/block/:token_id" component={ Block_user }/>
 			<Route path=":id" component={ Profile }/>
 		</Route>
 

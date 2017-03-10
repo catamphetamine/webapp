@@ -28,7 +28,15 @@ export default function(api)
 	// If it has not, returns `undefined`.
 	api.get('/', async function({ id })
 	{
-		const multifactor_authentication = await store.get_multifactor_authentication({ uuid: id })
+		const multifactor_authentication = await store.get_multifactor_authentication(id)
+
+		// Not throwing "404 Not found" error here to prevent hacking attempts
+		// (e.g. when an attacker finds a non-404 endpoint and keeps fetching it
+		//  until the user finishes the authentication process)
+		if (!multifactor_authentication)
+		{
+			return
+		}
 
 		// If this authentication is still pending, then return nothing.
 		if (multifactor_authentication.length > 0)
@@ -42,6 +50,8 @@ export default function(api)
 		await store.delete_multifactor_authentication(multifactor_authentication.id)
 
 		// Check if this authentication succeeded, but expired since then.
+		// Not throwing a "status 500" error here just because this error is
+		// very unlikely and shouldn't ever happen so no need to handle it specifically.
 		if (Date.now() >= multifactor_authentication.expires.getTime())
 		{
 			return
@@ -68,7 +78,7 @@ export default function(api)
 	// Performs an authentication step of a multifactor authentication
 	api.post('/', async function({ multifactor_authentication_id, id, value })
 	{
-		const multifactor_authentication = await store.get_multifactor_authentication({ uuid: multifactor_authentication_id })
+		const multifactor_authentication = await store.get_multifactor_authentication(multifactor_authentication_id)
 
 		const authentication = await store.get(id)
 
@@ -192,14 +202,28 @@ export default function(api)
 		}
 
 		// Collect authentications for the new multifactor authentication
-		const authentications = await choose_authentications(user, using)
+
+		let authentications
+
+		switch (purpose)
+		{
+			case 'change email':
+				authentications = using
+				break
+
+			default:
+				authentications = await choose_authentications(user, using)
+		}
 
 		// Report stats
 		metrics.increment('count')
 
-		// Create multifactor authentication
-		const UUID = uuid.v4()
-		const id = await store.create_multifactor_authentication(UUID, user.id, 'sign in', authentications, multifactor_authentication)
+		// Create multifactor authentication.
+		// (UUID v4 collision is extremely unlikely
+		//  so even not handling it here
+		//  though it is quite trivial and could be done if needed)
+		const id = uuid.v4()
+		await store.create_multifactor_authentication(id, user.id, 'sign in', authentications, multifactor_authentication)
 
 		// Activate the first authentication
 		await activate_authentication(id, authentications, user.id)
@@ -207,7 +231,7 @@ export default function(api)
 		// Return multifactor authentication info
 		const result =
 		{
-			id : UUID,
+			id,
 			purpose,
 			pending: public_pending_authentications(authentications)
 		}

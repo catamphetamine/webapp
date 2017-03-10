@@ -185,7 +185,8 @@ class Sql_store
 		}
 		catch (error)
 		{
-			// If there already is a token with this id,
+			// If there already is a token with this id
+			// (which is extremely unlikely for a v4 UUID),
 			// then try to generate a UUID once again.
 			//
 			// "duplicate key value violates unique constraint
