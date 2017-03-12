@@ -3,12 +3,19 @@ import settings from '../react-isomorphic-render-async'
 
 const handler = create_handler(settings)
 
-export const sign_in = action
+export const sign_in_request = action
 ({
 	namespace : 'user',
-	event     : 'sign in',
-	action    : (credentials, http) => http.post(`/users/sign-in`, credentials),
+	event     : 'sign in request',
+	action    : (credentials, http) => http.post(`/users/sign-in/request`, credentials),
 	result    : 'authentication'
+},
+handler)
+
+export const reset_sign_in_request_error = reset_error
+({
+	namespace : 'user',
+	event     : 'sign in request'
 },
 handler)
 
@@ -28,7 +35,7 @@ export const authenticate = action
 ({
 	namespace : 'user',
 	event     : 'authenticate',
-	promise   : (data, http) => http.post(`/authentication`, data),
+	action    : (data, http) => http.post(`/authentication`, data),
 	result    : (state, result) =>
 	{
 		if (!result)
@@ -59,27 +66,21 @@ export const authenticate = action
 },
 handler)
 
-export const sign_in_authenticated = action
+export const reset_authenticate_error = reset_error
 ({
 	namespace : 'user',
-	event     : 'sign in authenticated',
-	promise   : (id, http) => http.post(`/users/sign-in/authenticated`, { id })
+	event     : 'authenticate'
 },
 handler)
 
-export const reset_sign_in_authenticated_error = reset_error
+export const sign_in = action
 ({
 	namespace : 'user',
-	event     : 'sign in authenticated'
-},
-handler)
-
-export const register = action
-({
-	namespace : 'user',
-	event     : 'register',
-	promise   : (info, http) => http.post(`/users/register`, info),
-	result    : 'authentication'
+	event     : 'sign in',
+	action    : (multifactor_authentication_id, http) =>
+	{
+		return http.post(`/users/sign-in`, { multifactor_authentication_id })
+	}
 },
 handler)
 
@@ -90,10 +91,12 @@ export const reset_sign_in_error = reset_error
 },
 handler)
 
-export const reset_authenticate_error = reset_error
+export const register = action
 ({
 	namespace : 'user',
-	event     : 'authenticate'
+	event     : 'register',
+	action    : (info, http) => http.post(`/users/register`, info),
+	result    : 'authentication'
 },
 handler)
 
@@ -103,6 +106,13 @@ export const reset_register_error = reset_error
 	event     : 'register'
 },
 handler)
+
+// Change email authentication
+handler.handle('user settings: change email request: done', (state, result) =>
+({
+	...state,
+	authentication: result
+}))
 
 // Updates user picture in the user bar when it is changed on the profile page
 handler.handle('user: update user picture: done', (state, result) =>

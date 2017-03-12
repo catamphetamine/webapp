@@ -135,6 +135,7 @@ export default class Authenticate_with_password extends Component
 		catch (error)
 		{
 			console.error(error)
+			throw error
 		}
 	}
 

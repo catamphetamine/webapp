@@ -1,0 +1,9 @@
+{%- extends "base.txt" -%}
+
+{%- block title -%}
+{{ translate('mail.code.title') }}
+{%- endblock -%}
+
+{%- block content -%}
+{{ translate('mail.code.text', { code: code, action: translate('mail.code.action.' + action) }) }}
+{%- endblock -%}

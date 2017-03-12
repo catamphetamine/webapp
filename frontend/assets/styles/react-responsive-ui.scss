@@ -1047,24 +1047,35 @@ but introduces page width jumps.
 	list-style-type : none;
 }
 
-.rrui__slideout-menu li:first-child
+.rrui__slideout-menu-list-item:first-child
 {
 	padding-top    : calc(2 * var(--unit));
 }
 
-.rrui__slideout-menu li:last-child
+.rrui__slideout-menu-list-item:last-child
 {
 	padding-bottom : calc(2 * var(--unit));
 }
 
 .rrui__slideout-menu
 {
-	background : var(--black-color);
+	position : fixed;
+	left     : 0;
+	top      : 0;
+	bottom   : 0;
+	z-index  : 1;
+	min-height : 100%;
+	overflow-y : auto;
 	opacity    : 0.9;
+	background-color : var(--black-color);
+
+	transform  : translate3d(-100%, 0, 0);
+	transition : transform 120ms ease-out;
 }
 
 .rrui__slideout-menu--shown
 {
+	transform  : translate3d(0, 0, 0);
 	box-shadow : 0 0 0.2em rgba(0, 0, 0, 0.4);
 }
 
@@ -1080,13 +1091,16 @@ but introduces page width jumps.
 
 .rrui__menu__item
 {
-	margin : 0;
+	display : block;
+	margin  : 0;
 
 	padding-top    : var(--unit);
 	padding-bottom : var(--unit);
 
 	padding-left  : calc(var(--unit) * 2);
 	padding-right : calc(var(--unit) * 3);
+
+	text-decoration : none;
 }
 
 .rrui__menu__item--selected

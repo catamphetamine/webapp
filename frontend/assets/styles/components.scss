@@ -381,7 +381,7 @@ header .rrui__menu
 .rrui__form__field-description
 {
 	margin-top    : 0;
-	margin-bottom : calc(var(--unit) * 1);
+	margin-bottom : calc(var(--unit) * 3);
 }
 
 .rrui__button,
@@ -420,4 +420,9 @@ header .rrui__menu
 .rrui__switch__groove
 {
 	color: var(--base-color-slightly-darker);
+}
+
+.rrui__tooltip
+{
+	z-index : var(--tooltip-z-index);
 }

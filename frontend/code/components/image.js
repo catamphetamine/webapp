@@ -156,8 +156,8 @@ export function url(size, type)
 	let subpath
 	switch (type)
 	{
-		case 'user_picture':
-			subpath = `${_user_pictures_path_}/`
+		case 'poster_picture':
+			subpath = `${_poster_pictures_path_}/`
 			break
 
 		default:

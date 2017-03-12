@@ -57,9 +57,11 @@
 	--icon-liftup       : 0.05em;
 	--icon-right-margin : 0.3em;
 
-	--main-header-z-index : 1;
-	--modal-z-index       : 2;
-	--preloading-z-index  : 3;
+	--main-header-z-index   : 1;
+	--slideout-menu-z-index : 2;
+	--modal-z-index         : 3;
+	--tooltip-z-index       : 4;
+	--preloading-z-index    : 5;
 }
 
 $extra-large-screen-min-width : 1260pt;

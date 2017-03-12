@@ -41,6 +41,8 @@
 	"authentication.error.access_code.expired"           : "Срок годности этого кода доступа истёк. Попробуйте войти заново.",
 	"authentication.error.password.mismatch"             : "Неверный пароль",
 
+	"sign_in.error" : "Не удалось войти",
+
 	"registration.error.name.is_required"                : "Введите ваше имя",
 	"registration.error"                                 : "Не удалось зарегистрироваться",
 
@@ -118,14 +120,15 @@
 	"user.settings.password.password_set"                : "Пароль установлен",
 	"user.settings.password.password_unset"              : "Пароль отключён",
 
-	"user.settings.check_password.title"          : "Проверка безопасности",
-	"user.settings.check_password.enter_password" : "Введите ваш пароль",
-	"user.settings.check_password.password"       : "Пароль",
+	"user.settings.email.change_title"        : "Смена почты",
+	"user.settings.email.not_set"             : "Не указана",
+	"user.settings.email.enter_current_email" : "Введите вашу текущую почту",
+	"user.settings.email.enter_new_email"     : "Введите новую почту",
+	"user.settings.email.updated"             : "Почта изменена",
+	"user.settings.email.update_failed"       : "Не удалось изменить вашу почту",
 
-	"user.settings.email.not_set"         : "Не указана",
-	"user.settings.email.enter_new_email" : "Введите новую почту",
-	"user.settings.email.updated"         : "Почта изменена",
-	"user.settings.email.update_failed"   : "Не удалось изменить вашу почту",
+	"user.settings.email.enter_access_code_for_current_email" : "Введите код доступа из письма, которое только что пришло (или сейчас придёт) вам на ваш текущий электронный ящик",
+	"user.settings.email.enter_access_code_for_new_email"     : "Введите код доступа из письма, которое только что пришло (или сейчас придёт) вам на ваш новый электронный ящик",
 
 	"user.settings.alias"                     : "Адресное имя",
 	"user.settings.alias.hint"                : "Адресное имя — это уникальный текстовый id пользователя, который используется в адресе страницы вашего профиля",

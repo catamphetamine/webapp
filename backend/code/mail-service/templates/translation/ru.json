@@ -9,7 +9,9 @@
 	"mail.reset_password.invitation": "Для того, чтобы сбросить пароль, пройдите на {password_reset_page} (временно заблокировать свою учётную запись вы можете в течение недели с момента получения этого письма)",
 	"mail.reset_password.password_reset_page": "страницу сброса пароля",
 
-	"mail.sign_in_code.title": "Код для входа",
-	"mail.sign_in_code.subject": "Код: {code}",
-	"mail.sign_in_code.text": "Ваш код для входа на сайт — {code}"
+	"mail.code.title": "Код",
+	"mail.code.subject": "Код: {code}",
+	"mail.code.text": "Ваш код для {action} — {code}",
+	"mail.code.action.sign_in": "входа на сайт",
+	"mail.code.action.change_email": "смены почты"
 }

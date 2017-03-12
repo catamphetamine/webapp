@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { redirect } from 'react-isomorphic-render'
 import { withRouter } from 'react-router'
+import { defineMessages } from 'react-intl'
 import { ActivityIndicator } from 'react-responsive-ui'
 
 import Register from './register'
@@ -20,22 +21,22 @@ import { preload_started, preload_finished } from '../../redux/preload'
 import
 {
 	connector,
-	sign_in_authenticated,
-	reset_sign_in_authenticated_error
+	sign_in,
+	reset_sign_in_error
 }
 from '../../redux/authentication'
 
 @connect
 (
-	state =>
+	({ authentication }) =>
 	({
-		...connector(state.authentication)
+		...connector(authentication)
 	}),
 	{
 		preload_started,
 		preload_finished,
-		sign_in_authenticated,
-		reset_sign_in_authenticated_error
+		sign_in,
+		reset_sign_in_error
 	}
 )
 @international
@@ -51,91 +52,11 @@ export default class Sign_in_form extends Component
 		this.sign_in = this.sign_in.bind(this)
 	}
 
-	start_registration = (email) =>
-	{
-		this.setState({ register: true, email })
-	}
-
-	finish_registration = () =>
-	{
-		this.setState({ register: false })
-	}
-
-	async sign_in()
-	{
-		const
-		{
-			authentication,
-			sign_in_authenticated,
-			open,
-			close,
-			preload_started,
-			preload_finished,
-			router:
-			{
-				location
-			}
-		}
-		= this.props
-
-		try
-		{
-			preload_started()
-
-			// Hide the modal
-			if (close)
-			{
-				close()
-			}
-
-			await sign_in_authenticated(authentication.id)
-
-			// Signed in.
-			// Refresh the page so that `authentication_token`
-			// is applied to the `http` tool.
-
-			// Redirect to the original destination
-			// if got here due to not being authenticated, etc.
-			if (location.pathname === '/unauthenticated'
-				|| location.pathname === '/unauthorized'
-				|| location.pathname === '/sign-in'
-				|| location.pathname === '/register')
-			{
-				return window.location = should_redirect_to(location)
-			}
-
-			// Refresh the current page after login
-			window.location = location.pathname + (location.search || '') + (location.hash || '')
-		}
-		catch (error)
-		{
-			preload_finished()
-
-			// Show the modal
-			if (open)
-			{
-				open()
-			}
-		}
-	}
-
-	sign_in_authenticated_error(error)
-	{
-		const { translate } = this.props
-
-		if (!error)
-		{
-			return
-		}
-
-		return translate(sign_in_messages.sign_in_error)
-	}
-
 	componentWillUnmount()
 	{
-		const { reset_sign_in_authenticated_error } = this.props
+		const { reset_sign_in_error } = this.props
 
-		reset_sign_in_authenticated_error()
+		reset_sign_in_error()
 	}
 
 	componentWillReceiveProps(new_props)
@@ -143,8 +64,8 @@ export default class Sign_in_form extends Component
 		const { authentication } = this.props
 
 		// When the user has authenticated
-		if (authentication && authentication.purpose === 'sign in' &&
-			new_props.authentication && new_props.authentication.purpose === 'sign in' &&
+		if (authentication && authentication.action === 'sign in' &&
+			new_props.authentication && new_props.authentication.action === 'sign in' &&
 			authentication.pending.length > 0 && new_props.authentication.pending.length === 0)
 		{
 			// Component will be unmounted shortly afterwards
@@ -156,8 +77,7 @@ export default class Sign_in_form extends Component
 	{
 		const
 		{
-			sign_in_authenticated_pending,
-			sign_in_authenticated_error,
+			sign_in_error,
 			style
 		}
 		= this.props
@@ -167,22 +87,18 @@ export default class Sign_in_form extends Component
 			return this.snapshot
 		}
 
-		const markup =
+		return this.snapshot =
 		(
-			<div className="sign-in-form" style={ style }>
-				{ sign_in_authenticated_error &&
-					<div className="rrui__form__error">
-						{ this.sign_in_authenticated_error(sign_in_authenticated_error) }
-					</div>
-				}
+			<div className="sign-in-form compact" style={ style }>
+				{ this.render_content() }
 
-				{ !sign_in_authenticated_pending && !sign_in_authenticated_error &&
-					this.render_content()
+				{ sign_in_error &&
+					<div className="rrui__form__error">
+						{ this.error(sign_in_error) }
+					</div>
 				}
 			</div>
 		)
-
-		return this.snapshot = markup
 	}
 
 	render_content()
@@ -211,7 +127,7 @@ export default class Sign_in_form extends Component
 				finish={ this.finish_registration }/>
 		}
 
-		if (authentication && authentication.purpose === 'sign in' && authentication.pending.not_empty())
+		if (authentication && authentication.action === 'sign in' && authentication.pending.not_empty())
 		{
 			if (authentication.pending[0].type === 'access code')
 			{
@@ -232,4 +148,92 @@ export default class Sign_in_form extends Component
 
 		return <Sign_in start_registration={ this.start_registration }/>
 	}
+
+	start_registration = (email) =>
+	{
+		this.setState({ register: true, email })
+	}
+
+	finish_registration = () =>
+	{
+		this.setState({ register: false })
+	}
+
+	async sign_in()
+	{
+		const
+		{
+			authentication,
+			sign_in,
+			open,
+			close,
+			preload_started,
+			preload_finished,
+			router:
+			{
+				location
+			}
+		}
+		= this.props
+
+		try
+		{
+			preload_started()
+
+			await sign_in(authentication.id)
+
+			// Hide the modal
+			// (if this form is displayed in a modal)
+			if (close)
+			{
+				close()
+			}
+
+			// Signed in.
+			// Refresh the page so that `authentication_token`
+			// is applied to the `http` tool.
+
+			// Redirect to the original destination
+			// if got here due to not being authenticated, etc.
+			if (location.pathname === '/unauthenticated'
+				|| location.pathname === '/unauthorized'
+				|| location.pathname === '/sign-in'
+				|| location.pathname === '/register')
+			{
+				return window.location = should_redirect_to(location)
+			}
+
+			// Refresh the current page after login
+			window.location = location.pathname + (location.search || '') + (location.hash || '')
+		}
+		catch (error)
+		{
+			preload_finished()
+
+			this.frozen = false
+			this.forceUpdate()
+		}
+	}
+
+	error(error)
+	{
+		const { translate } = this.props
+
+		if (!error)
+		{
+			return
+		}
+
+		return translate(messages.sign_in_failed)
+	}
 }
+
+export const messages = defineMessages
+({
+	sign_in_failed:
+	{
+		id             : 'sign_in.error',
+		description    : 'User sign in failed for some reason',
+		defaultMessage : `Couldn't sign in`
+	}
+})

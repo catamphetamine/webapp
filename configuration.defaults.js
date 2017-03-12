@@ -60,10 +60,10 @@ module.exports =
 		],
 		type:
 		{
-			user_picture:
+			poster_picture:
 			{
 				square: true,
-				path: 'user_pictures',
+				path: 'poster_pictures',
 				sizes:
 				[
 					300,

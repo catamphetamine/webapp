@@ -82,7 +82,7 @@ export default class Register extends Component
 
 				{/* "Register" */}
 				<h2 style={ styles.form_title }>
-					{ translate(user_bar_messages.register) }
+					{ translate(messages.register) }
 				</h2>
 
 				<div className="rrui__form__fields">
@@ -123,7 +123,7 @@ export default class Register extends Component
 				<Form.Actions className="rrui__form__actions--right">
 					{/* "Register" button */}
 					<Submit>
-						{ translate(user_bar_messages.register) }
+						{ translate(messages.register) }
 					</Submit>
 				</Form.Actions>
 			</Form>
@@ -157,6 +157,7 @@ export default class Register extends Component
 		catch (error)
 		{
 			console.error(error)
+			throw error
 		}
 	}
 
@@ -191,6 +192,12 @@ const styles = style
 
 export const messages = defineMessages
 ({
+	register:
+	{
+		id             : 'authentication.register',
+		description    : 'Registration action',
+		defaultMessage : 'Register'
+	},
 	name:
 	{
 		id             : 'registration.name',

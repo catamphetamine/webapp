@@ -43,7 +43,7 @@ export const upload_user_picture = action
 	event     : 'upload user picture',
 	action    : async (file, http) =>
 	{
-		return http.post(`/images/upload`, { type: 'user_picture', image: file })
+		return http.post(`/images/upload`, { type: 'poster_picture', image: file })
 	}
 },
 handler)

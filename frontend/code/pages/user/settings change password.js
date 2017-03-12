@@ -81,14 +81,14 @@ export default class Change_password extends Component
 				<Modal
 					isOpen={ changing_password }
 					close={ this.cancel_change_password }
-					reset={ this.reset }
 					busy={ check_current_password_pending || change_password_pending }
 					closeLabel={ translate(default_messages.cancel) }>
 
 					<Change_password_popup
 						password_set={ password_set }
 						turn_off={ turn_off }
-						close={ this.cancel_change_password }/>
+						close={ this.cancel_change_password }
+						reset={ this.reset }/>
 				</Modal>
 			</Editable_field>
 		)
@@ -168,6 +168,13 @@ class Change_password_popup extends Component
 		}
 	}
 
+	componentWillUnmount()
+	{
+		const { reset } = this.props
+
+		reset()
+	}
+
 	render()
 	{
 		const
@@ -185,7 +192,7 @@ class Change_password_popup extends Component
 
 		const markup =
 		(
-			<div>
+			<div className="compact">
 				<h2>
 					{ password_set ? (turn_off ? translate(messages.unset_password) : translate(messages.change_password)) : translate(messages.set_password) }
 				</h2>
@@ -486,7 +493,6 @@ class Enter_new_password extends Component
 		{
 			// Since Promise errors are swallowed
 			console.error(error)
-
 			throw error
 		}
 	}
@@ -636,7 +642,6 @@ class Enter_new_password_again extends Component
 		{
 			// Since Promise errors are swallowed
 			console.error(error)
-
 			throw error
 		}
 	}

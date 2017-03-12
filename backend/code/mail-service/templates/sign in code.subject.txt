@@ -1,1 +1,0 @@
-{{ translate('mail.sign_in_code.subject', { code: code }, { escape: false }) }}

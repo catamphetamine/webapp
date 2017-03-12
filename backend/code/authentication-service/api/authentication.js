@@ -23,43 +23,6 @@ const metrics = start_metrics
 
 export default function(api)
 {
-	// Returns multifactor authentication info,
-	// deleting it from the database if it succeeded.
-	// If it has not, returns `undefined`.
-	api.get('/', async function({ id })
-	{
-		const multifactor_authentication = await store.get_multifactor_authentication(id)
-
-		// Not throwing "404 Not found" error here to prevent hacking attempts
-		// (e.g. when an attacker finds a non-404 endpoint and keeps fetching it
-		//  until the user finishes the authentication process)
-		if (!multifactor_authentication)
-		{
-			return
-		}
-
-		// If this authentication is still pending, then return nothing.
-		if (multifactor_authentication.length > 0)
-		{
-			return
-		}
-
-		// If this authentication succeeded,
-		// then delete it from the database and return its data.
-		// (therefore a successful authentication can only be used once)
-		await store.delete_multifactor_authentication(multifactor_authentication.id)
-
-		// Check if this authentication succeeded, but expired since then.
-		// Not throwing a "status 500" error here just because this error is
-		// very unlikely and shouldn't ever happen so no need to handle it specifically.
-		if (Date.now() >= multifactor_authentication.expires.getTime())
-		{
-			return
-		}
-
-		return multifactor_authentication
-	})
-
 	// Returns user's authentication configuration
 	api.get('/info', async function({}, { user })
 	{
@@ -133,7 +96,7 @@ export default function(api)
 			// Activate the next authentication
 			if (pending)
 			{
-				await activate_authentication(multifactor_authentication.id, pending, multifactor_authentication.user)
+				await activate_authentication(multifactor_authentication.id, pending, multifactor_authentication.user, multifactor_authentication.action)
 			}
 
 			return pending || true
@@ -163,7 +126,7 @@ export default function(api)
 	// Authenticates a user with things like a password and an access code
 	api.post('/authenticate', async function(input, { user, internal_http })
 	{
-		const { using, purpose } = input
+		const { using, action, extra } = input
 
 		// Get user's private info required for authentication purposes
 		if (user)
@@ -176,7 +139,7 @@ export default function(api)
 		}
 
 		// Check unfinished multifactor authentications for this user
-		let multifactor_authentication = await store.get_user_multifactor_authentication(user.id, 'sign in')
+		let multifactor_authentication = await store.get_user_multifactor_authentication(user.id, action)
 
 		// Limit authentication request frequency for a user.
 		// (A finished multifactor authentication gets deleted right away)
@@ -197,7 +160,7 @@ export default function(api)
 			multifactor_authentication = await store.get_multifactor_authentication(multifactor_authentication.id)
 
 			// There can only be one multifactor authentication pending
-			// with a given `purpose` (for simplicity).
+			// for a given `action` (for simplicity).
 			await store.delete_multifactor_authentication(multifactor_authentication.id)
 		}
 
@@ -205,10 +168,14 @@ export default function(api)
 
 		let authentications
 
-		switch (purpose)
+		switch (action)
 		{
 			case 'change email':
 				authentications = using
+				for (const authentication of authentications)
+				{
+					await fill_in_authentication(authentication, user)
+				}
 				break
 
 			default:
@@ -223,26 +190,63 @@ export default function(api)
 		//  so even not handling it here
 		//  though it is quite trivial and could be done if needed)
 		const id = uuid.v4()
-		await store.create_multifactor_authentication(id, user.id, 'sign in', authentications, multifactor_authentication)
+		await store.create_multifactor_authentication(id, user.id, action, extra, authentications, multifactor_authentication)
 
 		// Activate the first authentication
-		await activate_authentication(id, authentications, user.id)
+		await activate_authentication(id, authentications, user.id, action)
 
 		// Return multifactor authentication info
 		const result =
 		{
 			id,
-			purpose,
+			action,
 			pending: public_pending_authentications(authentications)
 		}
 
 		return result
 	})
+
+	// Returns multifactor authentication info,
+	// deleting it from the database if it succeeded.
+	// If it has not, returns `undefined`.
+	api.get('/:id', async function({ id })
+	{
+		const multifactor_authentication = await store.get_multifactor_authentication(id)
+
+		// Not throwing "404 Not found" error here to prevent hacking attempts
+		// (e.g. when an attacker finds a non-404 endpoint and keeps fetching it
+		//  until the user finishes the authentication process)
+		if (!multifactor_authentication)
+		{
+			return
+		}
+
+		// If this authentication is still pending, then return nothing.
+		if (multifactor_authentication.length > 0)
+		{
+			return
+		}
+
+		// If this authentication succeeded,
+		// then delete it from the database and return its data.
+		// (therefore a successful authentication can only be used once)
+		await store.delete_multifactor_authentication(multifactor_authentication.id)
+
+		// Check if this authentication succeeded, but expired since then.
+		// Not throwing a "status 500" error here just because this error is
+		// very unlikely and shouldn't ever happen so no need to handle it specifically.
+		if (Date.now() >= multifactor_authentication.expires.getTime())
+		{
+			return
+		}
+
+		return multifactor_authentication
+	})
 }
 
 // Generates access code
 // (must only be called from throttled handlers)
-async function generate_access_code(user_id, locale, medium, recepient)
+async function generate_access_code(user_id, locale, medium, recepient, action)
 {
 	// Generate an access code
 
@@ -267,11 +271,12 @@ async function generate_access_code(user_id, locale, medium, recepient)
 			await http.post(`${address_book.mail_service}`,
 			{
 				to         : recepient,
-				template   : 'sign in code',
+				template   : 'code',
 				locale     : locale,
 				parameters :
 				{
-					code
+					code,
+					action : action.replace(/\s/g, '_')
 				}
 			})
 			break
@@ -286,7 +291,8 @@ async function generate_access_code(user_id, locale, medium, recepient)
 			// 	locale     : locale,
 			// 	parameters :
 			// 	{
-			// 		code
+			// 		code,
+			// 		action : action.replace(/\s/g, '_')
 			// 	}
 			// })
 			break
@@ -300,7 +306,7 @@ async function generate_access_code(user_id, locale, medium, recepient)
 }
 
 // Sends an access code, for example
-async function activate_authentication(multifactor_authentication_id, authentications, user_id)
+async function activate_authentication(multifactor_authentication_id, authentications, user_id, action)
 {
 	const authentication = authentications[0]
 
@@ -308,7 +314,7 @@ async function activate_authentication(multifactor_authentication_id, authentica
 	{
 		case 'access code':
 			// Generate access code
-			authentication.id = await generate_access_code(user_id, authentication.locale, authentication.medium, authentication.recepient)
+			authentication.id = await generate_access_code(user_id, authentication.locale, authentication.medium, authentication.recepient, action)
 			break
 
 		default:

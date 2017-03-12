@@ -313,12 +313,6 @@ export const messages = defineMessages
 		description    : 'Log out action',
 		defaultMessage : 'Sign out'
 	},
-	register:
-	{
-		id             : 'authentication.register',
-		description    : 'Registration action',
-		defaultMessage : 'Register'
-	},
 	notifications:
 	{
 		id             : 'user_menu.notifications',

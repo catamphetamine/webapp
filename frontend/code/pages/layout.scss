@@ -70,12 +70,22 @@
 // But at the same time the "Menu" page still has its widescreen menu shown
 .menu-page .rrui__menu
 {
-	display: block;
+	display : block;
+}
+
+.rrui__slideout-menu
+{
+	z-index : var(--slideout-menu-z-index);
 }
 
 .rrui__slideout-menu-button__icon-path
 {
 	fill : var(--white-color);
+}
+
+.rrui__slideout-menu-button:active .rrui__slideout-menu-button__icon-path
+{
+	fill : var(--base-color-lightest);
 }
 
 .menu-button-container

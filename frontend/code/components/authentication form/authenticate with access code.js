@@ -61,6 +61,7 @@ export default class Authenticate_with_access_code extends Component
 	{
 		const
 		{
+			description,
 			translate,
 			authenticate_error,
 			reset_authenticate_error,
@@ -85,11 +86,12 @@ export default class Authenticate_with_access_code extends Component
 					{ title }
 				</h2>
 
-				<p>
-					{ translate(messages.enter_access_code) }
-				</p>
-
 				<div className="rrui__form__fields">
+
+					<p className="rrui__form__field-description">
+						{ description || translate(messages.enter_access_code) }
+					</p>
+
 					{/* "Access code" */}
 					<Text_input
 						name="code"
@@ -139,6 +141,7 @@ export default class Authenticate_with_access_code extends Component
 		catch (error)
 		{
 			console.error(error)
+			throw error
 		}
 	}
 
@@ -217,7 +220,7 @@ export const messages = defineMessages
 	enter_access_code:
 	{
 		id             : 'authentication.enter_access_code',
-		description    : 'An instruction for a user to enter the access code he has just received in the email (or via SMS, in some future)',
+		description    : 'An instruction for the user to enter the access code he has just received in the email (or via SMS, in some future)',
 		defaultMessage : `Enter the access code from an email message you've just received (or gonna receive in a few moments)`
 	},
 	access_code:

@@ -6,3 +6,16 @@
 @include set_css_variable_content_section_padding_and_margin(calc(var(--unit) * 3.5), calc(var(--unit) * 1));
 
 @include columns(l-);
+
+.compact
+{
+	max-width    : calc(var(--unit) * 100);
+	margin-left  : auto;
+	margin-right : auto;
+
+	// .rrui__activity-indicator
+	// {
+	// 	margin-left  : auto;
+	// 	margin-right : auto;
+	// }
+}

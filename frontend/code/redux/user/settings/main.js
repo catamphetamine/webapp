@@ -41,24 +41,44 @@ export const revoke_authentication_token = action
 },
 handler)
 
+export const change_email_request = action
+({
+	namespace : 'user settings',
+	event     : 'change email request',
+	action    : (email, http) => http.post(`/users/email/request`, { email })
+},
+handler)
+
+export const reset_change_email_request_error = reset_error
+({
+	namespace : 'user settings',
+	event     : 'change email request'
+},
+handler)
+
 export const change_email = action
 ({
 	namespace : 'user settings',
 	event     : 'change email',
-	action    : async (email, password, http) =>
+	action    : (multifactor_authentication_id, http) =>
 	{
-		await http.patch(`/users/email`, { email, password })
-		return email
+		// The new `email` goes to the Redux state
+		return http.patch(`/users/email`, { multifactor_authentication_id })
 	},
 	result    : (state, result) =>
-	({
+	{
+		console.log('@@@@@ state', state)
+		console.log('@@@@@ result', result)
+
+	return {
 		...state,
 		user:
 		{
 			...state.user,
 			email : result
 		}
-	})
+	}
+}
 },
 handler)
 

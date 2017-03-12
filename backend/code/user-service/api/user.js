@@ -116,7 +116,7 @@ export default function(api)
 		destroy_cookie('authentication')
 	})
 
-	api.post('/sign-in', async function({ email, phone })
+	api.post('/sign-in/request', async function({ email, phone })
 	{
 		let user
 		let medium
@@ -157,12 +157,12 @@ export default function(api)
 	})
 
 	// Logs in the user if the multifactor authentication succeeded.
-	api.post('/sign-in/authenticated', async function({ id }, { ip, keys, set_cookie })
+	api.post('/sign-in', async function({ multifactor_authentication_id }, { ip, keys, set_cookie })
 	{
 		const multifactor_authentication = await http.get
 		(
-			`${address_book.authentication_service}`,
-			{ id, bot: true }
+			`${address_book.authentication_service}/${multifactor_authentication_id}`,
+			{ bot: true }
 		)
 
 		if (!multifactor_authentication)
@@ -173,7 +173,7 @@ export default function(api)
 			throw new errors.Access_denied()
 		}
 
-		if (multifactor_authentication.purpose !== 'sign in')
+		if (multifactor_authentication.action !== 'sign in')
 		{
 			// The authentication is not for sign in.
 			// (not returning an exact error message here
@@ -299,7 +299,7 @@ export default function(api)
 	})
 
 	// Request a change for user's `email`
-	api.patch('/email', async function({ email }, { user })
+	api.post('/email/request', async function({ email }, { user })
 	{
 		if (!user)
 		{
@@ -328,17 +328,21 @@ export default function(api)
 				medium    : 'email',
 				recepient : email
 			}],
-			purpose: 'change email'
+			action: 'change email',
+			extra:
+			{
+				email
+			}
 		})
 	})
 
 	// Changes user's email if the multifactor authentication succeeded.
-	api.patch('/email/authenticated', async function({ id }, { user })
+	api.patch('/email', async function({ multifactor_authentication_id }, { user, internal_http })
 	{
 		const multifactor_authentication = await http.get
 		(
-			`${address_book.authentication_service}`,
-			{ id, bot: true }
+			`${address_book.authentication_service}/${multifactor_authentication_id}`,
+			{ bot: true }
 		)
 
 		if (!multifactor_authentication)
@@ -349,7 +353,7 @@ export default function(api)
 			throw new errors.Access_denied()
 		}
 
-		if (multifactor_authentication.purpose !== 'change email')
+		if (multifactor_authentication.action !== 'change email')
 		{
 			// The authentication is not for email change.
 			// (not returning an exact error message here
@@ -365,6 +369,12 @@ export default function(api)
 			throw new errors.Access_denied()
 		}
 
+		// The new email
+		const email = multifactor_authentication.extra.email
+
+		// Get user's locale
+		user = await internal_http.get(address_book.user_service)
+
 		// Update user's email
 		await store.update_user(user.id, { email })
 
@@ -372,7 +382,7 @@ export default function(api)
 		const block_user_token = await store.generate_block_user_token(user.id, { self: true })
 
 		// Send a notification to the old mailbox
-		http.post(`${address_book.mail_service}`,
+		await http.post(`${address_book.mail_service}`,
 		{
 			to         : user.email,
 			subject    : 'mail.email_changed.title',
@@ -386,13 +396,15 @@ export default function(api)
 		})
 
 		// Send a confirmation to the new mailbox
-		http.post(`${address_book.mail_service}`,
+		await http.post(`${address_book.mail_service}`,
 		{
 			to         : email,
 			subject    : 'mail.email_changed.title',
 			template   : 'email changed (new mailbox)',
 			locale     : user.locale
 		})
+
+		return email
 	})
 
 	// Change user's `alias`
@@ -458,7 +470,7 @@ export default function(api)
 		picture = await internal_http.post
 		(
 			`${address_book.image_service}/api/save`,
-			{ type: 'user_picture', image: picture }
+			{ type: 'poster_picture', image: picture }
 		)
 
 		// Update the picture in `users` table
@@ -510,6 +522,7 @@ export default function(api)
 
 		if (!token || token.user !== user_id)
 		{
+		console.log('@@@@@@@@@@@@', token.user, user_id)
 			// Not being specific on the error message here
 			// to not make it easier for hackers
 			throw new errors.Not_found()
@@ -555,7 +568,10 @@ export default function(api)
 		await http.post
 		(
 			`${address_book.access_token_service}/*/revoke`,
-			{ block_user_token_id : token.id }
+			{
+				block_user_token_id : token.id,
+				user_id             : user.id
+			}
 		)
 
 		// Consume this block user token
@@ -618,6 +634,6 @@ function authenticate_user(user, medium)
 			type: 'access code',
 			medium
 		}],
-		purpose: 'sign in'
+		action: 'sign in'
 	})
 }

@@ -84,7 +84,15 @@ export default class User_profile extends Component
 
 		snack(translate(messages.user_blocked))
 
-		redirect(User.url(user))
+		// If it was a self block then the user has been signed out
+		if (block_user_token.self)
+		{
+			window.location = User.url(user)
+		}
+		else
+		{
+			redirect(User.url(user))
+		}
 	}
 
 	render()
@@ -104,13 +112,15 @@ export default class User_profile extends Component
 					{/* "Block user" */}
 					<Title>{ translate(self ? messages.header_self : messages.header) }</Title>
 
-					{/* "Blocking user ..." */}
-					<FormattedMessage
-						{...(self ? messages.blocking_self : messages.blocking_user)}
-						values={{ name: <User>{user}</User> }}
-						tagName="p"/>
+					<Form
+						submit={ submit(this.submit) }
+						className="compact">
 
-					<Form submit={submit(this.submit)}>
+						{/* "Blocking user ..." */}
+						<FormattedMessage
+							{...(self ? messages.blocking_self : messages.blocking_user)}
+							values={{ name: <User>{user}</User> }}
+							tagName="p"/>
 
 						{/* "Reason" */}
 						{ !self &&

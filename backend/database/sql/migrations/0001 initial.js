@@ -96,13 +96,18 @@ exports.up = function(knex, Promise)
 		// to hande duplicate UUIDs (which is extremely unlikely).
 		table.string('id', uuid_length).primary('multifactor_authentication_uuid')
 		table.bigint('user').notNullable().unique().references('users.id').onDelete('CASCADE')
-		table.string('purpose').notNullable()
+		table.string('action').notNullable()
+		table.jsonb('extra')
 		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
 		table.timestamp('latest_attempt')
 		table.timestamp('expires')
 		table.float('temperature').notNullable().defaultTo(0)
 		table.integer('attempts').notNullable().defaultTo(0)
-		table.text('pending')
+		table.jsonb('pending')
+
+		// "authentication_token_access_history_token_ip_unique" constraint name
+		// is used in authentication sql store.
+		table.unique(['user', 'action'], 'multifactor_authentication_action_and_user_unique')
 	})
 
 	.createTable('authentication_tokens', function(table)

@@ -1,0 +1,1 @@
+{{ translate('mail.code.subject', { code: code }, { escape: false }) }}

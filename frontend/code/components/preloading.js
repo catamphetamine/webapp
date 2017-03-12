@@ -23,7 +23,7 @@ export default class Preloading extends React.Component
 
 		const markup =
 		(
-			<div className={ classNames('preloading',
+			<div className={ classNames('preloading', 'rrui__fixed-full-width',
 			{
 				'preloading--shown'     : pending,
 				'preloading--immediate' : immediate

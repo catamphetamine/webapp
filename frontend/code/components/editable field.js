@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import classNames from 'classnames'
-import { Form as Redux_form, Field } from 'simpler-redux-form'
+import Redux_form, { Field } from 'simpler-redux-form'
 import { Form, Button, Switch } from 'react-responsive-ui'
 
 import TextInput from './form/text input'
@@ -12,14 +12,6 @@ const switch_slide_animation_duration = 250 // ms
 
 @international
 @Redux_form
-({
-	// Either return a `Promise` from the action
-	// or provide `submitting` property
-	submitting: (state, props) => props.saving,
-
-	// Exposing a public `.cancel()` method
-	methods: ['cancel']
-})
 export default class Editable_field extends Component
 {
 	state = {}
@@ -374,5 +366,8 @@ Editable_field.cancel = (ref) =>
 	ref = ref.wrappedInstance
 
 	// Then `simpler-redux-form` wrapper
+	ref = ref.ref()
+
+	// Finally, cancel
 	return ref.cancel()
 }

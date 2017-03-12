@@ -21,13 +21,14 @@ class Sql_store
 		return this.authentication.create(data)
 	}
 
-	create_multifactor_authentication(id, user_id, purpose, pending_authentications, previous_one)
+	create_multifactor_authentication(id, user_id, action, extra, pending_authentications, previous_one)
 	{
 		const multifactor_authentication =
 		{
 			id,
 			user: user_id,
-			purpose,
+			action,
+			extra,
 			pending: JSON.stringify(pending_authentications)
 		}
 
@@ -62,18 +63,14 @@ class Sql_store
 			throw new Error('No pending authentications in a multifactor authentication')
 		}
 
-		const old_pending = JSON.parse(multifactor_authentication.pending)
-		let pending = old_pending.filter(authentication => authentication.id !== authenticated_id)
+		const pending = multifactor_authentication.pending.filter(authentication => authentication.id !== authenticated_id)
 
-		if (old_pending.length === pending.length)
+		if (multifactor_authentication.pending.length === pending.length)
 		{
 			throw new Error('Not found')
 		}
 
-		await this.multifactor_authentication.update(multifactor_authentication.id,
-		{
-			pending : JSON.stringify(pending)
-		})
+		await this.update_multifactor_authentication_pending(multifactor_authentication.id, pending)
 
 		if (pending.length > 0)
 		{
@@ -105,12 +102,12 @@ class Sql_store
 		})
 	}
 
-	get_user_multifactor_authentication(user_id, purpose)
+	get_user_multifactor_authentication(user_id, action)
 	{
 		return this.multifactor_authentication.find
 		({
 			user : user_id,
-			purpose
+			action
 		})
 	}
 

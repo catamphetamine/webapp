@@ -13,13 +13,14 @@ import Time_ago   from '../time ago'
 import http_status_codes from '../../tools/http status codes'
 import international from '../../international/internationalize'
 import default_messages from '../messages'
+import { messages as sign_in_form_messages } from './sign in form'
 import { messages as user_bar_messages } from '../user bar'
 import { authentication_attempts_limit_exceeded_error } from '../authentication form/authentication form'
 
 import
 {
-	sign_in,
-	reset_sign_in_error,
+	sign_in_request,
+	reset_sign_in_request_error,
 	connector
 }
 from '../../redux/authentication'
@@ -33,8 +34,8 @@ from '../../redux/authentication'
 		locale : state.locale.locale
 	}),
 	{
-		sign_in,
-		reset_sign_in_error
+		sign_in_request,
+		reset_sign_in_request_error
 	}
 )
 @international
@@ -49,9 +50,9 @@ export default class Sign_in extends Component
 
 	componentWillUnmount()
 	{
-		const { reset_sign_in_error } = this.props
+		const { reset_sign_in_request_error } = this.props
 
-		reset_sign_in_error()
+		reset_sign_in_request_error()
 	}
 
 	is_user_blocked(error)
@@ -74,8 +75,8 @@ export default class Sign_in extends Component
 		const
 		{
 			translate,
-			sign_in_error,
-			reset_sign_in_error,
+			sign_in_request_error,
+			reset_sign_in_request_error,
 			submit,
 			submitting
 		}
@@ -84,9 +85,9 @@ export default class Sign_in extends Component
 		const markup =
 		(
 			<Form
-				submit={ submit(reset_sign_in_error, this.sign_in) }
+				submit={ submit(reset_sign_in_request_error, this.sign_in) }
 				busy={ submitting }
-				error={ this.sign_in_error(sign_in_error) }
+				error={ this.error(sign_in_request_error) }
 				post="/authentication/legacy/sign-in">
 
 				{/* "Sign in" */}
@@ -106,7 +107,7 @@ export default class Sign_in extends Component
 				<Form.Error/>
 
 				{/* Unblock user instructions */}
-				{ this.is_user_blocked(sign_in_error) &&
+				{ this.is_user_blocked(sign_in_request_error) &&
 					unblock_message
 				}
 
@@ -126,14 +127,14 @@ export default class Sign_in extends Component
 	{
 		const
 		{
-			sign_in,
+			sign_in_request,
 			start_registration
 		}
 		= this.props
 
 		try
 		{
-			await sign_in
+			await sign_in_request
 			({
 				email : fields.email
 			})
@@ -146,10 +147,11 @@ export default class Sign_in extends Component
 			}
 
 			console.error(error)
+			throw error
 		}
 	}
 
-	sign_in_error(error)
+	error(error)
 	{
 		const { translate, locale } = this.props
 
@@ -212,7 +214,7 @@ export default class Sign_in extends Component
 				values={ parameters }/>
 		}
 
-		return translate(messages.sign_in_error)
+		return translate(sign_in_form_messages.sign_in_failed)
 	}
 
 	validate_email = (value) =>
@@ -275,12 +277,6 @@ export const messages = defineMessages
 		id             : 'authentication.unblock_instructions',
 		description    : 'Instructions on unblocking this blocked user',
 		defaultMessage : `To request unblocking your account you can contact support by email: {support_email}`
-	},
-	sign_in_error:
-	{
-		id             : 'authentication.error',
-		description    : 'User sign in error',
-		defaultMessage : 'Couldn\'t sign in'
 	}
 })
 

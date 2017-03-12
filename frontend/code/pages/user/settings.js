@@ -226,6 +226,7 @@ export default class Settings_page extends Component
 		catch (error)
 		{
 			console.error(error)
+			throw error
 		}
 	}
 

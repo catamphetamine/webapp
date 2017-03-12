@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}
+	{{ translate('mail.code.title') }}
+{% endblock %}
+
+{% block css %}
+	{{ super() }}
+	{# <link rel="stylesheet" href="code.css"> #}
+{% endblock %}
+
+{% block content %}
+	<p>
+		{{ translate('mail.code.text', { code: '<strong>' + code + '</strong>', action: translate('mail.code.action.' + action) }, { escape: false }) }}
+	</p>
+{% endblock %}

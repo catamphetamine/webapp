@@ -102,7 +102,7 @@ export default function(api)
 	})
 
 	// Revokes a token
-	api.post('/:id/revoke', async function({ id, block_user_token_id }, { user, authentication_token_id })
+	api.post('/:id/revoke', async function({ id, user_id, block_user_token_id }, { user, authentication_token_id })
 	{
 		// Special case for "revoke all tokens".
 		// (e.g. when blocking a user)
@@ -113,12 +113,7 @@ export default function(api)
 				throw new errors.Input_rejected(`"block_user_token_id" is required`)
 			}
 
-			const block_user_token = await http.get(`${address_book.user_service}/block-user-token/${block_user_token_id}`)
-
-			if (!block_user_token)
-			{
-				throw new errors.Not_found('Block user token not found')
-			}
+			const block_user_token = await http.get(`${address_book.user_service}/${user_id}/block-user-token/${block_user_token_id}`)
 
 			for (let token of await store.get_all_valid_tokens(block_user_token.user.id))
 			{
