@@ -404,7 +404,7 @@ export default function(api)
 			locale     : user.locale
 		})
 
-		return email
+		// return email
 	})
 
 	// Change user's `alias`
@@ -522,7 +522,6 @@ export default function(api)
 
 		if (!token || token.user !== user_id)
 		{
-		console.log('@@@@@@@@@@@@', token.user, user_id)
 			// Not being specific on the error message here
 			// to not make it easier for hackers
 			throw new errors.Not_found()

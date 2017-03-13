@@ -3,33 +3,12 @@ import settings from '../../../react-isomorphic-render-async'
 
 const handler = create_handler(settings)
 
-export const get_user_self = action
-({
-	namespace : 'user settings',
-	event     : 'get user',
-	action    : async (http) =>
-	{
-		const user = await http.get('/users')
-
-		if (!user)
-		{
-			const error = new Error('Unauthenticated')
-			error.status = 401
-			throw error
-		}
-
-		return user
-	},
-	result    : 'user'
-},
-handler)
-
 export const get_user_authentication = action
 ({
 	namespace : 'user settings',
 	event     : 'get authentication configuration',
 	action    : http => http.get('/users/authentication'),
-	result    : 'authentication'
+	result    : 'authentication_info'
 },
 handler)
 
@@ -64,21 +43,7 @@ export const change_email = action
 	{
 		// The new `email` goes to the Redux state
 		return http.patch(`/users/email`, { multifactor_authentication_id })
-	},
-	result    : (state, result) =>
-	{
-		console.log('@@@@@ state', state)
-		console.log('@@@@@ result', result)
-
-	return {
-		...state,
-		user:
-		{
-			...state.user,
-			email : result
-		}
 	}
-}
 },
 handler)
 

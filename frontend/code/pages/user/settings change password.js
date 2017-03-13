@@ -39,7 +39,7 @@ import international from '../../international/internationalize'
 @connect
 (({ user_settings }) =>
 ({
-	authentication : user_settings.main.authentication
+	authentication_info : user_settings.main.authentication_info
 }))
 export default class Change_password extends Component
 {
@@ -51,7 +51,7 @@ export default class Change_password extends Component
 		{
 			check_current_password_pending,
 			change_password_pending,
-			authentication,
+			authentication_info,
 			translate
 		}
 		= this.props
@@ -63,7 +63,7 @@ export default class Change_password extends Component
 		}
 		= this.state
 
-		const password_set = exists(authentication.find_by({ type: 'password' }))
+		const password_set = exists(authentication_info.find_by({ type: 'password' }))
 
 		// {/* User's password */}
 

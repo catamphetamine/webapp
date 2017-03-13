@@ -3,6 +3,27 @@ import settings from '../react-isomorphic-render-async'
 
 const handler = create_handler(settings)
 
+export const get_self = action
+({
+	namespace : 'authentication',
+	event     : 'get user',
+	action    : async (http) =>
+	{
+		const user = await http.get('/users')
+
+		if (!user)
+		{
+			const error = new Error('Unauthenticated')
+			error.status = 401
+			throw error
+		}
+
+		return user
+	},
+	result    : 'user'
+},
+handler)
+
 export const sign_in_request = action
 ({
 	namespace : 'user',
@@ -149,7 +170,7 @@ handler.handle('user profile: update user info: done', (state, result) =>
 	}
 }))
 
-handler.addStateProperties('user')
+// handler.addStateProperties('user')
 
 // A little helper for Redux `@connect()`
 export const connector = state_connector(handler)

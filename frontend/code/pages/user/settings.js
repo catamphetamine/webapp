@@ -12,7 +12,6 @@ import http_status_codes from '../../tools/http status codes'
 
 import
 {
-	get_user_self,
 	get_user_authentication,
 	get_user_authentication_tokens,
 	change_alias,
@@ -22,6 +21,13 @@ import
 	connector
 }
 from '../../redux/user/settings/main'
+
+import
+{
+	get_self,
+	connector as authentication_connector
+}
+from '../../redux/authentication'
 
 import { snack } from '../../redux/snackbar'
 
@@ -38,14 +44,15 @@ import Authentication_tokens from './settings authentication tokens'
 {
 	return Promise.all
 	([
-		dispatch(get_user_self()),
+		// dispatch(get_self()),
 		dispatch(get_user_authentication())
 	])
 })
 @connect
 (
-	({ user_settings }) =>
+	({ authentication, user_settings }) =>
 	({
+		...authentication_connector(authentication),
 		...connector(user_settings.main)
 	}),
 	{

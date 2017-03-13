@@ -17,6 +17,7 @@ from '../../redux/user/settings/main'
 
 import
 {
+	get_self,
 	connector as authentication_connector
 }
 from '../../redux/authentication'
@@ -37,8 +38,8 @@ import { messages as authentication_messages } from '../../components/sign in fo
 (
 	({ authentication, user_settings }) =>
 	({
-		...connector(user_settings.main),
-		...authentication_connector(authentication)
+		...authentication_connector(authentication),
+		...connector(user_settings.main)
 	}),
 	{
 		change_email_request,
@@ -83,9 +84,6 @@ export default class Change_email extends Component
 			changing_email
 		}
 		= this.state
-
-		console.log('@ render')
-		console.log('user email', user.email)
 
 		// {/* User's email */}
 		const markup =
@@ -168,13 +166,14 @@ export default class Change_email extends Component
 (
 	({ authentication, user_settings }) =>
 	({
-		...connector(user_settings.main),
-		...authentication_connector(authentication)
+		...authentication_connector(authentication),
+		...connector(user_settings.main)
 	}),
 	{
 		change_email,
 		reset_change_email_error,
-		snack
+		snack,
+		get_self
 	}
 )
 @international
@@ -257,11 +256,22 @@ class Change_email_popup extends Component
 
 	async update_email(password)
 	{
-		const { change_email, authentication, translate, snack, close } = this.props
+		const
+		{
+			change_email,
+			get_self,
+			authentication,
+			translate,
+			snack,
+			close
+		}
+		= this.props
 
 		try
 		{
 			await change_email(authentication.id)
+
+			await get_self()
 
 			snack(translate(messages.email_updated))
 
