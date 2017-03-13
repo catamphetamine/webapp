@@ -72,6 +72,7 @@ export default class Change_password extends Component
 			<Editable_field
 				ref={ ref => this.password = ref }
 				label={ translate(password_authentication_messages.password) }
+				value={ password_set }
 				hideValue
 				enabled={ password_set }
 				disable={ this.turn_off_password }
