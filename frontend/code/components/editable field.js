@@ -24,8 +24,6 @@ export default class Editable_field extends Component
 		name        : PropTypes.string,
 		value       : PropTypes.any,
 		hideValue   : PropTypes.bool.isRequired,
-		enabled     : PropTypes.bool,
-		disable     : PropTypes.func,
 		hint        : PropTypes.string,
 		error       : PropTypes.string,
 		saving      : PropTypes.bool,
@@ -51,21 +49,18 @@ export default class Editable_field extends Component
 	{
 		super(props)
 
-		const { enabled } = this.props
+		const { value } = this.props
 
-		if (enabled !== undefined)
-		{
-			this.state.enabled = enabled
-		}
+		this.state.enabled = this.is_enabled(value)
 
 		this.save = this.save.bind(this)
 	}
 
 	componentWillReceiveProps(new_props)
 	{
-		if (new_props.enabled !== this.props.enabled)
+		if (new_props.value !== this.props.value)
 		{
-			this.setState({ enabled: new_props.enabled })
+			this.setState({ enabled: this.is_enabled(new_props.value) })
 		}
 	}
 
@@ -105,7 +100,7 @@ export default class Editable_field extends Component
 				{ label }
 
 				{/* Toggler */}
-				{ enabled !== undefined &&
+				{ this.props.switch &&
 					<Switch
 						value={ enabled }
 						onChange={ this.enable_disable }
@@ -236,6 +231,11 @@ export default class Editable_field extends Component
 		return markup
 	}
 
+	is_enabled(value)
+	{
+		return value || value === 0 ? true : false
+	}
+
 	cancel_editing = (callback) =>
 	{
 		// When `edit: false` is rendered
@@ -252,12 +252,14 @@ export default class Editable_field extends Component
 
 	cancel = () =>
 	{
-		const { cancel, enabled } = this.props
+		const { cancel, value } = this.props
 
 		if (cancel)
 		{
 			cancel()
 		}
+
+		const enabled = this.is_enabled(value)
 
 		// If tried to turn it on,
 		// then a modal popped up,
@@ -284,13 +286,13 @@ export default class Editable_field extends Component
 
 	async save(values)
 	{
-		const { name, save } = this.props
-		const value = values[name]
+		const { name, save, value } = this.props
+		const new_value = values[name]
 
 		// Save the new value (if it changed)
-		if (value !== this.props.value)
+		if (new_value !== value)
 		{
-			const result = save(value)
+			const result = save(new_value)
 
 			if (result && typeof result.then === 'function')
 			{
@@ -325,7 +327,7 @@ export default class Editable_field extends Component
 
 	enable_disable = (enabled) =>
 	{
-		const { disable } = this.props
+		const { save } = this.props
 
 		this.setState
 		({
@@ -348,7 +350,7 @@ export default class Editable_field extends Component
 				else
 				{
 					this.cancel_editing()
-					disable()
+					save()
 				}
 			},
 			switch_slide_animation_duration * 0.8)

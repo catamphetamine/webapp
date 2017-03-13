@@ -74,8 +74,8 @@ export default class Change_password extends Component
 				label={ translate(password_authentication_messages.password) }
 				value={ password_set }
 				hideValue
-				enabled={ password_set }
-				disable={ this.turn_off_password }
+				switch
+				save={ this.turn_off_password }
 				edit={ this.change_password }>
 
 				{/* Change password popup */}
