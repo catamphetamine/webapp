@@ -2,8 +2,6 @@ import { lookup_ip, can_lookup_ip } from '../../../../code/geocoding'
 import online_status_store from './online store'
 import Sql from '../../common/sql'
 
-// const authentication_token_access_history_table_name = 'authentication_token_access_history'
-
 class Sql_store
 {
 	ready()
@@ -14,17 +12,17 @@ class Sql_store
 	async connect()
 	{
 		this.users = new Sql('users')
-		this.authentication_token_access_history = new Sql('authentication_token_access_history')
-		this.authentication_tokens = new Sql('authentication_tokens',
+		this.access_token_history = new Sql('access_token_history')
+		this.access_tokens = new Sql('access_tokens',
 		{
-			history: Sql.has_many(this.authentication_token_access_history, 'token'),
-			user: Sql.belong_to(this.users)
+			history : Sql.many(this.access_token_history, 'token'),
+			user    : Sql.one(this.users)
 		})
 	}
 
 	get_all_valid_tokens(user_id)
 	{
-		return this.authentication_tokens.find_all
+		return this.access_tokens.find_all
 		({
 			user       : user_id,
 			revoked_at : null
@@ -33,12 +31,12 @@ class Sql_store
 
 	find_token_by_id(id)
 	{
-		return this.authentication_tokens.find(id)
+		return this.access_tokens.find(id)
 	}
 
 	revoke_token(token_id)
 	{
-		return this.authentication_tokens.update
+		return this.access_tokens.update
 		({
 			id         : token_id,
 			revoked_at : null
@@ -48,11 +46,11 @@ class Sql_store
 		})
 	}
 
-	async add_authentication_token(user_id, ip)
+	async add_access_token(user_id, ip)
 	{
 		const now = new Date()
 
-		const authentication_token_id = await this.authentication_tokens.create
+		const access_token_id = await this.access_tokens.create
 		({
 			created_at : now,
 			user       : user_id
@@ -62,7 +60,7 @@ class Sql_store
 		{
 			ip,
 			updated_at : now,
-			token      : authentication_token_id
+			token      : access_token_id
 		}
 
 		// Since there previously was no access history entry for the token for this IP,
@@ -77,9 +75,9 @@ class Sql_store
 			history_entry.place = place
 		}
 
-		await this.authentication_token_access_history.create(history_entry)
+		await this.access_token_history.create(history_entry)
 
-		return authentication_token_id
+		return access_token_id
 	}
 
 	async remove_excessive_tokens(user_id)
@@ -88,7 +86,7 @@ class Sql_store
 		const user_token_limit = 10
 
 		// Get a list of all authentication tokens for this user
-		const tokens = await this.authentication_tokens.find_all({ user: user_id }, { including: ['history'] })
+		const tokens = await this.access_tokens.find_all({ user: user_id }, { including: ['history'] })
 
 		// First the most active ones,
 		// then the most obsolete ones.
@@ -118,20 +116,20 @@ class Sql_store
 
 	async remove_token(token_id, user_id)
 	{
-		await this.authentication_tokens.delete(token_id, user_id)
+		await this.access_tokens.delete(token_id, user_id)
 	}
 
-	async record_access(user_id, authentication_token_id, ip, time)
+	async record_access(user_id, access_token_id, ip, time)
 	{
 		// `knex` doesn't support PostgreSQL upsert
 		// https://github.com/tgriesser/knex/issues/54#issuecomment-242074190
-		// await this.knex.raw(`INSERT INTO ${authentication_token_access_history_table_name} (id, ...) VALUES (?, ...) ON CONFLICT (id) DO UPDATE SET id = EXCLUDED.id RETURNING id`, [id])
+		// await this.knex.raw(`INSERT INTO ${access_token_history_table_name} (id, ...) VALUES (?, ...) ON CONFLICT (id) DO UPDATE SET id = EXCLUDED.id RETURNING id`, [id])
 
 		// Try to update access token history entry for this IP address
 		// with the new access time.
-		if (!await this.authentication_token_access_history.update
+		if (!await this.access_token_history.update
 		({
-			token: authentication_token_id,
+			token: access_token_id,
 			ip
 		},
 		{
@@ -141,9 +139,9 @@ class Sql_store
 			try
 			{
 				// Create access token history entry for this IP address
-				const history_entry_id = await this.authentication_token_access_history.create
+				const history_entry_id = await this.access_token_history.create
 				({
-					token: authentication_token_id,
+					token: access_token_id,
 					ip,
 					updated_at: time
 				})
@@ -157,7 +155,7 @@ class Sql_store
 				// Log the place info
 				if (place && place.city)
 				{
-					await this.authentication_token_access_history.update(history_entry_id, { place })
+					await this.access_token_history.update(history_entry_id, { place })
 				}
 			}
 			catch (error)
@@ -166,8 +164,8 @@ class Sql_store
 				// then it's ok, because the inserted access time is in fact the same.
 				//
 				// "duplicate key value violates unique constraint
-				//  "authentication_token_access_history_token_ip_unique""
-				if (error.message.has('authentication_token_access_history_token_ip_unique'))
+				//  "access_token_history_token_ip_unique""
+				if (error.message.has('access_token_history_token_ip_unique'))
 				{
 					// ok
 				}
@@ -181,7 +179,7 @@ class Sql_store
 
 	async get_tokens(user_id)
 	{
-		const tokens = await this.authentication_tokens.find_all({ user: user_id }, { including: ['history'] })
+		const tokens = await this.access_tokens.find_all({ user: user_id }, { including: ['history'] })
 
 		// First the most active ones,
 		// then the most obsolete ones.

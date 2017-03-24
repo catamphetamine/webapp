@@ -27,7 +27,7 @@ Features
 Running
 =======
 
-* make sure you have [Node.js version >= 6.0.0](https://www.npmjs.com/package/babel-preset-node6) installed
+* make sure you have [Node.js version >= 7.0.0](https://www.npmjs.com/package/babel-preset-node7) installed
 * make sure you have Postgresql and Redis installed and running
 * `npm run install-recursive` (runs `npm install` for all subdirectories recursively)
 * `cd backend`
@@ -734,12 +734,57 @@ Troubleshooting
 To do
 ====================
 
-Ввести сущность publisher, и паблишер может иметь профиль, писать новости, сообщения.
-Профиль сделать по нормальному урлу, с картинкой.
+проверить блокировку и самоблокировку
 
-publisher: id, name, alias, user, picture, background, description, introduction (post id), palette,
 
-У паблишера - список админов. Может иметь товары
+
+при создании пользователя - создавать постера, при создании постера — создавать stream
+
+при постинге сообщения - добавление его в stream беседы, потом выбор всех poster_ids where stream_id === ..., потом выбор по ним user_ids, потом выбор по ним notification_stream_ids, и потом уже создание каждому по notification'у (type = "message", stream_id = ..., event_id = ...),
+
+если беседа двух человек, то при прочтении будет поле ещё у самого post: read = true, которое будет проставляться при удалении notification_event'а.
+
+при постинге постером - получается список user_ids (из таблицы subscriptions), у каждого из них берётся notification_stream_id, и во все эти notification_stream_ids пишется post_id (а также в poster.posts_stream_id), а в posts, соответственно, создаётся сам post (type = 'post').
+
+/feed пользователя - берётся список всех stream_ids из таблицы subscriptions, где subscriber = user_id. далее делается запрос из таблицы posts с этими stream_ids и limit / skip order by created_at descending.
+(пользователь администратор — белка-рукоделка, пишет в женском роде, на неё подписаны все и это не отключается)
+
+stream.type: conversation, discussion, public discussion, blog.
+
+выборка комментариев к post'у: все posts у которых этот post_id.
+
+при постинге сообщения в беседе — выбирать все user из stream_posters, и им создавать notification'ы. выход из обсуждения — удаление из stream_posters.
+
+в беседах и обсуждениях posters делать всегда, потому что это не публичные.
+
+при создании post'а проверять, не забанен ли poster – каждый poster может банить других poster'ов.
+
+
+
+
+get_users_latest_activity чтобы не возвращал ошибку для poster'а, у которого нет user'а, и в этом случае не выводить этот блок в профиле
+
+CSS classes "user-profile" -> poster-profile
+
+по завершении update_poster_picture - менять картинку только если загрузил сам для себя (user'а), а не в паблик какой-нибудь
+
+сделать backround poster'а
+
+
+
+у постера сделать настройку адресного имени (внутри, видимо - вынести это из /settings)
+
+ввести возможность блокировки постера, если пользователь является админом
+
+
+
+отзыв токенов при блокировке - только если блочится poster пользователя
+
+при блокировке poster'а пользователя блокировать и самого пользователя (то же самое при разблокировке)
+
+посмотреть, как работает блокировка (как само- так и админом)
+
+
 
 
 

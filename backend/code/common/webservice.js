@@ -10,7 +10,7 @@ const common_options =
 
 const authentication_options = (is_access_token_service) =>
 ({
-	authentication : configuration.authentication_token_payload.read,
+	authentication : configuration.access_token_payload.read,
 	validate_token : async (token, ctx) =>
 	{
 		// Prevents recursion

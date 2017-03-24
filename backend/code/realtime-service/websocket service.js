@@ -90,7 +90,7 @@ export default function start()
 							{
 								const user = await http.get
 								(
-									`${address_book.user_service}`,
+									address_book.user_service,
 									{ bot: true },
 									{ headers: { Authorization: `Bearer ${token}` } }
 								)
@@ -101,7 +101,12 @@ export default function start()
 									socket.token = token
 
 									response.user = user
-									response.notifications = []
+									response.notifications = await http.get
+									(
+										`${address_book.social_service}`,
+										{ bot: true },
+										{ headers: { Authorization: `Bearer ${token}` } }
+									)
 								}
 							}
 							catch (error)

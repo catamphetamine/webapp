@@ -41,8 +41,8 @@ import Generic_error    from './pages/errors/generic'
 import Home             from './pages/home'
 import Sign_in          from './pages/sign in'
 import Menu             from './pages/menu'
-import Block_user       from './pages/user/block'
-import Profile          from './pages/user/profile'
+import Block_user       from './pages/poster/block'
+import Profile          from './pages/poster/profile'
 import Settings         from './pages/user/settings'
 import Log              from './pages/log'
 import User_agreement   from './pages/legal/user agreement'
@@ -52,11 +52,6 @@ const routes =
 (
 	<Route path="/" component={ Layout }>
 		<IndexRoute component={ Home }/>
-
-		<Route path="user">
-			<Route path=":user_id/block/:token_id" component={ Block_user }/>
-			<Route path=":id" component={ Profile }/>
-		</Route>
 
 		<Route path="settings" component={ Settings }/>
 		<Route path="logs" component={ Log }/>
@@ -70,7 +65,9 @@ const routes =
 		<Route path="unauthorized"    status={ 403 } component={ Unauthorized }/>
 		<Route path="error"           status={ 500 } component={ Generic_error }/>
 		<Route path="not-found"       status={ 404 } component={ Not_found }/>
-		<Route path="*"               status={ 404 } component={ Not_found }/>
+
+		<Route path=":poster_id/block/:token_id" component={ Block_user }/>
+		<Route path=":id" component={ Profile }/>
 	</Route>
 )
 

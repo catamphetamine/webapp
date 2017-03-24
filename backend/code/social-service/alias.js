@@ -147,4 +147,5 @@ async function generate_alias_test()
 	console.log('Generate unique alias tests passed')
 }
 
+// Causes weird syntax errors for some weird reason
 // generate_alias_test().catch(error => console.error(error))

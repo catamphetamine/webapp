@@ -12,7 +12,7 @@ export const get_user_authentication = action
 },
 handler)
 
-export const revoke_authentication_token = action
+export const revoke_access_token = action
 ({
 	namespace : 'user settings',
 	event     : 'revoke authentication token',
@@ -56,11 +56,11 @@ handler)
 
 export const change_alias = action
 ({
-	namespace : 'user settings',
+	namespace : 'poster',
 	event     : 'change alias',
-	action    : async (alias, http) =>
+	action    : async (id, alias, http) =>
 	{
-		await http.patch(`/users/alias`, { alias })
+		await http.patch(`/social/poster/${id}/alias`, { alias })
 		return alias
 	},
 	result    : (state, result) =>
@@ -113,7 +113,7 @@ export const set_load_advanced_settings_error = action
 },
 handler)
 
-export const get_user_authentication_tokens = action
+export const get_user_access_tokens = action
 ({
 	namespace : 'user settings',
 	event     : 'get user authentication tokens',
@@ -129,7 +129,7 @@ export const get_user_authentication_tokens = action
 
 		return tokens
 	},
-	result : 'authentication_tokens'
+	result : 'access_tokens'
 },
 handler)
 

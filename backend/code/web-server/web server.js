@@ -32,6 +32,9 @@ export default function start_web_server()
 	// Proxy /authentication requests to API server
 	web.proxy('/authentication', address_book.authentication_service, { name: 'Authenication service' })
 
+	// Proxy /social requests to social-service
+	web.proxy('/social', address_book.social_service, { name: 'Social service' })
+
 	// Proxy /users requests to user-service
 	web.proxy('/users', address_book.user_service, { name: 'User service' })
 

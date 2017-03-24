@@ -21,10 +21,10 @@
     "mongodb-migrate": "^2.0.0",
     "pg": "^6.1.2",
     "uuid": "^2.0.3",
-    "web-service": "^0.4.4"
+    "web-service": "^0.4.7"
   },
   "scripts": {
-    "development": "npm-run-all --parallel development:log-service:delayed development:authentication-service:delayed development:user-service:delayed development:password-service:delayed development:image-service:delayed development:mail-service:delayed development:realtime-service:delayed development:access-token-service:delayed development:web-server:delayed",
+    "development": "npm-run-all --parallel development:log-service:delayed development:authentication-service:delayed development:user-service:delayed development:password-service:delayed development:image-service:delayed development:mail-service:delayed development:realtime-service:delayed development:access-token-service:delayed development:social-service:delayed development:web-server:delayed",
     "development:log-service": "better-npm-run development:log-service",
     "development:access-token-service": "better-npm-run development:access-token-service",
     "development:realtime-service": "better-npm-run development:realtime-service",
@@ -33,6 +33,7 @@
     "development:password-service": "better-npm-run development:password-service",
     "development:image-service": "better-npm-run development:image-service",
     "development:mail-service": "better-npm-run development:mail-service",
+    "development:social-service": "better-npm-run development:social-service",
     "development:web-server": "better-npm-run development:web-server",
     "development:log-service:delayed": "npm-run-all delay development:log-service",
     "development:access-token-service:delayed": "npm-run-all delay delay development:access-token-service",
@@ -42,9 +43,10 @@
     "development:user-service:delayed": "npm-run-all delay delay delay delay delay delay development:user-service",
     "development:mail-service:delayed": "npm-run-all delay delay delay delay delay delay delay development:mail-service",
     "development:realtime-service:delayed": "npm-run-all delay delay delay delay delay delay delay delay development:realtime-service",
-    "development:web-server:delayed": "npm-run-all delay delay delay delay delay delay delay delay delay development:web-server",
+    "development:social-service:delayed": "npm-run-all delay delay delay delay delay delay delay delay delay development:social-service",
+    "development:web-server:delayed": "npm-run-all delay delay delay delay delay delay delay delay delay delay development:web-server",
     "delay": "node ./code/sleep 600",
-    "production": "npm-run-all --parallel production:log-service production:authentication-service production:user-service production:password-service production:image-service production:mail-service production:realtime-service production:access-token-service production:web-server",
+    "production": "npm-run-all --parallel production:log-service production:authentication-service production:user-service production:password-service production:image-service production:mail-service production:realtime-service production:access-token-service production:social-service production:web-server",
     "production:log-service": "better-npm-run production:log-service",
     "production:access-token-service": "better-npm-run production:access-token-service",
     "production:authentication-service": "better-npm-run production:authentication-service",
@@ -53,6 +55,7 @@
     "production:image-service": "better-npm-run production:image-service",
     "production:mail-service": "better-npm-run production:mail-service",
     "production:realtime-service": "better-npm-run production:realtime-service",
+    "production:social-service": "better-npm-run production:social-service",
     "production:web-server": "better-npm-run production:web-server",
     "postgresql-knex-init": "node database/sql/knex-init.js",
     "postgresql-migrate": "cd database/sql && knex migrate:latest",
@@ -129,6 +132,13 @@
         "BABEL_ENV": "server"
       }
     },
+    "development:social-service": {
+      "command": "\"../node_modules/.bin/nodemon\" ./code/social-service/entry.js --watch ./code/social-service --watch ./code/common",
+      "env": {
+        "NODE_ENV": "development",
+        "BABEL_ENV": "server"
+      }
+    },
     "production:web-server": {
       "command": "node --harmony ./code/web-server/entry.js",
       "env": {
@@ -173,6 +183,13 @@
     },
     "production:realtime-service": {
       "command": "node --harmony ./code/realtime-service/entry.js",
+      "env": {
+        "NODE_ENV": "production",
+        "BABEL_ENV": "server"
+      }
+    },
+    "production:social-service": {
+      "command": "node --harmony ./code/social-service/entry.js",
       "env": {
         "NODE_ENV": "production",
         "BABEL_ENV": "server"

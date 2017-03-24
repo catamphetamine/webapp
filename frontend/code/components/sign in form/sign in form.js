@@ -190,7 +190,7 @@ export default class Sign_in_form extends Component
 			}
 
 			// Signed in.
-			// Refresh the page so that `authentication_token`
+			// Refresh the page so that `access_token`
 			// is applied to the `http` tool.
 
 			// Redirect to the original destination

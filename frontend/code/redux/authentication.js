@@ -9,7 +9,7 @@ export const get_self = action
 	event     : 'get user',
 	action    : async (http) =>
 	{
-		const user = await http.get('/users')
+		const user = await http.get('/users', { poster: true })
 
 		if (!user)
 		{
@@ -136,14 +136,13 @@ handler.handle('user settings: change email request: done', (state, result) =>
 }))
 
 // Updates user picture in the user bar when it is changed on the profile page
-handler.handle('user: update user picture: done', (state, result) =>
+handler.handle('poster: update poster picture: done', (state, result) =>
 ({
 	...state,
 	user:
 	{
 		...state.user,
-		picture: result.id,
-		picture_sizes: result.sizes
+		picture: result
 	}
 }))
 
@@ -160,13 +159,13 @@ handler.handle('user settings: change alias: done', (state, result) =>
 }))
 
 // Updates user name in the user bar when it is changed on the profile page
-handler.handle('user profile: update user info: done', (state, result) =>
+handler.handle('poster: update poster info: done', (state, result) =>
 ({
 	...state,
 	user:
 	{
 		...state.user,
-		name : result.name
+		poster: result
 	}
 }))
 

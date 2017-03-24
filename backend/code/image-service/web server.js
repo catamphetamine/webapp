@@ -37,7 +37,7 @@ export default function start_web_service()
 {
 	const web = web_service
 	({
-		authentication : true,
+		authentication : configuration.access_token_payload.read,
 		parse_body     : false,
 		routing        : '/api'
 	})

@@ -358,7 +358,14 @@
 .rrui__select__selected,
 .rrui__select__option
 {
-	color      : inherit;
+	color : inherit;
+}
+
+/* Not introducing an animation on `.rrui__select__option`
+   because it would introduce a little clutter due to
+   focused option animation in autocomplete mode */
+.rrui__select__selected
+{
 	transition : background-color var(--button-animation-duration) var(--button-animation-easing), color var(--button-animation-duration) var(--button-animation-easing);
 }
 

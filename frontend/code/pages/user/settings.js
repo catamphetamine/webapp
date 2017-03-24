@@ -13,7 +13,7 @@ import http_status_codes from '../../tools/http status codes'
 import
 {
 	get_user_authentication,
-	get_user_authentication_tokens,
+	get_user_access_tokens,
 	change_alias,
 	reset_change_alias_error,
 	set_load_advanced_settings_pending,
@@ -38,7 +38,7 @@ import Editable_field  from '../../components/editable field'
 
 import Change_email    from './settings change email'
 import Change_password from './settings change password'
-import Authentication_tokens from './settings authentication tokens'
+import Access_tokens from './settings access tokens'
 
 @preload(({ dispatch }) =>
 {
@@ -56,7 +56,7 @@ import Authentication_tokens from './settings authentication tokens'
 		...connector(user_settings.main)
 	}),
 	{
-		get_user_authentication_tokens,
+		get_user_access_tokens,
 		change_alias,
 		reset_change_alias_error,
 		set_load_advanced_settings_pending,
@@ -118,13 +118,13 @@ export default class Settings_page extends Component
 		const
 		{
 			user,
-			authentication_tokens,
+			access_tokens,
 			translate,
 			change_alias_pending,
 			change_alias_error,
 			load_advanced_settings_pending,
 			load_advanced_settings_error,
-			revoking_authentication_token
+			revoking_access_token
 		}
 		= this.props
 
@@ -200,7 +200,7 @@ export default class Settings_page extends Component
 
 						{ /* Authentication tokens */ }
 						{ showing_advanced_settings &&
-							<Authentication_tokens/>
+							<Access_tokens/>
 						}
 					</div>
 				</div>
@@ -226,7 +226,7 @@ export default class Settings_page extends Component
 		{
 			const { change_alias, translate, snack } = this.props
 
-			await change_alias(alias)
+			await change_alias(poster.id, alias)
 
 			snack(translate(messages.alias_updated))
 		}
@@ -243,7 +243,7 @@ export default class Settings_page extends Component
 		{
 			set_load_advanced_settings_pending,
 			set_load_advanced_settings_error,
-			get_user_authentication_tokens
+			get_user_access_tokens
 		}
 		= this.props
 
@@ -251,7 +251,7 @@ export default class Settings_page extends Component
 		{
 			set_load_advanced_settings_error()
 			set_load_advanced_settings_pending(true)
-			await get_user_authentication_tokens()
+			await get_user_access_tokens()
 		}
 		catch (error)
 		{

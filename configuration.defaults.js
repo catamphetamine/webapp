@@ -137,6 +137,13 @@ module.exports =
 			port: 3002
 		}
 	},
+	social_service:
+	{
+		http:
+		{
+			port: 3011
+		}
+	},
 	web_service_secret_keys: ['hammertime'],
 	development:
 	{
@@ -153,16 +160,16 @@ module.exports =
 		}
 	},
 	// upload_folder: 'storage',
-	authentication_token_payload:
+	access_token_payload:
 	{
-		write: user =>
+		write: (user) =>
 		({
 			role       : user.role,
 			// moderation : user.moderation,
 			// switches   : user.switches
 		}),
 
-		read: payload =>
+		read: (payload) =>
 		({
 			role       : payload.role,
 			// moderation : payload.moderation,

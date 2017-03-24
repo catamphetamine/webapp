@@ -47,7 +47,7 @@
     "react-dnd-html5-backend": "^2.1.2",
     "react-dom": "^15.4.2",
     "react-intl": "^2.1.2",
-    "react-isomorphic-render": "^10.1.12",
+    "react-isomorphic-render": "^10.2.11",
     "react-redux": "^5.0.2",
     "react-responsive-ui": "^0.5.8",
     "react-router": "^3.0.0",
@@ -64,7 +64,7 @@
     "url-loader": "^0.5.5",
     "webpack": "^2.2.1",
     "webpack-dev-middleware": "^1.9.0",
-    "webpack-isomorphic-tools": "^3.0.0"
+    "webpack-isomorphic-tools": "^3.0.2"
   },
   "devDependencies": {
     "redux-devtools": "^3.3.1",

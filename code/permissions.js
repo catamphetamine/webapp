@@ -2,7 +2,7 @@ const role_permissions =
 {
 	moderator:
 	{
-		'block user'   : true,
+		'block poster'   : true,
 		// 'unblock user' : true
 	}
 }

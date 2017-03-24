@@ -1,9 +1,6 @@
-import { http, errors, jwt } from 'web-service'
-import add_weeks from 'date-fns/add_weeks'
-import is_before from 'date-fns/is_before'
+import { http, errors } from 'web-service'
 
 import store from '../store'
-import generate_alias from '../alias'
 
 import
 {
@@ -45,12 +42,12 @@ export default function(api)
 			throw new errors.Input_rejected(`"locale" is required`)
 		}
 
-		if (await store.find_user_by_email(email))
+		if (await store.find_by_email(email))
 		{
 			throw new errors.Error(`User is already registered for this email`, { field: 'email' })
 		}
 
-		const is_the_first_user = await store.get_user_count() === 0
+		const is_the_first_user = await store.count() === 0
 
 		const privileges =
 		{
@@ -69,24 +66,8 @@ export default function(api)
 			...privileges
 		}
 
-		// Try to derive a unique alias from email
-		try
-		{
-			const alias = await generate_alias(email, alias => store.can_take_alias(alias))
-
-			if (store.validate_alias(alias))
-			{
-				user.alias = alias
-			}
-		}
-		catch (error)
-		{
-			log.error(`Couldn't generate alias for email ${email}`, error)
-			// `alias` is not required
-		}
-
 		// Create user
-		user.id = await store.create_user(user)
+		user.id = await store.create(user)
 
 		// // Add authentication data (password) for this user
 		// await http.post(`${address_book.authentication_service}/authentication-data`,
@@ -101,7 +82,7 @@ export default function(api)
 	})
 
 	// Revokes access token and clears authentication cookie
-	api.post('/sign-out', async function({}, { user, authentication_token_id, destroy_cookie, internal_http })
+	api.post('/sign-out', async function({}, { user, access_token_id, destroy_cookie, internal_http })
 	{
 		// Must be logged in
 		if (!user)
@@ -110,7 +91,7 @@ export default function(api)
 		}
 
 		// Revoke access token
-		await internal_http.post(`${address_book.access_token_service}/${authentication_token_id}/revoke`)
+		await internal_http.post(`${address_book.access_token_service}/${access_token_id}/revoke`)
 
 		// Clear authentcication cookie
 		destroy_cookie('authentication')
@@ -123,7 +104,7 @@ export default function(api)
 
 		if (exists(email))
 		{
-			user = await store.find_user_by_email(email)
+			user = await store.find_by_email(email)
 			medium = 'email'
 
 			if (!user)
@@ -134,7 +115,7 @@ export default function(api)
 		else if (exists(phone))
 		{
 			// Currently not implemented
-			user = await store.find_user_by_phone(phone)
+			user = await store.find_by_phone(phone)
 			medium = 'phone'
 
 			if (!user)
@@ -182,13 +163,13 @@ export default function(api)
 		}
 
 		// Get full user info
-		const user = await store.find_user_by_id(multifactor_authentication.user)
+		const user = await store.find(multifactor_authentication.user)
 
 		// Issue JWT token (the real one)
 		const token = await http.post(`${address_book.access_token_service}`,
 		{
 			user_id : user.id,
-			payload : configuration.authentication_token_payload.write(user),
+			payload : configuration.access_token_payload.write(user),
 			ip
 		})
 
@@ -255,7 +236,7 @@ export default function(api)
 		// If there's no current session for the user,
 		// then try to fetch user's latest activity time from the database
 
-		const user = await store.find_user(id)
+		const user = await store.find(id)
 
 		if (!user)
 		{
@@ -279,14 +260,14 @@ export default function(api)
 			throw new errors.Unauthenticated()
 		}
 
-		await store.update_user(user.id, { was_online_at: date })
+		await store.update(user.id, { was_online_at: date })
 	})
 
 	// A dummy endpoint to update a user's online status
 	api.post('/ping', () => {})
 
 	// Get currently logged in user (if any)
-	api.get('/', async function({}, { user })
+	api.get('/', async function({ poster }, { user })
 	{
 		// If no valid JWT token present,
 		// then assume this user is not authenticated.
@@ -295,7 +276,47 @@ export default function(api)
 			return
 		}
 
-		return await get_user_self(user.id)
+		return await get_user_self(user.id, { poster: true })
+	})
+
+	api.post('/:id/block', async function({ id, token_id, poster_id, reason }, { user })
+	{
+		// Makes sure the block token is valid
+		await http.get(`${address_book.social_service}/poster/${poster_id}/block-poster-token/${token_id}`)
+
+		// Getting user id from `poster` for extra security
+		const poster = await http.get(`${address_book.social_service}/poster/${poster_id}`)
+
+		if (poster.user !== id)
+		{
+			throw new errors.Access_denied()
+		}
+
+		// Block the user
+		await store.update(id,
+		{
+			blocked_at     : new Date(),
+			blocked_by     : user ? user.id : id,
+			blocked_reason : reason
+		})
+	})
+
+	api.post('/:id/unblock', async function({ id }, { user })
+	{
+		// Only `moderator` or `administrator` can unblock users.
+		// Also a poweruser can't unblock himself
+		// (e.g. in case he was blocked for misbehaving).
+		if (!can('unblock user', user) || user.id === id)
+		{
+			throw new errors.Unauthorized()
+		}
+
+		await store.update(id,
+		{
+			blocked_at     : null,
+			blocked_reason : null,
+			blocked_by     : null
+		})
 	})
 
 	// Request a change for user's `email`
@@ -312,7 +333,7 @@ export default function(api)
 		}
 
 		// To get things like user's `email` and `locale`
-		user = await store.find_user_by_id(user.id)
+		user = await store.find(user.id)
 
 		return await http.post(`${address_book.authentication_service}/authenticate`,
 		{
@@ -372,14 +393,15 @@ export default function(api)
 		// The new email
 		const email = multifactor_authentication.extra.email
 
+		// Generate a (self) block user token
+		const poster = await http.get(`${address_book.social_service}/poster/user/${user.id}`)
+		const block_poster_token = await internal_http.post(`${address_book.social_service}/poster/${poster.id}/block-poster-token`)
+
 		// Get user's locale
 		user = await internal_http.get(address_book.user_service)
 
 		// Update user's email
-		await store.update_user(user.id, { email })
-
-		// Generate a (self) block user token
-		const block_user_token = await store.generate_block_user_token(user.id, { self: true })
+		await store.update(user.id, { email })
 
 		// Send a notification to the old mailbox
 		await http.post(`${address_book.mail_service}`,
@@ -390,7 +412,7 @@ export default function(api)
 			parameters :
 			{
 				email,
-				block_account_link : `https://${configuration.website}/user/${user.id}/block/${block_user_token}`
+				block_account_link : `https://${configuration.website}/${user.id}/block/${block_poster_token}`
 			},
 			locale     : user.locale
 		})
@@ -407,32 +429,6 @@ export default function(api)
 		// return email
 	})
 
-	// Change user's `alias`
-	api.patch('/alias', async function({ alias }, { user })
-	{
-		if (!user)
-		{
-			throw new errors.Unauthenticated()
-		}
-
-		if (!alias)
-		{
-			throw new errors.Input_rejected('"alias" is required', { field: 'alias' })
-		}
-
-		if (!store.validate_alias(alias))
-		{
-			throw new errors.Input_rejected('Invalid alias', { field: 'alias' })
-		}
-
-		if (!await store.can_take_alias(alias, user.id))
-		{
-			throw new errors.Conflict('Alias is already taken', { field: 'alias' })
-		}
-
-		await store.change_alias(user.id, alias)
-	})
-
 	// Change user data
 	api.patch('/', async function(data, { user })
 	{
@@ -446,7 +442,7 @@ export default function(api)
 			throw new errors.Input_rejected(`"name" is required`)
 		}
 
-		await store.update_user(user.id,
+		await store.update(user.id,
 		{
 			name    : data.name,
 			country : data.country,
@@ -454,35 +450,6 @@ export default function(api)
 		})
 
 		return await get_user_self(user.id)
-	})
-
-	// Change user picture
-	api.post('/picture', async function(picture, { user, authentication_token, internal_http })
-	{
-		if (!user)
-		{
-			throw new errors.Unauthenticated()
-		}
-
-		const user_data = await get_user_self(user.id)
-
-		// Save the uploaded picture
-		picture = await internal_http.post
-		(
-			`${address_book.image_service}/api/save`,
-			{ type: 'poster_picture', image: picture }
-		)
-
-		// Update the picture in `users` table
-		await store.update_picture(user.id, picture)
-
-		// Delete the previous user picture (if any)
-		if (user_data.picture)
-		{
-			await internal_http.delete(`${address_book.image_service}/api/${user_data.picture}`)
-		}
-
-		return picture
 	})
 
 	// Change user's (or guest's) locale
@@ -496,109 +463,6 @@ export default function(api)
 		{
 			set_cookie('locale', locale, { signed: false })
 		}
-	})
-
-	// Obtains a block user token
-	api.post('/:user_id/block-user-token', async ({ user_id }, { user }) =>
-	{
-		if (!user)
-		{
-			throw new errors.Unauthenticated()
-		}
-
-		// Can block self, also admins or moderators can block other users.
-		if (!(user.id === user_id || can('block user', user)))
-		{
-			throw new errors.Unauthorized()
-		}
-
-		return await store.generate_block_user_token(user_id)
-	})
-
-	// Gets extended block user token info
-	api.get('/:user_id/block-user-token/:token_id', async ({ user_id, token_id }, { user }) =>
-	{
-		const token = await store.get_block_user_token(token_id)
-
-		if (!token || token.user !== user_id)
-		{
-			// Not being specific on the error message here
-			// to not make it easier for hackers
-			throw new errors.Not_found()
-		}
-
-		// Check if the token expired (is valid for a week)
-		if (is_before(add_weeks(token.created_at, 1), new Date()))
-		{
-			throw new errors.Not_found(`Token expired`)
-		}
-
-		// Get extended user info (like name) for display on the page
-		token.user = await get_user(token.user)
-
-		return token
-	})
-
-	// Blocks a user
-	api.post('/:user_id/block', async ({ user_id, token_id, reason }, { user }) =>
-	{
-		// Verify block user token
-
-		const token = await store.get_block_user_token(token_id)
-
-		if (!token || token.user !== user_id)
-		{
-			// Not being specific on the error message here
-			// to not make it easier for hackers
-			throw new errors.Not_found()
-		}
-
-		// Block the user
-		await store.update_user(token.user,
-		{
-			blocked_at     : new Date(),
-			blocked_by     : user ? user.id : token.user,
-			blocked_reason : reason
-		})
-
-		// Revoke all user's tokens
-		// (is performed after marking the user as blocked
-		//  to prevent new access tokens being issued concurrently)
-		await http.post
-		(
-			`${address_book.access_token_service}/*/revoke`,
-			{
-				block_user_token_id : token.id,
-				user_id             : user.id
-			}
-		)
-
-		// Consume this block user token
-		await store.remove_block_user_token(token.id)
-	})
-
-	api.post('/unblock', async ({ id }, { user }) =>
-	{
-		if (!user)
-		{
-			throw new errors.Unauthorized()
-		}
-
-		// Only `moderator` or `administrator` can unblock users.
-		// Also a poweruser can't unblock himself.
-		if (!can('unblock user', user) || user.id === id)
-		{
-			throw new errors.Unauthorized()
-		}
-
-		log.info(`Unblocked user #${id} by moderator user #${user.id}`)
-
-		await store.update_user(id,
-		{
-			blocked_at     : null,
-			blocked_reason : null,
-			blocked_by     : null
-		})
 	})
 
 	// This pattern can potentially match other GET requests
@@ -617,7 +481,7 @@ async function user_is_blocked(user)
 	throw new errors.Access_denied('User is blocked',
 	{
 		self_block,
-		blocked_by     : !self_block && public_user(await store.find_user_by_id(user.blocked_by)),
+		blocked_by     : !self_block && public_user(await get_user(user.blocked_by, { poster: true })),
 		blocked_at     : user.blocked_at,
 		blocked_reason : user.blocked_reason
 	})

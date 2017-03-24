@@ -9,7 +9,7 @@ const latest_activity_time_refresh_interval = 60 * 1000 // one minute
 export default function(api)
 {
 	// Returns a list of all tokens for this user
-	api.get('/', async function({}, { user, authentication_token_id })
+	api.get('/', async function({}, { user, access_token_id })
 	{
 		if (!user)
 		{
@@ -21,7 +21,7 @@ export default function(api)
 		// Mark the currently used token
 		for (let token of tokens)
 		{
-			if (token.id === authentication_token_id)
+			if (String(token.id) === access_token_id)
 			{
 				token.currently_used = true
 			}
@@ -31,7 +31,7 @@ export default function(api)
 	})
 
 	// Checks if a token is valid
-	api.get('/valid', async function({ bot }, { ip, authentication_token_id, user, internal_http })
+	api.get('/valid', async function({ bot }, { ip, access_token_id, user, internal_http })
 	{
 		// The user will be populated inside `common/web server`
 		// out of the token data if the token is valid.
@@ -50,13 +50,13 @@ export default function(api)
 		// The next step is to check that the token hasn't been revoked.
 
 		// Try to get token validity status from cache
-		const is_valid = await online_status_store.check_access_token_validity(user.id, authentication_token_id)
+		const is_valid = await online_status_store.check_access_token_validity(user.id, access_token_id)
 
 		// If such a key exists in Redis, then the token is valid.
 		// Else, query the database for token validity
 		if (!is_valid)
 		{
-			const token = await store.find_token_by_id(authentication_token_id)
+			const token = await store.find_token_by_id(access_token_id)
 
 			const valid = token && !token.revoked_at
 
@@ -68,7 +68,7 @@ export default function(api)
 			// and the token validition being cached, but I assume exploitability
 			// of this race condition practically equal to zero.
 			//
-			await online_status_store.set_access_token_validity(user.id, authentication_token_id, valid)
+			await online_status_store.set_access_token_validity(user.id, access_token_id, valid)
 
 			if (!valid)
 			{
@@ -80,7 +80,7 @@ export default function(api)
 		// then update this authentication token's last access IP and time
 		if (!bot)
 		{
-			record_access(user.id, authentication_token_id, ip, internal_http)
+			record_access(user.id, access_token_id, ip, internal_http)
 		}
 
 		// The token is considered valid
@@ -91,7 +91,7 @@ export default function(api)
 	api.post('/', async function({ user_id, payload, ip }, { keys })
 	{
 		// Create a database entry for the new token
-		const token_id = await store.add_authentication_token(user_id, ip)
+		const token_id = await store.add_access_token(user_id, ip)
 
 		// If there's too much tokens, then remove excessive ones.
 		// (the newly created one being the most recently used one)
@@ -102,22 +102,27 @@ export default function(api)
 	})
 
 	// Revokes a token
-	api.post('/:id/revoke', async function({ id, user_id, block_user_token_id }, { user, authentication_token_id })
+	api.post('/:id/revoke', async function({ id, poster_id, block_poster_token_id }, { user, access_token_id })
 	{
 		// Special case for "revoke all tokens".
 		// (e.g. when blocking a user)
 		if (id === '*')
 		{
-			if (!block_user_token_id)
+			if (!block_poster_token_id)
 			{
-				throw new errors.Input_rejected(`"block_user_token_id" is required`)
+				throw new errors.Input_rejected(`"block_poster_token_id" is required`)
 			}
 
-			const block_user_token = await http.get(`${address_book.user_service}/${user_id}/block-user-token/${block_user_token_id}`)
+			// Makes sure the block token is valid
+			await http.get(`${address_book.social_service}/poster/${poster_id}/block-poster-token/${block_poster_token_id}`)
 
-			for (let token of await store.get_all_valid_tokens(block_user_token.user.id))
+			// Get the user being blocked
+			const poster = await http.get(`${address_book.social_service}/poster/${poster_id}`)
+
+			// Revoke all tokens of this user
+			for (const token of await store.get_all_valid_tokens(poster.user))
 			{
-				await revoke_token(token.id, block_user_token.user.id)
+				await revoke_token(token.id, poster.user)
 			}
 
 			return
@@ -130,7 +135,7 @@ export default function(api)
 
 		if (id === 'current')
 		{
-			id = authentication_token_id
+			id = access_token_id
 		}
 
 		await revoke_token(id, user.id)
@@ -160,30 +165,30 @@ async function revoke_token(id, revoking_user_id)
 	await online_status_store.clear_access_token_validity(token.user, id)
 }
 
-async function record_access(user_id, authentication_token_id, ip, internal_http)
+async function record_access(user_id, access_token_id, ip, internal_http)
 {
 	try
 	{
 		const now = Date.now()
 
 		// Update latest access time: both for this (token, IP) pair and for the user
-		await online_status_store.update_latest_access_time(user_id, authentication_token_id, ip, now)
+		await online_status_store.update_latest_access_time(user_id, access_token_id, ip, now)
 
 		// When was the last time it was persisted to the database for this (token, IP) pair
-		const persisted_at = await online_status_store.get_latest_access_time_persisted_at(authentication_token_id, ip)
+		const persisted_at = await online_status_store.get_latest_access_time_persisted_at(access_token_id, ip)
 
 		// If enough time has passed to update the persisted latest activity time
 		// for this (token, IP) pair, then do it.
 		if (!persisted_at || now - persisted_at >= latest_activity_time_refresh_interval)
 		{
 			// Update the time it was persisted to the database for this (token, IP) pair
-			await online_status_store.set_latest_access_time_persisted_at(authentication_token_id, ip, now)
+			await online_status_store.set_latest_access_time_persisted_at(access_token_id, ip, now)
 
 			// Fuzzy latest access time
 			const was_online_at = round_user_access_time(now)
 
 			// Update latest access time for this (token, IP) pair
-			await store.record_access(user_id, authentication_token_id, ip, was_online_at)
+			await store.record_access(user_id, access_token_id, ip, was_online_at)
 
 			// Also update the redundant `was_online_at` field in the `users` table
 			await internal_http.post(`${address_book.user_service}/was-online-at`, { date: was_online_at })

@@ -11,13 +11,16 @@ const picture_size = PropTypes.shape
 	name   : PropTypes.string.isRequired
 })
 
-export default class User_picture extends React.Component
+export default class Poster_picture extends React.Component
 {
 	static propTypes =
 	{
-		user : PropTypes.shape
+		poster : PropTypes.shape
 		({
-			picture_sizes : PropTypes.arrayOf(picture_size)
+			picture : PropTypes.shape
+			({
+				sizes : PropTypes.arrayOf(picture_size).isRequired
+			})
 		})
 		.isRequired,
 
@@ -32,7 +35,7 @@ export default class User_picture extends React.Component
 
 	render()
 	{
-		const { user, picture, style, className } = this.props
+		const { poster, picture, style, className } = this.props
 
 		let sizes
 
@@ -40,9 +43,9 @@ export default class User_picture extends React.Component
 		{
 			sizes = picture.sizes
 		}
-		else if (user.picture_sizes)
+		else if (poster.picture)
 		{
-			sizes = user.picture_sizes
+			sizes = poster.picture.sizes
 		}
 
 		return <Image
@@ -52,7 +55,7 @@ export default class User_picture extends React.Component
 			type={ picture ? undefined : 'poster_picture' }
 			max_width={ 1000 }
 			sizes={ sizes }
-			src={ sizes ? undefined : require('../../assets/images/user picture.png') }/>
+			src={ sizes ? undefined : require('../../assets/images/poster picture.png') }/>
 	}
 
 	width()

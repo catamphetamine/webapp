@@ -9,9 +9,9 @@ import { Form, Button, Select, ActivityIndicator, Modal } from 'react-responsive
 import international from '../international/internationalize'
 import default_messages from './messages'
 
-import Sign_in_form from './sign in form/sign in form'
-import User         from './user'
-import User_picture from './user picture'
+import Sign_in_form   from './sign in form/sign in form'
+import Poster         from './poster'
+import Poster_picture from './poster picture'
 
 import { bindActionCreators as bind_action_creators } from 'redux'
 
@@ -153,19 +153,19 @@ export default class Authentication extends Component
 		const user_info =
 		(
 			<Link
-				to={ User.url(user) }
+				to={ Poster.url(user) }
 				style={ styles.user_menu_toggler }>
 
 				{/* User name */}
 				<span
 					className="user-name">
-					{ user.name }
+					{ user.poster.name }
 				</span>
 
 				{/* User picture */}
-				<User_picture
+				<Poster_picture
 					className="user-picture--header"
-					user={ user }/>
+					poster={ user.poster }/>
 			</Link>
 		)
 
@@ -182,7 +182,7 @@ export default class Authentication extends Component
 					{/* Profile */}
 					<Link
 						key="profile"
-						to={ User.url(user) }
+						to={ Poster.url(user.poster) }
 						className="user-menu__entry">
 						{/* Icon */}
 						<Person_icon className="user-menu__icon"/>

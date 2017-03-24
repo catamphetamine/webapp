@@ -3,66 +3,54 @@ import { Title, preload, redirect, Link } from 'react-isomorphic-render'
 import { connect }                        from 'react-redux'
 import styler                             from 'react-styling'
 import classNames                         from 'classnames'
-
 import { defineMessages, FormattedMessage } from 'react-intl'
-
-import { bindActionCreators as bind_action_creators } from 'redux'
-
 import Redux_form, { Field } from 'simpler-redux-form'
+import { Form } from 'react-responsive-ui'
 
 import
 {
-	get_block_user_token,
-	block_user
+	get_block_poster_token,
+	block_poster
 }
-from '../../redux/user/block'
+from '../../redux/poster/block'
 
 import { snack } from '../../redux/snackbar'
 
-import { Form } from 'react-responsive-ui'
-
-import Submit                 from '../../components/form/submit'
-import Text_input             from '../../components/form/text input'
-import User                   from '../../components/user'
+import Submit     from '../../components/form/submit'
+import Text_input from '../../components/form/text input'
+import Poster     from '../../components/poster'
 
 import international from '../../international/internationalize'
 
 @Redux_form
 @preload(({ dispatch, getState, location, parameters }) =>
 {
-	return dispatch(get_block_user_token(parameters.user_id, parameters.token_id))
+	return dispatch(get_block_poster_token(parameters.poster_id, parameters.token_id))
 })
 @connect
 (
 	state =>
 	({
 		current_user : state.authentication.user,
-		block_user_token : state.block_user.token
+		block_poster_token : state.block_poster.token
 	}),
-	(dispatch) =>
-	({
-		dispatch,
-		...bind_action_creators
-		({
-			block_user,
-			snack,
-			redirect
-		},
-		dispatch)
-	})
+	{
+		block_poster,
+		snack,
+		redirect
+	}
 )
 @international
-export default class User_profile extends Component
+export default class Block_poster extends Component
 {
 	constructor()
 	{
 		super()
 
-		this.validate_reason = this.validate_reason.bind(this)
-		this.submit          = this.submit.bind(this)
+		this.submit = this.submit.bind(this)
 	}
 
-	validate_reason(value)
+	validate_reason = (value) =>
 	{
 		const { translate } = this.props
 
@@ -74,34 +62,56 @@ export default class User_profile extends Component
 
 	async submit(values)
 	{
-		const { block_user_token, params, block_user, snack, redirect, translate } = this.props
-
-		const user = block_user_token.user
-
-		const token_id = params.token_id
-
-		await block_user(user.id, token_id, values.reason)
-
-		snack(translate(messages.user_blocked))
-
-		// If it was a self block then the user has been signed out
-		if (block_user_token.self)
+		try
 		{
-			window.location = User.url(user)
+			const
+			{
+				block_poster_token,
+				params,
+				block_poster,
+				snack,
+				redirect,
+				translate
+			}
+			= this.props
+
+			const poster = block_poster_token.poster
+
+			const token_id = params.token_id
+
+			await block_poster(poster.id, token_id, values.reason)
+
+			snack(translate(messages.user_blocked))
+
+			// If it was a self block then the user has been signed out
+			if (block_poster_token.self)
+			{
+				window.location = Poster.url(poster)
+			}
+			else
+			{
+				redirect(Poster.url(poster))
+			}
 		}
-		else
+		catch (error)
 		{
-			redirect(User.url(user))
+			console.error(error)
 		}
 	}
 
 	render()
 	{
-		const { current_user, block_user_token, submit, translate } = this.props
+		const
+		{
+			current_user,
+			block_poster_token,
+			submit,
+			translate
+		}
+		= this.props
 
-		const user = block_user_token.user
-
-		const self = block_user_token.self
+		const poster = block_poster_token.poster
+		const self = block_poster_token.self
 
 		const markup =
 		(
@@ -118,23 +128,23 @@ export default class User_profile extends Component
 
 						{/* "Blocking user ..." */}
 						<FormattedMessage
-							{...(self ? messages.blocking_self : messages.blocking_user)}
-							values={{ name: <User>{user}</User> }}
+							{ ...(self ? messages.blocking_self : messages.blocking_user) }
+							values={ self ? undefined : { name: <Poster>{ poster }</Poster> } }
 							tagName="p"/>
 
 						{/* "Reason" */}
 						{ !self &&
 							<Text_input
 								name="reason"
-								label={translate(messages.reason)}
-								validate={this.validate_reason}/>
+								label={ translate(messages.reason) }
+								validate={ this.validate_reason }/>
 						}
 
 						<Form.Actions>
 							{/* "Submit" */}
 							<Submit
 								className="button--primary">
-								{translate(messages.submit)}
+								{ translate(messages.submit) }
 							</Submit>
 						</Form.Actions>
 					</Form>
@@ -164,11 +174,11 @@ const messages = defineMessages
 		description    : `Block user page header when blocking self`,
 		defaultMessage : `Block my account`
 	},
-	blocking_user:
+	blocking_poster:
 	{
-		id             : `user.block.blocking_user`,
+		id             : `user.block.blocking_poster`,
 		description    : `Description of which user is gonna be blocked`,
-		defaultMessage : `Blocking user {name}`
+		defaultMessage : `Blocking {name}`
 	},
 	blocking_self:
 	{

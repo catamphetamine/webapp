@@ -1,0 +1,17 @@
+{
+  "name": "webapp-social-service",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Social network: read/update content poster info, read content streams, read and post stream events",
+  "main": "entry.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/halt-hammerzeit/webapp.git"
+  },
+  "homepage": "https://github.com/halt-hammerzeit/webapp",
+  "author": "Halt Hammerzeit",
+  "license": "MIT",
+  "engines": {
+    "node": "6.0.0"
+  }
+}

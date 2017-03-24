@@ -7,7 +7,7 @@ import Redux_form from 'simpler-redux-form'
 
 import Submit     from '../form/submit'
 import Text_input from '../form/text input'
-import User       from '../user'
+import Poster     from '../poster'
 import Time_ago   from '../time ago'
 
 import http_status_codes from '../../tools/http status codes'
@@ -21,6 +21,7 @@ import
 {
 	sign_in_request,
 	reset_sign_in_request_error,
+	reset_sign_in_error,
 	connector
 }
 from '../../redux/authentication'
@@ -35,7 +36,8 @@ from '../../redux/authentication'
 	}),
 	{
 		sign_in_request,
-		reset_sign_in_request_error
+		reset_sign_in_request_error,
+		reset_sign_in_error
 	}
 )
 @international
@@ -55,21 +57,6 @@ export default class Sign_in extends Component
 		reset_sign_in_request_error()
 	}
 
-	is_user_blocked(error)
-	{
-		if (!error)
-		{
-			return
-		}
-
-		if (error.status !== http_status_codes.Access_denied)
-		{
-			return
-		}
-
-		return error.message === 'User is blocked'
-	}
-
 	render()
 	{
 		const
@@ -85,7 +72,7 @@ export default class Sign_in extends Component
 		const markup =
 		(
 			<Form
-				submit={ submit(reset_sign_in_request_error, this.sign_in) }
+				submit={ submit(this.reset_errors, this.sign_in) }
 				busy={ submitting }
 				error={ this.error(sign_in_request_error) }
 				post="/authentication/legacy/sign-in">
@@ -121,6 +108,29 @@ export default class Sign_in extends Component
 		)
 
 		return markup
+	}
+
+	is_user_blocked(error)
+	{
+		if (!error)
+		{
+			return
+		}
+
+		if (error.status !== http_status_codes.Access_denied)
+		{
+			return
+		}
+
+		return error.message === 'User is blocked'
+	}
+
+	reset_errors = () =>
+	{
+		const { reset_sign_in_request_error, reset_sign_in_error } = this.props
+
+		reset_sign_in_request_error()
+		reset_sign_in_error()
 	}
 
 	async sign_in(fields)
@@ -196,7 +206,7 @@ export default class Sign_in extends Component
 			details_parameters =
 			{
 				...details_parameters,
-				blocked_by     : <User>{ error.blocked_by }</User>,
+				blocked_by     : <Poster>{ error.blocked_by }</Poster>,
 				blocked_reason : error.blocked_reason
 			}
 

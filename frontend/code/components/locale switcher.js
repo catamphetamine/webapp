@@ -76,7 +76,7 @@ export default class Locale_switcher extends Component
 				{/* Apply button for javascriptless users */}
 				<Form
 					className="set-language-form"
-					style={styles.locale_form}
+					style={ styles.locale_form }
 					post="/users/legacy/locale">
 
 					{/* language list */}

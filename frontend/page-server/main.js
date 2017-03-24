@@ -111,7 +111,7 @@ const server = webpage_server(settings,
 
 		try
 		{
-			user = await http.get(`/users`)
+			user = await http.get(`/users`, { poster: true })
 		}
 		catch (error)
 		{

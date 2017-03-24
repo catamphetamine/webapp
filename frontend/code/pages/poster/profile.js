@@ -15,24 +15,25 @@ import Person_add_icon from '../../../assets/images/icons/person add.svg'
 import
 {
 	get_users_latest_activity_time,
-	get_user,
-	update_user,
-	update_user_reset_error,
-	upload_user_picture,
-	update_user_picture,
-	set_uploaded_user_picture,
-	reset_upload_user_picture_error,
-	set_upload_user_picture_other_error,
+	get_poster,
+	update_poster,
+	reset_update_poster_error,
+	upload_poster_picture,
+	update_poster_picture,
+	reset_update_poster_picture_error,
+	set_uploaded_poster_picture,
+	reset_upload_poster_picture_error,
+	set_upload_poster_picture_other_error,
 	connector
 }
-from '../../redux/user/profile'
+from '../../redux/poster/profile'
 
 import
 {
-	generate_block_user_token,
-	unblock_user
+	generate_block_poster_token,
+	unblock_poster
 }
-from '../../redux/user/block'
+from '../../redux/poster/block'
 
 import { snack } from '../../redux/snackbar'
 
@@ -40,9 +41,9 @@ import Text_input   from '../../components/form/text input'
 import Submit       from '../../components/form/submit'
 import Select       from '../../components/form/select'
 
-import User         from '../../components/user'
-import User_picture from '../../components/user picture'
-import Time_ago     from '../../components/time ago'
+import Poster         from '../../components/poster'
+import Poster_picture from '../../components/poster picture'
+import Time_ago       from '../../components/time ago'
 
 import { get_preferred_size, url } from '../../components/image'
 
@@ -55,38 +56,35 @@ const Latest_activity_time_refresh_interval = 60 * 1000 // once in a minute
 @Redux_form
 @preload(({ dispatch, getState, location, parameters }) =>
 {
-	return Promise.all
-	([
-		dispatch(get_user(parameters.id)),
-		dispatch(get_users_latest_activity_time(parameters.id))
-	])
+	return dispatch(get_poster(parameters.id))
 })
 @connect
 (
-	({ authentication, user_profile, locale }) =>
+	({ authentication, poster_profile, locale }) =>
 	({
-		...connector(user_profile),
+		...connector(poster_profile),
 		current_user : authentication.user,
 		locale : locale.locale
 	}),
 	{
-		get_user,
-		update_user,
-		update_user_reset_error,
-		upload_user_picture,
-		reset_upload_user_picture_error,
-		set_upload_user_picture_other_error,
-		update_user_picture,
+		get_poster,
+		update_poster,
+		reset_update_poster_error,
+		upload_poster_picture,
+		reset_upload_poster_picture_error,
+		set_upload_poster_picture_other_error,
+		update_poster_picture,
+		reset_update_poster_picture_error,
 		get_users_latest_activity_time,
-		generate_block_user_token,
-		unblock_user,
+		generate_block_poster_token,
+		unblock_poster,
 		snack,
 		redirect,
-		set_uploaded_user_picture
+		set_uploaded_poster_picture
 	}
 )
 @international
-export default class User_profile extends Component
+export default class Poster_profile extends Component
 {
 	state = {}
 
@@ -97,22 +95,17 @@ export default class User_profile extends Component
 
 	constructor(props, context)
 	{
-		super(props, context)
+		super()
 
-		this.edit_profile         = this.edit_profile.bind(this)
-		this.cancel_profile_edits = this.cancel_profile_edits.bind(this)
 		this.save_profile_edits   = this.save_profile_edits.bind(this)
 
-		this.validate_name        = this.validate_name.bind(this)
-
-		this.block_user           = this.block_user.bind(this)
-		this.unblock_user         = this.unblock_user.bind(this)
+		this.block_poster         = this.block_poster.bind(this)
+		this.unblock_poster       = this.unblock_poster.bind(this)
 
 		this.send_message = this.send_message.bind(this)
 		this.subscribe    = this.subscribe.bind(this)
 
-		this.upload_user_picture = this.upload_user_picture.bind(this)
-		this.reset_upload_user_picture_errors = this.reset_upload_user_picture_errors.bind(this)
+		this.upload_poster_picture = this.upload_poster_picture.bind(this)
 
 		// fill two-letter country codes list
 
@@ -141,22 +134,28 @@ export default class User_profile extends Component
 
 	componentDidMount()
 	{
-		const { user, get_users_latest_activity_time } = this.props
+		const { poster, get_users_latest_activity_time } = this.props
 
-		// Refresh this user's latest activity time periodically.
-		// Do it in a timeout because `react-time-ago` also
-		// refreshes the time label once a minute,
-		// therefore to eliminate jitter due to the race condition
-		// a delay of half a minute is imposed.
-		setTimeout(() =>
+		// If this is a user's poster then also show "was online" time
+		if (poster.user)
 		{
-			this.latest_activity_time_refresh = setInterval(() =>
+			get_users_latest_activity_time(poster.user)
+
+			// Refresh this user's latest activity time periodically.
+			// Do it in a timeout because `react-time-ago` also
+			// refreshes the time label once a minute,
+			// therefore to eliminate jitter due to the race condition
+			// a delay of half a minute is imposed.
+			setTimeout(() =>
 			{
-				get_users_latest_activity_time(user.id)
+				this.latest_activity_time_refresh = setInterval(() =>
+				{
+					get_users_latest_activity_time(poster.user)
+				},
+				Latest_activity_time_refresh_interval)
 			},
-			Latest_activity_time_refresh_interval)
-		},
-		30 * 1000)
+			30 * 1000)
+		}
 	}
 
 	componentWillUnmount()
@@ -174,133 +173,131 @@ export default class User_profile extends Component
 
 		const
 		{
-			user,
+			poster,
 			translate,
 			style,
 			current_user,
 			latest_activity_time,
 			uploaded_picture,
 
-			update_user_info_error,
-			update_user_picture_error,
-			upload_user_picture_error,
-			upload_user_picture_other_error,
+			update_poster_info_error,
+			update_poster_picture_error,
+			upload_poster_picture_error,
+			upload_poster_picture_other_error,
 
-			update_user_info_pending,
-			upload_user_picture_pending,
-			update_user_picture_pending,
+			update_poster_info_pending,
+			upload_poster_picture_pending,
+			update_poster_picture_pending,
 
 			submit
 		}
 		= this.props
 
-		const is_own_profile = current_user && current_user.id === user.id
-
 		const markup =
 		(
 			<div className="content user-profile">
-				<Title>{ user.name }</Title>
+				<Title>{ poster.name }</Title>
 
 				{/* Left column */}
 				<div className="column-m-6-of-12">
 
 					{/* User's personal info */}
 					<section
-						className={classNames
+						className={ classNames
 						(
 							'content-section',
 							'user-profile__personal-info'
-						)}>
+						) }>
 
 						{/* User blocked notice */}
-						{ user.blocked_at &&
+						{ poster.blocked_at &&
 							<div className="content-section__errors content-section__errors--top">
-								{ user.blocked_by.id === user.id
+								{ poster.blocked_by.id === poster.id
 									?
 									<FormattedMessage
-										{...messages.blocked}
+										{ ...messages.blocked }
 										values=
-										{{
-											blocked_at : <Time_ago>{user.blocked_at}</Time_ago>
-										}}/>
+										{ {
+											blocked_at : <Time_ago>{ poster.blocked_at }</Time_ago>
+										} }/>
 									:
 									<FormattedMessage
-										{...messages.blocked_detailed}
+										{ ...messages.blocked_detailed }
 										values=
-										{{
-											blocked_at     : <Time_ago>{user.blocked_at}</Time_ago>,
-											blocked_by     : <User>{user.blocked_by}</User>,
-											blocked_reason : user.blocked_reason
-										}}/>
+										{ {
+											blocked_at     : <Time_ago>{ poster.blocked_at }</Time_ago>,
+											blocked_by     : <Poster>{ poster.blocked_by.poster }</Poster>,
+											blocked_reason : poster.blocked_reason
+										} }/>
 								}
 							</div>
 						}
 
 						{/* User profile edit errors */}
-						{ (update_user_info_error
-							|| update_user_picture_error
-							|| upload_user_picture_error
-							|| upload_user_picture_other_error)
+						{ (update_poster_info_error
+							|| update_poster_picture_error
+							|| upload_poster_picture_error
+							|| upload_poster_picture_other_error)
 							&&
 							<ul
 								style={ styles.own_profile_actions_errors }
 								className="content-section__errors content-section__errors--top errors">
-								{/* Couldn't update user's picture with the uploaded one */}
-								{ update_user_picture_error &&
+								{/* Couldn't update poster's picture with the uploaded one */}
+								{ update_poster_picture_error &&
 									<li>{ translate(messages.update_error) }</li>
 								}
 
-								{/* Couldn't update user info */}
-								{ update_user_info_error &&
+								{/* Couldn't update poster's info */}
+								{ update_poster_info_error &&
 									<li>{ translate(messages.update_error) }</li>
 								}
 
-								{/* Couldn't upload user picture */}
-								{ upload_user_picture_error &&
-									<li>{ translate(messages.user_picture_upload_error) }</li>
+								{/* Couldn't upload poster's picture */}
+								{ upload_poster_picture_error &&
+									<li>{ translate(messages.poster_picture_upload_error) }</li>
 								}
 
 								{/* User picture file's too big */}
-								{ upload_user_picture_other_error === 'oversized' &&
-									<li>{ translate(messages.uploaded_user_picture_is_too_big_error) }</li>
+								{ upload_poster_picture_other_error === 'oversized' &&
+									<li>{ translate(messages.uploaded_poster_picture_is_too_big_error) }</li>
 								}
 
 								{/* User picture file's format is not supported */}
-								{ upload_user_picture_other_error === 'unsupported' &&
-									<li>{ translate(messages.unsupported_uploaded_user_picture_file_error) }</li>
+								{ upload_poster_picture_other_error === 'unsupported' &&
+									<li>{ translate(messages.unsupported_uploaded_poster_picture_file_error) }</li>
 								}
 
 								{/* Other errors */}
-								{ upload_user_picture_other_error === true &&
-									<li>{ translate(messages.user_picture_upload_error) }</li>
+								{ upload_poster_picture_other_error === true &&
+									<li>{ translate(messages.poster_picture_upload_error) }</li>
 								}
 							</ul>
 						}
 
 						<Form
-							busy={ update_user_info_pending || update_user_picture_pending || upload_user_picture_pending }
+							busy={ update_poster_info_pending || update_poster_picture_pending || upload_poster_picture_pending }
 							submit={ submit(this.save_profile_edits) }>
 
 							{/* Edit/Save own profile */}
-							{ is_own_profile &&
-								<div style={styles.own_profile_actions} className="card__actions">
+							{ this.is_own_profile() &&
+								<div style={ styles.own_profile_actions } className="card__actions">
 
 									{/* "Edit profile" */}
 									{ !edit &&
 										<Button
 											className="card__action"
-											action={this.edit_profile}>
-											{translate(messages.edit_profile)}
+											action={ this.edit_profile }>
+											{ translate(messages.edit_profile) }
 										</Button>
 									}
 
 									{/* "Cancel changes" */}
 									{  edit &&
 										<Button
-											action={this.cancel_profile_edits}
+											action={ this.cancel_profile_edits }
 											className="card__action"
-											disabled={update_user_info_pending || upload_user_picture_pending}>
-											{translate(messages.cancel_profile_edits)}
+											disabled={ update_poster_info_pending || upload_poster_picture_pending }>
+											{ translate(messages.cancel_profile_edits) }
 										</Button>
 									}
 
@@ -308,87 +305,87 @@ export default class User_profile extends Component
 									{  edit &&
 										<Submit
 											className="button--primary card__action"
-											disabled={upload_user_picture_pending}>
-											{translate(messages.save_profile_edits)}
+											disabled={ upload_poster_picture_pending }>
+											{ translate(messages.save_profile_edits) }
 										</Submit>
 									}
 								</div>
 							}
 
-							{/* Block this other user */}
-							{ !is_own_profile &&
-								<div style={styles.own_profile_actions} className="card__actions">
+							{/* Block this poster (not self) */}
+							{ !this.is_own_profile() &&
+								<div style={ styles.own_profile_actions } className="card__actions">
 
-									{/* "Block user" */}
-									{ !user.blocked_at && can('block user', current_user) &&
+									{/* "Block poster" */}
+									{ !poster.blocked_at && can('block poster', current_user) &&
 										<Button
 											className="card__action"
-											action={this.block_user}>
-											{translate(messages.block_user)}
+											action={ this.block_poster }>
+											{ translate(messages.block_poster) }
 										</Button>
 									}
 
-									{/* "Unblock user" */}
-									{ user.blocked_at && can('unblock user', current_user) &&
+									{/* "Unblock poster" */}
+									{ poster.blocked_at && can('unblock user', current_user) &&
 										<Button
 											className="card__action"
-											action={this.unblock_user}>
-											{translate(messages.unblock_user)}
+											action={ this.unblock_poster }>
+											{ translate(messages.unblock_poster) }
 										</Button>
 									}
 								</div>
 							}
 
 							{/* User picture */}
-							<Uploadable_user_picture
-								ref={ref => this.user_picture = ref}
-								edit={edit}
-								user={user}
-								uploaded_picture={uploaded_picture}
-								uploading_picture={upload_user_picture_pending}
-								upload_user_picture={this.upload_user_picture}
-								choosing_user_picture={this.reset_upload_user_picture_errors}
-								translate={translate}
-								style={style}/>
+							<Uploadable_poster_picture
+								ref={ ref => this.poster_picture = ref }
+								edit={ edit }
+								poster={ poster }
+								uploaded_picture={ uploaded_picture }
+								uploading_picture={ upload_poster_picture_pending }
+								upload_poster_picture={ this.upload_poster_picture }
+								choosing_poster_picture={ this.reset_upload_poster_picture_errors }
+								translate={ translate }
+								style={ style }/>
 
 							{ edit &&
 								<div className="rrui__form__fields">
-									{/* Edit user's name */}
+									{/* Edit poster's name */}
 									<Text_input
 										name="name"
-										label={translate(messages.name)}
-										value={user.name}
-										validate={this.validate_name}/>
+										label={ translate(messages.name) }
+										value={ poster.name }
+										validate={ this.validate_name }/>
 
-									{/* Edit user's place (e.g. "Moscow") */}
+									{/* Edit poster's place (e.g. "Moscow") */}
 									{/* City, town, etc */}
 									<Text_input
 										name="place"
-										label={translate(messages.place)}
-										disabled={update_user_info_pending}
-										value={user.place}/>
+										label={ translate(messages.place) }
+										disabled={ update_poster_info_pending }
+										value={ poster.place }/>
 
-									{/* Edit user's country (e.g. "Russia") */}
+									{/* Edit poster's country (e.g. "Russia") */}
 									{/* Country */}
 									<Select
 										autocomplete
 										name="country"
-										label={translate(messages.country)}
-										disabled={update_user_info_pending}
-										options={this.countries}
-										value={user.country}/>
+										label={ translate(messages.country) }
+										disabled={ update_poster_info_pending }
+										options={ this.countries }
+										value={ poster.country }/>
 								</div>
 							}
 
 							{ !edit &&
 								<div>
 									{/* User's name */}
-									<h1 style={ styles.user_name }>
-										{ user.name }
+									<h1 style={ styles.poster_name }>
+										{ poster.name }
 									</h1>
 
 									{/* User's place and country */}
-									{ (user.place || user.country) &&
+									{ (poster.place || poster.country) &&
 										<div
 											className="user-profile__location">
 											{ this.whereabouts().join(', ') }
@@ -399,7 +396,7 @@ export default class User_profile extends Component
 						</Form>
 
 						{/* User actions: "Send message", "Subscribe" */}
-						{ !is_own_profile &&
+						{ !this.is_own_profile() &&
 							<div className="user-profile__actions">
 								{/* "Subscribe" */}
 								<div>
@@ -444,116 +441,133 @@ export default class User_profile extends Component
 		return markup
 	}
 
-	edit_profile()
+	is_own_profile()
 	{
-		const { user } = this.props
+		const { current_user, poster } = this.props
 
+		return current_user && current_user.id === poster.id
+	}
+
+	edit_profile = () =>
+	{
 		this.setState
 		({
 			edit : true
 		})
 	}
 
-	cancel_profile_edits()
+	cancel_profile_edits = () =>
 	{
-		const { set_uploaded_user_picture } = this.props
+		const { set_uploaded_poster_picture, reset_update_poster_picture_error } = this.props
 
-		this.reset_user_info_edit_errors()
+		this.reset_poster_info_edit_errors()
 
 		this.setState({ edit: false })
-		set_uploaded_user_picture()
+
+		reset_update_poster_picture_error()
+		// Clear the temporary uploaded picture
+		set_uploaded_poster_picture()
 	}
 
 	async save_profile_edits(values)
 	{
-		this.reset_user_info_edit_errors()
+		try
+		{
+			this.reset_poster_info_edit_errors()
 
+			const
+			{
+				poster,
+				uploaded_picture,
+				update_poster_picture,
+				update_poster,
+				set_uploaded_poster_picture
+			}
+			= this.props
+
+			if (uploaded_picture)
+			{
+				await update_poster_picture(poster.id, uploaded_picture)
+			}
+
+			await update_poster(poster.id,
+			{
+				name    : values.name,
+				country : values.country,
+				place   : values.place
+			})
+
+			this.setState({ edit: false })
+
+			set_uploaded_poster_picture()
+		}
+		catch (error)
+		{
+			console.error(error)
+		}
+	}
+
+	reset_poster_info_edit_errors = () =>
+	{
+		const { reset_update_poster_error } = this.props
+
+		reset_update_poster_error()
+		this.reset_upload_poster_picture_errors()
+	}
+
+	reset_upload_poster_picture_errors = () =>
+	{
 		const
 		{
-			uploaded_picture,
-			update_user_picture,
-			update_user,
-			set_uploaded_user_picture
+			reset_upload_poster_picture_error,
+			set_upload_poster_picture_other_error
 		}
 		= this.props
 
-		if (uploaded_picture)
-		{
-			await update_user_picture(uploaded_picture)
-		}
-
-		await update_user
-		({
-			name    : values.name,
-			country : values.country,
-			place   : values.place
-		})
-
-		this.setState({ edit: false })
-
-		set_uploaded_user_picture()
+		reset_upload_poster_picture_error()
+		set_upload_poster_picture_other_error()
 	}
 
-	reset_user_info_edit_errors()
+	async block_poster()
 	{
-		const { update_user_reset_error } = this.props
+		const { poster, get_poster, generate_block_poster_token, redirect } = this.props
 
-		update_user_reset_error()
-		this.reset_upload_user_picture_errors()
+		const token_id = await generate_block_poster_token(poster.id)
+
+		// Update `blocked_at`, etc
+		await get_poster(poster.id)
+
+		redirect(`/${poster.alias || poster.id}/block/${token_id}`)
 	}
 
-	reset_upload_user_picture_errors()
+	async unblock_poster()
 	{
-		const
-		{
-			reset_upload_user_picture_error,
-			set_upload_user_picture_other_error
-		}
-		= this.props
+		const { poster, get_poster, unblock_poster, translate, snack } = this.props
 
-		reset_upload_user_picture_error()
-		set_upload_user_picture_other_error()
-	}
+		await unblock_poster(poster.id)
 
-	async block_user()
-	{
-		const { user, get_user, generate_block_user_token, redirect } = this.props
+		await get_poster(poster.id)
 
-		const token_id = await generate_block_user_token(user.id)
-
-		await get_user(user.id)
-
-		redirect(`/user/block/${token_id}`)
-	}
-
-	async unblock_user()
-	{
-		const { user, get_user, unblock_user, translate, snack } = this.props
-
-		await unblock_user(user.id)
-
-		await get_user(user.id)
-
-		snack(translate(messages.user_unblocked))
+		snack(translate(messages.poster_unblocked))
 	}
 
 	send_message()
 	{
-		const { user } = this.props
+		const { poster } = this.props
 	}
 
 	subscribe()
 	{
-		const { user } = this.props
+		const { poster } = this.props
 	}
 
-	async upload_user_picture(file)
+	async upload_poster_picture(file)
 	{
 		const
 		{
-			upload_user_picture,
-			set_upload_user_picture_other_error,
-			set_uploaded_user_picture
+			upload_poster_picture,
+			set_upload_poster_picture_other_error,
+			set_uploaded_poster_picture
 		}
 		=
 		this.props
@@ -561,49 +575,49 @@ export default class User_profile extends Component
 		// Check file format
 		if (!['image/jpeg', 'image/png', 'image/svg+xml'].has(file.type))
 		{
-			return set_upload_user_picture_other_error('unsupported')
+			return set_upload_poster_picture_other_error('unsupported')
 		}
 
 		// Check file size limit
 		if (file.size > configuration.image_service.file_size_limit)
 		{
-			return set_upload_user_picture_other_error('oversized')
+			return set_upload_poster_picture_other_error('oversized')
 		}
 
 		// Upload the image
-		const uploaded_picture = await upload_user_picture(file)
+		const uploaded_picture = await upload_poster_picture(file)
 
 		// Preload the uploaded image
 
 		const image = new Image()
 
-		image.onload  = () => set_uploaded_user_picture(uploaded_picture)
-		image.onerror = () => set_upload_user_picture_other_error(true)
+		image.onload  = () => set_uploaded_poster_picture(uploaded_picture)
+		image.onerror = () => set_upload_poster_picture_other_error(true)
 
-		image.src = url(get_preferred_size(uploaded_picture.sizes, this.user_picture.decoratedComponentInstance.width()))
+		image.src = url(get_preferred_size(uploaded_picture.sizes, this.poster_picture.decoratedComponentInstance.width()))
 	}
 
 	// User's [place, country]
 	whereabouts()
 	{
-		const { user, translate } = this.props
+		const { poster, translate } = this.props
 
 		const whereabouts = []
 
-		if (user.place)
+		if (poster.place)
 		{
-			whereabouts.push(user.place)
+			whereabouts.push(poster.place)
 		}
 
-		if (user.country)
+		if (poster.country)
 		{
-			whereabouts.push(translate({ id: `country.${user.country}` }))
+			whereabouts.push(translate({ id: `country.${poster.country}` }))
 		}
 
 		return whereabouts
 	}
 
-	validate_name(value)
+	validate_name = (value) =>
 	{
 		const { translate } = this.props
 
@@ -614,26 +628,26 @@ export default class User_profile extends Component
 	}
 }
 
-@CanDrop(File, ({ uploading_picture, choosing_user_picture, upload_user_picture }, dropped) =>
+@CanDrop(File, ({ uploading_picture, choosing_poster_picture, upload_poster_picture }, dropped) =>
 {
 	if (!uploading_picture)
 	{
-		choosing_user_picture()
-		upload_user_picture(dropped)
+		choosing_poster_picture()
+		upload_poster_picture(dropped)
 	}
 })
-class Uploadable_user_picture extends React.Component
+class Uploadable_poster_picture extends React.Component
 {
 	render()
 	{
 		const
 		{
 			edit,
-			user,
+			poster,
 			uploaded_picture,
 			uploading_picture,
-			upload_user_picture,
-			choosing_user_picture,
+			upload_poster_picture,
+			choosing_poster_picture,
 			translate,
 
 			dropTarget,
@@ -645,55 +659,55 @@ class Uploadable_user_picture extends React.Component
 		{/* User picture */}
 		return dropTarget(
 			<div
-				style={styles.user_picture}
-				className={classNames
+				style={ styles.poster_picture }
+				className={ classNames
 				(
 					'user-picture',
 					'user-profile__picture',
 					'card'
-				)}>
+				) }>
 
 				{/* The picture itself */}
-				<User_picture
-					ref={ref => this.user_picture = ref}
-					user={user}
-					picture={edit ? uploaded_picture : undefined}/>
+				<Poster_picture
+					ref={ ref => this.poster_picture = ref }
+					poster={ poster }
+					picture={ edit ? uploaded_picture : undefined }/>
 
-				{/* "Change user picture" overlay */}
+				{/* "Change poster picture" overlay */}
 				{ edit && !uploaded_picture &&
 					<div
 						className="user-profile__picture__change__overlay"
-						style={styles.user_picture_element_overlay_background}/>
+						style={ styles.poster_picture_element_overlay_background }/>
 				}
 
 				{/* A colored overlay indicating "can drop image file here" situation */}
 				{ edit &&
 					<div
-						className={classNames
+						className={ classNames
 						(
 							'user-profile__picture__change__droppable-overlay',
 							{
 								'user-profile__picture__change__droppable-overlay--can-drop'    : draggedOver,
 								'user-profile__picture__change__droppable-overlay--cannot-drop' : draggedOver && !canDrop
 							}
-						)}
-						style={styles.user_picture_element_overlay_background}/>
+						) }
+						style={ styles.poster_picture_element_overlay_background }/>
 				}
 
-				{/* "Change user picture" file uploader */}
+				{/* "Change poster picture" file uploader */}
 				{ edit &&
 					<FileUpload
 						className="user-profile__picture__change__label"
-						style={styles.user_picture_element_overlay_label}
+						style={styles.poster_picture_element_overlay_label}
 						disabled={uploading_picture}
-						onClick={choosing_user_picture}
-						action={upload_user_picture}>
+						onClick={choosing_poster_picture}
+						action={upload_poster_picture}>
 
-						{/* "Change user picture" label */}
-						{!uploaded_picture && !uploading_picture && translate(messages.change_user_picture)}
+						{/* "Change poster picture" label */}
+						{ !uploaded_picture && !uploading_picture && translate(messages.change_poster_picture) }
 
 						{/* "Uploading picture" spinner */}
-						{uploading_picture && <ActivityIndicator style={styles.user_picture_element_spinner}/>}
+						{ uploading_picture && <ActivityIndicator style={ styles.poster_picture_element_spinner }/> }
 					</FileUpload>
 				}
 			</div>
@@ -702,13 +716,13 @@ class Uploadable_user_picture extends React.Component
 
 	width()
 	{
-		return this.user_picture.width()
+		return this.poster_picture.width()
 	}
 }
 
 const styles = style
 `
-	user_picture
+	poster_picture
 		position : relative
 
 		element
@@ -740,7 +754,7 @@ const styles = style
 					text-shadow : 0 0.05em 0.1em rgba(0, 0, 0, 0.75)
 					user-select : none
 
-	user_name
+	poster_name
 		font-size     : 1.5rem
 		margin-bottom : 0
 
@@ -795,7 +809,7 @@ const messages = defineMessages
 		description    : `Save user's own profile edits`,
 		defaultMessage : `Save`
 	},
-	change_user_picture:
+	change_poster_picture:
 	{
 		id             : `user.profile.change_user_picture`,
 		description    : `An action label to change user picture`,
@@ -825,7 +839,7 @@ const messages = defineMessages
 		description    : `A detailed note that the user is blocked`,
 		defaultMessage : `This user was blocked {blocked_at} by {blocked_by} with reason: "{blocked_reason}"`
 	},
-	user_unblocked:
+	poster_unblocked:
 	{
 		id             : `user.profile.unblocked`,
 		description    : `A note that the user has been unblocked`,
@@ -837,19 +851,19 @@ const messages = defineMessages
 		description    : `Failed to update user's own profile`,
 		defaultMessage : `Couldn't update your profile`
 	},
-	user_picture_upload_error:
+	poster_picture_upload_error:
 	{
 		id             : `user.profile.user_picture_upload_error`,
 		description    : `Failed to upload user picture`,
 		defaultMessage : `Couldn't process the picture`
 	},
-	uploaded_user_picture_is_too_big_error:
+	uploaded_poster_picture_is_too_big_error:
 	{
 		id             : `user.profile.uploaded_user_picture_is_too_big_error`,
 		description    : `The image user tried to upload is too big`,
 		defaultMessage : `The image file you tried to upload is too big. Only images up to 10 Megabytes are allowed.`
 	},
-	unsupported_uploaded_user_picture_file_error:
+	unsupported_uploaded_poster_picture_file_error:
 	{
 		id             : `user.profile.unsupported_uploaded_user_picture_file_error`,
 		description    : `The image user tried to upload is of an unsupported file format`,
@@ -861,13 +875,13 @@ const messages = defineMessages
 		description    : `The user tried to save his profile with a blank "name" field`,
 		defaultMessage : `Enter your name`
 	},
-	block_user:
+	block_poster:
 	{
 		id             : `user.profile.block`,
 		description    : `An action to block this user`,
 		defaultMessage : `Block`
 	},
-	unblock_user:
+	unblock_poster:
 	{
 		id             : `user.profile.unblock`,
 		description    : `An action to unblock this user`,

@@ -3,7 +3,7 @@ import knex_postgis_plugin from 'knex-postgis'
 
 export default class Sql
 {
-	constructor(table, model)
+	constructor(table, model = {})
 	{
 		this.id = 'id'
 		this.table = table
@@ -38,138 +38,71 @@ export default class Sql
 		// Complex fetch: preload relations (dependencies)
 		if (options.including)
 		{
-			// Validate `including`
-			for (let relation of options.including)
-			{
-				if (!this.model)
-				{
-					throw new Error('`model` not supplied for this SQL helper')
-				}
-
-				if (!this.model[relation])
-				{
-					throw new Error(`Unknown relation "${relation}"`)
-				}
-			}
-
 			// Construct the select part of the query.
 			// Using JOINs for preloading relations (dependencies)
 			// https://github.com/tgriesser/knex/issues/61#issuecomment-259252127
 
-			// SELECT to_json(a.*) as a, to_json(b.*) as b
-			let query = knex.select([knex.raw(`to_json(${this.table}.*) as ${this.table}`)].concat(options.including.map(relation =>
+			const joined_tables = collect_joined_tables_info(this, options.including)
+
+			// SELECT to_json(x.*) as x, to_json(relation.*) as relation, ...
+			let query = knex.select([knex.raw(`to_json("${this.table}".*) as "${this.table}"`)].concat(joined_tables.map(({ name }) =>
 			{
-				return knex.raw(`to_json(${this.model[relation].sql.table}.*) as ${relation}`)
+				return knex.raw(`to_json("${name}".*) as "${name}"`)
 			})))
-			// ... FROM x
+			// ... FROM x ...
 			.from(this.table)
 
-			// Use left outer join for the first join
-			// to not loose the main entity
-			// in case all its dependencies are `null`
-			let join = 'leftOuterJoin'
+			const where = { ...example }
 
-			for (let relation of options.including)
+			for (const joined_table of joined_tables)
 			{
-				const backreference = this.model[relation].key
+				// A custom join `backreference` may be set up for a `relation`
+				// meaning that the `x` table either doesn't hold
+				// reference to the `relation` row id
+				// or is associated with many `relation` rows
+				// and therefore the link is stored in the `relation` table.
 
-				// ... LEFT OUTER JOIN a ON a.key = x.id
-				query = query[join]
+				// "... LEFT OUTER JOIN relation ON x.id = relation.key" (backreference)
+				// or
+				// "... LEFT OUTER JOIN relation ON x.relation = relation.id" (usual)
+				query = query.leftOuterJoin
 				(
-					this.model[relation].sql.table,
-					`${this.model[relation].sql.table}.${backreference ? this.model[relation].key : this.model[relation].sql.id}`,
-					`${this.table}.${backreference ? this.id : relation}`
+					// LEFT OUTER JOIN relation
+					`${joined_table.table} as ${joined_table.name}`,
+					// " ON x.id" or " ON x.relation"
+					`${joined_table.parent}.${joined_table.parent_key}`,
+					// " = relation.x" or " = relation.id"
+					`${joined_table.name}.${joined_table.key}`
 				)
 
-				// Use inner join for all subsequent joins
-				if (join === 'leftOuterJoin')
+				if (joined_table.where)
 				{
-					join = 'join'
+					where[joined_table.where[0]] = joined_table.where[1]
 				}
 			}
 
-			// ... WHERE example
-			const results = await query.where(example).map(Sql.json)
+			// ... WHERE {example}
+			const results = await query.where(where).map(Sql.json)
 
 			// Now we have an array of flattened results
 			// (containing duplicates all over it),
 			// so the results must be unflattened
 			// back to a structure.
 
-			// The results list
-			const entities_array = []
+			// A `result` is a JSON object with each key
+			// representing a corresponding joined table row
+			// (which is a JSON object too).
 
-			// Already encountered main entity register
-			const entities_by_id = {}
+			const entities = get_entities(results, this.table)
 
-			for (let result of results)
+			for (const entity of entities)
 			{
-				// The main entity
-				const entity = result[this.table]
-
-				// If this main entity hasn't been
-				// encountered before, then mark it
-				// as an "encountered" one.
-				let entity_by_id = entities_by_id[entity.id]
-				if (!entity_by_id)
-				{
-					entity_by_id = entity
-					// Register this entity as an "encountered" one
-					entities_by_id[entity.id] = entity_by_id
-					// Add this main entity to the results list
-					entities_array.push(entity_by_id)
-				}
-
-				// Fill in the main entity's relations (dependencies)
-				for (let key of Object.keys(result))
-				{
-					// Skip oneself
-					if (key === this.table)
-					{
-						continue
-					}
-
-					// If this relation is an array
-					// (one-to-many)
-					if (this.model[key].many)
-					{
-						// If there's no array property for this relation,
-						// then create it.
-						if (!entity_by_id[key])
-						{
-							entity_by_id[key] = []
-						}
-
-						// If a related entity exists,
-						// add it to the array property.
-						if (result[key])
-						{
-							// In case of multiple one-to-many relations
-							// this code should check for the same "id" existence
-							// before adding to the array
-							// to avoid duplicates.
-							const related_entity = result[key]
-							const added_entities = entity_by_id[key]
-							const related_entity_primary_key = this.model[key].sql.id
-							const already_added = added_entities.filter(_ => _[related_entity_primary_key] === related_entity[related_entity_primary_key]).length > 0
-							if (!already_added)
-							{
-								added_entities.push(related_entity)
-							}
-						}
-					}
-					// If this relation is simple
-					// (one-to-one)
-					else
-					{
-						// `knex` returns `null` for `nothing`
-						entity_by_id[key] = result[key] === null ? undefined : result[key]
-					}
-				}
+				const rows = results.filter(row => row[this.table].id === entity.id)
+				expand_relations(entity, this.model, options.including, rows, this.table)
 			}
 
 			// Return the results list
-			return entities_array
+			return entities
 		}
 
 		// Simple fetch
@@ -289,16 +222,32 @@ Sql.json = (model) =>
 	return model
 }
 
-Sql.has_many = (to_sql, key) =>
-({
-	sql: to_sql,
-	key,
-	many: true
-})
+Sql.many = (sql, join_table, self_id_column, relation_id_column) =>
+{
+	const result =
+	{
+		sql,
+		many: true
+	}
 
-Sql.belong_to = (to_sql, key) =>
+	if (!self_id_column)
+	{
+		result.backreference = join_table
+	}
+	else
+	{
+		result.join_table = join_table
+		result.self_id_column = self_id_column
+		result.relation_id_column = relation_id_column
+	}
+
+	return result
+}
+
+Sql.one = (sql, backreference) =>
 ({
-	sql: to_sql
+	sql,
+	backreference
 })
 
 // JSON date deserializer.
@@ -353,4 +302,137 @@ function parse_dates(object)
 
 	// Dates have been converted for this JSON object
 	return object
+}
+
+function expand_relations(entity, model, including, rows, table_name, prefix = '')
+{
+	for (let include of including)
+	{
+		include = normalize_include(include)
+		const relation = include.name
+
+		if (!model[relation])
+		{
+			throw new Error(`Relation "${relation}" not found in model of "${table_name}"`)
+		}
+
+		// If this relation is an array
+		// ("one-to-many", "many-to-many")
+		if (model[relation].many)
+		{
+			const related_entities = get_entities(rows, relation)
+
+			for (const related_entity of related_entities)
+			{
+				expand_relation(related_entity, relation, rows, include, prefix)
+			}
+
+			entity[relation] = related_entities
+		}
+		// If this relation is a single
+		// ("one-to-one")
+		else
+		{
+			let related_entity = rows[0][relation]
+
+			// // `knex` returns `null` for `nothing`
+			// if (related_entity === null)
+			// {
+			// 	related_entity = undefined
+			// }
+
+			if (related_entity)
+			{
+				expand_relation(related_entity, relation, rows, include, prefix)
+			}
+
+			entity[relation] = related_entity
+		}
+	}
+
+	return entity
+}
+
+function expand_relation(related_entity, relation, rows, including_relation, prefix)
+{
+	if (!including_relation.including)
+	{
+		return related_entity
+	}
+
+	const related_entity_rows = rows.filter(row => row[relation] && row[relation].id === related_entity.id)
+	return expand_relations(related_entity, model[relation].sql.model, including_relation.including, related_entity_rows, `${prefix}${relation}`, `${prefix}${relation}.`)
+}
+
+function get_entities(rows, name)
+{
+	const entities = []
+
+	let id
+	for (const row of rows)
+	{
+		const entity = row[name]
+
+		if (!entity)
+		{
+			continue
+		}
+
+		if (entity.id === id)
+		{
+			continue
+		}
+
+		id = entity.id
+		entities.push(entity)
+	}
+
+	return entities
+}
+
+function normalize_include(include)
+{
+	if (typeof include === 'string')
+	{
+		include =
+		{
+			name: include
+		}
+	}
+
+	return include
+}
+
+function collect_joined_tables_info(sql, including, parent_table = undefined, prefix = '', joined_tables = [])
+{
+	for (let include of including)
+	{
+		include = normalize_include(include)
+		const relation = include.name
+
+		if (!sql.model[relation])
+		{
+			throw new Error(`Relation "${relation}" not found in model of "${sql.table}"`)
+		}
+
+		const relation_model = sql.model[relation]
+		const relation_sql = relation_model.sql
+
+		joined_tables.push
+		({
+			table  : relation_sql.table,
+			name   : `${prefix}${relation}`,
+			key    : relation_model.backreference || relation_sql.id,
+			parent : parent_table || sql.table,
+			parent_key : relation_model.backreference ? sql.id : relation,
+			where  : include.where
+		})
+
+		if (include.including)
+		{
+			collect_joined_tables_info(relation_sql, include.including, `${prefix}${relation}`, `${prefix}${relation}.`, joined_tables)
+		}
+	}
+
+	return joined_tables
 }

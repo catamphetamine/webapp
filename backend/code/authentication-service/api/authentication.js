@@ -131,7 +131,7 @@ export default function(api)
 		// Get user's private info required for authentication purposes
 		if (user)
 		{
-			user = await internal_http.get(`${address_book.user_service}`)
+			user = await internal_http.get(address_book.user_service)
 		}
 		else
 		{
