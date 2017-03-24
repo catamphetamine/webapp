@@ -14,6 +14,8 @@ class Sql_store
 	async connect()
 	{
 		this.posters = new Sql('posters')
+		this.posters.model.blocked_by = Sql.one(this.posters)
+
 		this.alias_history = new Sql('poster_alias_history')
 		this.block_poster_tokens = new Sql('block_poster_tokens')
 	}
@@ -30,27 +32,27 @@ class Sql_store
 	}
 
 	// Finds poster by `id` or `alias`
-	find_poster(id)
+	find_poster(id, options)
 	{
 		// If `id` is numerical, then find poster by `id`
 		if (String(parseInt(id)) === String(id))
 		{
-			return this.get_poster(id)
+			return this.get_poster(id, options)
 		}
 
 		// Otherwise, find poster by `alias`
-		return this.find_poster_by_alias(id)
+		return this.find_poster_by_alias(id, options)
 	}
 
-	get_poster(id)
+	get_poster(id, options)
 	{
-		return this.posters.find(id)
+		return this.posters.find(id, options)
 	}
 
-	async find_poster_by_alias(alias)
+	async find_poster_by_alias(alias, options)
 	{
 		// Search for a poster with this alias
-		const poster = await this.posters.find({ alias })
+		const poster = await this.posters.find({ alias }, options)
 
 		if (poster)
 		{
@@ -64,7 +66,7 @@ class Sql_store
 		// then this alias is reserved (forever).
 		if (alias_history_entry)
 		{
-			return await this.get_poster(alias_history_entry.poster)
+			return await this.get_poster(alias_history_entry.poster, options)
 		}
 	}
 
@@ -195,7 +197,7 @@ class Sql_store
 		return this.block_poster_tokens.find(id)
 	}
 
-	remove_block_poster_token(id)
+	delete_block_poster_token(id)
 	{
 		return this.block_poster_tokens.delete(id)
 	}

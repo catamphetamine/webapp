@@ -11,105 +11,179 @@ export default class Sql
 	}
 
 	// Finds a single record by example object (or id)
-	async find(example, options)
+	async find(example, options = {})
 	{
 		if (!is_object(example))
 		{
-			return this.find({ [this.id]: example })
+			example =
+			{
+				[this.id]: example
+			}
 		}
 
-		const result = await knex.select('*')
-			.from(this.table)
-			.where(example)
-			.limit(1)
-			.map(Sql.json)
+		const results = await this.find_all(example, options)
 
-		if (result.length === 0)
+		if (results.length === 0)
 		{
 			return undefined
 		}
 
-		return result[0]
+		return results[0]
 	}
 
 	// Finds matching records
-	async find_all(example, options = {})
+	async find_all(example = {}, options = {})
 	{
 		// Complex fetch: preload relations (dependencies)
 		if (options.including)
 		{
-			// Construct the select part of the query.
-			// Using JOINs for preloading relations (dependencies)
-			// https://github.com/tgriesser/knex/issues/61#issuecomment-259252127
-
-			const joined_tables = collect_joined_tables_info(this, options.including)
-
-			// SELECT to_json(x.*) as x, to_json(relation.*) as relation, ...
-			let query = knex.select([knex.raw(`to_json("${this.table}".*) as "${this.table}"`)].concat(joined_tables.map(({ name }) =>
-			{
-				return knex.raw(`to_json("${name}".*) as "${name}"`)
-			})))
-			// ... FROM x ...
-			.from(this.table)
-
-			const where = { ...example }
-
-			for (const joined_table of joined_tables)
-			{
-				// A custom join `backreference` may be set up for a `relation`
-				// meaning that the `x` table either doesn't hold
-				// reference to the `relation` row id
-				// or is associated with many `relation` rows
-				// and therefore the link is stored in the `relation` table.
-
-				// "... LEFT OUTER JOIN relation ON x.id = relation.key" (backreference)
-				// or
-				// "... LEFT OUTER JOIN relation ON x.relation = relation.id" (usual)
-				query = query.leftOuterJoin
-				(
-					// LEFT OUTER JOIN relation
-					`${joined_table.table} as ${joined_table.name}`,
-					// " ON x.id" or " ON x.relation"
-					`${joined_table.parent}.${joined_table.parent_key}`,
-					// " = relation.x" or " = relation.id"
-					`${joined_table.name}.${joined_table.key}`
-				)
-
-				if (joined_table.where)
-				{
-					where[joined_table.where[0]] = joined_table.where[1]
-				}
-			}
-
-			// ... WHERE {example}
-			const results = await query.where(where).map(Sql.json)
-
-			// Now we have an array of flattened results
-			// (containing duplicates all over it),
-			// so the results must be unflattened
-			// back to a structure.
-
-			// A `result` is a JSON object with each key
-			// representing a corresponding joined table row
-			// (which is a JSON object too).
-
-			const entities = get_entities(results, this.table)
-
-			for (const entity of entities)
-			{
-				const rows = results.filter(row => row[this.table].id === entity.id)
-				expand_relations(entity, this.model, options.including, rows, this.table)
-			}
-
-			// Return the results list
-			return entities
+			return await this.fetch_including(example, options)
 		}
 
 		// Simple fetch
-		return await knex.select('*')
+		let query = knex.select('*')
 			.from(this.table)
 			.where(example)
-			.map(Sql.json)
+
+		if (options.offset)
+		{
+			query = query.offset(options.offset)
+		}
+
+		if (options.limit)
+		{
+			query = query.limit(options.limit)
+		}
+
+		if (options.order)
+		{
+			query = query.orderBy(options.order, options.ascending && 'asc' || options.descending && 'desc')
+		}
+
+		return await query.map(Sql.json)
+	}
+
+	async fetch_including(example, options)
+	{
+		// Construct the select part of the query.
+		// Using JOINs for preloading relations (dependencies)
+		// https://github.com/tgriesser/knex/issues/61#issuecomment-259252127
+
+		const joined_tables = collect_joined_tables_info(this, options.including)
+
+		// SELECT to_json(x.*) as x, to_json(relation.*) as relation, ...
+		let query = knex.select([knex.raw(`to_json("${this.table}".*) as "${this.table}"`)].concat(joined_tables.map(({ name }) =>
+		{
+			return knex.raw(`to_json("${name}".*) as "${name}"`)
+		})))
+		// ... FROM x ...
+		.from(this.table)
+
+		// Add an extra join in case of `offset` or `limit`.
+		// https://habrahabr.ru/post/217521/
+		if (options.offset || options.limit)
+		{
+			let subquery = knex.select(this.id).from(this.table).as(`${this.table}__offset_limit`)
+
+			if (options.order)
+			{
+				subquery = subquery.orderBy(options.order, options.ascending && 'asc' || options.descending && 'desc')
+			}
+
+			if (options.offset)
+			{
+				subquery = subquery.offset(options.offset)
+			}
+
+			if (options.limit)
+			{
+				subquery = subquery.limit(options.limit)
+			}
+
+			query = query.innerJoin
+			(
+				subquery,
+				`${this.table}.${this.id}`,
+				`${this.table}__offset_limit.${this.id}`
+			)
+		}
+
+		const where = {}
+
+		if (example)
+		{
+			for (const key of Object.keys(example))
+			{
+				where[`${this.table}.${key}`] = example[key]
+			}
+		}
+
+		for (const joined_table of joined_tables)
+		{
+			// A custom join `backreference` may be set up for a `relation`
+			// meaning that the `x` table either doesn't hold
+			// reference to the `relation` row id
+			// or is associated with many `relation` rows
+			// and therefore the link is stored in the `relation` table.
+
+			// "... LEFT OUTER JOIN relation ON x.id = relation.key" (backreference)
+			// or
+			// "... LEFT OUTER JOIN relation ON x.relation = relation.id" (usual)
+			query = query.leftOuterJoin
+			(
+				// LEFT OUTER JOIN relation
+				`${joined_table.table} as ${joined_table.name}`,
+				// " ON x.id" or " ON x.relation"
+				`${joined_table.parent}.${joined_table.parent_key}`,
+				// " = relation.x" or " = relation.id"
+				`${joined_table.name}.${joined_table.key}`
+			)
+
+			if (joined_table.where)
+			{
+				where[joined_table.where[0]] = joined_table.where[1]
+			}
+		}
+
+		// ... WHERE {example}
+		query = query.where(where)
+
+		// ... ORDER BY
+		if (options.order)
+		{
+			query = query.orderBy(`${this.table}.${options.order}`, options.ascending && 'asc' || options.descending && 'desc')
+		}
+
+		// ORDER BY related entities
+		for (const joined_table of joined_tables)
+		{
+			if (joined_table.order)
+			{
+				query = query.orderBy(`${joined_table.name}.${joined_table.order}`, joined_table.ascending && 'asc' || joined_table.descending && 'desc')
+			}
+		}
+
+		const results = await query.map(Sql.json)
+
+		// Now we have an array of flattened results
+		// (containing duplicates all over it),
+		// so the results must be unflattened
+		// back to a structure.
+
+		// A `result` is a JSON object with each key
+		// representing a corresponding joined table row
+		// (which is a JSON object too).
+
+		const entities = get_entities(results, this.table)
+
+		for (const entity of entities)
+		{
+			const rows = results.filter(row => row[this.table].id === entity.id)
+			expand_relations(entity, this.model, options.including, rows, this.table)
+		}
+
+		// Return the results list
+		return entities
 	}
 
 	// Counts matching entries in the database.
@@ -132,7 +206,7 @@ export default class Sql
 	{
 		const ids = await knex.insert(data).into(this.table).returning(this.id)
 
-		return ids[0]
+		return parseInt(ids[0])
 	}
 
 	// Updates an entry in the database.
@@ -425,7 +499,10 @@ function collect_joined_tables_info(sql, including, parent_table = undefined, pr
 			key    : relation_model.backreference || relation_sql.id,
 			parent : parent_table || sql.table,
 			parent_key : relation_model.backreference ? sql.id : relation,
-			where  : include.where
+			where  : include.where,
+			order  : include.order,
+			ascending  : include.ascending,
+			descending : include.descending
 		})
 
 		if (include.including)

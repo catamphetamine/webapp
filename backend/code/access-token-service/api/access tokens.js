@@ -156,7 +156,7 @@ async function revoke_token(id, revoking_user_id)
 		throw new errors.Not_found()
 	}
 
-	if (token.user !== revoking_user_id)
+	if (String(token.user) !== String(revoking_user_id))
 	{
 		throw new errors.Unauthorized()
 	}

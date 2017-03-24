@@ -139,12 +139,12 @@ export default function start_web_service()
 		({
 			user,
 			type,
-			sizes : image.sizes,
-			files_size : image.sizes.reduce((total, size) => total + size.file_size, 0),
-			coordinates : location,
-			taken_at : date,
+			sizes         : image.sizes,
+			files_size    : image.sizes.reduce((total, size) => total + size.file_size, 0),
+			coordinates   : location,
+			taken_at      : date,
 			taken_at_utc0 : date_utc0,
-			info: rest
+			info          : rest
 		})
 
 		// await database.increase_user_images_size(user, image.files_size)

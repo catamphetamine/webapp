@@ -41,6 +41,12 @@ html, body, button, input, textarea, select
 	color       : var(--black-color);
 }
 
+/* Internet Explorer adds borders around all images */
+img
+{
+	border : none;
+}
+
 ul
 {
 	margin          : 0;

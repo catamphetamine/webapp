@@ -537,7 +537,7 @@ export default class Poster_profile extends Component
 		// Update `blocked_at`, etc
 		await get_poster(poster.id)
 
-		redirect(`/${poster.alias || poster.id}/block/${token_id}`)
+		redirect(`/${poster.id}/block/${token_id}`)
 	}
 
 	async unblock_poster()

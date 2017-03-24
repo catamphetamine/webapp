@@ -179,7 +179,13 @@ class Sql_store
 
 	async get_tokens(user_id)
 	{
-		const tokens = await this.access_tokens.find_all({ user: user_id }, { including: ['history'] })
+		const tokens = await this.access_tokens.find_all
+		({
+			user: user_id
+		},
+		{
+			including: ['history']
+		})
 
 		// First the most active ones,
 		// then the most obsolete ones.

@@ -287,7 +287,7 @@ export default function(api)
 		// Getting user id from `poster` for extra security
 		const poster = await http.get(`${address_book.social_service}/poster/${poster_id}`)
 
-		if (poster.user !== id)
+		if (String(poster.user) !== id)
 		{
 			throw new errors.Access_denied()
 		}

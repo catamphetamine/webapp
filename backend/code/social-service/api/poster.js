@@ -129,7 +129,6 @@ export default function(api)
 		// Delete the previous user picture (if any)
 		if (poster.picture)
 		{
-			console.log(poster.picture)
 			await internal_http.delete(`${address_book.image_service}/api/${poster.picture.id}`)
 		}
 
@@ -153,7 +152,7 @@ export default function(api)
 			throw new errors.Unauthorized()
 		}
 
-		return await store.generate_block_poster_token(poster_id, { self: poster.user === user.id })
+		return await store.generate_block_poster_token(id, { self: poster.user === user.id })
 	})
 
 	// Gets extended block poster token info
@@ -290,12 +289,8 @@ function can_edit_poster(user, poster)
 
 async function get_poster(id)
 {
-	const poster = await store.find_poster(id)
-
-	if (poster.blocked_by)
+	return await store.find_poster(id,
 	{
-		poster.blocked_by = await http.get(`${address_book.user_service}/${poster.blocked_by}`)
-	}
-
-	return poster
+		including: ['blocked_by']
+	})
 }
