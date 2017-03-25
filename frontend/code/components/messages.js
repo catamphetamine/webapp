@@ -43,5 +43,11 @@ export default defineMessages
 		id             : 'error.generic',
 		description    : 'Generic error text',
 		defaultMessage : 'Error'
+	},
+	settings:
+	{
+		id             : 'settings',
+		description    : 'Generic settings button text',
+		defaultMessage : 'Settings'
 	}
 })

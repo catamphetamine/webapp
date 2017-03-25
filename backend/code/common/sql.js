@@ -206,7 +206,9 @@ export default class Sql
 	{
 		const ids = await knex.insert(data).into(this.table).returning(this.id)
 
-		return parseInt(ids[0])
+		// Presumably returns a string
+		// (because javascript has no room for PostgreSQL `bigint`)
+		return ids[0]
 	}
 
 	// Updates an entry in the database.

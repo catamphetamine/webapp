@@ -14,7 +14,7 @@ class Sql_store
 	async connect()
 	{
 		this.posters = new Sql('posters')
-		this.posters.model.blocked_by = Sql.one(this.posters)
+		// this.posters.model.blocked_by = Sql.one(this.posters)
 
 		this.alias_history = new Sql('poster_alias_history')
 		this.block_poster_tokens = new Sql('block_poster_tokens')

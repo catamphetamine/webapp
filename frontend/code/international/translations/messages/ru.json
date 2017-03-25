@@ -5,6 +5,8 @@
 
 	"menu" : "Меню",
 
+	"settings" : "Настройки",
+
 	"error.generic" : "Ошибка",
 
 	"action.save"       : "Сохранить",
@@ -50,6 +52,8 @@
 
 	"home.header": "Собака",
 
+	"upload_picture.change" : "Поменять картинку",
+
 	"log.title"                  : "Журнал",
 	"log.entry.message"          : "Текст",
 	"log.entry.date"             : "Время",
@@ -71,7 +75,6 @@
 	"user.profile.edit"                      : "Правка",
 	"user.profile.cancel_editing"            : "Отмена",
 	"user.profile.save"                      : "Сохранить",
-	"user.profile.change_user_picture"       : "Поменять картинку",
 
 	"user.profile.name"                       : "Имя",
 	"user.profile.place"                      : "Место",

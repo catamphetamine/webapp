@@ -163,7 +163,8 @@ export default function(api)
 		}
 
 		// Get full user info
-		const user = await store.find(multifactor_authentication.user)
+		// (get `poster` too for alias redirection after sign in)
+		const user = await get_user_self(multifactor_authentication.user, { poster: true })
 
 		// Issue JWT token (the real one)
 		const token = await http.post(`${address_book.access_token_service}`,
@@ -175,6 +176,9 @@ export default function(api)
 
 		// Write JWT token to a cookie
 		set_cookie('authentication', token, { signed: false })
+
+		// Return user poster alias for alias redirection after sign in
+		return user
 	})
 
 	// Returns user's authentication configuration

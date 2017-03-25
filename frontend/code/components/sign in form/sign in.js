@@ -206,7 +206,7 @@ export default class Sign_in extends Component
 			details_parameters =
 			{
 				...details_parameters,
-				blocked_by     : <Poster>{ error.blocked_by }</Poster>,
+				blocked_by     : <Poster>{ error.blocked_by.poster }</Poster>,
 				blocked_reason : error.blocked_reason
 			}
 

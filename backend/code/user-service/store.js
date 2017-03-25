@@ -14,6 +14,7 @@ class Sql_store
 	async connect()
 	{
 		this.users = new Sql('users')
+		this.users.model.blocked_by = Sql.one(this.users)
 	}
 
 	create(user)

@@ -6,11 +6,13 @@ import classNames                      from 'classnames'
 import Redux_form                      from 'simpler-redux-form'
 
 import { defineMessages, FormattedMessage } from 'react-intl'
-import { Form, Button, FileUpload, ActivityIndicator, File, CanDrop } from 'react-responsive-ui'
+import { Form, Button } from 'react-responsive-ui'
 
-import Clock_icon      from '../../../assets/images/icons/clock.svg'
-import Message_icon    from '../../../assets/images/icons/message.svg'
-import Person_add_icon from '../../../assets/images/icons/person add.svg'
+import Upload_picture from './upload picture'
+
+import Clock_icon      from '../../../../assets/images/icons/clock.svg'
+import Message_icon    from '../../../../assets/images/icons/message.svg'
+import Person_add_icon from '../../../../assets/images/icons/person add.svg'
 
 import
 {
@@ -26,30 +28,29 @@ import
 	set_upload_poster_picture_other_error,
 	connector
 }
-from '../../redux/poster/profile'
+from '../../../redux/poster/profile'
 
 import
 {
 	generate_block_poster_token,
 	unblock_poster
 }
-from '../../redux/poster/block'
+from '../../../redux/poster/block'
 
-import { snack } from '../../redux/snackbar'
+import { snack } from '../../../redux/snackbar'
 
-import Text_input   from '../../components/form/text input'
-import Submit       from '../../components/form/submit'
-import Select       from '../../components/form/select'
+import Text_input     from '../../../components/form/text input'
+import Submit         from '../../../components/form/submit'
+import Select         from '../../../components/form/select'
+import Poster         from '../../../components/poster'
+import Poster_picture from '../../../components/poster picture'
+import Time_ago       from '../../../components/time ago'
 
-import Poster         from '../../components/poster'
-import Poster_picture from '../../components/poster picture'
-import Time_ago       from '../../components/time ago'
+import default_messages from '../../../components/messages'
 
-import { get_preferred_size, url } from '../../components/image'
+import can from '../../../../../code/permissions'
 
-import can from '../../../../code/permissions'
-
-import international from '../../international/internationalize'
+import international from '../../../international/internationalize'
 
 const Latest_activity_time_refresh_interval = 60 * 1000 // once in a minute
 
@@ -63,7 +64,7 @@ const Latest_activity_time_refresh_interval = 60 * 1000 // once in a minute
 	({ authentication, poster_profile, locale }) =>
 	({
 		...connector(poster_profile),
-		current_user : authentication.user,
+		user   : authentication.user,
 		locale : locale.locale
 	}),
 	{
@@ -104,8 +105,6 @@ export default class Poster_profile extends Component
 
 		this.send_message = this.send_message.bind(this)
 		this.subscribe    = this.subscribe.bind(this)
-
-		this.upload_poster_picture = this.upload_poster_picture.bind(this)
 
 		// fill two-letter country codes list
 
@@ -176,18 +175,19 @@ export default class Poster_profile extends Component
 			poster,
 			translate,
 			style,
-			current_user,
+			user,
 			latest_activity_time,
-			uploaded_picture,
 
 			update_poster_info_error,
 			update_poster_picture_error,
+			upload_poster_picture,
 			upload_poster_picture_error,
 			upload_poster_picture_other_error,
 
 			update_poster_info_pending,
 			upload_poster_picture_pending,
 			update_poster_picture_pending,
+			set_uploaded_poster_picture,
 
 			submit
 		}
@@ -212,7 +212,7 @@ export default class Poster_profile extends Component
 						{/* User blocked notice */}
 						{ poster.blocked_at &&
 							<div className="content-section__errors content-section__errors--top">
-								{ poster.blocked_by.id === poster.id
+								{ poster.blocked_by.id === user.id
 									?
 									<FormattedMessage
 										{ ...messages.blocked }
@@ -279,8 +279,17 @@ export default class Poster_profile extends Component
 							submit={ submit(this.save_profile_edits) }>
 
 							{/* Edit/Save own profile */}
-							{ this.is_own_profile() &&
+							{ this.can_edit_profile() &&
 								<div style={ styles.own_profile_actions } className="card__actions">
+
+									{/* "Settings" */}
+									{ !edit &&
+										<Button
+											className="card__action"
+											action={ this.show_profile_settings }>
+											{ translate(default_messages.settings) }
+										</Button>
+									}
 
 									{/* "Edit profile" */}
 									{ !edit &&
@@ -313,11 +322,11 @@ export default class Poster_profile extends Component
 							}
 
 							{/* Block this poster (not self) */}
-							{ !this.is_own_profile() &&
+							{ !this.can_edit_profile() &&
 								<div style={ styles.own_profile_actions } className="card__actions">
 
 									{/* "Block poster" */}
-									{ !poster.blocked_at && can('block poster', current_user) &&
+									{ !poster.blocked_at && can('block poster', user) &&
 										<Button
 											className="card__action"
 											action={ this.block_poster }>
@@ -326,7 +335,7 @@ export default class Poster_profile extends Component
 									}
 
 									{/* "Unblock poster" */}
-									{ poster.blocked_at && can('unblock user', current_user) &&
+									{ poster.blocked_at && can('unblock user', user) &&
 										<Button
 											className="card__action"
 											action={ this.unblock_poster }>
@@ -336,17 +345,17 @@ export default class Poster_profile extends Component
 								</div>
 							}
 
-							{/* User picture */}
-							<Uploadable_poster_picture
-								ref={ ref => this.poster_picture = ref }
-								edit={ edit }
-								poster={ poster }
-								uploaded_picture={ uploaded_picture }
-								uploading_picture={ upload_poster_picture_pending }
-								upload_poster_picture={ this.upload_poster_picture }
-								choosing_poster_picture={ this.reset_upload_poster_picture_errors }
-								translate={ translate }
-								style={ style }/>
+							{/* Poster picture */}
+							<Upload_picture
+								changing={ edit }
+								upload={ upload_poster_picture }
+								maxSize={ configuration.image_service.file_size_limit }
+								onChoose={ this.reset_upload_poster_picture_errors }
+								onError={ set_upload_poster_picture_other_error }
+								onFinished={ set_uploaded_poster_picture }>
+
+								<Poster_picture poster={ poster }/>
+							</Upload_picture>
 
 							{ edit &&
 								<div className="rrui__form__fields">
@@ -396,7 +405,7 @@ export default class Poster_profile extends Component
 						</Form>
 
 						{/* User actions: "Send message", "Subscribe" */}
-						{ !this.is_own_profile() &&
+						{ !this.can_edit_profile() &&
 							<div className="user-profile__actions">
 								{/* "Subscribe" */}
 								<div>
@@ -441,11 +450,11 @@ export default class Poster_profile extends Component
 		return markup
 	}
 
-	is_own_profile()
+	can_edit_profile()
 	{
-		const { current_user, poster } = this.props
+		const { user, poster } = this.props
 
-		return current_user && current_user.id === poster.id
+		return user && (poster.user === user.id || poster.users.has(user.id))
 	}
 
 	edit_profile = () =>
@@ -561,42 +570,6 @@ export default class Poster_profile extends Component
 		const { poster } = this.props
 	}
 
-	async upload_poster_picture(file)
-	{
-		const
-		{
-			upload_poster_picture,
-			set_upload_poster_picture_other_error,
-			set_uploaded_poster_picture
-		}
-		=
-		this.props
-
-		// Check file format
-		if (!['image/jpeg', 'image/png', 'image/svg+xml'].has(file.type))
-		{
-			return set_upload_poster_picture_other_error('unsupported')
-		}
-
-		// Check file size limit
-		if (file.size > configuration.image_service.file_size_limit)
-		{
-			return set_upload_poster_picture_other_error('oversized')
-		}
-
-		// Upload the image
-		const uploaded_picture = await upload_poster_picture(file)
-
-		// Preload the uploaded image
-
-		const image = new Image()
-
-		image.onload  = () => set_uploaded_poster_picture(uploaded_picture)
-		image.onerror = () => set_upload_poster_picture_other_error(true)
-
-		image.src = url(get_preferred_size(uploaded_picture.sizes, this.poster_picture.decoratedComponentInstance.width()))
-	}
-
 	// User's [place, country]
 	whereabouts()
 	{
@@ -628,132 +601,8 @@ export default class Poster_profile extends Component
 	}
 }
 
-@CanDrop(File, ({ uploading_picture, choosing_poster_picture, upload_poster_picture }, dropped) =>
-{
-	if (!uploading_picture)
-	{
-		choosing_poster_picture()
-		upload_poster_picture(dropped)
-	}
-})
-class Uploadable_poster_picture extends React.Component
-{
-	render()
-	{
-		const
-		{
-			edit,
-			poster,
-			uploaded_picture,
-			uploading_picture,
-			upload_poster_picture,
-			choosing_poster_picture,
-			translate,
-
-			dropTarget,
-			draggedOver,
-			canDrop
-		}
-		= this.props
-
-		{/* User picture */}
-		return dropTarget(
-			<div
-				style={ styles.poster_picture }
-				className={ classNames
-				(
-					'user-picture',
-					'user-profile__picture',
-					'card'
-				) }>
-
-				{/* The picture itself */}
-				<Poster_picture
-					ref={ ref => this.poster_picture = ref }
-					poster={ poster }
-					picture={ edit ? uploaded_picture : undefined }/>
-
-				{/* "Change poster picture" overlay */}
-				{ edit && !uploaded_picture &&
-					<div
-						className="user-profile__picture__change__overlay"
-						style={ styles.poster_picture_element_overlay_background }/>
-				}
-
-				{/* A colored overlay indicating "can drop image file here" situation */}
-				{ edit &&
-					<div
-						className={ classNames
-						(
-							'user-profile__picture__change__droppable-overlay',
-							{
-								'user-profile__picture__change__droppable-overlay--can-drop'    : draggedOver,
-								'user-profile__picture__change__droppable-overlay--cannot-drop' : draggedOver && !canDrop
-							}
-						) }
-						style={ styles.poster_picture_element_overlay_background }/>
-				}
-
-				{/* "Change poster picture" file uploader */}
-				{ edit &&
-					<FileUpload
-						className="user-profile__picture__change__label"
-						style={styles.poster_picture_element_overlay_label}
-						disabled={uploading_picture}
-						onClick={choosing_poster_picture}
-						action={upload_poster_picture}>
-
-						{/* "Change poster picture" label */}
-						{ !uploaded_picture && !uploading_picture && translate(messages.change_poster_picture) }
-
-						{/* "Uploading picture" spinner */}
-						{ uploading_picture && <ActivityIndicator style={ styles.poster_picture_element_spinner }/> }
-					</FileUpload>
-				}
-			</div>
-		)
-	}
-
-	width()
-	{
-		return this.poster_picture.width()
-	}
-}
-
 const styles = style
 `
-	poster_picture
-		position : relative
-
-		element
-			position         : absolute
-			top              : 0
-			left             : 0
-
-			width            : 100%
-			height           : 100%
-			border-radius    : inherit
-
-			&spinner
-				display    : block
-				color      : white
-				padding    : 20%
-				box-sizing : border-box
-
-			&overlay
-				cursor : pointer
-
-				&background
-					opacity : 0.5
-
-				&label
-					display     : flex
-					align-items : center
-					text-align  : center
-					color       : white
-					text-shadow : 0 0.05em 0.1em rgba(0, 0, 0, 0.75)
-					user-select : none
-
 	poster_name
 		font-size     : 1.5rem
 		margin-bottom : 0
@@ -808,12 +657,6 @@ const messages = defineMessages
 		id             : `user.profile.save`,
 		description    : `Save user's own profile edits`,
 		defaultMessage : `Save`
-	},
-	change_poster_picture:
-	{
-		id             : `user.profile.change_user_picture`,
-		description    : `An action label to change user picture`,
-		defaultMessage : `Change picture`
 	},
 	send_message:
 	{

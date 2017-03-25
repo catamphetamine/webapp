@@ -289,8 +289,17 @@ function can_edit_poster(user, poster)
 
 async function get_poster(id)
 {
-	return await store.find_poster(id,
+	const poster = await store.find_poster(id)
+
+	if (poster.blocked_by)
 	{
-		including: ['blocked_by']
-	})
+		// poster.blocked_by = await http.get(`${address_book.user_service}/${poster.blocked_by}`)
+
+		poster.blocked_by =
+		{
+			poster: await store.find_user_poster(poster.blocked_by)
+		}
+	}
+
+	return poster
 }

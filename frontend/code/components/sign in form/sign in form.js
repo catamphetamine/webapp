@@ -156,7 +156,7 @@ export default class Sign_in_form extends Component
 
 	finish_registration = () =>
 	{
-		this.setState({ register: false })
+		this.setState({ register: false, just_registered: true })
 	}
 
 	async sign_in()
@@ -176,11 +176,17 @@ export default class Sign_in_form extends Component
 		}
 		= this.props
 
+		const
+		{
+			just_registered
+		}
+		= this.state
+
 		try
 		{
 			preload_started()
 
-			await sign_in(authentication.id)
+			const user = await sign_in(authentication.id)
 
 			// Hide the modal
 			// (if this form is displayed in a modal)
@@ -192,6 +198,11 @@ export default class Sign_in_form extends Component
 			// Signed in.
 			// Refresh the page so that `access_token`
 			// is applied to the `http` tool.
+
+			if (just_registered)
+			{
+				return window.location = `/${user.poster.alias}`
+			}
 
 			// Redirect to the original destination
 			// if got here due to not being authenticated, etc.

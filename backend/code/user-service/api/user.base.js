@@ -9,6 +9,8 @@ export async function get_user(id, options = {})
 
 	const user_data = await store.find(id)
 
+	console.log('@@@@@@ user_data', user_data)
+
 	if (!user_data)
 	{
 		throw new errors.Not_found(`User not found: ${id}`)
