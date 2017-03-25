@@ -9,14 +9,18 @@ import international from '../../../international/internationalize'
 import { get_preferred_size, url } from '../../../components/image'
 
 @international
-@CanDrop(File, ({ uploading, onChoose, upload }, dropped, component) =>
+@CanDrop(File, (props, dropped, component) =>
 {
-	if (!uploading)
+	const { uploading, onChoose } = props
+
+	if (uploading)
 	{
-		onChoose()
-		upload(dropped)
-		component.setState({ uploading: true })
+		return
 	}
+
+	onChoose()
+	upload_and_wait_for_preload(dropped, props, component)
+	component.setState({ uploading: true })
 })
 export default class Upload_picture extends Component
 {
@@ -44,6 +48,7 @@ export default class Upload_picture extends Component
 
 	componentWillReceiveProps(new_props)
 	{
+		// Reset the uploaded picture on "cancel"
 		if (this.props.changing && !new_props.changing)
 		{
 			this.props.onFinished()
