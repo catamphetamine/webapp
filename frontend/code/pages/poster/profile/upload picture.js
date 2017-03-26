@@ -8,7 +8,7 @@ import international from '../../../international/internationalize'
 
 import { get_preferred_size, url } from '../../../components/image'
 
-@international
+const drop_area =
 @CanDrop(File, (props, dropped, component) =>
 {
 	const { uploading, onChoose } = props
@@ -20,9 +20,8 @@ import { get_preferred_size, url } from '../../../components/image'
 
 	onChoose()
 	upload_and_wait_for_preload(dropped, props, component)
-	component.setState({ uploading: true })
 })
-export default class Upload_picture extends Component
+class Upload_picture extends Component
 {
 	static propTypes =
 	{
@@ -37,13 +36,6 @@ export default class Upload_picture extends Component
 		children        : PropTypes.element.isRequired
 	}
 
-	static defaultProps =
-	{
-		changing  : false,
-		uploading : false,
-		types     : ['image/jpeg', 'image/png', 'image/svg+xml']
-	}
-
 	state = {}
 
 	componentWillReceiveProps(new_props)
@@ -51,7 +43,9 @@ export default class Upload_picture extends Component
 		// Reset the uploaded picture on "cancel"
 		if (this.props.changing && !new_props.changing)
 		{
-			this.props.onFinished()
+			const { onFinished } = this.props
+
+			onFinished()
 			this.setState({ uploaded_picture: undefined })
 		}
 	}
@@ -275,3 +269,14 @@ async function upload_and_wait_for_preload(file, props, component)
 
 	image.src = url(get_preferred_size(uploaded_picture.sizes, component.width()))
 }
+
+// `react-dnd` won't account for default properties
+// when defined on the wrapped component intself
+drop_area.defaultProps =
+{
+	changing  : false,
+	uploading : false,
+	types     : ['image/jpeg', 'image/png', 'image/svg+xml']
+}
+
+export default international(drop_area)

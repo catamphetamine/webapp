@@ -187,7 +187,9 @@ export default class Poster_profile extends Component
 			update_poster_info_pending,
 			upload_poster_picture_pending,
 			update_poster_picture_pending,
+
 			set_uploaded_poster_picture,
+			set_upload_poster_picture_other_error,
 
 			submit
 		}
