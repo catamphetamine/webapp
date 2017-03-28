@@ -5,8 +5,6 @@
 
 import { errors } from 'web-service'
 
-import { send } from '../mailer'
-
 import start_metrics from '../../../../code/metrics'
 
 const metrics = start_metrics
@@ -18,21 +16,24 @@ const metrics = start_metrics
 	}
 })
 
-export default function(api)
+export default function(mailer)
 {
-	api.post('/', async function({ to, subject, template, parameters, locale })
+	return function(api)
 	{
-		if (!locale)
+		api.post('/', async function({ to, subject, template, parameters, locale })
 		{
-			throw new errors.Input_rejected(`"locale" is required`)
-		}
+			if (!locale)
+			{
+				throw new errors.Input_rejected(`"locale" is required`)
+			}
 
-		metrics.increment('count')
+			metrics.increment('count')
 
-		send({ to, subject }, template, parameters, locale)
-	})
+			mailer.send({ to, subject }, template, parameters, locale)
+		})
+	}
 
-	// send
+	// mailer.send
 	// ({
 	// 	from: '"Fred Foo 👥" <foo@blurdybloop.com>', // sender address
 	// 	to: 'halt.hammerzeit.at@gmail.com', // list of receivers
@@ -41,7 +42,7 @@ export default function(api)
 	// 	html: '<b>Hello world 🐴</b>' // html body
 	// })
 
-	// send
+	// mailer.send
 	// ({
 	// 	from: '"Fred Foo 👥" <foo@blurdybloop.com>', // sender address
 	// 	to: 'halt.hammerzeit.at@gmail.com', // list of receivers

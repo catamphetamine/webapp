@@ -4,7 +4,7 @@ import log_api       from './api/log'
 
 export default function()
 {
-	api
+	return api
 	(
 		'Log service',
 		configuration.log_service.http,

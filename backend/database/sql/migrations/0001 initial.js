@@ -57,6 +57,8 @@ exports.up = function(knex, Promise)
 
 		table.jsonb('palette')
 
+		table.string('type')
+
 		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
 
 		// JSON array (NULL by default)
@@ -192,8 +194,8 @@ exports.up = function(knex, Promise)
 
 		table.string('type')
 
-		// For faster conversation list querying
-		table.bigint('latest_post').references('posts.id')
+		// // For faster conversation list querying
+		// table.bigint('latest_post').references('posts.id')
 
 		// Allowed posters (NULL for public streams)
 		table.jsonb('posters')
@@ -238,6 +240,13 @@ exports.up = function(knex, Promise)
 		table.bigint('poster').notNullable().references('posters.id')
 		table.bigint('stream').notNullable().references('streams.id')
 
+		// For showing the most "interesting" posts
+		// and hiding the least "interesting" ones.
+		table.int('upvotes').notNullable.defaultTo(0)
+		table.int('downvotes').notNullable.defaultTo(0)
+
+		table.boolean('hidden').notNullable().defaultTo(false)
+
 		// Parent post (for comments)
 		table.bigint('post').references('posts.id')
 	})
@@ -265,8 +274,6 @@ exports.up = function(knex, Promise)
 	{
 		table.bigIncrements('id').primary().unsigned()
 
-		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
-
 		table.bigint('post').notNullable().references('posts.id')
 		table.bigint('poster').notNullable().references('posters.id')
 	})
@@ -280,6 +287,47 @@ exports.up = function(knex, Promise)
 
 		// `poster` is here for faster querying (minor optimization).
 		table.bigint('poster').notNullable().references('posters.id')
+	})
+
+	.createTable('merchandise', function(table)
+	{
+		table.bigIncrements('id').primary().unsigned()
+
+		// `name` and `description` columns are gonna hold JSON objects
+		// with 2-letter language code keys, like `{ ru: 'Подушка', en: 'Pillow' }`
+		table.jsonb('name').notNullable()
+		table.jsonb('description').notNullable()
+
+		// `price` is gonna be different for different currencies
+		// (https://ru.wikipedia.org/wiki/ISO_4217),
+		// like `{ RUR: 1000, USD: 300 }`.
+		// The integer value is in cents (for precision).
+		table.jsonb('price').notNullable()
+
+		table.int('count')
+		table.boolean('sold').notNullable().defaultTo(false)
+
+		table.bigint('seller').notNullable().references('posters.id')
+		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
+	})
+
+	.createTable('purchases', function(table)
+	{
+		table.bigIncrements('id').primary().unsigned()
+
+		table.bigint('merchandise').notNullable().references('merchandise.id')
+		table.bigint('buyer').notNullable().references('users.id')
+
+		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
+		table.timestamp('paid_at')
+		table.timestamp('shipped_at')
+		table.timestamp('delivered_at')
+		table.timestamp('cancelled_at')
+
+		// In some future a `delivery_methods` table will be created
+		// and `delivery_method` column will point to a record in that table.
+		table.string('delivery_method_name', 64)
+		table.string('tracking_number', 64)
 	})
 
 	// Add `coordinates` column

@@ -4,7 +4,7 @@ import password_api from './api/password'
 
 export default function()
 {
-	api
+	return api
 	(
 		'Password service',
 		configuration.password_service.http,

@@ -1,12 +1,13 @@
 import React, { PropTypes, Component } from 'react'
+import ReactDOM from 'react-dom'
 import { FileUpload, ActivityIndicator, File, CanDrop } from 'react-responsive-ui'
 import { flat as style } from 'react-styling'
 import { defineMessages } from 'react-intl'
 import classNames from 'classnames'
 
-import international from '../../../international/internationalize'
+import international from '../international/internationalize'
 
-import { get_preferred_size, url } from '../../../components/image'
+import Responsive_picture, { get_preferred_size, url } from './picture'
 
 const drop_area =
 @CanDrop(File, (props, dropped, component) =>
@@ -26,6 +27,7 @@ class Upload_picture extends Component
 	static propTypes =
 	{
 		changing        : PropTypes.bool.isRequired,
+		changeLabel     : PropTypes.string,
 		upload          : PropTypes.func.isRequired,
 		uploading       : PropTypes.bool.isRequired,
 		onChoose        : PropTypes.func.isRequired,
@@ -33,7 +35,8 @@ class Upload_picture extends Component
 		onFinished      : PropTypes.func.isRequired,
 		maxSize         : PropTypes.number,
 		types           : PropTypes.arrayOf(PropTypes.string).isRequired,
-		children        : PropTypes.element.isRequired
+		children        : PropTypes.element.isRequired,
+		className       : PropTypes.string
 	}
 
 	state = {}
@@ -55,10 +58,12 @@ class Upload_picture extends Component
 		const
 		{
 			changing,
+			changeLabel,
 			upload,
 			onChoose,
 			translate,
 			children,
+			className,
 
 			dropTarget,
 			draggedOver,
@@ -73,30 +78,34 @@ class Upload_picture extends Component
 		}
 		= this.state
 
+		const picture_props =
+		{
+			ref : ref => this.picture = ref
+		}
+
+		if (uploaded_picture)
+		{
+			picture_props.picture = uploaded_picture
+			picture_props.uploaded = true
+		}
+
 		{/* User picture */}
 		return dropTarget(
 			<div
 				style={ styles.uploadable_picture }
 				className={ classNames
 				(
-					'user-picture',
-					'user-profile__picture',
-					'card'
+					'upload-picture',
+					className
 				) }>
 
 				{/* The picture itself */}
-				{
-					React.cloneElement(children,
-					{
-						ref : ref => this.picture = ref,
-						picture : uploaded_picture
-					})
-				}
+				{ React.cloneElement(children, picture_props) }
 
 				{/* "Change picture" overlay */}
 				{ changing && !uploaded_picture &&
 					<div
-						className="user-profile__picture__change__overlay"
+						className="upload-picture__change-overlay"
 						style={ styles.uploadable_picture_element_overlay_background }/>
 				}
 
@@ -105,10 +114,10 @@ class Upload_picture extends Component
 					<div
 						className={ classNames
 						(
-							'user-profile__picture__change__droppable-overlay',
+							'upload-picture__droppable-overlay',
 							{
-								'user-profile__picture__change__droppable-overlay--can-drop'    : draggedOver,
-								'user-profile__picture__change__droppable-overlay--cannot-drop' : draggedOver && !canDrop
+								'upload-picture__droppable-overlay--can-drop'    : draggedOver,
+								'upload-picture__droppable-overlay--cannot-drop' : draggedOver && !canDrop
 							}
 						) }
 						style={ styles.uploadable_picture_element_overlay_background }/>
@@ -117,14 +126,14 @@ class Upload_picture extends Component
 				{/* "Change picture" file uploader */}
 				{ changing &&
 					<FileUpload
-						className="user-profile__picture__change__label"
+						className="upload-picture__change-label"
 						style={ styles.uploadable_picture_element_overlay_label }
 						disabled={ uploading }
 						onClick={ onChoose }
 						action={ this.upload }>
 
 						{/* "Change picture" label */}
-						{ !uploaded_picture && !uploading && translate(messages.change_picture) }
+						{ !uploaded_picture && !uploading && (changeLabel || translate(messages.change_picture)) }
 
 						{/* "Uploading picture" spinner */}
 						{ uploading && <ActivityIndicator style={ styles.uploadable_picture_element_spinner }/> }
@@ -136,7 +145,7 @@ class Upload_picture extends Component
 
 	width()
 	{
-		return this.picture.width()
+		return ReactDOM.findDOMNode(this.picture).offsetWidth
 	}
 
 	upload = (file) =>
@@ -148,8 +157,6 @@ class Upload_picture extends Component
 const styles = style
 `
 	uploadable_picture
-		position : relative
-
 		element
 			position         : absolute
 			top              : 0
@@ -172,12 +179,13 @@ const styles = style
 					opacity : 0.5
 
 				&label
-					display     : flex
-					align-items : center
-					text-align  : center
-					color       : white
-					text-shadow : 0 0.05em 0.1em rgba(0, 0, 0, 0.75)
-					user-select : none
+					display         : flex
+					align-items     : center
+					justify-content : center
+					text-align      : center
+					color           : white
+					text-shadow     : 0 0.05em 0.1em rgba(0, 0, 0, 0.75)
+					user-select     : none
 `
 
 const messages = defineMessages
@@ -267,7 +275,7 @@ async function upload_and_wait_for_preload(file, props, component)
 		onError(String(error))
 	}
 
-	image.src = url(get_preferred_size(uploaded_picture.sizes, component.width()))
+	image.src = url(get_preferred_size(uploaded_picture.sizes, component.width()), 'uploaded')
 }
 
 // `react-dnd` won't account for default properties
@@ -280,3 +288,61 @@ drop_area.defaultProps =
 }
 
 export default international(drop_area)
+
+const picture = PropTypes.shape
+({
+	sizes: PropTypes.arrayOf(PropTypes.object).isRequired
+})
+
+export class Picture extends Component
+{
+	static propTypes =
+	{
+		fallback  : picture,
+		picture   : picture,
+		type      : PropTypes.string.isRequired,
+		uploaded  : PropTypes.bool.isRequired,
+		maxWidth  : PropTypes.number,
+		style     : PropTypes.object,
+		className : PropTypes.string
+	}
+
+	static defaultProps =
+	{
+		uploaded : false
+	}
+
+	render()
+	{
+		const
+		{
+			fallback,
+			picture,
+			uploaded,
+			maxWidth,
+			style,
+			className
+		}
+		= this.props
+
+		let type
+		let sizes
+
+		if (picture)
+		{
+			type  = uploaded ? 'uploaded' : this.props.type
+			sizes = picture.sizes
+		}
+		else if (fallback)
+		{
+			sizes = fallback.sizes
+		}
+
+		return <Responsive_picture
+			type={ type }
+			sizes={ sizes }
+			maxWidth={ maxWidth }
+			style={ style }
+			className={ className }/>
+	}
+}

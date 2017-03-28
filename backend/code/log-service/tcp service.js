@@ -1,6 +1,5 @@
 import { server as tcp_server } from '../../../code/tcp'
 import message_store            from './message store'
-import web_server               from './web server'
 
 export default function()
 {
@@ -42,5 +41,5 @@ export default function()
 		})
 	})
 
-	web_server()
+	return server
 }

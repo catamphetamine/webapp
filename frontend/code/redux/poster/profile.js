@@ -94,7 +94,7 @@ export const set_uploaded_poster_picture = action
 	result    : (state, { picture }) =>
 	({
 		...state,
-		upload_poster_picture_pending : picture ? false : state.upload_poster_picture_pending,
+		upload_poster_picture_pending : false,
 		uploaded_picture              : picture
 	})
 },

@@ -120,7 +120,10 @@ export default function(api)
 		picture = await internal_http.post
 		(
 			`${address_book.image_service}/api/save`,
-			{ type: 'poster_picture', image: picture }
+			{
+				type: 'poster_picture',
+				image: picture
+			}
 		)
 
 		// Update the picture in `users` table
@@ -290,6 +293,11 @@ function can_edit_poster(user, poster)
 async function get_poster(id)
 {
 	const poster = await store.find_poster(id)
+
+	if (!poster)
+	{
+		throw new errors.Not_found(`Poster "${id}" not found`)
+	}
 
 	if (poster.blocked_by)
 	{

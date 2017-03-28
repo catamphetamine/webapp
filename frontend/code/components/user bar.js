@@ -164,7 +164,7 @@ export default class Authentication extends Component
 
 				{/* User picture */}
 				<Poster_picture
-					className="user-picture--header"
+					className="poster-picture--header"
 					poster={ user.poster }/>
 			</Link>
 		)

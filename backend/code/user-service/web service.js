@@ -5,7 +5,7 @@ import user_api_legacy from './api/user.legacy'
 
 export default function()
 {
-	api
+	return api
 	(
 		'User service',
 		configuration.user_service.http,

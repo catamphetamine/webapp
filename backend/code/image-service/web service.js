@@ -93,7 +93,7 @@ export default function start_web_service()
 
 		for (let size of image.sizes)
 		{
-			const image_path = permanent_path(size.name, image_type)
+			const image_path = permanent_path(size.file, image_type)
 
 			if (await fs_exists(image_path))
 			{
@@ -127,8 +127,8 @@ export default function start_web_service()
 
 		for (let size of image.sizes)
 		{
-			const to = permanent_path(size.name, image_type)
-			await fs.moveAsync(temporary_path(size.name), to)
+			const to = permanent_path(size.file, image_type)
+			await fs.moveAsync(temporary_path(size.file), to)
 
 			size.file_size = (await fs.statAsync(to)).size
 		}
@@ -164,7 +164,7 @@ export default function start_web_service()
 	// 	},
 	// 	sizes:
 	// 	[{
-	// 		name: 'image@100x100.png',
+	// 		file: 'image@100x100.png',
 	// 		width: 100,
 	// 		height: 100
 	// 	},
@@ -204,7 +204,7 @@ export default function start_web_service()
 				{
 					sizes:
 					[{
-						name: file_name
+						file: file_name
 					}],
 					// server: 1
 				}
@@ -264,7 +264,7 @@ export default function start_web_service()
 				{
 					sizes.remove(previous)
 
-					await fs.unlinkAsync(temporary_path(previous.name))
+					await fs.unlinkAsync(temporary_path(previous.file))
 				}
 			}
 
@@ -308,6 +308,8 @@ export default function start_web_service()
 	{
 		log.error(error, 'Image service shutdown')
 	})
+
+	return web
 }
 
 async function resize_for_size(stream, from, max_extent, image_info, image_type, uploaded_file_name)
@@ -354,7 +356,7 @@ async function resize_for_size(stream, from, max_extent, image_info, image_type,
 	{
 		width  : resized.width,
 		height : resized.height,
-		name   : file_name
+		file   : file_name
 	}
 
 	return result

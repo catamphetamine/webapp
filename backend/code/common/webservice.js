@@ -30,7 +30,7 @@ const authentication_options = (is_access_token_service) =>
 
 export function api(name, host_port, api_modules, options = {})
 {
-	return api_service
+	const service = api_service
 	({
 		...common_options,
 		...authentication_options(options.is_access_token_service),
@@ -39,12 +39,15 @@ export function api(name, host_port, api_modules, options = {})
 		// `log` global variable has been defined by now
 		log
 	})
-	.listen(host_port).then(() =>
+
+	return service.listen(host_port).then(() =>
 	{
 		const { host, port } = host_port
 		log.info(`${name} is listening at http://${host || 'localhost'}:${port}`)
+
+		return service
 	},
-	error =>
+	(error) =>
 	{
 		log.error(error, `${name} failed to start`)
 	})

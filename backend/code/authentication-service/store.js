@@ -10,6 +10,11 @@ class Sql_store
 		return this.connecting || (this.connecting = this.connect())
 	}
 
+	async close()
+	{
+		await this.connecting
+	}
+
 	async connect()
 	{
 		this.authentication = new Sql('authentication')

@@ -49,15 +49,9 @@ for (let key of Object.keys(global.configuration))
 
 // console.log('Address book', global.address_book)
 
-global.wait_for_stores = function(stores, then)
+global.catch_errors = function(returns_promise)
 {
-	return global.catch_errors
-		(Promise.all(stores.map(store => store.ready())).then(then))
-}
-
-global.catch_errors = function(promise)
-{
-	promise.catch((error) =>
+	returns_promise().catch((error) =>
 	{
 		log.error(error)
 		process.exit(1)

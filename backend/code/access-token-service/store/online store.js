@@ -12,6 +12,12 @@ class Redis_online_status_store
 		return this.connecting || (this.connecting = this.connect())
 	}
 
+	async close()
+	{
+		await this.connecting
+		await this.redis.quit()
+	}
+
 	async connect()
 	{
 		// Redis caches commands until connection is established

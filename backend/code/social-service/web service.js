@@ -6,7 +6,7 @@ import notifications_api from './api/notifications'
 
 export default function()
 {
-	api
+	return api
 	(
 		'Social service',
 		configuration.social_service.http,

@@ -3,13 +3,13 @@
 // http://caniuse.com/#search=css%20var
 @mixin set_css_variable_header_height($value)
 {
-	.main-header, .user-picture--header
+	.main-header, .poster-picture--header
 	{
 		min-height: $value;
 		max-height: $value;
 	}
 
-	.user-picture--header
+	.poster-picture--header
 	{
 		width: $value;
 	}

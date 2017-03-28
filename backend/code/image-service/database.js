@@ -7,6 +7,11 @@ class Sql_store
 		return this.connecting || (this.connecting = this.connect())
 	}
 
+	async close()
+	{
+		await this.connecting
+	}
+
 	async connect()
 	{
 		this.images = new Sql('images')

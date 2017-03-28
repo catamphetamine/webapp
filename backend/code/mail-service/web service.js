@@ -1,14 +1,14 @@
 import { api } from '../common/webservice'
 import mail_api from './api/mail'
 
-export default function()
+export default function(mailer)
 {
-	api
+	return api
 	(
 		'Mail service',
 		configuration.mail_service.http,
 		[
-			mail_api
+			mail_api(mailer)
 		]
 	)
 }

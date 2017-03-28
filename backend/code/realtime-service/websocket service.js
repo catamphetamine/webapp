@@ -160,6 +160,8 @@ export default function start()
 	})
 
 	log.info(`Realtime service WebSocket is listening at port ${configuration.realtime_service.websocket.port}`)
+
+	return server
 }
 
 // These counters ("state") could be stored somewhere in Redis,

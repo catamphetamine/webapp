@@ -47,7 +47,7 @@ const third_party_libraries =
 	'moment',
 	'print-error',
 	'react',
-	'react-addons-shallow-compare',
+	// 'react-addons-shallow-compare',
 	'react-dnd',
 	'react-dnd-html5-backend',
 	'react-dom',

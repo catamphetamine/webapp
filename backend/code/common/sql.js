@@ -10,6 +10,11 @@ export default class Sql
 		this.model = model
 	}
 
+	async close()
+	{
+		// Can close pending transactions here
+	}
+
 	// Finds a single record by example object (or id)
 	async find(example, options = {})
 	{

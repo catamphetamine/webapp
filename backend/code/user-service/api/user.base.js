@@ -7,9 +7,7 @@ export async function get_user(id, options = {})
 {
 	const { self, poster } = options
 
-	const user_data = await store.find(id)
-
-	console.log('@@@@@@ user_data', user_data)
+	const user_data = await store.find(id, { include: ['blocked_by']})
 
 	if (!user_data)
 	{

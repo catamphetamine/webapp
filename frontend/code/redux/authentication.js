@@ -142,7 +142,11 @@ handler.handle('poster: update poster picture: done', (state, result) =>
 	user:
 	{
 		...state.user,
-		picture: result
+		poster:
+		{
+			...state.user.poster,
+			picture: result
+		}
 	}
 }))
 

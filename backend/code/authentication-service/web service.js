@@ -4,7 +4,7 @@ import authentication_password_api from './api/authentication.password'
 
 export default function()
 {
-	api
+	return api
 	(
 		'Authentication service',
 		configuration.authentication_service.http,
