@@ -52,7 +52,7 @@
 
 	"home.header": "Собака",
 
-	"upload_picture.change" : "Поменять картинку",
+	"upload_picture.change" : "Сменить картинку",
 
 	"log.title"                  : "Журнал",
 	"log.entry.message"          : "Текст",
@@ -80,7 +80,8 @@
 	"poster.profile.place"                      : "Место",
 	"poster.profile.country"                    : "Выберите вашу страну",
 
-	"poster.profile.background.change"          : "Поменять обои",
+	"poster.profile.background_template.change" : "Сменить фоновый шаблон",
+	"poster.profile.banner.change"              : "Сменить вывеску",
 	"poster.profile.background_color"           : "Цвет фона",
 
 	"poster.profile.update_error"                                 : "Не удалось обновить ваши данные",

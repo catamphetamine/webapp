@@ -8,11 +8,11 @@ export default class Picture extends PureComponent
 {
 	static propTypes =
 	{
-		src           : PropTypes.string,
 		type          : PropTypes.string,
 		maxWidth      : PropTypes.number,
 		// defaultWidth  : PropTypes.number,
 		children      : PropTypes.node,
+		pattern       : PropTypes.bool.isRequired,
 
 		sizes : PropTypes.arrayOf(PropTypes.shape
 		({
@@ -20,6 +20,11 @@ export default class Picture extends PureComponent
 			width : PropTypes.number,
 			file  : PropTypes.string.isRequired
 		}))
+	}
+
+	static defaultProps =
+	{
+		pattern : false
 	}
 
 	state = {}
@@ -36,12 +41,12 @@ export default class Picture extends PureComponent
 			this.refresh_size()
 		}
 
-		register_picture(this)
+		this.unregister_picture = register_picture(this)
 	}
 
 	componentWillUnmount()
 	{
-		unregister_picture(this)
+		this.unregister_picture()
 	}
 
 	componentWillReceiveProps(next_props)
@@ -54,19 +59,41 @@ export default class Picture extends PureComponent
 
 	render()
 	{
-		const { src, style, className, children } = this.props
+		let
+		{
+			pattern,
+			style,
+			className,
+			children
+		}
+		= this.props
+
+		if (pattern)
+		{
+			style =
+			{
+				...style,
+				backgroundImage: `url(${this.url() || transparent_pixel})`
+			}
+		}
 
 		const markup =
 		(
 			<div
 				style={ style }
-				className={ classNames('picture', className) }>
+				className={ classNames('picture',
+				{
+					'picture--pattern' : pattern
+				},
+				className) }>
 
-				<img
-					ref={ ref => this.picture = ref }
-					src={ typeof window === 'undefined' ? transparent_pixel : (src || this.url() || transparent_pixel) }
-					style={ styles.image }
-					className="picture__image"/>
+				{ !pattern &&
+					<img
+						ref={ ref => this.picture = ref }
+						src={ typeof window === 'undefined' ? transparent_pixel : (this.url() || transparent_pixel) }
+						style={ styles.image }
+						className="picture__image"/>
+				}
 
 				{ children }
 			</div>
@@ -95,11 +122,16 @@ export default class Picture extends PureComponent
 
 	get_preferred_size(sizes)
 	{
-		const { maxWidth } = this.props
+		const { maxWidth, pattern } = this.props
 
 		if (!sizes)
 		{
 			return
+		}
+
+		if (pattern)
+		{
+			return sizes.first()
 		}
 
 		return get_preferred_size(sizes, this.width(), maxWidth)
@@ -195,6 +227,8 @@ function register_picture(component)
 	}
 
 	get_pictures_controller().register(component)
+
+	return () => unregister_picture(component)
 }
 
 function unregister_picture(component)

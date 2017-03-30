@@ -87,6 +87,11 @@ class Upload_picture extends Component
 		{
 			picture_props.picture = uploaded_picture
 			picture_props.uploaded = true
+			picture_props.className = classNames
+			({
+				'upload-picture__picture--change' : uploading
+			},
+			picture_props.className)
 		}
 
 		{/* User picture */}
@@ -319,9 +324,7 @@ export class Picture extends Component
 			fallback,
 			picture,
 			uploaded,
-			maxWidth,
-			style,
-			className
+			...rest
 		}
 		= this.props
 
@@ -341,8 +344,6 @@ export class Picture extends Component
 		return <Responsive_picture
 			type={ type }
 			sizes={ sizes }
-			maxWidth={ maxWidth }
-			style={ style }
-			className={ className }/>
+			{ ...rest }/>
 	}
 }

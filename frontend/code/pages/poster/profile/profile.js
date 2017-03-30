@@ -12,6 +12,8 @@ import Clock_icon      from '../../../../assets/images/icons/clock.svg'
 import Message_icon    from '../../../../assets/images/icons/message.svg'
 import Person_add_icon from '../../../../assets/images/icons/person add.svg'
 
+import Poster_background_pattern_image from '../../../../assets/images/poster background pattern.png'
+
 import
 {
 	get_users_latest_activity_time,
@@ -55,7 +57,17 @@ import international from '../../../international/internationalize'
 
 const Latest_activity_time_refresh_interval = 60 * 1000 // once in a minute
 
-const default_color = '#ffffff'
+const Default_background_color = '#ffffff'
+
+const Poster_background_pattern =
+{
+	sizes:
+	[{
+		width  : 188,
+		height : 178,
+		file   : Poster_background_pattern_image
+	}]
+}
 
 @Redux_form
 @preload(({ dispatch, getState, location, parameters }) =>
@@ -182,7 +194,7 @@ export default class Poster_profile extends Component
 					{/* Background picture */}
 					<Upload_picture
 						changing={ edit }
-						changeLabel={ translate(messages.change_background_picture) }
+						changeLabel={ translate(messages.change_background_template) }
 						upload={ upload_poster_picture }
 						maxSize={ configuration.image_service.file_size_limit }
 						onChoose={ this.reset_upload_poster_picture_errors }
@@ -191,7 +203,8 @@ export default class Poster_profile extends Component
 						className="poster-profile__background-picture">
 
 						<Picture
-							picture={ poster.background }
+							pattern
+							picture={ poster.background || Poster_background_pattern }
 							type="poster_background_picture"/>
 					</Upload_picture>
 
@@ -202,7 +215,7 @@ export default class Poster_profile extends Component
 							<Color_picker
 								alignment="right"
 								className="poster-profile__background-color-picker"
-								value={ background_color || default_color }
+								value={ background_color || Default_background_color }
 								onChange={ this.set_background_color }/>
 						</div>
 					}
@@ -697,11 +710,17 @@ const messages = defineMessages
 		description    : `An action to unblock this user`,
 		defaultMessage : `Unblock`
 	},
-	change_background_picture:
+	change_background_template:
 	{
-		id             : `poster.profile.background.change`,
-		description    : `A text on background picture overlay in edit mode`,
-		defaultMessage : `Change background`
+		id             : `poster.profile.background_template.change`,
+		description    : `A text on background pattern overlay in edit mode`,
+		defaultMessage : `Change background pattern`
+	},
+	change_banner:
+	{
+		id             : `poster.profile.banner.change`,
+		description    : `A text on banner overlay in edit mode`,
+		defaultMessage : `Change banner`
 	},
 	background_color:
 	{
