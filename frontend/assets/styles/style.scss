@@ -1,14 +1,20 @@
 @import "constants.scss";
 @import "helpers.scss";
+@import "grid.scss";
 
 @import "colors.scss";
 @import "fonts.scss";
 @import "base.scss";
 @import "layout.scss";
-@import "grid.scss";
 @import "react-responsive-ui.scss";
 @import "datepicker.css";
 @import "components.scss";
+
+@include xs { @import "responsive/xs.scss"; }
+@include s  { @import "responsive/s.scss";  }
+@include m  { @import "responsive/m.scss";  }
+@include l  { @import "responsive/l.scss";  }
+@include xl { @import "responsive/xl.scss"; }
 
 @import "../../code/components/locale switcher.scss";
 @import "../../code/components/user bar.scss";
@@ -16,9 +22,3 @@
 @import "../../code/pages/layout.scss";
 @import "../../code/pages/sign in.scss";
 @import "../../code/pages/poster/profile/profile.scss";
-
-@include xs { @import "responsive/xs.scss"; }
-@include s  { @import "responsive/s.scss";  }
-@include m  { @import "responsive/m.scss";  }
-@include l  { @import "responsive/l.scss";  }
-@include xl { @import "responsive/xl.scss"; }

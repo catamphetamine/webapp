@@ -55,7 +55,7 @@
 //
 // (in "background content sections" padding and margin depend on each other)
 //
-@mixin set_css_variable_content_section_padding_and_margin($padding, $margin)
+@mixin set_css_variable_content_section_padding_and_margin($padding, $margin, $background_section_vertical_margin)
 {
 	.content-section, .content-section-padding
 	{
@@ -92,6 +92,22 @@
 		padding-bottom : calc(#{$padding} - 2 * #{$margin});
 	}
 
+	.poster-profile__picture
+	{
+		bottom : calc(-1 * (#{$padding} + #{$margin} / 2));
+	}
+
+	.poster-profile__picture,
+	.poster-profile__edit-actions
+	{
+		left : calc(#{$padding} + #{$margin} / 2);
+	}
+
+	.poster-profile__edit-actions
+	{
+		top : calc(-1 * #{$background_section_vertical_margin});
+	}
+
 	.content-section-header
 	{
 		margin        : calc(-1 * #{$padding});
@@ -111,6 +127,12 @@
 		margin : calc(#{$margin} / 2);
 	}
 
+	.background-section
+	{
+		margin-top    : $background_section_vertical_margin;
+		margin-bottom : $background_section_vertical_margin;
+	}
+
 	.sections
 	{
 		margin     : calc(#{$margin} / 2);
@@ -120,6 +142,26 @@
 		{
 			margin-top : calc(#{$margin} / 2);
 		}
+	}
+}
+
+// Could be achieved using CSS native variables ("CSS custom properties")
+// if all major browsers supported that CSS feature.
+// http://caniuse.com/#search=css%20var
+//
+@mixin set_profile_picture_size($size)
+{
+	.poster-profile__picture
+	{
+		width      : $size;
+		height     : $size;
+		min-width  : $size;
+		min-height : $size;
+	}
+
+	.poster-profile__edit-actions
+	{
+		margin-left : $size;
 	}
 }
 

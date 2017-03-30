@@ -241,11 +241,12 @@ export default class Poster_profile extends Component
 				</div>
 
 				{/* Left column */}
-				<div className="column-m-6-of-12">
+				<div
+					style={ styles.personal_info_column }
+					className="column-m-6-of-12">
 
 					{/* User's personal info */}
 					<section
-						style={ styles.personal_info_section }
 						className={ classNames
 						(
 							'background-section',
@@ -598,7 +599,7 @@ export default class Poster_profile extends Component
 
 const styles = style
 `
-	personal_info_section
+	personal_info_column
 		position : relative
 
 	poster_name

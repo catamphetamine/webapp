@@ -3,7 +3,7 @@
 // http://caniuse.com/#search=css%20var
 @include set_css_variable_input_width(calc(var(--unit) * 60));
 @include set_css_variable_header_height(calc(var(--unit) * 7));
-@include set_css_variable_content_section_padding_and_margin(calc(var(--unit) * 3.5), calc(var(--unit) * 0.5));
+@include set_css_variable_content_section_padding_and_margin(calc(var(--unit) * 3.5), calc(var(--unit) * 0.5), calc(var(--unit) * 0.5));
 
 @include columns(m-);
 
