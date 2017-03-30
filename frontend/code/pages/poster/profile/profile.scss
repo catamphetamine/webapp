@@ -20,14 +20,14 @@
 {
 	position               : absolute;
 	right                  : 0;
-	bottom                 : -1px;
+	top                    : 0;
 	display                : flex;
 	align-items            : center;
 	height                 : calc(var(--unit) * 6);
 	padding-left           : var(--unit);
 	padding-right          : var(--unit);
 	background-color       : var(--white-color);
-	border-top-left-radius : var(--border-radius);
+	border-bottom-left-radius : var(--border-radius);
 }
 
 .poster-profile__background-color-picker
@@ -189,6 +189,15 @@
 	.poster-profile__background-picture-container
 	{
 		max-height : calc(var(--unit) * 30);
+	}
+
+
+	.poster-profile__background-color
+	{
+		top                       : auto;
+		bottom                    : -1px;
+		border-bottom-left-radius : 0;
+		border-top-left-radius    : var(--border-radius);
 	}
 
 	.poster-profile__background-color
