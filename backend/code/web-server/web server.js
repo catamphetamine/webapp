@@ -48,10 +48,12 @@ export default function start_web_server()
 	web.proxy(address_book.webpage_server, { name: 'Page rendering service' })
 
 	// поднять http сервер
-	web.listen(configuration.web_server.http.port).then(() =>
+	return web.listen(configuration.web_server.http.port).then(() =>
 	{
 		log.info(`Web server is listening`)
 		log.info(`Now go to http://${configuration.web_server.http.host || 'localhost'}:${configuration.web_server.http.port}`)
+
+		return web
 	},
 	error =>
 	{

@@ -11,6 +11,14 @@ class Sql_store
 		return this.connecting || (this.connecting = this.connect())
 	}
 
+	async close()
+	{
+		if (this.connecting)
+		{
+			await this.connecting
+		}
+	}
+
 	async connect()
 	{
 		this.posters = new Sql('posters')

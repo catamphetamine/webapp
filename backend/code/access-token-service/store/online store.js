@@ -14,8 +14,15 @@ class Redis_online_status_store
 
 	async close()
 	{
-		await this.connecting
-		await this.redis.quit()
+		if (this.connecting)
+		{
+			await this.connecting
+		}
+
+		if (this.redis)
+		{
+			await this.redis.quit()
+		}
 	}
 
 	async connect()

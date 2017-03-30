@@ -12,7 +12,10 @@ class Sql_store
 
 	async close()
 	{
-		await this.connecting
+		if (this.connecting)
+		{
+			await this.connecting
+		}
 	}
 
 	async connect()

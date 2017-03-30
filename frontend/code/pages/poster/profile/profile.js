@@ -169,7 +169,7 @@ export default class Poster_profile extends Component
 
 	componentWillReceiveProps(new_props)
 	{
-		const { upload_picture_error } = new_props
+		const { upload_picture_error, translate, snack } = new_props
 
 		if (upload_picture_error !== this.props.upload_picture_error)
 		{
