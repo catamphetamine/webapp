@@ -6,7 +6,7 @@ const handler = create_handler(settings)
 export const update_poster = action
 ({
 	namespace : 'poster',
-	event     : 'update poster info',
+	event     : 'update poster',
 	action    : (id, data, http) => http.patch(`/social/poster/${id}`, data),
 	result    : 'poster'
 },
@@ -15,7 +15,7 @@ handler)
 export const reset_update_poster_error = reset_error
 ({
 	namespace : 'poster',
-	event     : 'update poster info'
+	event     : 'update poster'
 },
 handler)
 
@@ -37,23 +37,32 @@ export const get_users_latest_activity_time = action
 },
 handler)
 
-export const upload_poster_picture = action
+// Poster picture
+
+export const upload_picture = action
 ({
 	namespace : 'poster',
-	event     : 'upload poster picture',
-	action    : async (file, http) =>
+	event     : 'upload picture',
+	action    : async (file, type, http) =>
 	{
-		return http.post(`/images/upload`, { type: 'poster_picture', image: file })
+		return http.post(`/images/upload`, { type, image: file })
 	}
 },
 handler)
 
-export const reset_upload_poster_picture_error = reset_error
+export const reset_upload_picture_error = reset_error
 ({
 	namespace : 'poster',
-	event     : 'upload poster picture'
+	event     : 'upload picture'
 },
 handler)
+
+// Force `upload_picture_pending`
+// to be set to `false` later
+// when the image is prefetched
+// to avoid a flash of a not yet loaded image.
+// This stub handler substitutes the default behaviour.
+handler.handle('poster: upload picture: done', (state, result) => state)
 
 export const update_poster_picture = action
 ({
@@ -79,37 +88,114 @@ export const reset_update_poster_picture_error = reset_error
 },
 handler)
 
-// `upload_poster_picture_pending` will be set to `false`
-// when the image is prefetched
-// to avoid a flash of a not yet loaded image.
-handler.handle('poster: upload poster picture: done', (state, result) => state)
+export const update_poster_background_pattern = action
+({
+	namespace : 'poster',
+	event     : 'update poster background pattern',
+	action    : (id, picture, http) => http.post(`/social/poster/${id}/background`, { picture }),
+	result    : (state, result) =>
+	({
+		...state,
+		user:
+		{
+			...state.user,
+			background_pattern : result
+		}
+	})
+},
+handler)
+
+export const reset_update_poster_background_pattern_error = reset_error
+({
+	namespace : 'poster',
+	event     : 'update poster background pattern'
+},
+handler)
+
+export const update_poster_banner = action
+({
+	namespace : 'poster',
+	event     : 'update poster banner',
+	action    : (id, picture, http) => http.post(`/social/poster/${id}/banner`, { picture }),
+	result    : (state, result) =>
+	({
+		...state,
+		poster:
+		{
+			...state.poster,
+			banner : result
+		}
+	})
+},
+handler)
+
+export const reset_update_poster_banner_error = reset_error
+({
+	namespace : 'poster',
+	event     : 'update poster banner'
+},
+handler)
 
 // `set_uploaded_poster_picture` is called after the uploaded image is prefetched.
 // Prefetching is done to avoid a flash of a not yet loaded image.
 export const set_uploaded_poster_picture = action
 ({
 	namespace : 'poster',
-	event     : 'reset uploaded poster picture',
+	event     : 'set uploaded poster picture',
 	payload   : picture => ({ picture }),
 	result    : (state, { picture }) =>
 	({
 		...state,
-		upload_poster_picture_pending : false,
-		uploaded_picture              : picture
+		upload_picture_pending : false,
+		uploaded_picture       : picture
+	})
+},
+handler)
+
+// `set_uploaded_poster_background_pattern` is called after the uploaded image is prefetched.
+// Prefetching is done to avoid a flash of a not yet loaded image.
+export const set_uploaded_poster_background_pattern = action
+({
+	namespace : 'poster',
+	event     : 'set uploaded poster background pattern',
+	payload   : picture => ({ picture }),
+	result    : (state, { picture }) =>
+	({
+		...state,
+		upload_picture_pending      : false,
+		uploaded_background_pattern : picture
+	})
+},
+handler)
+
+// `set_uploaded_poster_banner` is called after the uploaded image is prefetched.
+// Prefetching is done to avoid a flash of a not yet loaded image.
+export const set_uploaded_poster_banner = action
+({
+	namespace : 'poster',
+	event     : 'set uploaded poster banner',
+	payload   : picture => ({ picture }),
+	result    : (state, { picture }) =>
+	({
+		...state,
+		upload_picture_pending : false,
+		uploaded_banner        : picture
 	})
 },
 handler)
 
 handler.add_state_properties
 (
-	'uploaded_picture'
+	'uploaded_picture',
+	'uploaded_background_pattern',
+	'uploaded_banner'
 )
 
-export const set_upload_poster_picture_other_error = action
+export const set_upload_picture_error = action
 ({
 	namespace : 'poster',
-	event     : 'upload poster picture: other error',
-	result    : 'upload_poster_picture_other_error'
+	event     : 'upload picture: error',
+	result    : 'upload_picture_error'
 },
 handler)
 

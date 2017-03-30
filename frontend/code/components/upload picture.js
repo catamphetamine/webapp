@@ -26,6 +26,7 @@ class Upload_picture extends Component
 {
 	static propTypes =
 	{
+		type            : PropTypes.string.isRequired,
 		changing        : PropTypes.bool.isRequired,
 		changeLabel     : PropTypes.string,
 		upload          : PropTypes.func.isRequired,
@@ -33,10 +34,17 @@ class Upload_picture extends Component
 		onChoose        : PropTypes.func.isRequired,
 		onError         : PropTypes.func.isRequired,
 		onFinished      : PropTypes.func.isRequired,
-		maxSize         : PropTypes.number,
+		maxSize         : PropTypes.number.isRequired,
 		types           : PropTypes.arrayOf(PropTypes.string).isRequired,
+		pattern         : PropTypes.bool.isRequired,
 		children        : PropTypes.element.isRequired,
 		className       : PropTypes.string
+	}
+
+	static defaultProps =
+	{
+		pattern : false,
+		maxSize : configuration.image_service.file_size_limit
 	}
 
 	state = {}
@@ -57,6 +65,7 @@ class Upload_picture extends Component
 	{
 		const
 		{
+			type,
 			changing,
 			changeLabel,
 			upload,
@@ -159,6 +168,62 @@ class Upload_picture extends Component
 	}
 }
 
+const picture = PropTypes.shape
+({
+	sizes: PropTypes.arrayOf(PropTypes.object).isRequired
+})
+
+export class Picture extends Component
+{
+	static propTypes =
+	{
+		fallback  : picture,
+		picture   : picture,
+		type      : PropTypes.string.isRequired,
+		pattern   : PropTypes.bool.isRequired,
+		uploaded  : PropTypes.bool.isRequired,
+		maxWidth  : PropTypes.number,
+		style     : PropTypes.object,
+		className : PropTypes.string
+	}
+
+	static defaultProps =
+	{
+		uploaded : false,
+		pattern  : false
+	}
+
+	render()
+	{
+		const
+		{
+			fallback,
+			picture,
+			uploaded,
+			...rest
+		}
+		= this.props
+
+		let type
+		let sizes
+
+		if (picture)
+		{
+			type  = uploaded ? 'uploaded' : this.props.type
+			sizes = picture.sizes
+		}
+		else if (fallback)
+		{
+			sizes = fallback.sizes
+		}
+
+		return <Responsive_picture
+			{ ...rest }
+			type={ type }
+			sizes={ sizes }/>
+	}
+}
+
 const styles = style
 `
 	uploadable_picture
@@ -210,6 +275,7 @@ async function upload_and_wait_for_preload(file, props, component)
 		upload,
 		onError,
 		maxSize,
+		type,
 		types,
 		onFinished
 	}
@@ -237,7 +303,19 @@ async function upload_and_wait_for_preload(file, props, component)
 
 	let uploaded_picture
 
-	const finished = () =>
+	// Upload the picture
+	try
+	{
+		uploaded_picture = await upload(file, type)
+		await prefetch_image(url(get_preferred_size(uploaded_picture.sizes, component.width()), 'uploaded'))
+		onFinished(uploaded_picture)
+	}
+	catch (error)
+	{
+		console.error(error)
+		return onError(String(error))
+	}
+	finally
 	{
 		component.setState
 		({
@@ -245,42 +323,27 @@ async function upload_and_wait_for_preload(file, props, component)
 			uploaded_picture
 		})
 	}
+}
 
-	// Upload the picture
-	try
+// Preloads an image before displaying it
+function prefetch_image(url)
+{
+	return new Promise((resolve, reject) =>
 	{
-		uploaded_picture = await upload(file)
-	}
-	catch (error)
-	{
-		// Unset "uploading" flag
-		finished()
+		const image = new Image()
 
-		console.error(error)
-		return onError(String(error))
-	}
+		image.onload = () =>
+		{
+			resolve()
+		}
 
-	// Preload the uploaded image
+		image.onerror = (error) =>
+		{
+			reject(error)
+		}
 
-	const image = new Image()
-
-	image.onload = () =>
-	{
-		// Unset "uploading" flag
-		finished()
-
-		onFinished(uploaded_picture)
-	}
-
-	image.onerror = (error) =>
-	{
-		// Unset "uploading" flag
-		finished()
-
-		onError(String(error))
-	}
-
-	image.src = url(get_preferred_size(uploaded_picture.sizes, component.width()), 'uploaded')
+		image.src = url
+	})
 }
 
 // `react-dnd` won't account for default properties
@@ -293,57 +356,3 @@ drop_area.defaultProps =
 }
 
 export default international(drop_area)
-
-const picture = PropTypes.shape
-({
-	sizes: PropTypes.arrayOf(PropTypes.object).isRequired
-})
-
-export class Picture extends Component
-{
-	static propTypes =
-	{
-		fallback  : picture,
-		picture   : picture,
-		type      : PropTypes.string.isRequired,
-		uploaded  : PropTypes.bool.isRequired,
-		maxWidth  : PropTypes.number,
-		style     : PropTypes.object,
-		className : PropTypes.string
-	}
-
-	static defaultProps =
-	{
-		uploaded : false
-	}
-
-	render()
-	{
-		const
-		{
-			fallback,
-			picture,
-			uploaded,
-			...rest
-		}
-		= this.props
-
-		let type
-		let sizes
-
-		if (picture)
-		{
-			type  = uploaded ? 'uploaded' : this.props.type
-			sizes = picture.sizes
-		}
-		else if (fallback)
-		{
-			sizes = fallback.sizes
-		}
-
-		return <Responsive_picture
-			type={ type }
-			sizes={ sizes }
-			{ ...rest }/>
-	}
-}

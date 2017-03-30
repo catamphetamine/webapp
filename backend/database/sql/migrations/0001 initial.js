@@ -181,11 +181,14 @@ exports.up = function(knex, Promise)
 
 	.table('posters', function(table)
 	{
+		// Storing pictures as JSONs is a minor optimization
+		// since they aren't "edited" ever.
 		table.jsonb('picture')
-		table.jsonb('background')
+		table.jsonb('background_pattern')
+		table.jsonb('banner')
 
 		// table.bigint('picture').references('images.id')
-		// table.bigint('background').references('images.id')
+		// table.bigint('background_pattern').references('images.id')
 	})
 
 	.createTable('streams', function(table)

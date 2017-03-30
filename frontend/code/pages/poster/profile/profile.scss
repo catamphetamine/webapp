@@ -14,6 +14,12 @@
 	bottom   : 0;
 
 	background : var(--white-color);
+
+	.picture--pattern
+	{
+		// Stretches the pattern vertically
+		background-size : auto 100%;
+	}
 }
 
 .poster-profile__background-color

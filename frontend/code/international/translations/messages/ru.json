@@ -9,6 +9,10 @@
 
 	"error.generic" : "Ошибка",
 
+	"upload.picture.error"                  : "Не удалось загрузить картинку",
+	"upload.picture.error.too_big"          : "Выбранная вами картинка слишком велика. Выбирайте файлы не более 10 Мегабайтов.",
+	"upload.picture.error.unsupported_file" : "Выбранный вами файл не может быть использован в качестве картинки. Выбирайте изображения в форматах JPG, PNG или SVG.",
+
 	"action.save"       : "Сохранить",
 	"action.cancel"     : "Отмена",
 	"action.next"       : "Далее",
@@ -80,15 +84,16 @@
 	"poster.profile.place"                      : "Место",
 	"poster.profile.country"                    : "Выберите вашу страну",
 
-	"poster.profile.background_template.change" : "Сменить фоновый шаблон",
-	"poster.profile.banner.change"              : "Сменить вывеску",
-	"poster.profile.background_color"           : "Цвет фона",
+	"poster.profile.background_pattern.change" : "Сменить фоновый шаблон",
+	"poster.profile.banner.change"             : "Сменить вывеску",
+	"poster.profile.background_color"          : "Цвет фона",
 
-	"poster.profile.update_error"                                 : "Не удалось обновить ваши данные",
-	"poster.profile.user_picture_upload_error"                    : "Не удалось загрузить картинку",
-	"poster.profile.uploaded_user_picture_is_too_big_error"       : "Выбранная вами картинка слишком велика. Выбирайте файлы не более 10 Мегабайтов.",
-	"poster.profile.unsupported_uploaded_user_picture_file_error" : "Выбранный вами файл не может быть использован в качестве картинки. Выбирайте изображения в форматах JPG, PNG или SVG.",
-	"poster.profile.name_is_required"                             : "Впишите своё имя",
+	"poster.profile.update.error"      : "Не удалось обновить ваши данные",
+	"poster.profile.name_is_required"  : "Впишите своё имя",
+
+	"poster.profile.picture.update.error"            : "Не удалось обновить вашу картинку",
+	"poster.profile.background_pattern.update.error" : "Не удалось обновить ваш фоновый шаблон",
+	"poster.profile.banner.update.error"             : "Не удалось обновить вашу вывеску",
 
 	"poster.profile.subscribe"    : "Подписаться",
 	"poster.profile.send_message" : "Связаться",

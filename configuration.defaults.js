@@ -70,6 +70,24 @@ module.exports =
 					600,
 					1000
 				]
+			},
+			poster_background_pattern:
+			{
+				path: 'poster_background_patterns',
+				sizes:
+				[
+					2000
+				]
+			},
+			poster_banner:
+			{
+				path: 'poster_background_patterns',
+				sizes:
+				[
+					300,
+					600,
+					1000
+				]
 			}
 		}
 	},

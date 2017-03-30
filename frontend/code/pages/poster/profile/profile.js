@@ -18,15 +18,26 @@ import
 {
 	get_users_latest_activity_time,
 	get_poster,
+
 	update_poster,
 	reset_update_poster_error,
-	upload_poster_picture,
+
 	update_poster_picture,
 	reset_update_poster_picture_error,
+
+	update_poster_background_pattern,
+	reset_update_poster_background_pattern_error,
+
+	update_poster_banner,
+	reset_update_poster_banner_error,
+
 	set_uploaded_poster_picture,
-	reset_upload_poster_picture_error,
-	set_upload_poster_picture_other_error,
-	save_poster_settings,
+	set_uploaded_poster_background_pattern,
+	set_uploaded_poster_banner,
+
+	upload_picture,
+	set_upload_picture_error,
+
 	connector
 }
 from '../../../redux/poster/profile'
@@ -84,19 +95,32 @@ const Poster_background_pattern =
 	}),
 	{
 		get_poster,
+		get_users_latest_activity_time,
+
 		update_poster,
 		reset_update_poster_error,
-		upload_poster_picture,
-		reset_upload_poster_picture_error,
-		set_upload_poster_picture_other_error,
+
 		update_poster_picture,
 		reset_update_poster_picture_error,
-		get_users_latest_activity_time,
+
+		update_poster_background_pattern,
+		reset_update_poster_background_pattern_error,
+
+		update_poster_banner,
+		reset_update_poster_banner_error,
+
+		upload_picture,
+		set_upload_picture_error,
+
+		set_uploaded_poster_picture,
+		set_uploaded_poster_background_pattern,
+		set_uploaded_poster_banner,
+
 		generate_block_poster_token,
 		unblock_poster,
+
 		snack,
-		redirect,
-		set_uploaded_poster_picture
+		redirect
 	}
 )
 @international
@@ -143,6 +167,29 @@ export default class Poster_profile extends Component
 		}
 	}
 
+	componentWillReceiveProps(new_props)
+	{
+		const { upload_picture_error } = new_props
+
+		if (upload_picture_error !== this.props.upload_picture_error)
+		{
+			switch (upload_picture_error)
+			{
+				// The picture file's too big
+				case 'oversized':
+					return snack(translate(default_messages.picture_upload_too_big_error), 'error')
+
+				// The picture file's format is not supported
+				case 'unsupported':
+					return snack(translate(default_messages.picture_upload_unsupported_file_error), 'error')
+
+				// Other errors
+				case true:
+					return snack(translate(default_messages.picture_upload_error), 'error')
+			}
+		}
+	}
+
 	componentWillUnmount()
 	{
 		// Stop refreshing this user's latest activity time
@@ -159,24 +206,18 @@ export default class Poster_profile extends Component
 		const
 		{
 			poster,
+			user,
 			translate,
 			style,
-			user,
-			latest_activity_time,
 
-			update_poster,
-			update_poster_info_error,
-			update_poster_picture_error,
-			upload_poster_picture,
-			upload_poster_picture_error,
-			upload_poster_picture_other_error,
-
-			update_poster_info_pending,
-			upload_poster_picture_pending,
-			update_poster_picture_pending,
+			upload_picture,
+			upload_picture_pending,
 
 			set_uploaded_poster_picture,
-			set_upload_poster_picture_other_error,
+			set_uploaded_poster_background_pattern,
+			set_uploaded_poster_banner,
+
+			set_upload_picture_error,
 
 			submit,
 			submitting
@@ -185,27 +226,29 @@ export default class Poster_profile extends Component
 
 		const { background_color } = this.state
 
+		const poster_form_busy = submitting || upload_picture_pending
+
 		const markup =
 		(
 			<div className="content poster-profile">
 				<Title>{ poster.name }</Title>
 
 				<div className="poster-profile__background-picture-container">
-					{/* Background picture */}
+					{/* Poster background pattern picture */}
 					<Upload_picture
+						type="poster_background_pattern"
 						changing={ edit }
-						changeLabel={ translate(messages.change_background_template) }
-						upload={ upload_poster_picture }
-						maxSize={ configuration.image_service.file_size_limit }
-						onChoose={ this.reset_upload_poster_picture_errors }
-						onError={ set_upload_poster_picture_other_error }
-						onFinished={ set_uploaded_poster_picture }
+						changeLabel={ translate(messages.change_background_pattern) }
+						upload={ upload_picture }
+						onChoose={ set_upload_picture_error }
+						onError={ set_upload_picture_error }
+						onFinished={ set_uploaded_poster_background_pattern }
 						className="poster-profile__background-picture">
 
 						<Picture
+							type="poster_background_pattern"
 							pattern
-							picture={ poster.background || Poster_background_pattern }
-							type="poster_background_picture"/>
+							picture={ poster.background_pattern || Poster_background_pattern }/>
 					</Upload_picture>
 
 					{ edit &&
@@ -222,11 +265,11 @@ export default class Poster_profile extends Component
 
 					{/* Poster picture */}
 					<Upload_picture
+						type="poster_picture"
 						changing={ edit }
-						upload={ upload_poster_picture }
-						maxSize={ configuration.image_service.file_size_limit }
-						onChoose={ this.reset_upload_poster_picture_errors }
-						onError={ set_upload_poster_picture_other_error }
+						upload={ upload_picture }
+						onChoose={ set_upload_picture_error }
+						onError={ set_upload_picture_error }
 						onFinished={ set_uploaded_poster_picture }
 						className={ classNames
 						(
@@ -247,153 +290,26 @@ export default class Poster_profile extends Component
 
 					{/* User's personal info */}
 					<section
-						className={ classNames
-						(
-							'background-section',
-							{
-								'content-section' : edit
-							}
-						) }>
+						className={ classNames('background-section',
+						{
+							'content-section' : edit
+						}) }>
 
-						{/* User blocked notice */}
-						{ poster.blocked_at &&
-							<div className="content-section__errors content-section__errors--top">
-								{ poster.blocked_by.id === user.id
-									?
-									<FormattedMessage
-										{ ...messages.blocked }
-										values=
-										{ {
-											blocked_at : <Time_ago>{ poster.blocked_at }</Time_ago>
-										} }/>
-									:
-									<FormattedMessage
-										{ ...messages.blocked_detailed }
-										values=
-										{ {
-											blocked_at     : <Time_ago>{ poster.blocked_at }</Time_ago>,
-											blocked_by     : <Poster>{ poster.blocked_by.poster }</Poster>,
-											blocked_reason : poster.blocked_reason
-										} }/>
-								}
-							</div>
-						}
+						{/* Poster blocked notice */}
+						{ poster.blocked_at && this.render_poster_blocked_notice() }
 
 						<Form
-							busy={ update_poster_info_pending || update_poster_picture_pending || upload_poster_picture_pending }
+							busy={ poster_form_busy }
 							submit={ submit(this.save_profile_edits) }>
 
-							{/* User profile edit errors */}
-							{ (update_poster_info_error
-								|| update_poster_picture_error
-								|| upload_poster_picture_error
-								|| upload_poster_picture_other_error)
-								&&
-								<ul
-									style={ styles.own_profile_actions_errors }
-									className="content-section__errors content-section__errors--top errors">
-									{/* Couldn't update poster's picture with the uploaded one */}
-									{ update_poster_picture_error &&
-										<li>{ translate(messages.update_error) }</li>
-									}
-
-									{/* Couldn't update poster's info */}
-									{ update_poster_info_error &&
-										<li>{ translate(messages.update_error) }</li>
-									}
-
-									{/* Couldn't upload poster's picture */}
-									{ upload_poster_picture_error &&
-										<li>{ translate(messages.poster_picture_upload_error) }</li>
-									}
-
-									{/* User picture file's too big */}
-									{ upload_poster_picture_other_error === 'oversized' &&
-										<li>{ translate(messages.uploaded_poster_picture_is_too_big_error) }</li>
-									}
-
-									{/* User picture file's format is not supported */}
-									{ upload_poster_picture_other_error === 'unsupported' &&
-										<li>{ translate(messages.unsupported_uploaded_poster_picture_file_error) }</li>
-									}
-
-									{/* Other errors */}
-									{ upload_poster_picture_other_error === true &&
-										<li>{ translate(messages.poster_picture_upload_error) }</li>
-									}
-								</ul>
-							}
+							{/* Poster profile edit errors */}
+							{ this.render_poster_edit_errors() }
 
 							{/* Edit/Save own profile */}
-							{ this.can_edit_profile() &&
-								<div
-									style={ styles.own_profile_actions }
-									className="poster-profile__edit-actions card__actions">
-
-									{/* "Edit profile" */}
-									{ !edit &&
-										<Button
-											className="card__action"
-											action={ this.toggle_edit_mode }>
-											{ translate(messages.edit_profile) }
-										</Button>
-									}
-
-									{/* "Settings" */}
-									{ false && !edit &&
-										<Button
-											className="card__action"
-											action={ this.show_profile_settings }>
-											{ translate(default_messages.settings) }
-										</Button>
-									}
-
-									{/* "Cancel changes" */}
-									{  edit &&
-										<Button
-											action={ this.toggle_edit_mode }
-											className="card__action"
-											disabled={ update_poster_info_pending || upload_poster_picture_pending }>
-											{ translate(messages.cancel_profile_edits) }
-										</Button>
-									}
-
-									{/* "Save changes" */}
-									{  edit &&
-										<Submit
-											className="button--primary card__action"
-											disabled={ upload_poster_picture_pending }>
-											{ translate(messages.save_profile_edits) }
-										</Submit>
-									}
-								</div>
-							}
+							{ this.can_edit_profile() && this.render_edit_actions(poster_form_busy) }
 
 							{/* Block this poster (not self) */}
-							{ !this.can_edit_profile() &&
-								<div
-									style={ styles.own_profile_actions }
-									className="poster-profile__edit-actions card__actions">
-
-									{/* "Block poster" */}
-									{ !poster.blocked_at && can('block poster', user) &&
-										<Button
-											className="card__action"
-											action={ this.block_poster }>
-											{ translate(messages.block_poster) }
-										</Button>
-									}
-
-									{/* "Unblock poster" */}
-									{ poster.blocked_at && can('unblock user', user) &&
-										<Button
-											className="card__action"
-											action={ this.unblock_poster }>
-											{ translate(messages.unblock_poster) }
-										</Button>
-									}
-								</div>
-							}
+							{ !this.can_edit_profile() && this.render_moderator_actions() }
 
 							{/* User's personal info (name, place, etc) */}
 							<Personal_info
@@ -402,46 +318,244 @@ export default class Poster_profile extends Component
 								poster={ poster }/>
 						</Form>
 
-						{/* User actions: "Send message", "Subscribe" */}
-						{ !this.can_edit_profile() &&
-							<div className="poster-profile__actions">
-								{/* "Subscribe" */}
-								<div>
-									<Button
-										action={ this.subscribe }
-										className="poster-profile__action">
-										{/* Icon */}
-										<Person_add_icon className="poster-profile__action-icon"/>
-										{/* Text */}
-										{ translate(messages.subscribe) }
-									</Button>
-								</div>
+						{/* Other poster actions: "Send message", "Subscribe" */}
+						{ !this.can_edit_profile() && this.render_other_poster_actions() }
 
-								{/* "Send message" */}
-								<div>
-									<Button
-										action={ this.send_message }
-										className="poster-profile__action">
-										{/* Icon */}
-										<Message_icon className="poster-profile__action-icon"/>
-										{/* Text */}
-										{ translate(messages.send_message) }
-									</Button>
-								</div>
-							</div>
-						}
-
-						{/* Online status: "Last seen: an hour ago" */}
-						{ latest_activity_time &&
-							<div style={ styles.latest_activity } className="poster-profile__last-seen">
-								{/* Icon */}
-								<Clock_icon className="poster-profile__last-seen-icon"/>
-								{/* "an hour ago" */}
-								<Time_ago>{ latest_activity_time }</Time_ago>
-							</div>
-						}
+						{/* User online status: "Last seen: an hour ago" */}
+						{ this.render_online_status() }
 					</section>
 				</div>
+			</div>
+		)
+
+		return markup
+	}
+
+	render_poster_blocked_notice()
+	{
+		const
+		{
+			poster,
+			user
+		}
+		= this.props
+
+		const markup =
+		(
+			<div className="content-section__errors content-section__errors--top">
+				{ poster.blocked_by.id === user.id
+					?
+					<FormattedMessage
+						{ ...messages.blocked }
+						values=
+						{ {
+							blocked_at : <Time_ago>{ poster.blocked_at }</Time_ago>
+						} }/>
+					:
+					<FormattedMessage
+						{ ...messages.blocked_detailed }
+						values=
+						{ {
+							blocked_at     : <Time_ago>{ poster.blocked_at }</Time_ago>,
+							blocked_by     : <Poster>{ poster.blocked_by.poster }</Poster>,
+							blocked_reason : poster.blocked_reason
+						} }/>
+				}
+			</div>
+		)
+
+		return markup
+	}
+
+	render_poster_edit_errors()
+	{
+		const
+		{
+			update_poster_error,
+			update_poster_picture_error,
+			update_poster_background_pattern_error,
+			update_poster_banner_error,
+			translate
+		}
+		= this.props
+
+		if (update_poster_error ||
+			update_poster_picture_error ||
+			update_poster_background_pattern_error ||
+			update_poster_banner_error)
+		{
+			const markup =
+			(
+				<ul
+					style={ styles.own_profile_actions_errors }
+					className="content-section__errors content-section__errors--top errors">
+
+					{/* Couldn't update poster's info */}
+					{ update_poster_error &&
+						<li>{ translate(messages.update_error) }</li>
+					}
+
+					{/* Couldn't update poster's picture with the uploaded one */}
+					{ update_poster_picture_error &&
+						<li>{ translate(messages.update_picture_error) }</li>
+					}
+
+					{/* Couldn't update poster's background pattern */}
+					{ update_poster_background_pattern_error &&
+						<li>{ translate(messages.update_background_pattern_error) }</li>
+					}
+
+					{/* Couldn't update poster's banner */}
+					{ update_poster_banner_error &&
+						<li>{ translate(messages.update_banner_error) }</li>
+					}
+				</ul>
+			)
+
+			return markup
+		}
+	}
+
+	render_online_status()
+	{
+		const { latest_activity_time } = this.props
+
+		if (!latest_activity_time)
+		{
+			return
+		}
+
+		const markup =
+		(
+			<div style={ styles.latest_activity } className="poster-profile__last-seen">
+				{/* Icon */}
+				<Clock_icon className="poster-profile__last-seen-icon"/>
+				{/* "an hour ago" */}
+				<Time_ago>{ latest_activity_time }</Time_ago>
+			</div>
+		)
+
+		return markup
+	}
+
+	render_other_poster_actions()
+	{
+		const { translate } = this.props
+
+		const markup =
+		(
+			<div className="poster-profile__actions">
+				{/* "Subscribe" */}
+				{ false &&
+					<div>
+						<Button
+							action={ this.subscribe }
+							className="poster-profile__action">
+							{/* Icon */}
+							<Person_add_icon className="poster-profile__action-icon"/>
+							{/* Text */}
+							{ translate(messages.subscribe) }
+						</Button>
+					</div>
+				}
+
+				{/* "Send message" */}
+				<div>
+					<Button
+						action={ this.send_message }
+						className="poster-profile__action">
+						{/* Icon */}
+						<Message_icon className="poster-profile__action-icon"/>
+						{/* Text */}
+						{ translate(messages.send_message) }
+					</Button>
+				</div>
+			</div>
+		)
+
+		return markup
+	}
+
+	render_edit_actions(poster_form_busy)
+	{
+		const { translate } = this.props
+		const { edit } = this.state
+
+		const markup =
+		(
+			<div
+				style={ styles.own_profile_actions }
+				className="poster-profile__edit-actions card__actions">
+
+				{/* "Edit profile" */}
+				{ !edit &&
+					<Button
+						className="card__action"
+						action={ this.toggle_edit_mode }>
+						{ translate(messages.edit_profile) }
+					</Button>
+				}
+
+				{/* "Settings" */}
+				{ false && !edit &&
+					<Button
+						className="card__action"
+						action={ this.show_profile_settings }>
+						{ translate(default_messages.settings) }
+					</Button>
+				}
+
+				{/* "Cancel changes" */}
+				{  edit &&
+					<Button
+						action={ this.toggle_edit_mode }
+						className="card__action"
+						disabled={ poster_form_busy }>
+						{ translate(messages.cancel_profile_edits) }
+					</Button>
+				}
+
+				{/* "Save changes" */}
+				{  edit &&
+					<Submit
+						className="button--primary card__action"
+						disabled={ poster_form_busy }>
+						{ translate(messages.save_profile_edits) }
+					</Submit>
+				}
+			</div>
+		)
+
+		return markup
+	}
+
+	render_moderator_actions()
+	{
+		const { poster, user, translate } = this.props
+
+		const markup =
+		(
+			<div
+				style={ styles.own_profile_actions }
+				className="poster-profile__edit-actions card__actions">
+
+				{/* "Block poster" */}
+				{ !poster.blocked_at && can('block poster', user) &&
+					<Button
+						className="card__action"
+						action={ this.block_poster }>
+						{ translate(messages.block_poster) }
+					</Button>
+				}
+
+				{/* "Unblock poster" */}
+				{ poster.blocked_at && can('unblock user', user) &&
+					<Button
+						className="card__action"
+						action={ this.unblock_poster }>
+						{ translate(messages.unblock_poster) }
+					</Button>
+				}
 			</div>
 		)
 
@@ -469,7 +583,7 @@ export default class Poster_profile extends Component
 		}
 		= this.props
 
-		this.reset_poster_info_edit_errors()
+		this.reset_poster_edit_errors()
 
 		// Clear the temporary uploaded picture
 		set_uploaded_poster_picture()
@@ -502,7 +616,7 @@ export default class Poster_profile extends Component
 		try
 		{
 			// Reset errors before submit
-			this.reset_poster_info_edit_errors()
+			this.reset_poster_edit_errors()
 
 			// Save the uploaded poster picture (if it was uploaded)
 			if (uploaded_picture)
@@ -524,7 +638,7 @@ export default class Poster_profile extends Component
 			}
 
 			// Save poster info edits
-			await update_poster(poster_info)
+			await update_poster(poster.id, poster_info)
 
 			// Exit "edit" mode
 			this.toggle_edit_mode()
@@ -535,32 +649,23 @@ export default class Poster_profile extends Component
 		}
 	}
 
-	reset_poster_info_edit_errors = () =>
+	reset_poster_edit_errors = () =>
 	{
 		const
 		{
 			reset_update_poster_error,
-			reset_update_poster_picture_error
+			reset_update_poster_picture_error,
+			reset_update_poster_background_pattern_error,
+			reset_update_poster_banner_error,
+			set_upload_picture_error
 		}
 		= this.props
 
 		reset_update_poster_error()
 		reset_update_poster_picture_error()
-
-		this.reset_upload_poster_picture_errors()
-	}
-
-	reset_upload_poster_picture_errors = () =>
-	{
-		const
-		{
-			reset_upload_poster_picture_error,
-			set_upload_poster_picture_other_error
-		}
-		= this.props
-
-		reset_upload_poster_picture_error()
-		set_upload_poster_picture_other_error()
+		reset_update_poster_background_pattern_error()
+		reset_update_poster_banner_error()
+		set_upload_picture_error()
 	}
 
 	async block_poster()
@@ -663,42 +768,6 @@ const messages = defineMessages
 		description    : `A detailed note that the user is blocked`,
 		defaultMessage : `This user was blocked {blocked_at} by {blocked_by} with reason: "{blocked_reason}"`
 	},
-	poster_unblocked:
-	{
-		id             : `poster.profile.unblocked`,
-		description    : `A note that the user has been unblocked`,
-		defaultMessage : `User unblocked`
-	},
-	update_error:
-	{
-		id             : `poster.profile.update_error`,
-		description    : `Failed to update user's own profile`,
-		defaultMessage : `Couldn't update your profile`
-	},
-	poster_picture_upload_error:
-	{
-		id             : `poster.profile.user_picture_upload_error`,
-		description    : `Failed to upload user picture`,
-		defaultMessage : `Couldn't process the picture`
-	},
-	uploaded_poster_picture_is_too_big_error:
-	{
-		id             : `poster.profile.uploaded_user_picture_is_too_big_error`,
-		description    : `The image user tried to upload is too big`,
-		defaultMessage : `The image file you tried to upload is too big. Only images up to 10 Megabytes are allowed.`
-	},
-	unsupported_uploaded_poster_picture_file_error:
-	{
-		id             : `poster.profile.unsupported_uploaded_user_picture_file_error`,
-		description    : `The image user tried to upload is of an unsupported file format`,
-		defaultMessage : `The file you tried to upload is not supported for user pictures. Only JPG, PNG and SVG images are supported.`
-	},
-	name_is_required:
-	{
-		id             : `poster.profile.name_is_required`,
-		description    : `The user tried to save his profile with a blank "name" field`,
-		defaultMessage : `Enter your name`
-	},
 	block_poster:
 	{
 		id             : `poster.profile.block`,
@@ -711,9 +780,27 @@ const messages = defineMessages
 		description    : `An action to unblock this user`,
 		defaultMessage : `Unblock`
 	},
-	change_background_template:
+	poster_unblocked:
 	{
-		id             : `poster.profile.background_template.change`,
+		id             : `poster.profile.unblocked`,
+		description    : `A note that the user has been unblocked`,
+		defaultMessage : `User unblocked`
+	},
+	update_error:
+	{
+		id             : `poster.profile.update.error`,
+		description    : `Failed to update user's own profile`,
+		defaultMessage : `Couldn't update your profile`
+	},
+	name_is_required:
+	{
+		id             : `poster.profile.name_is_required`,
+		description    : `The user tried to save his profile with a blank "name" field`,
+		defaultMessage : `Enter your name`
+	},
+	change_background_pattern:
+	{
+		id             : `poster.profile.background_pattern.change`,
 		description    : `A text on background pattern overlay in edit mode`,
 		defaultMessage : `Change background pattern`
 	},
@@ -722,6 +809,24 @@ const messages = defineMessages
 		id             : `poster.profile.banner.change`,
 		description    : `A text on banner overlay in edit mode`,
 		defaultMessage : `Change banner`
+	},
+	update_picture_error:
+	{
+		id             : `poster.profile.picture.update.error`,
+		description    : `Failed to update poster's own picture`,
+		defaultMessage : `Couldn't update your picture`
+	},
+	update_background_pattern_error:
+	{
+		id             : `poster.profile.background_pattern.update.error`,
+		description    : `Failed to update poster's own background pattern`,
+		defaultMessage : `Couldn't update your background pattern`
+	},
+	update_banner_error:
+	{
+		id             : `poster.profile.banner.update.error`,
+		description    : `Failed to update poster's own banner`,
+		defaultMessage : `Couldn't update your banner`
 	},
 	background_color:
 	{

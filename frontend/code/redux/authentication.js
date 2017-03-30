@@ -163,7 +163,7 @@ handler.handle('user settings: change alias: done', (state, result) =>
 }))
 
 // Updates user name in the user bar when it is changed on the profile page
-handler.handle('poster: update poster info: done', (state, result) =>
+handler.handle('poster: update poster: done', (state, result) =>
 ({
 	...state,
 	user:
