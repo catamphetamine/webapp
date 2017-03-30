@@ -33,22 +33,18 @@ export default class Personal_info extends Component
 	static propTypes =
 	{
 		edit   : PropTypes.bool.isRequired,
-		busy   : PropTypes.bool.isRequired,
 		poster : PropTypes.object.isRequired,
-		submit : PropTypes.func.isRequired
+		// submit : PropTypes.func.isRequired
 	}
 
 	static defaultProps =
 	{
-		edit : false,
-		busy : false
+		edit : false
 	}
 
 	constructor(props, context)
 	{
 		super(props, context)
-
-		this.submit = this.submit.bind(this)
 
 		// Fill two-letter country codes list
 
@@ -75,22 +71,16 @@ export default class Personal_info extends Component
 			.sort((a, b) => a.label.localeCompare(b.label, props.locale))
 	}
 
-	async submit(values)
+	get_values(values)
 	{
-		const
-		{
-			poster,
-			// update_poster
-			submit
-		}
-		= this.props
-
-		await submit(poster.id,
+		const result =
 		{
 			name    : values.name,
 			country : values.country,
 			place   : values.place
-		})
+		}
+
+		return result
 	}
 
 	render()
@@ -219,8 +209,8 @@ const messages = defineMessages
 	}
 })
 
-// Submits the form
-Personal_info.submit = (ref, values) =>
+// Retrieves the edited values
+Personal_info.get_values = (ref, values) =>
 {
 	// First `react-intl` wrapper
 	ref = ref.refs.wrappedInstance
@@ -228,6 +218,6 @@ Personal_info.submit = (ref, values) =>
 	// Then `@international` wrapper
 	ref = ref.wrappedInstance
 
-	// Finally, submit
-	return ref.submit(values)
+	// Finally, collect the edited values
+	return ref.get_values(values)
 }

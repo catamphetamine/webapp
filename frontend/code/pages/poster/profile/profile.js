@@ -24,6 +24,7 @@ import
 	set_uploaded_poster_picture,
 	reset_upload_poster_picture_error,
 	set_upload_poster_picture_other_error,
+	save_poster_settings,
 	connector
 }
 from '../../../redux/poster/profile'
@@ -44,6 +45,7 @@ import Poster         from '../../../components/poster'
 import Poster_picture from '../../../components/poster picture'
 import Upload_picture, { Picture } from '../../../components/upload picture'
 import Time_ago       from '../../../components/time ago'
+import Color_picker   from '../../../components/color picker'
 
 import default_messages from '../../../components/messages'
 
@@ -52,6 +54,8 @@ import can from '../../../../../code/permissions'
 import international from '../../../international/internationalize'
 
 const Latest_activity_time_refresh_interval = 60 * 1000 // once in a minute
+
+const default_color = '#ffffff'
 
 @Redux_form
 @preload(({ dispatch, getState, location, parameters }) =>
@@ -167,6 +171,8 @@ export default class Poster_profile extends Component
 		}
 		= this.props
 
+		const { background_color } = this.state
+
 		const markup =
 		(
 			<div className="content poster-profile">
@@ -188,6 +194,18 @@ export default class Poster_profile extends Component
 							picture={ poster.background }
 							type="poster_background_picture"/>
 					</Upload_picture>
+
+					{ edit &&
+						<div className="poster-profile__background-color">
+							{ translate(messages.background_color) }
+
+							<Color_picker
+								alignment="right"
+								className="poster-profile__background-color-picker"
+								value={ background_color || default_color }
+								onChange={ this.set_background_color }/>
+						</div>
+					}
 
 					{/* Poster picture */}
 					<Upload_picture
@@ -214,10 +232,13 @@ export default class Poster_profile extends Component
 
 					{/* User's personal info */}
 					<section
+						style={ styles.personal_info_section }
 						className={ classNames
 						(
 							'background-section',
-							'poster-profile__personal-info'
+							{
+								'content-section' : edit
+							}
 						) }>
 
 						{/* User blocked notice */}
@@ -291,10 +312,21 @@ export default class Poster_profile extends Component
 
 							{/* Edit/Save own profile */}
 							{ this.can_edit_profile() &&
-								<div style={ styles.own_profile_actions } className="card__actions">
+								<div
+									style={ styles.own_profile_actions }
+									className="poster-profile__edit-actions card__actions">
+
+									{/* "Edit profile" */}
+									{ !edit &&
+										<Button
+											className="card__action"
+											action={ this.toggle_edit_mode }>
+											{ translate(messages.edit_profile) }
+										</Button>
+									}
 
 									{/* "Settings" */}
-									{ !edit &&
+									{ false && !edit &&
 										<Button
 											className="card__action"
 											action={ this.show_profile_settings }>
@@ -302,19 +334,10 @@ export default class Poster_profile extends Component
 										</Button>
 									}
 
-									{/* "Edit profile" */}
-									{ !edit &&
-										<Button
-											className="card__action"
-											action={ this.edit_profile }>
-											{ translate(messages.edit_profile) }
-										</Button>
-									}
-
 									{/* "Cancel changes" */}
 									{  edit &&
 										<Button
-											action={ this.cancel_profile_edits }
+											action={ this.toggle_edit_mode }
 											className="card__action"
 											disabled={ update_poster_info_pending || upload_poster_picture_pending }>
 											{ translate(messages.cancel_profile_edits) }
@@ -334,7 +357,9 @@ export default class Poster_profile extends Component
 
 							{/* Block this poster (not self) */}
 							{ !this.can_edit_profile() &&
-								<div style={ styles.own_profile_actions } className="card__actions">
+								<div
+									style={ styles.own_profile_actions }
+									className="poster-profile__edit-actions card__actions">
 
 									{/* "Block poster" */}
 									{ !poster.blocked_at && can('block poster', user) &&
@@ -360,9 +385,7 @@ export default class Poster_profile extends Component
 							<Personal_info
 								ref={ ref => this.personal_info = ref }
 								edit={ edit }
-								poster={ poster }
-								submit={ update_poster }
-								submitting={ submitting }/>
+								poster={ poster }/>
 						</Form>
 
 						{/* User actions: "Send message", "Subscribe" */}
@@ -411,6 +434,11 @@ export default class Poster_profile extends Component
 		return markup
 	}
 
+	set_background_color = (background_color) =>
+	{
+		this.setState({ background_color })
+	}
+
 	can_edit_profile()
 	{
 		const { user, poster } = this.props
@@ -418,32 +446,25 @@ export default class Poster_profile extends Component
 		return user && (poster.user === user.id || poster.users.has(user.id))
 	}
 
-	edit_profile = () =>
-	{
-		this.setState
-		({
-			edit : true
-		})
-	}
-
-	cancel_profile_edits = () =>
+	toggle_edit_mode = () =>
 	{
 		const
 		{
 			set_uploaded_poster_picture,
-			reset_update_poster_picture_error
+			poster
 		}
 		= this.props
 
 		this.reset_poster_info_edit_errors()
 
-		// Exit "edit" mode
-		this.setState({ edit: false })
-
-		reset_update_poster_picture_error()
-
 		// Clear the temporary uploaded picture
 		set_uploaded_poster_picture()
+
+		this.setState((state) =>
+		({
+			edit : !state.edit,
+			background_color : poster.palette.background
+		}))
 	}
 
 	async save_profile_edits(values)
@@ -458,8 +479,15 @@ export default class Poster_profile extends Component
 		}
 		= this.props
 
+		const
+		{
+			background_color
+		}
+		= this.state
+
 		try
 		{
+			// Reset errors before submit
 			this.reset_poster_info_edit_errors()
 
 			// Save the uploaded poster picture (if it was uploaded)
@@ -468,17 +496,24 @@ export default class Poster_profile extends Component
 				await update_poster_picture(poster.id, uploaded_picture)
 			}
 
-			// Save personal info edits
-			await Personal_info.submit(this.personal_info, values)
+			// Collect poster info edits
+			const poster_info = Personal_info.get_values(this.personal_info, values)
+
+			// Include the updated background color
+			if (background_color)
+			{
+				poster_info.palette =
+				{
+					...poster.palette,
+					background: background_color
+				}
+			}
+
+			// Save poster info edits
+			await update_poster(poster_info)
 
 			// Exit "edit" mode
-			this.setState({ edit: false })
-
-			// Clear the temporary uploaded picture
-			set_uploaded_poster_picture()
-
-			// // Refresh poster info
-			// await get_poster(poster.id)
+			this.toggle_edit_mode()
 		}
 		catch (error)
 		{
@@ -488,9 +523,16 @@ export default class Poster_profile extends Component
 
 	reset_poster_info_edit_errors = () =>
 	{
-		const { reset_update_poster_error } = this.props
+		const
+		{
+			reset_update_poster_error,
+			reset_update_poster_picture_error
+		}
+		= this.props
 
 		reset_update_poster_error()
+		reset_update_poster_picture_error()
+
 		this.reset_upload_poster_picture_errors()
 	}
 
@@ -543,6 +585,9 @@ export default class Poster_profile extends Component
 
 const styles = style
 `
+	personal_info_section
+		position : relative
+
 	poster_name
 		font-size     : 1.5rem
 		margin-bottom : 0
@@ -657,5 +702,11 @@ const messages = defineMessages
 		id             : `poster.profile.background.change`,
 		description    : `A text on background picture overlay in edit mode`,
 		defaultMessage : `Change background`
+	},
+	background_color:
+	{
+		id             : `poster.profile.background_color`,
+		description    : `Profile background color label`,
+		defaultMessage : `Color`
 	}
 })

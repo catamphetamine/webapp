@@ -36,12 +36,12 @@ export default class Picture extends PureComponent
 			this.refresh_size()
 		}
 
-		register_picture(this.picture)
+		register_picture(this)
 	}
 
 	componentWillUnmount()
 	{
-		unregister_picture(this.picture)
+		unregister_picture(this)
 	}
 
 	componentWillReceiveProps(next_props)

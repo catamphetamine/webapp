@@ -81,6 +81,7 @@
 	"poster.profile.country"                    : "Выберите вашу страну",
 
 	"poster.profile.background.change"          : "Поменять обои",
+	"poster.profile.background_color"           : "Цвет фона",
 
 	"poster.profile.update_error"                                 : "Не удалось обновить ваши данные",
 	"poster.profile.user_picture_upload_error"                    : "Не удалось загрузить картинку",

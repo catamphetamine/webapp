@@ -55,7 +55,7 @@ exports.up = function(knex, Promise)
 		// https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
 		table.string('country', 3)
 
-		table.jsonb('palette')
+		table.jsonb('palette').notNullable().defaultTo({})
 
 		table.string('type')
 

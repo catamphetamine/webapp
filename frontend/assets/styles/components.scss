@@ -44,14 +44,6 @@ header .rrui__menu
 	margin-top: var(--header-vertically-centered-text-margin-top);
 }
 
-.poster-picture
-{
-	.rrui__activity-indicator
-	{
-		stroke : var(--white-color);
-	}
-}
-
 .poster-picture--header
 {
 	// border: none;
@@ -153,11 +145,6 @@ header .rrui__menu
 
 	background: rgba(255, 255, 255, 0.8);
 	box-shadow: 0 0 0.1em rgba(0, 0, 0, 0.2);
-}
-
-.preloading .rrui__activity-indicator
-{
-	// 2em x 2em
 }
 
 // a <ul/> with errors
@@ -445,4 +432,18 @@ header .rrui__menu
 		border        : 1px solid rgba(0, 0, 0, 0.1);
 		border-radius : inherit;
 	}
+}
+
+.rrui__color-picker
+{
+	position : relative;
+	display  : inline-block;
+	width    : calc(var(--unit) * 4);
+	height   : calc(var(--unit) * 4);
+	border-radius : var(--border-radius);
+}
+
+.rrui__color-picker__color-button
+{
+	border : 1px solid rgba(0, 0, 0, 0.1);
 }

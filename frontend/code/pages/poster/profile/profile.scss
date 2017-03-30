@@ -1,9 +1,7 @@
 .poster-profile__background-picture-container
 {
-	position   : relative;
-	width      : 100vw;
-	height     : 25vw;
-	max-height : calc(var(--unit) * 40);
+	position : relative;
+	height   : 25vw;
 }
 
 .poster-profile__background-picture
@@ -17,11 +15,31 @@
 	background : var(--white-color);
 }
 
+.poster-profile__background-color
+{
+	position               : absolute;
+	right                  : 0;
+	bottom                 : 0;
+	display                : flex;
+	align-items            : center;
+	height                 : calc(var(--unit) * 6);
+	padding-left           : var(--unit);
+	padding-right          : var(--unit);
+	background-color       : var(--white-color);
+	border-top-left-radius : var(--border-radius);
+}
+
+.poster-profile__background-color-picker
+{
+	margin-left : var(--unit);
+}
+
 .poster-profile__picture
 {
 	position : absolute;
-	bottom   : calc(var(--unit) * -3);
+	bottom   : calc(var(--unit) * -5);
 	left     : calc(var(--unit) * 5);
+	z-index  : 1;
 
 	border-radius: var(--border-radius);
 
@@ -39,6 +57,30 @@
 	min-height : calc(var(--unit) * 14);
 
 	border-radius: var(--border-radius);
+}
+
+.poster-profile__edit-actions
+{
+	position : absolute;
+	left     : calc(var(--unit) * 23.75);
+	top      : calc(var(--unit) * -8.25);
+	padding-left  : calc(var(--unit) * 2);
+	padding-right : calc(var(--unit) * 2);
+	padding-top    : var(--unit);
+	padding-bottom : var(--unit);
+	background-color : var(--white-color);
+	border-top-right-radius : var(--border-radius);
+
+	.card__action
+	{
+		position : static;
+		height : calc(var(--unit) * 5);
+
+		.rrui__button__button
+		{
+			height : 100%;
+		}
+	}
 }
 
 .poster-profile__last-seen
@@ -81,8 +123,8 @@
 {
 	margin-bottom : var(--icon-liftup);
 	margin-right  : var(--icon-right-margin);
-	fill : var(--base-color-darker);
-	transition : var(--button-icon-transition);
+	fill          : var(--base-color-darker);
+	transition    : var(--button-icon-transition);
 }
 
 .poster-profile__action:active
@@ -123,6 +165,18 @@
 			font-size: 1rem;
 		}
 	}
+
+	.poster-profile__background-picture-container
+	{
+		max-height : calc(var(--unit) * 30);
+	}
+
+	.poster-profile__background-color
+	{
+		height                 : calc(var(--unit) * 8);
+		padding-left           : calc(var(--unit) * 3);
+		padding-right          : calc(var(--unit) * 3);
+	}
 }
 
 @include l
@@ -148,6 +202,11 @@
 			}
 		}
 	}
+
+	.poster-profile__background-picture-container
+	{
+		max-height : calc(var(--unit) * 35);
+	}
 }
 
 @include xl
@@ -158,5 +217,10 @@
 		height     : calc(var(--unit) * 20);
 		min-width  : calc(var(--unit) * 20);
 		min-height : calc(var(--unit) * 20);
+	}
+
+	.poster-profile__background-picture-container
+	{
+		max-height : calc(var(--unit) * 40);
 	}
 }
