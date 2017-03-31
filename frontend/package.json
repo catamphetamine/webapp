@@ -58,7 +58,7 @@
     "redux": "^3.0.0",
     "rimraf": "^2.5.2",
     "sass-loader": "^6.0.0",
-    "simpler-redux-form": "^0.3.16",
+    "simpler-redux-form": "^0.3.21",
     "style-loader": "^0.12.4",
     "svg-react-loader": "^0.3.7",
     "url-loader": "^0.5.5",

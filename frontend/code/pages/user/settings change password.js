@@ -45,6 +45,11 @@ export default class Change_password extends Component
 {
 	state = {}
 
+	componentWillUnmount()
+	{
+		this.unmounted = true
+	}
+
 	render()
 	{
 		const
@@ -139,10 +144,13 @@ export default class Change_password extends Component
 
 	reset = () =>
 	{
-		this.setState
-		({
-			turn_off : false
-		})
+		if (!this.unmounted)
+		{
+			this.setState
+			({
+				turn_off : false
+			})
+		}
 	}
 }
 
