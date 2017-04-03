@@ -83,16 +83,6 @@ class Sql_store
 		return this.posters.update(id, data)
 	}
 
-	update_picture(id, picture)
-	{
-		// Store the picture `id` and also picture `sizes`
-		// (to avoid joining the giant `images` table)
-		return this.update_poster(id,
-		{
-			picture
-		})
-	}
-
 	async can_take_alias(alias, poster_id)
 	{
 		// Get current poster alias

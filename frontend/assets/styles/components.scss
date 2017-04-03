@@ -196,4 +196,10 @@ header .rrui__menu
 .rrui__color-picker__color-button
 {
 	border : 1px solid rgba(0, 0, 0, 0.1);
+	cursor : pointer;
+}
+
+.rrui__color-picker__color-button[disabled]
+{
+	cursor : default;
 }

@@ -43,6 +43,14 @@
 	border-bottom : 1px solid rgba(0, 0, 0, 0.1);
 }
 
+.poster-profile__background-picture-container--color
+{
+	.upload-picture__change-overlay
+	{
+		display : none !important;
+	}
+}
+
 .poster-profile__background-picture
 {
 	position : absolute;
@@ -75,13 +83,18 @@
 .poster-profile__background-color,
 .poster-profile__change-banner
 {
-	padding-left           : var(--unit);
-	padding-right          : var(--unit);
+	padding-left  : var(--unit);
+	padding-right : var(--unit);
 }
 
 .poster-profile__background-color-picker
 {
 	margin-left : var(--unit);
+}
+
+.poster-profile__background-color-toggler
+{
+	margin-right : calc(var(--unit) * 2);
 }
 
 .poster-profile__picture

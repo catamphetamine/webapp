@@ -6,13 +6,13 @@ import classNames                      from 'classnames'
 import Redux_form                      from 'simpler-redux-form'
 
 import { defineMessages, FormattedMessage } from 'react-intl'
-import { Form, Button } from 'react-responsive-ui'
+import { Form, Button, Checkbox } from 'react-responsive-ui'
 
 import Clock_icon      from '../../../../assets/images/icons/clock.svg'
 import Message_icon    from '../../../../assets/images/icons/message.svg'
 import Person_add_icon from '../../../../assets/images/icons/person add.svg'
 
-import Poster_background_pattern_image from '../../../../assets/images/poster background pattern.png'
+import Default_poster_background_pattern_image from '../../../../assets/images/poster background pattern.png'
 
 import
 {
@@ -70,13 +70,13 @@ const Latest_activity_time_refresh_interval = 60 * 1000 // once in a minute
 
 const Default_background_color = '#ffffff'
 
-const Poster_background_pattern =
+const Default_poster_background_pattern =
 {
 	sizes:
 	[{
 		width  : 188,
 		height : 178,
-		file   : Poster_background_pattern_image
+		file   : Default_poster_background_pattern_image
 	}]
 }
 
@@ -128,9 +128,15 @@ export default class Poster_profile extends Component
 {
 	state = {}
 
-	constructor(props, context)
+	constructor(props)
 	{
-		super()
+		super(props)
+
+		const { poster } = this.props
+
+		// Same as in `.toggle_edit_mode()`
+		this.state.background_color         = poster.palette.background
+		this.state.background_color_enabled = poster.palette.background !== undefined
 
 		this.save_profile_edits   = this.save_profile_edits.bind(this)
 
@@ -224,7 +230,12 @@ export default class Poster_profile extends Component
 		}
 		= this.props
 
-		const { background_color } = this.state
+		const
+		{
+			background_color,
+			background_color_enabled
+		}
+		= this.state
 
 		const poster_form_busy = submitting || upload_picture_pending
 
@@ -233,7 +244,12 @@ export default class Poster_profile extends Component
 			<div className="content poster-profile">
 				<Title>{ poster.name }</Title>
 
-				<div className="poster-profile__background-picture-container">
+				<div
+					className={ classNames('poster-profile__background-picture-container',
+					{
+						'poster-profile__background-picture-container--color' : background_color_enabled
+					}) }>
+
 					{/* Change banner */}
 					{ edit &&
 						<Upload_picture
@@ -261,20 +277,29 @@ export default class Poster_profile extends Component
 						onChoose={ set_upload_picture_error }
 						onError={ set_upload_picture_error }
 						onFinished={ set_uploaded_poster_background_pattern }
-						className="poster-profile__background-picture">
+						className="poster-profile__background-picture"
+						style={ { backgroundColor: background_color } }>
 
 						<Picture
 							pattern
 							type={ poster.background_pattern ? undefined : 'asset'}
-							picture={ poster.background_pattern || Poster_background_pattern }/>
+							picture={ poster.background_pattern }
+							fallback={ background_color_enabled ? undefined : Default_poster_background_pattern }/>
 					</Upload_picture>
 
 					{ edit &&
 						<div className="poster-profile__background-color">
+							<Checkbox
+								value={ background_color_enabled }
+								onChange={ this.toggle_background_color_enabled }
+								className="poster-profile__background-color-toggler"/>
+
+							{/* "Choose background color" */}
 							{ translate(messages.background_color) }
 
 							<Color_picker
 								alignment="right"
+								disabled={ !background_color_enabled }
 								className="poster-profile__background-color-picker"
 								value={ background_color || Default_background_color }
 								onChange={ this.set_background_color }/>
@@ -581,6 +606,14 @@ export default class Poster_profile extends Component
 		return markup
 	}
 
+	toggle_background_color_enabled = () =>
+	{
+		this.setState(({ background_color_enabled }) =>
+		({
+			background_color_enabled : !background_color_enabled
+		}))
+	}
+
 	set_background_color = (background_color) =>
 	{
 		this.setState({ background_color })
@@ -610,7 +643,10 @@ export default class Poster_profile extends Component
 		this.setState((state) =>
 		({
 			edit : !state.edit,
-			background_color : poster.palette.background
+
+			// Same as in `constructor()`
+			background_color         : poster.palette.background,
+			background_color_enabled : poster.palette.background !== undefined
 		}))
 	}
 
@@ -633,7 +669,8 @@ export default class Poster_profile extends Component
 
 		const
 		{
-			background_color
+			background_color,
+			background_color_enabled
 		}
 		= this.state
 
@@ -663,13 +700,20 @@ export default class Poster_profile extends Component
 			// Collect poster info edits
 			const poster_info = Personal_info.get_values(this.personal_info, values)
 
-			// Include the updated background color
+			// The palette may have been updated so send it too
+			poster_info.palette = { ...poster.palette }
+
+			// Save background color (if set)
 			if (background_color)
 			{
-				poster_info.palette =
+				// Maybe background color was turned off
+				if (background_color_enabled)
 				{
-					...poster.palette,
-					background: background_color
+					poster_info.palette.background = background_color
+				}
+				else
+				{
+					delete poster_info.palette.background
 				}
 			}
 

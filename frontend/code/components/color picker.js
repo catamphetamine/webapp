@@ -9,8 +9,14 @@ export default class ColorPicker extends Component
 	{
 		value     : PropTypes.string,
 		onChange  : PropTypes.func.isRequired,
+		disabled  : PropTypes.bool.isRequired,
 		alignment : PropTypes.string,
 		className : PropTypes.string
+	}
+
+	static defaultProps =
+	{
+		disabled : false
 	}
 
 	state = {}
@@ -41,7 +47,15 @@ export default class ColorPicker extends Component
 
 	render()
 	{
-		const { value, alignment, className } = this.props
+		const
+		{
+			value,
+			alignment,
+			disabled,
+			className
+		}
+		= this.props
+
 		const { expanded } = this.state
 
 		const markup =
@@ -54,6 +68,7 @@ export default class ColorPicker extends Component
 				<button
 					type="button"
 					onClick={ this.toggle }
+					disabled={ disabled }
 					style={ styles.button }
 					className="rrui__color-picker__color-button">
 

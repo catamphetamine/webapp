@@ -39,6 +39,7 @@ class Upload_picture extends Component
 		types           : PropTypes.arrayOf(PropTypes.string).isRequired,
 		pattern         : PropTypes.bool.isRequired,
 		// children        : PropTypes.element.isRequired,
+		style           : PropTypes.object,
 		className       : PropTypes.string
 	}
 
@@ -75,6 +76,7 @@ class Upload_picture extends Component
 			disabled,
 			translate,
 			children,
+			style,
 			className,
 
 			dropTarget,
@@ -108,6 +110,7 @@ class Upload_picture extends Component
 			<div
 				ref={ ref => this.picture = ref }
 				style={ styles.uploadable_picture }
+				style={ style }
 				className={ classNames
 				(
 					'upload-picture',

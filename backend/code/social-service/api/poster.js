@@ -66,7 +66,7 @@ export default function(api)
 	})
 
 	// Change poster data
-	api.patch('/poster/:id', async function({ id, name, country, place }, { user })
+	api.patch('/poster/:id', async function({ id, name, country, place, palette }, { user })
 	{
 		if (!user)
 		{
@@ -92,7 +92,8 @@ export default function(api)
 		{
 			name,
 			country,
-			place
+			place,
+			palette
 		})
 
 		return await get_poster(id)
@@ -101,41 +102,19 @@ export default function(api)
 	// Change poster picture
 	api.post('/poster/:id/picture', async function({ id, picture }, { user, internal_http })
 	{
-		if (!user)
-		{
-			throw new errors.Unauthenticated()
-		}
+		return await update_picture(id, picture, 'poster_picture', 'picture', user, internal_http)
+	})
 
-		const poster = await store.get_poster(id)
+	// Change poster background pattern
+	api.post('/poster/:id/background', async function({ id, picture }, { user, internal_http })
+	{
+		return await update_picture(id, picture, 'poster_background_pattern', 'background_pattern', user, internal_http)
+	})
 
-		// If this user is not the user of the poster
-		// and is not in the `users` of the `poster`
-		// then editing the poster is not permitted.
-		if (!can_edit_poster(user, poster))
-		{
-			throw new errors.Unauthorized()
-		}
-
-		// Save the uploaded picture
-		picture = await internal_http.post
-		(
-			`${address_book.image_service}/api/save`,
-			{
-				type: 'poster_picture',
-				image: picture
-			}
-		)
-
-		// Update the picture in `users` table
-		await store.update_picture(id, picture)
-
-		// Delete the previous user picture (if any)
-		if (poster.picture)
-		{
-			await internal_http.delete(`${address_book.image_service}/api/${poster.picture.id}`)
-		}
-
-		return picture
+	// Change poster banner
+	api.post('/poster/:id/banner', async function({ id, picture }, { user, internal_http })
+	{
+		return await update_picture(id, picture, 'poster_banner', 'banner', user, internal_http)
 	})
 
 	// Obtains a block poster token
@@ -310,4 +289,46 @@ async function get_poster(id)
 	}
 
 	return poster
+}
+
+async function update_picture(id, picture, type, property, user, internal_http)
+{
+	if (!user)
+	{
+		throw new errors.Unauthenticated()
+	}
+
+	const poster = await store.get_poster(id)
+
+	// If this user is not the user of the poster
+	// and is not in the `users` of the `poster`
+	// then editing the poster is not permitted.
+	if (!can_edit_poster(user, poster))
+	{
+		throw new errors.Unauthorized()
+	}
+
+	// Save the uploaded picture
+	picture = await internal_http.post
+	(
+		`${address_book.image_service}/api/save`,
+		{
+			type,
+			image: picture
+		}
+	)
+
+	// Update the picture in `posters` table
+	await store.update_poster(id,
+	{
+		[property] : picture
+	})
+
+	// Delete the previous picture (if any)
+	if (poster[property])
+	{
+		await internal_http.delete(`${address_book.image_service}/api/${poster[property].id}`)
+	}
+
+	return picture
 }

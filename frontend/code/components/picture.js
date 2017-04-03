@@ -38,7 +38,7 @@ export default class Picture extends PureComponent
 		// so an appropriate size can now be picked.
 		if (sizes)
 		{
-			this.refresh_size()
+			this.refresh_size(sizes)
 		}
 
 		this.unregister_picture = register_picture(this)
@@ -51,7 +51,7 @@ export default class Picture extends PureComponent
 
 	componentWillReceiveProps(next_props)
 	{
-		if (next_props.sizes && next_props.sizes !== this.props.sizes)
+		if (next_props.sizes !== this.props.sizes)
 		{
 			this.refresh_size(next_props.sizes, true)
 		}
@@ -73,7 +73,7 @@ export default class Picture extends PureComponent
 			style =
 			{
 				...style,
-				backgroundImage: `url(${this.url() || transparent_pixel})`
+				backgroundImage: `url(${ this.url() || transparent_pixel })`
 			}
 		}
 
@@ -102,7 +102,7 @@ export default class Picture extends PureComponent
 		return markup
 	}
 
-	refresh_size(sizes = this.props.sizes, force)
+	refresh_size(sizes, force)
 	{
 		const { size } = this.state
 		const preferred_size = this.get_preferred_size(sizes)
