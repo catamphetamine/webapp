@@ -1,0 +1,29 @@
+.picture
+{
+	position      : relative;
+	font-size     : 0;
+	border-radius : inherit;
+
+	&:after
+	{
+		position      : absolute;
+		left          : 0;
+		top           : 0;
+		right         : 0;
+		bottom        : 0;
+		content       : '';
+		border        : 1px solid rgba(0, 0, 0, 0.1);
+		border-radius : inherit;
+	}
+}
+
+.picture--pattern
+{
+	height : 100%;
+	background-repeat : repeat;
+
+	&:after
+	{
+		display : none;
+	}
+}

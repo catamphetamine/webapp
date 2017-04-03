@@ -36,7 +36,7 @@ export default class Poster_picture extends React.Component
 		= this.props
 
 		return <Picture
-			type="poster_picture"
+			type={ (picture || poster.picture) ? undefined : 'asset' }
 			fallback={ fallback }
 			uploaded={ picture ? true : false }
 			picture={ picture || poster.picture }

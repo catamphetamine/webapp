@@ -9,6 +9,7 @@ import global_variables from '../../code/global variables'
 import autoprefixer from 'autoprefixer'
 import css_custom_properties from 'postcss-custom-properties'
 import postcss_calc from 'postcss-calc'
+import postcss_hexrgba from 'postcss-hexrgba'
 
 const root_folder = path.resolve(__dirname, '..', '..')
 const frontend_root_folder = path.resolve(__dirname, '..')
@@ -202,7 +203,8 @@ configuration.plugins.push
 			[
 				autoprefixer({ browsers: 'last 2 version' }),
 				css_custom_properties(),
-				postcss_calc()
+				postcss_calc(),
+				postcss_hexrgba
 			],
 
 			// A temporary workaround for `css-loader`.

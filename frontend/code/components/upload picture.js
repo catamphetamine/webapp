@@ -12,7 +12,8 @@ import Responsive_picture, { get_preferred_size, url } from './picture'
 const drop_area =
 @CanDrop(File, (props, dropped, component) =>
 {
-	const { uploading, onChoose } = props
+	const { onChoose } = props
+	const { uploading } = component.state
 
 	if (uploading)
 	{
@@ -30,21 +31,22 @@ class Upload_picture extends Component
 		changing        : PropTypes.bool.isRequired,
 		changeLabel     : PropTypes.string,
 		upload          : PropTypes.func.isRequired,
-		uploading       : PropTypes.bool.isRequired,
+		disabled        : PropTypes.bool.isRequired,
 		onChoose        : PropTypes.func.isRequired,
 		onError         : PropTypes.func.isRequired,
 		onFinished      : PropTypes.func.isRequired,
 		maxSize         : PropTypes.number.isRequired,
 		types           : PropTypes.arrayOf(PropTypes.string).isRequired,
 		pattern         : PropTypes.bool.isRequired,
-		children        : PropTypes.element.isRequired,
+		// children        : PropTypes.element.isRequired,
 		className       : PropTypes.string
 	}
 
 	static defaultProps =
 	{
 		pattern : false,
-		maxSize : configuration.image_service.file_size_limit
+		maxSize : configuration.image_service.file_size_limit,
+		disabled : false
 	}
 
 	state = {}
@@ -70,6 +72,7 @@ class Upload_picture extends Component
 			changeLabel,
 			upload,
 			onChoose,
+			disabled,
 			translate,
 			children,
 			className,
@@ -87,15 +90,12 @@ class Upload_picture extends Component
 		}
 		= this.state
 
-		const picture_props =
-		{
-			ref : ref => this.picture = ref
-		}
+		const picture_props = {}
 
 		if (uploaded_picture)
 		{
-			picture_props.picture = uploaded_picture
-			picture_props.uploaded = true
+			picture_props.picture   = uploaded_picture
+			picture_props.uploaded  = true
 			picture_props.className = classNames
 			({
 				'upload-picture__picture--change' : uploading
@@ -106,6 +106,7 @@ class Upload_picture extends Component
 		{/* User picture */}
 		return dropTarget(
 			<div
+				ref={ ref => this.picture = ref }
 				style={ styles.uploadable_picture }
 				className={ classNames
 				(
@@ -114,13 +115,16 @@ class Upload_picture extends Component
 				) }>
 
 				{/* The picture itself */}
-				{ React.cloneElement(children, picture_props) }
+				{
+					React.Children.map(children, (child) =>
+					{
+						if (child.type && typeof(child.type) !== 'string')
+						{
+							return React.cloneElement(child, picture_props)
+						}
 
-				{/* "Change picture" overlay */}
-				{ changing && !uploaded_picture &&
-					<div
-						className="upload-picture__change-overlay"
-						style={ styles.uploadable_picture_element_overlay_background }/>
+						return child
+					})
 				}
 
 				{/* A colored overlay indicating "can drop image file here" situation */}
@@ -137,20 +141,28 @@ class Upload_picture extends Component
 						style={ styles.uploadable_picture_element_overlay_background }/>
 				}
 
-				{/* "Change picture" file uploader */}
+				{/* "Change picture" file uploader and overlay */}
 				{ changing &&
 					<FileUpload
-						className="upload-picture__change-label"
+						className={ classNames('upload-picture__change-overlay',
+						{
+							'upload-picture__change-overlay--uploading' : uploading,
+							'upload-picture__change-overlay--uploaded'  : uploaded_picture
+						}) }
 						style={ styles.uploadable_picture_element_overlay_label }
-						disabled={ uploading }
+						disabled={ disabled || uploading }
 						onClick={ onChoose }
 						action={ this.upload }>
 
 						{/* "Change picture" label */}
-						{ !uploaded_picture && !uploading && (changeLabel || translate(messages.change_picture)) }
+						{ !uploaded_picture && !uploading && changeLabel !== '' && (changeLabel || translate(messages.change_picture)) }
 
 						{/* "Uploading picture" spinner */}
-						{ uploading && <ActivityIndicator style={ styles.uploadable_picture_element_spinner }/> }
+						{ uploading &&
+							<ActivityIndicator
+								style={ styles.uploadable_picture_spinner }
+								className="upload-picture__indicator"/>
+						}
 					</FileUpload>
 				}
 			</div>
@@ -179,7 +191,7 @@ export class Picture extends Component
 	{
 		fallback  : picture,
 		picture   : picture,
-		type      : PropTypes.string.isRequired,
+		type      : PropTypes.string,
 		pattern   : PropTypes.bool.isRequired,
 		uploaded  : PropTypes.bool.isRequired,
 		maxWidth  : PropTypes.number,
@@ -204,12 +216,16 @@ export class Picture extends Component
 		}
 		= this.props
 
-		let type
+		let { type } = this.props
 		let sizes
 
 		if (picture)
 		{
-			type  = uploaded ? 'uploaded' : this.props.type
+			if (uploaded)
+			{
+				type = 'uploaded'
+			}
+
 			sizes = picture.sizes
 		}
 		else if (fallback)
@@ -227,6 +243,10 @@ export class Picture extends Component
 const styles = style
 `
 	uploadable_picture
+		spinner
+			display    : block
+			box-sizing : border-box
+
 		element
 			position         : absolute
 			top              : 0
@@ -236,17 +256,8 @@ const styles = style
 			height           : 100%
 			border-radius    : inherit
 
-			&spinner
-				display    : block
-				color      : white
-				padding    : 20%
-				box-sizing : border-box
-
 			&overlay
 				cursor : pointer
-
-				&background
-					opacity : 0.5
 
 				&label
 					display         : flex
@@ -297,8 +308,7 @@ async function upload_and_wait_for_preload(file, props, component)
 	// Set "uploading" flag
 	component.setState
 	({
-		uploading : true,
-		uploaded_picture : undefined
+		uploading : true
 	})
 
 	let uploaded_picture
@@ -317,11 +327,20 @@ async function upload_and_wait_for_preload(file, props, component)
 	}
 	finally
 	{
+		// Reset "uploading" flag
 		component.setState
 		({
-			uploading : false,
-			uploaded_picture
+			uploading : false
 		})
+
+		// If the picture was uploaded then render it
+		if (uploaded_picture)
+		{
+			component.setState
+			({
+				uploaded_picture
+			})
+		}
 	}
 }
 

@@ -125,5 +125,5 @@ export function clean_up(options = {})
 
 export default function run_cleaner()
 {
-	clean_up.periodical(clean_up_interval_in_milliseconds)
+	return clean_up.periodical(clean_up_interval_in_milliseconds)
 }

@@ -2,35 +2,20 @@ import { errors } from 'web-service'
 import web_service from '../common/webservice'
 
 import path from 'path'
-import fs   from 'fs-extra'
+import fs from 'fs-extra'
 import promise_pipe from 'promisepipe'
 
-import get_image_info         from './image info'
-// import { resize, autorotate } from './image manipulation gm'
-import { resize, autorotate, image_stream } from './image manipulation sharp'
+import get_image_info         from './image info/image info'
+import { resize, autorotate, image_stream } from './image manipulation'
 import database               from './database'
-import { clean_up }           from './cleaner'
+import storage                from './storage/filesystem'
+import { clean_up }           from './cleaner/cleaner'
 
 const upload_folder = path.resolve(Root_folder, configuration.image_service.temporary_files_directory)
-const output_folder = path.resolve(Root_folder, configuration.image_service.files_directory)
-
-// checks if filesystem path exists
-function fs_exists(path)
-{
-	return new Promise((resolve, reject) =>
-	{
-		fs.exists(path, exists => resolve(exists))
-	})
-}
 
 function temporary_path(file_name)
 {
 	return path.resolve(upload_folder, file_name)
-}
-
-function permanent_path(file_name, type)
-{
-	return path.resolve(output_folder, type.path, file_name)
 }
 
 export default function start_web_service()
@@ -42,11 +27,14 @@ export default function start_web_service()
 		routing        : '/api'
 	})
 
-	// temporary uploaded images
+	// Temporary uploaded images
 	web.files('/uploaded', upload_folder)
 
-	// saved uploaded images (user pictures, etc)
-	web.files('/', output_folder)
+	// Saved uploaded images (in case of filesystem storage)
+	if (storage.serve)
+	{
+		web.files('/', storage.serve)
+	}
 
 	web.get('/', async function({ skip, amount })
 	{
@@ -84,22 +72,11 @@ export default function start_web_service()
 			throw new errors.Unauthorized()
 		}
 
-		const image_type = configuration.image_service.type[image.type]
-
-		if (!image_type)
+		// Delete all image sizes
+		await Promise.all(image.sizes.map((size) =>
 		{
-			throw new Error(`Unknown image-service type: "${type}"`)
-		}
-
-		for (let size of image.sizes)
-		{
-			const image_path = permanent_path(size.file, image_type)
-
-			if (await fs_exists(image_path))
-			{
-				await fs.unlinkAsync(image_path)
-			}
-		}
+			return storage.dispose(size.file)
+		}))
 
 		// await database.decrease_user_images_size(user, image.info.files_size)
 
@@ -113,25 +90,27 @@ export default function start_web_service()
 			throw new errors.Unauthenticated()
 		}
 
-		const image_type = configuration.image_service.type[type]
-
-		if (!image_type)
-		{
-			throw new Error(`Unknown image-service type: "${type}"`)
-		}
-
 		if (!image)
 		{
 			throw new errors.Not_found()
 		}
 
-		for (let size of image.sizes)
+		// Store all image sizes
+		await Promise.all(image.sizes.map(async (size) =>
 		{
-			const to = permanent_path(size.file, image_type)
-			await fs.moveAsync(temporary_path(size.file), to)
+			const file_path = temporary_path(size.file)
 
-			size.file_size = (await fs.statAsync(to)).size
-		}
+			// Note the image file size
+			size.file_size = (await fs.statAsync(file_path)).size
+			// Store the image
+			size.file = await storage.store(file_path, size.file)
+
+			// Delete the temporary image file
+			if (storage.clean_up_after_store !== false)
+			{
+				await fs.unlinkAsync(file_path)
+			}
+		}))
 
 		const { date, date_utc0, location, sizes, ...rest } = image
 
@@ -183,11 +162,14 @@ export default function start_web_service()
 		},
 		process: async function({ original_file_name, uploaded_file_name }, parameters)
 		{
-			const image_type = configuration.image_service.type[parameters.type]
+			let image_type = configuration.image_service.type[parameters.type]
 
 			if (!image_type)
 			{
-				throw new Error(`Unknown image-service type: "${parameters.type}"`)
+				image_type =
+				{
+					sizes: configuration.image_service.sizes
+				}
 			}
 
 			const from = path.resolve(upload_folder, uploaded_file_name)
@@ -223,13 +205,11 @@ export default function start_web_service()
 
 			const resizing = []
 
-			const image_min_extent = Math.min(image_info.width, image_info.height)
-
-			const target_sizes = image_type.sizes || configuration.image_service.sizes
-
 			const stream = image_stream()
 
-			for (let max_extent of target_sizes)
+			const image_min_extent = Math.min(image_info.width, image_info.height)
+
+			for (let max_extent of image_type.sizes)
 			{
 				resizing.push(resize_for_size(stream, from, max_extent, image_info, image_type, uploaded_file_name))
 
@@ -263,7 +243,6 @@ export default function start_web_service()
 				if ((biggest.width - previous.width) / previous.width < 0.1)
 				{
 					sizes.remove(previous)
-
 					await fs.unlinkAsync(temporary_path(previous.file))
 				}
 			}
@@ -349,8 +328,7 @@ async function resize_for_size(stream, from, max_extent, image_info, image_type,
 
 	const file_name = `${uploaded_file_name}@${resized.width}x${resized.height}${dot_extension}`
 
-	const to = temporary_path(file_name)
-	await fs.moveAsync(to_temporary, to)
+	await fs.moveAsync(to_temporary, temporary_path(file_name))
 
 	const result =
 	{

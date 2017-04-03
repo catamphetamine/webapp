@@ -488,7 +488,7 @@ Object.defineProperty(Function.prototype, 'delay_for',
 	enumerable: false,
 	value: function(time)
 	{
-		setTimeout(this, time)
+		return setTimeout(this, time)
 	}
 })
 
@@ -499,21 +499,60 @@ Object.defineProperty(Function.prototype, 'periodical',
 	{
 		const action = this
 
+		let stopped = false
+		let delayed
+		let promise
+
 		function periodical()
 		{
+			delayed = undefined
+			promise = undefined
+
+			if (stopped)
+			{
+				return
+			}
+
 			const result = action()
 
 			if (result instanceof Promise)
 			{
-				result.finally(() => periodical.delay_for(interval))
+				promise = result
+
+				result.finally(() =>
+				{
+					promise = undefined
+
+					if (stopped)
+					{
+						return
+					}
+
+					delayed = periodical.delay_for(interval)
+				})
 			}
 			else
 			{
-				periodical.delay_for(interval)
+				delayed = periodical.delay_for(interval)
 			}
 		}
 
 		periodical()
+
+		return function stop()
+		{
+			stopped = true
+
+			if (delayed)
+			{
+				clearTimeout(delayed)
+			}
+
+			if (promise && promise.cancel)
+			{
+				promise.cancel()
+			}
+		}
 	}
 })
 

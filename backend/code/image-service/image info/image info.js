@@ -1,8 +1,7 @@
 import moment from 'moment'
 
-// import { identify, read_exif } from './image manipulation gm'
-import { identify } from './image manipulation sharp'
-import read_exif from './exif'
+import identify from './identify'
+import read_exif from './exif/exif'
 import local_date from './local date'
 
 // when using this module do `npm install geolib simplesets timezone --save`,

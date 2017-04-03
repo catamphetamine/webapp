@@ -153,21 +153,16 @@ export default class Picture extends PureComponent
 
 export function url(size, type)
 {
-	let subpath
+	let subpath = ''
 
 	switch (type)
 	{
-		case 'poster_picture':
-			subpath = `${_poster_pictures_path_}/`
-			break
-
 		// Temporarily uploaded pictures (before saving them)
 		case 'uploaded':
 			subpath = `uploaded/`
 			break
 
-		default:
-			// throw new Error(`Unknown picture type: ${type}`)
+		case 'asset':
 			return size.file
 	}
 

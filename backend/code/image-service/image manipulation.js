@@ -111,18 +111,3 @@ export function image_stream(from)
 		// preserve EXIF metadata + add sRGB ICC profile
 		.withMetadata()
 }
-
-// returns:
-//
-// {
-// 	width,       // 1000
-// 	height,      // 1000
-// 	format,      // 'jpeg', 'png', ...
-// 	'mime type', // 'image/jpeg'
-// 	...
-// }
-//
-export function identify(path)
-{
-	return sharp(path).metadata()
-}

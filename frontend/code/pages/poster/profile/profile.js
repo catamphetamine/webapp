@@ -234,11 +234,29 @@ export default class Poster_profile extends Component
 				<Title>{ poster.name }</Title>
 
 				<div className="poster-profile__background-picture-container">
+					{/* Change banner */}
+					{ edit &&
+						<Upload_picture
+							type="poster_banner"
+							changing={ edit }
+							changeLabel=""
+							disabled={ submitting }
+							upload={ upload_picture }
+							onChoose={ set_upload_picture_error }
+							onError={ set_upload_picture_error }
+							onFinished={ set_uploaded_poster_banner }
+							className="poster-profile__change-banner">
+
+							{ translate(messages.change_banner) }
+						</Upload_picture>
+					}
+
 					{/* Poster background pattern picture */}
 					<Upload_picture
 						type="poster_background_pattern"
 						changing={ edit }
 						changeLabel={ translate(messages.change_background_pattern) }
+						disabled={ submitting }
 						upload={ upload_picture }
 						onChoose={ set_upload_picture_error }
 						onError={ set_upload_picture_error }
@@ -246,8 +264,8 @@ export default class Poster_profile extends Component
 						className="poster-profile__background-picture">
 
 						<Picture
-							type="poster_background_pattern"
 							pattern
+							type={ poster.background_pattern ? undefined : 'asset'}
 							picture={ poster.background_pattern || Poster_background_pattern }/>
 					</Upload_picture>
 
@@ -267,6 +285,7 @@ export default class Poster_profile extends Component
 					<Upload_picture
 						type="poster_picture"
 						changing={ edit }
+						disabled={ submitting }
 						upload={ upload_picture }
 						onChoose={ set_upload_picture_error }
 						onError={ set_upload_picture_error }
@@ -600,10 +619,15 @@ export default class Poster_profile extends Component
 		const
 		{
 			poster,
-			uploaded_picture,
-			update_poster_picture,
+
+			uploaded_poster_picture,
+			uploaded_background_pattern,
+			uploaded_banner,
+
 			update_poster,
-			set_uploaded_poster_picture
+			update_poster_picture,
+			update_poster_background_pattern,
+			update_poster_banner
 		}
 		= this.props
 
@@ -619,9 +643,21 @@ export default class Poster_profile extends Component
 			this.reset_poster_edit_errors()
 
 			// Save the uploaded poster picture (if it was uploaded)
-			if (uploaded_picture)
+			if (uploaded_poster_picture)
 			{
-				await update_poster_picture(poster.id, uploaded_picture)
+				await update_poster_picture(poster.id, uploaded_poster_picture)
+			}
+
+			// Save the uploaded poster background pattern (if it was uploaded)
+			if (uploaded_background_pattern)
+			{
+				await update_poster_background_pattern(poster.id, uploaded_background_pattern)
+			}
+
+			// Save the uploaded poster banner (if it was uploaded)
+			if (uploaded_banner)
+			{
+				await update_poster_banner(poster.id, uploaded_banner)
 			}
 
 			// Collect poster info edits

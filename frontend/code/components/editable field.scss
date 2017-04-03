@@ -1,0 +1,55 @@
+
+.editable-field
+{
+	margin-bottom: calc(var(--unit) * 4);
+
+	&:last-child
+	{
+		margin-bottom: 0;
+	}
+
+	// label
+	// {
+	// 	display       : block;
+	// 	margin-bottom : calc(var(--unit) * 0.5);
+	// 	opacity       : 0.6;
+	// }
+
+	.rrui__switch
+	{
+		position    : absolute;
+		margin-top  : 0.1em;
+		margin-left : 0.6em;
+
+		.rrui__input
+		{
+			height: auto;
+		}
+	}
+
+	.editable-field__button--subsequent
+	{
+		margin-left: calc(var(--unit) * 2);
+	}
+
+	.rrui__text-input
+	{
+		margin-bottom: var(--unit);
+	}
+
+	p
+	{
+		margin-top    : calc(var(--unit) * 0.5);
+		margin-bottom : var(--unit);
+
+		font-size : 85%;
+		color     : var(--gray-color-darkest);
+		border-left: 0.1em solid var(--gray-color-darker);
+		padding-left: 0.4em;
+	}
+}
+
+.editable-field__value--empty
+{
+	color: var(--gray-color-dark);
+}

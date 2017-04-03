@@ -55,6 +55,6 @@ export function fs_size(path, callback)
 					done(size)
 				})
 			}
-		}) 
+		})
 	})
 }

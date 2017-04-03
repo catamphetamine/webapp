@@ -1,0 +1,45 @@
+.upload-picture
+{
+	position : relative;
+}
+
+.upload-picture
+{
+	transition: box-shadow 100ms ease-out;
+}
+
+.layout--dragging .upload-picture
+{
+	box-shadow: 0 0 0 0.15rem var(--accent-color-lighter);
+}
+
+.upload-picture__droppable-overlay
+{
+	transition: background-color 100ms ease-out;
+}
+
+.upload-picture__droppable-overlay--can-drop
+{
+	background-color: var(--accent-color-lighter);
+}
+
+.upload-picture__droppable-overlay--cannot-drop
+{
+	background-color: var(--error-color);
+}
+
+.upload-picture__change-overlay
+{
+	// background-color : rgba(var(--black-color), 0.5);
+	background-color : rgba(#4e3d27, 0.5);
+}
+
+.upload-picture__change-overlay--uploaded
+{
+	background-color : transparent;
+}
+
+.upload-picture__indicator
+{
+	color : var(--white-color);
+}

@@ -147,7 +147,7 @@ export const set_uploaded_poster_picture = action
 	({
 		...state,
 		upload_picture_pending : false,
-		uploaded_picture       : picture
+		uploaded_poster_picture       : picture
 	})
 },
 handler)
@@ -186,7 +186,7 @@ handler)
 
 handler.add_state_properties
 (
-	'uploaded_picture',
+	'uploaded_poster_picture',
 	'uploaded_background_pattern',
 	'uploaded_banner'
 )
