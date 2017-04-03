@@ -12,8 +12,9 @@
 	display     : flex;
 	align-items : center;
 	background-color           : var(--white-color);
-	border-bottom-left-radius  : var(--border-radius);
 	border-bottom-right-radius : var(--border-radius);
+
+	align-self: flex-start;
 
 	.upload-picture__indicator
 	{
@@ -94,7 +95,7 @@
 
 .poster-profile__background-color-toggler
 {
-	margin-right : calc(var(--unit) * 2);
+	margin-right : var(--unit);
 }
 
 .poster-profile__picture
@@ -254,6 +255,11 @@
 		max-height : calc(var(--unit) * 30);
 	}
 
+	.poster-profile__change-banner
+	{
+		border-bottom-left-radius  : var(--border-radius);
+		align-self : auto;
+	}
 
 	.poster-profile__background-color
 	{
@@ -268,6 +274,11 @@
 	{
 		padding-left  : calc(var(--unit) * 2);
 		padding-right : calc(var(--unit) * 2);
+	}
+
+	.poster-profile__background-color-toggler
+	{
+		margin-right : calc(var(--unit) * 2);
 	}
 
 	.poster-profile__background-color,

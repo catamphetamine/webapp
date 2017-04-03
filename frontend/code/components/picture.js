@@ -109,7 +109,7 @@ export default class Picture extends PureComponent
 
 		if (force ||
 			!size ||
-			preferred_size.width > size.width)
+			(preferred_size && preferred_size.width > size.width))
 		{
 			this.setState({ size: preferred_size })
 		}
