@@ -27,3 +27,11 @@
 		display : none;
 	}
 }
+
+.picture--frameless
+{
+	&:after
+	{
+		display : none;
+	}
+}

@@ -6,6 +6,18 @@
 	}
 }
 
+.poster-profile__banner
+{
+	position : absolute;
+	z-index  : 1;
+	height   : 100%;
+
+	.picture__image
+	{
+		height : 100%;
+	}
+}
+
 .poster-profile__change-banner
 {
 	z-index     : 1;
@@ -44,9 +56,10 @@
 	border-bottom : 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.poster-profile__background-picture-container--color
+.poster-profile__background-picture--color
 {
-	.upload-picture__change-overlay
+	.upload-picture__change-overlay,
+	.picture
 	{
 		display : none !important;
 	}

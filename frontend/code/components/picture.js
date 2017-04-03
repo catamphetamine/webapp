@@ -11,6 +11,7 @@ export default class Picture extends PureComponent
 		type          : PropTypes.string,
 		maxWidth      : PropTypes.number,
 		// defaultWidth  : PropTypes.number,
+		frameless     : PropTypes.bool.isRequired,
 		children      : PropTypes.node,
 		pattern       : PropTypes.bool.isRequired,
 
@@ -24,7 +25,8 @@ export default class Picture extends PureComponent
 
 	static defaultProps =
 	{
-		pattern : false
+		pattern : false,
+		frameless : false
 	}
 
 	state = {}
@@ -62,6 +64,7 @@ export default class Picture extends PureComponent
 		let
 		{
 			pattern,
+			frameless,
 			style,
 			className,
 			children
@@ -83,7 +86,8 @@ export default class Picture extends PureComponent
 				style={ style }
 				className={ classNames('picture',
 				{
-					'picture--pattern' : pattern
+					'picture--pattern'   : pattern,
+					'picture--frameless' : frameless
 				},
 				className) }>
 

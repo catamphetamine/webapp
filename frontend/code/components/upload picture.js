@@ -92,19 +92,6 @@ class Upload_picture extends Component
 		}
 		= this.state
 
-		const picture_props = {}
-
-		if (uploaded_picture)
-		{
-			picture_props.picture   = uploaded_picture
-			picture_props.uploaded  = true
-			picture_props.className = classNames
-			({
-				'upload-picture__picture--change' : uploading
-			},
-			picture_props.className)
-		}
-
 		{/* User picture */}
 		return dropTarget(
 			<div
@@ -121,9 +108,22 @@ class Upload_picture extends Component
 				{
 					React.Children.map(children, (child) =>
 					{
-						if (child.type && typeof(child.type) !== 'string')
+						if (child.type && typeof(child.type) !== 'string' &&
+							child.type.propTypes.picture && child.type.propTypes.uploaded)
 						{
-							return React.cloneElement(child, picture_props)
+							if (uploaded_picture)
+							{
+								return React.cloneElement(child,
+								{
+									picture   : uploaded_picture,
+									uploaded  : true,
+									className : classNames
+									({
+										'upload-picture__picture--change' : uploading
+									},
+									child.props.className)
+								})
+							}
 						}
 
 						return child
@@ -260,8 +260,6 @@ const styles = style
 			border-radius    : inherit
 
 			&overlay
-				cursor : pointer
-
 				&label
 					display         : flex
 					align-items     : center

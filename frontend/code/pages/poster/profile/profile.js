@@ -137,6 +137,8 @@ export default class Poster_profile extends Component
 		// Same as in `.toggle_edit_mode()`
 		this.state.background_color         = poster.palette.background
 		this.state.background_color_enabled = poster.palette.background !== undefined
+		// Is `null` instead of `undefined` in knex.js
+		this.state.banner_enabled           = exists(poster.banner)
 
 		this.save_profile_edits   = this.save_profile_edits.bind(this)
 
@@ -225,6 +227,8 @@ export default class Poster_profile extends Component
 
 			set_upload_picture_error,
 
+			uploaded_banner,
+
 			submit,
 			submitting
 		}
@@ -233,36 +237,60 @@ export default class Poster_profile extends Component
 		const
 		{
 			background_color,
-			background_color_enabled
+			background_color_enabled,
+			banner_enabled
 		}
 		= this.state
 
 		const poster_form_busy = submitting || upload_picture_pending
+
+		const banner_shown_while_editing = uploaded_banner || (background_color_enabled && poster.banner)
+		const show_banner_while_editing = banner_enabled && banner_shown_while_editing
 
 		const markup =
 		(
 			<div className="content poster-profile">
 				<Title>{ poster.name }</Title>
 
-				<div
-					className={ classNames('poster-profile__background-picture-container',
-					{
-						'poster-profile__background-picture-container--color' : background_color_enabled
-					}) }>
+				<div className="poster-profile__background-picture-container">
 
-					{/* Change banner */}
+					{/* Banner */}
+					{ !edit && poster.banner &&
+						<Picture
+							frameless
+							picture={ poster.banner }
+							className="poster-profile__banner"/>
+					}
+
+					{/* Uploaded banner */}
+					{ edit && show_banner_while_editing &&
+						<Picture
+							frameless
+							type={ uploaded_banner ? 'uploaded' : undefined }
+							picture={ banner_shown_while_editing }
+							className="poster-profile__banner"/>
+					}
+
+					{/* "Change banner" */}
 					{ edit &&
 						<Upload_picture
 							type="poster_banner"
 							changing={ edit }
 							changeLabel=""
-							disabled={ submitting }
+							disabled={ !banner_enabled || submitting }
 							upload={ upload_picture }
 							onChoose={ set_upload_picture_error }
 							onError={ set_upload_picture_error }
 							onFinished={ set_uploaded_poster_banner }
 							className="poster-profile__change-banner">
 
+							{/* Banner toggler */}
+							<Checkbox
+								value={ banner_enabled }
+								onChange={ this.set_banner_enabled }
+								className="poster-profile__background-color-toggler"/>
+
+							{/* "Change banner" */}
 							{ translate(messages.change_banner) }
 						</Upload_picture>
 					}
@@ -271,27 +299,33 @@ export default class Poster_profile extends Component
 					<Upload_picture
 						type="poster_background_pattern"
 						changing={ edit }
-						changeLabel={ translate(messages.change_background_pattern) }
+						changeLabel={ show_banner_while_editing ? '' : translate(messages.change_background_pattern) }
 						disabled={ submitting }
 						upload={ upload_picture }
 						onChoose={ set_upload_picture_error }
 						onError={ set_upload_picture_error }
 						onFinished={ set_uploaded_poster_background_pattern }
-						className="poster-profile__background-picture"
+						className={ classNames('poster-profile__background-picture',
+						{
+							'poster-profile__background-picture--color' : background_color_enabled
+						}) }
 						style={ { backgroundColor: background_color } }>
 
 						<Picture
 							pattern
+							frameless
 							type={ poster.background_pattern ? undefined : 'asset'}
 							picture={ poster.background_pattern }
 							fallback={ background_color_enabled ? undefined : Default_poster_background_pattern }/>
 					</Upload_picture>
 
+					{/* Background color */}
 					{ edit &&
 						<div className="poster-profile__background-color">
+							{/* Enable/disable background color */}
 							<Checkbox
 								value={ background_color_enabled }
-								onChange={ this.toggle_background_color_enabled }
+								onChange={ this.set_background_color_enabled }
 								className="poster-profile__background-color-toggler"/>
 
 							{/* "Choose background color" */}
@@ -606,12 +640,20 @@ export default class Poster_profile extends Component
 		return markup
 	}
 
-	toggle_background_color_enabled = () =>
+	set_banner_enabled = (value) =>
 	{
-		this.setState(({ background_color_enabled }) =>
+		this.setState
 		({
-			background_color_enabled : !background_color_enabled
-		}))
+			banner_enabled : value
+		})
+	}
+
+	set_background_color_enabled = (value) =>
+	{
+		this.setState
+		({
+			background_color_enabled : value
+		})
 	}
 
 	set_background_color = (background_color) =>
@@ -646,7 +688,9 @@ export default class Poster_profile extends Component
 
 			// Same as in `constructor()`
 			background_color         : poster.palette.background,
-			background_color_enabled : poster.palette.background !== undefined
+			background_color_enabled : poster.palette.background !== undefined,
+			// Is `null` instead of `undefined` in knex.js
+			banner_enabled           : exists(poster.banner)
 		}))
 	}
 
@@ -670,7 +714,8 @@ export default class Poster_profile extends Component
 		const
 		{
 			background_color,
-			background_color_enabled
+			background_color_enabled,
+			banner_enabled
 		}
 		= this.state
 
@@ -699,6 +744,12 @@ export default class Poster_profile extends Component
 
 			// Collect poster info edits
 			const poster_info = Personal_info.get_values(this.personal_info, values)
+
+			// If the banner was turned off then reset it on server
+			if (!banner_enabled)
+			{
+				poster_info.banner = false
+			}
 
 			// The palette may have been updated so send it too
 			poster_info.palette = { ...poster.palette }

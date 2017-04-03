@@ -1,6 +1,6 @@
 import deep_equal from 'deep-equal'
 
-const exists = what => typeof what !== 'undefined'
+const exists = what => what !== undefined && what !== null
 global.exists = exists
 
 // used for JSON object type checking
@@ -9,7 +9,7 @@ const object_constructor = {}.constructor
 // detects a JSON object
 export function is_object(object)
 {
-	return exists(object) && (object !== null) && object.constructor === object_constructor
+	return exists(object) && object.constructor === object_constructor
 }
 global.is_object = is_object
 
@@ -24,7 +24,7 @@ global.no = no
 // extends the first object with all the others
 Object.extend = function(...objects)
 {
-	objects = objects.filter(x => exists(x))
+	objects = objects.filter(x => x !== undefined)
 
 	if (objects.length === 0)
 	{
@@ -126,7 +126,7 @@ Object.get_value_at_path = (where, paths) =>
 
 		const path = paths.shift()
 
-		if (!exists(where[path]))
+		if (where[path] === undefined)
 		{
 			return
 		}

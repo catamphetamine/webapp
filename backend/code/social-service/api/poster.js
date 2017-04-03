@@ -66,7 +66,7 @@ export default function(api)
 	})
 
 	// Change poster data
-	api.patch('/poster/:id', async function({ id, name, country, place, palette }, { user })
+	api.patch('/poster/:id', async function({ id, name, country, place, banner, palette }, { user, internal_http })
 	{
 		if (!user)
 		{
@@ -96,6 +96,23 @@ export default function(api)
 			palette
 		})
 
+		// If banner has been turned off then delete and reset it
+		if (banner === false)
+		{
+			// Delete the previous banner
+			if (poster.banner)
+			{
+				await internal_http.delete(`${address_book.image_service}/api/${poster.banner.id}`)
+			}
+
+			// Reset banner
+			await store.update_poster(id,
+			{
+				banner : null
+			})
+		}
+
+		// Return the updated poster
 		return await get_poster(id)
 	})
 
