@@ -1,6 +1,8 @@
 :root
 {
-	--content-column-width : calc(var(--unit) * 135);
+	--content-column-width       : calc(var(--unit) * 135);
+	--poster-profile-tabs-height : calc(var(--unit) * 8);
+	--poster-profile-edit-actions-height : calc(var(--unit) * 6);
 }
 
 .poster-profile
@@ -95,7 +97,6 @@
 	top                    : 0;
 	display                : flex;
 	align-items            : center;
-	height                 : calc(var(--unit) * 6);
 	background-color       : var(--white-color);
 	border-bottom-left-radius : var(--border-radius);
 }
@@ -141,7 +142,7 @@
 .poster-profile__edit-actions,
 .poster-profile__change-banner
 {
-	height : calc(var(--unit) * 6);
+	height : var(--poster-profile-edit-actions-height);
 	border : var(--border);
 }
 
@@ -154,9 +155,7 @@
 {
 	position       : absolute;
 	top            : 0;
-	margin-top     : calc(var(--unit) * 6 * -1);
-	padding-top    : calc(var(--unit) - 1px);
-	padding-bottom : calc(var(--unit) - 1px);
+	margin-top     : calc(var(--poster-profile-edit-actions-height) * -1);
 	padding-left   : calc(var(--unit) * 2);
 	padding-right  : calc(var(--unit) * 2);
 	background-color        : var(--white-color);
@@ -264,22 +263,18 @@
 
 .poster-profile__tabs-container
 {
-	margin-bottom : calc(var(--unit) * -8);
 	text-align    : center;
 }
 
 .poster-profile__tabs
 {
 	display       : inline-block;
-	position      : relative;
-	top           : calc(var(--unit) * -8);
-	height        : calc(var(--unit) * 8);
+	height        : var(--poster-profile-tabs-height);
 	margin-left   : auto;
 	margin-right  : auto;
 	border        : var(--border);
-
-	border-top-left-radius  : var(--border-radius);
-	border-top-right-radius : var(--border-radius);
+	border-radius : var(--border-radius);
+	white-space   : nowrap;
 }
 
 .poster-profile__tab
@@ -296,13 +291,15 @@
 	&:first-child
 	{
 		padding-left : calc(var(--unit) * 3);
-		border-top-left-radius : inherit;
+		border-top-left-radius    : inherit;
+		border-bottom-left-radius : inherit;
 	}
 
 	&:last-child
 	{
 		padding-right : calc(var(--unit) * 3);
-		border-top-right-radius : inherit;
+		border-top-right-radius    : inherit;
+		border-bottom-right-radius : inherit;
 	}
 }
 
@@ -404,6 +401,20 @@
 		flex-basis  : auto;
 		flex-grow   : 3;
 		flex-shrink : 1;
+	}
+
+	.poster-profile__tabs-container
+	{
+		margin-bottom : calc(var(--poster-profile-tabs-height) * -1);
+	}
+
+	.poster-profile__tabs
+	{
+		position : relative;
+		top      : calc(var(--poster-profile-tabs-height) * -1);
+
+		border-bottom-left-radius  : 0;
+		border-bottom-right-radius : 0;
 	}
 
 	.poster-profile

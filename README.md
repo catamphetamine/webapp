@@ -734,6 +734,8 @@ Troubleshooting
 To do
 ====================
 
+стилизовать Posts и Subscriptions также для малых экранов
+
 сделать иконки для Posts и Subscriptions
 
 сделать кнопку subscribe, добавляющую в таблицу subscriptions, и ещё выводить в профиле:
