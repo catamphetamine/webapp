@@ -130,7 +130,9 @@ export default class Personal_info extends Component
 				{ !edit &&
 					<div>
 						{/* User's name */}
-						<h1 style={ styles.poster_name }>
+						<h1
+							style={ styles.poster_name }
+							className="poster-info__name">
 							{ poster.name }
 						</h1>
 

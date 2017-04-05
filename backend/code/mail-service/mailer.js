@@ -120,7 +120,7 @@ export default class Mailer
 				options.from = configuration.mail_service.mail.from
 			}
 
-			return transporter.sendMail(options)
+			return this.transporter.sendMail(options)
 		}
 
 		const translate = translator(locale)
@@ -156,7 +156,7 @@ export default class Mailer
 		},
 		rendered)
 
-		return await transporter.sendMail(mail_data)
+		return await this.transporter.sendMail(mail_data)
 	}
 
 	close()

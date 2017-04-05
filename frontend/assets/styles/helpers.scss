@@ -103,10 +103,10 @@
 		left : calc(#{$padding} + #{$margin} / 2);
 	}
 
-	.poster-profile__edit-actions
-	{
-		top : calc(-1 * #{$background_section_vertical_margin});
-	}
+	// .poster-profile__edit-actions
+	// {
+	// 	top : calc(-1 * #{$background_section_vertical_margin});
+	// }
 
 	.content-section-header
 	{
@@ -200,6 +200,14 @@
 @mixin xl
 {
 	@media all and (min-width: $extra-large-screen-min-width)
+	{
+		@content;
+	}
+}
+
+@mixin xxl
+{
+	@media all and (min-width: $extra-extra-large-screen-min-width)
 	{
 		@content;
 	}

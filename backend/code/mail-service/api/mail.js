@@ -29,7 +29,7 @@ export default function(mailer)
 
 			metrics.increment('count')
 
-			mailer.send({ to, subject }, template, parameters, locale)
+			await mailer.send({ to, subject }, template, parameters, locale)
 		})
 	}
 

@@ -1,3 +1,8 @@
+:root
+{
+	--content-column-width : calc(var(--unit) * 135);
+}
+
 .poster-profile
 {
 	.rrui__text-input__input
@@ -23,10 +28,11 @@
 	z-index     : 1;
 	display     : flex;
 	align-items : center;
+
 	background-color           : var(--white-color);
 	border-bottom-right-radius : var(--border-radius);
 
-	align-self: flex-start;
+	align-self : flex-start;
 
 	.upload-picture__indicator
 	{
@@ -53,7 +59,7 @@
 
 	position : relative;
 	height   : 25vw;
-	border-bottom : 1px solid rgba(0, 0, 0, 0.1);
+	border-bottom : var(--border);
 }
 
 .poster-profile__background-picture--color
@@ -136,7 +142,7 @@
 .poster-profile__change-banner
 {
 	height : calc(var(--unit) * 6);
-	border : 1px solid rgba(0, 0, 0, 0.1);
+	border : var(--border);
 }
 
 .poster-profile__background-color
@@ -146,12 +152,9 @@
 
 .poster-profile__edit-actions
 {
-	margin-top : calc(var(--unit) * 6 * -1);
-}
-
-.poster-profile__edit-actions
-{
 	position       : absolute;
+	top            : 0;
+	margin-top     : calc(var(--unit) * 6 * -1);
 	padding-top    : calc(var(--unit) - 1px);
 	padding-bottom : calc(var(--unit) - 1px);
 	padding-left   : calc(var(--unit) * 2);
@@ -238,6 +241,71 @@
 	}
 }
 
+.poster-profile__body
+{
+	display        : flex;
+	flex-direction : column;
+}
+
+.poster-profile__content
+{
+	position : relative;
+
+	// https://www.mobila.name/post/55c3b664d1e6e/
+	max-width    : var(--content-column-width);
+	margin-left  : auto;
+	margin-right : auto;
+}
+
+.poster-profile__right-aside
+{
+	display : none;
+}
+
+.poster-profile__tabs-container
+{
+	margin-bottom : calc(var(--unit) * -8);
+	text-align    : center;
+}
+
+.poster-profile__tabs
+{
+	display       : inline-block;
+	position      : relative;
+	top           : calc(var(--unit) * -8);
+	height        : calc(var(--unit) * 8);
+	margin-left   : auto;
+	margin-right  : auto;
+	border        : var(--border);
+
+	border-top-left-radius  : var(--border-radius);
+	border-top-right-radius : var(--border-radius);
+}
+
+.poster-profile__tab
+{
+	height      : 100%;
+	display     : inline-flex;
+	align-items : center;
+
+	padding-left  : calc(var(--unit) * 1.5);
+	padding-right : calc(var(--unit) * 1.5);
+
+	background-color : var(--white-color);
+
+	&:first-child
+	{
+		padding-left : calc(var(--unit) * 3);
+		border-top-left-radius : inherit;
+	}
+
+	&:last-child
+	{
+		padding-right : calc(var(--unit) * 3);
+		border-top-right-radius : inherit;
+	}
+}
+
 @include m
 {
 	@include set_profile_picture_size(calc(var(--unit) * 18));
@@ -309,6 +377,35 @@
 
 @include l
 {
+	.poster-profile__body
+	{
+		flex-direction : row;
+	}
+
+	.poster-profile__info
+	{
+		flex-basis  : calc(var(--unit) * 40);
+		flex-grow   : 1;
+		flex-shrink : 1;
+	}
+
+	.poster-profile__content
+	{
+		max-width : none;
+		// https://www.mobila.name/post/55c3b664d1e6e/
+		flex-basis  : var(--content-column-width);
+		flex-grow   : 0;
+		flex-shrink : 1;
+	}
+
+	.poster-profile__right-aside
+	{
+		display     : block;
+		flex-basis  : auto;
+		flex-grow   : 3;
+		flex-shrink : 1;
+	}
+
 	.poster-profile
 	{
 		.rrui__text-input__input
@@ -344,5 +441,12 @@
 	.poster-profile__background-picture-container
 	{
 		max-height : calc(var(--unit) * 40);
+	}
+
+	.poster-profile__info,
+	.poster-profile__right-aside
+	{
+		flex-basis : 0;
+		flex-grow  : 1;
 	}
 }

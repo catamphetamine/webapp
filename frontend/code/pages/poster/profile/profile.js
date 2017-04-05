@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { Title, preload, redirect }    from 'react-isomorphic-render'
+import { Title, Link, preload, redirect } from 'react-isomorphic-render'
 import { connect }                     from 'react-redux'
 import { flat as style }               from 'react-styling'
 import classNames                      from 'classnames'
@@ -361,47 +361,82 @@ export default class Poster_profile extends Component
 					</Upload_picture>
 				</div>
 
-				{/* Left column */}
-				<div
-					style={ styles.personal_info_column }
-					className="column-m-6-of-12">
+				{/* Poster info */}
+				<div className="poster-profile__body">
+					<div
+						style={ styles.personal_info_column }
+						className="poster-profile__info">
 
-					{/* User's personal info */}
-					<section
-						className={ classNames('background-section',
-						{
-							'content-section' : edit
-						}) }>
+						{/* Poster's personal info */}
+						<section
+							className={ classNames('background-section',
+							{
+								'content-section' : edit
+							}) }>
 
-						{/* Poster blocked notice */}
-						{ poster.blocked_at && this.render_poster_blocked_notice() }
+							{/* Poster blocked notice */}
+							{ poster.blocked_at && this.render_poster_blocked_notice() }
 
-						<Form
-							busy={ poster_form_busy }
-							submit={ submit(this.save_profile_edits) }>
+							<Form
+								busy={ poster_form_busy }
+								submit={ submit(this.save_profile_edits) }>
 
-							{/* Poster profile edit errors */}
-							{ this.render_poster_edit_errors() }
+								{/* Poster profile edit errors */}
+								{ this.render_poster_edit_errors() }
 
-							{/* Edit/Save own profile */}
-							{ this.can_edit_profile() && this.render_edit_actions(poster_form_busy) }
+								{/* Edit/Save own profile */}
+								{ this.can_edit_profile() && this.render_edit_actions(poster_form_busy) }
 
-							{/* Block this poster (not self) */}
-							{ !this.can_edit_profile() && this.render_moderator_actions() }
+								{/* Block this poster (not self) */}
+								{ !this.can_edit_profile() && this.render_moderator_actions() }
 
-							{/* User's personal info (name, place, etc) */}
-							<Personal_info
-								ref={ ref => this.personal_info = ref }
-								edit={ edit }
-								poster={ poster }/>
-						</Form>
+								{/* User's personal info (name, place, etc) */}
+								<Personal_info
+									ref={ ref => this.personal_info = ref }
+									edit={ edit }
+									poster={ poster }/>
+							</Form>
 
-						{/* Other poster actions: "Send message", "Subscribe" */}
-						{ !this.can_edit_profile() && this.render_other_poster_actions() }
+							{/* Other poster actions: "Send message", "Subscribe" */}
+							{ !this.can_edit_profile() && this.render_other_poster_actions() }
 
-						{/* User online status: "Last seen: an hour ago" */}
-						{ this.render_online_status() }
-					</section>
+							{/* User online status: "Last seen: an hour ago" */}
+							{ this.render_online_status() }
+						</section>
+					</div>
+
+					<div className="poster-profile__content">
+						{/* Tabs */}
+						<div className="poster-profile__tabs-container">
+							<ul className="poster-profile__tabs">
+								<li className="poster-profile__tab">
+									<Link to={`${Poster.url(poster)}`}>
+										Posts
+									</Link>
+								</li>
+								<li className="poster-profile__tab">
+									<Link to={`${Poster.url(poster)}/subscriptions`}>
+										Subscriptions
+									</Link>
+								</li>
+							</ul>
+						</div>
+
+						<div className="content-section">
+							Пушкин работал над этим романом свыше семи лет, с 1823 по 1831 год[1]. Роман был, по словам поэта, «плодом ума холодных наблюдений и сердца горестных замет». Работу над ним Пушкин называл подвигом — из всего своего творческого наследия только «Бориса Годунова» он характеризовал этим же словом. В произведении на широком фоне картин русской жизни показана драматическая судьба людей дворянской интеллигенции.
+						</div>
+
+						<div className="content-section">
+							Пушкин начал работу над «Онегиным» в мае 1823 года в Кишинёве, во время своей ссылки. Автор отказался от романтизма как ведущего творческого метода и начал писать реалистический роман в стихах, хотя в первых главах ещё заметно влияние романтизма. Изначально предполагалось, что роман в стихах будет состоять из 9 глав, но впоследствии Пушкин переработал его структуру, оставив только 8 глав. Он исключил из основного текста произведения главу «Путешествие Онегина», включив её фрагменты в качестве приложения к основному тексту. Существовал фрагмент этой главы, где по некоторым данным описывалось, как Онегин видит военные поселения близ Одесской пристани, а далее шли замечания и суждения, в некоторых местах в излишне резком тоне. Опасаясь возможных преследований властей, Пушкин уничтожил этот фрагмент.[2].
+						</div>
+
+						<div className="content-section">
+							Роман охватывает события с 1819 по 1825 год: от заграничных походов русской армии после разгрома Наполеона до восстания декабристов. Это были годы развития русского общества, время правления Александра I. Сюжет романа прост и хорошо известен, в центре него — любовная история. В целом, в романе «Евгений Онегин» отразились события первой четверти XIX века, то есть время создания и время действия романа примерно совпадают.
+						</div>
+					</div>
+
+					<div className="poster-profile__right-aside">
+					</div>
 				</div>
 			</div>
 		)
