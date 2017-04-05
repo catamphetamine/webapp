@@ -411,12 +411,12 @@ export default class Poster_profile extends Component
 							<ul className="poster-profile__tabs">
 								<li className="poster-profile__tab">
 									<Link to={`${Poster.url(poster)}`}>
-										Posts
+										{ translate(messages.posts) }
 									</Link>
 								</li>
 								<li className="poster-profile__tab">
 									<Link to={`${Poster.url(poster)}/subscriptions`}>
-										Subscriptions
+										{ translate(messages.subscriptions) }
 									</Link>
 								</li>
 							</ul>
@@ -883,6 +883,30 @@ const styles = style
 
 const messages = defineMessages
 ({
+	posts:
+	{
+		id             : `poster.profile.tabs.posts`,
+		description    : `Poster profile posts tab title`,
+		defaultMessage : `Posts`
+	},
+	subscriptions:
+	{
+		id             : `poster.profile.tabs.subscriptions`,
+		description    : `Poster profile subscriptions tab title`,
+		defaultMessage : `Subscriptions`
+	},
+	merchandise:
+	{
+		id             : `poster.profile.tabs.merchandise`,
+		description    : `Poster profile merchandise tab title`,
+		defaultMessage : `Merchandise`
+	},
+	reviews:
+	{
+		id             : `poster.profile.tabs.reviews`,
+		description    : `Poster profile reviews tab title`,
+		defaultMessage : `Reviews`
+	},
 	latest_activity_time:
 	{
 		id             : `poster.profile.latest_activity_time`,

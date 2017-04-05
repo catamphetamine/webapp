@@ -100,6 +100,11 @@
 
 	"poster.profile.latest_activity_time" : "{gender, select, male {Заходил} female {Заходила} other {В сети:}}",
 
+	"poster.profile.tabs.posts"         : "Записи",
+	"poster.profile.tabs.subscriptions" : "Подписки",
+	"poster.profile.tabs.merchandise"   : "Товары",
+	"poster.profile.tabs.reviews"       : "Отзывы",
+
 	"user.settings.header"                           : "Настройки",
 	"user.settings.authentication"                   : "Проверка личности",
 	"user.settings.show_advanced_settings"           : "Показать прочие настройки",
