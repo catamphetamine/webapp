@@ -734,9 +734,9 @@ Troubleshooting
 To do
 ====================
 
-стилизовать Posts и Subscriptions также для малых экранов
+не загружаются картинки + не показывает синий overlay при drag'n'drop
 
-сделать иконки для Posts и Subscriptions
+сделать иконки для Posts и Subscriptions (на малых экранах - только иконки)
 
 сделать кнопку subscribe, добавляющую в таблицу subscriptions, и ещё выводить в профиле:
 

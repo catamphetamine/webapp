@@ -279,6 +279,12 @@
 
 .poster-profile__tab
 {
+	display : inline-block;
+	height  : 100%;
+}
+
+.poster-profile__tab-button
+{
 	height      : 100%;
 	display     : inline-flex;
 	align-items : center;
@@ -287,19 +293,37 @@
 	padding-right : calc(var(--unit) * 1.5);
 
 	background-color : var(--white-color);
+	color            : var(--base-color-darker);
+}
 
+.poster-profile__tab
+{
 	&:first-child
 	{
-		padding-left : calc(var(--unit) * 3);
-		border-top-left-radius    : inherit;
-		border-bottom-left-radius : inherit;
+		&, .poster-profile__tab-button
+		{
+			border-top-left-radius    : inherit;
+			border-bottom-left-radius : inherit;
+		}
+
+		.poster-profile__tab-button
+		{
+			padding-left : calc(var(--unit) * 3);
+		}
 	}
 
 	&:last-child
 	{
-		padding-right : calc(var(--unit) * 3);
-		border-top-right-radius    : inherit;
-		border-bottom-right-radius : inherit;
+		&, .poster-profile__tab-button
+		{
+			border-top-right-radius    : inherit;
+			border-bottom-right-radius : inherit;
+		}
+
+		.poster-profile__tab-button
+		{
+			padding-right : calc(var(--unit) * 4);
+		}
 	}
 }
 
@@ -422,6 +446,14 @@
 		.rrui__text-input__input
 		{
 			width: calc(var(--unit) * 50);
+		}
+	}
+
+	.poster-profile--editing
+	{
+		.poster-profile__tabs-container
+		{
+			display: none;
 		}
 	}
 

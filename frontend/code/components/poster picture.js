@@ -21,7 +21,11 @@ export default class Poster_picture extends React.Component
 	{
 		poster    : PropTypes.object.isRequired,
 		style     : PropTypes.object,
-		className : PropTypes.string
+		className : PropTypes.string,
+
+		// These two are for `upload picture` to work
+		picture   : PropTypes.object,
+		uploaded  : PropTypes.bool,
 	}
 
 	render()

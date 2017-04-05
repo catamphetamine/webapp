@@ -179,7 +179,7 @@ export default class Poster_profile extends Component
 	{
 		const { upload_picture_error, translate, snack } = new_props
 
-		if (upload_picture_error !== this.props.upload_picture_error)
+		if (upload_picture_error && upload_picture_error !== this.props.upload_picture_error)
 		{
 			switch (upload_picture_error)
 			{
@@ -192,7 +192,7 @@ export default class Poster_profile extends Component
 					return snack(translate(default_messages.picture_upload_unsupported_file_error), 'error')
 
 				// Other errors
-				case true:
+				default:
 					return snack(translate(default_messages.picture_upload_error), 'error')
 			}
 		}
@@ -209,8 +209,6 @@ export default class Poster_profile extends Component
 
 	render()
 	{
-		const { edit } = this.state
-
 		const
 		{
 			poster,
@@ -238,7 +236,8 @@ export default class Poster_profile extends Component
 		{
 			background_color,
 			background_color_enabled,
-			banner_enabled
+			banner_enabled,
+			edit
 		}
 		= this.state
 
@@ -249,7 +248,12 @@ export default class Poster_profile extends Component
 
 		const markup =
 		(
-			<div className="content poster-profile">
+			<div
+				className={ classNames('content', 'poster-profile',
+				{
+					'poster-profile--editing' : edit
+				}) }>
+
 				<Title>{ poster.name }</Title>
 
 				<div className="poster-profile__background-picture-container">
@@ -410,12 +414,16 @@ export default class Poster_profile extends Component
 						<div className="poster-profile__tabs-container">
 							<ul className="poster-profile__tabs">
 								<li className="poster-profile__tab">
-									<Link to={`${Poster.url(poster)}`}>
+									<Link
+										to={`${Poster.url(poster)}`}
+										className="poster-profile__tab-button">
 										{ translate(messages.posts) }
 									</Link>
 								</li>
 								<li className="poster-profile__tab">
-									<Link to={`${Poster.url(poster)}/subscriptions`}>
+									<Link
+										to={`${Poster.url(poster)}/subscriptions`}
+										className="poster-profile__tab-button">
 										{ translate(messages.subscriptions) }
 									</Link>
 								</li>

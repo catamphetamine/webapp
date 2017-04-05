@@ -8,14 +8,15 @@
 	transition: box-shadow 100ms ease-out;
 }
 
-.layout--dragging .upload-picture
+.layout--dragging .upload-picture--accepts-drop
 {
 	box-shadow: 0 0 0 0.15rem var(--accent-color-lighter);
 }
 
 .upload-picture__droppable-overlay
 {
-	transition: background-color 100ms ease-out;
+	opacity : 0.5;
+	transition : background-color 100ms ease-out;
 }
 
 .upload-picture__droppable-overlay--can-drop

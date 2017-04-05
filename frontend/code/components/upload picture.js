@@ -45,8 +45,8 @@ class Upload_picture extends Component
 
 	static defaultProps =
 	{
-		pattern : false,
-		maxSize : configuration.image_service.file_size_limit,
+		pattern  : false,
+		maxSize  : configuration.image_service.file_size_limit,
 		disabled : false
 	}
 
@@ -98,11 +98,11 @@ class Upload_picture extends Component
 				ref={ ref => this.picture = ref }
 				style={ styles.uploadable_picture }
 				style={ style }
-				className={ classNames
-				(
-					'upload-picture',
-					className
-				) }>
+				className={ classNames('upload-picture',
+				{
+					'upload-picture--accepts-drop' : changing
+				},
+				className) }>
 
 				{/* The picture itself */}
 				{
@@ -131,7 +131,7 @@ class Upload_picture extends Component
 				}
 
 				{/* A colored overlay indicating "can drop image file here" situation */}
-				{ changing &&
+				{ changing && draggedOver &&
 					<div
 						className={ classNames
 						(
@@ -268,6 +268,9 @@ const styles = style
 					color           : white
 					text-shadow     : 0 0.05em 0.1em rgba(0, 0, 0, 0.75)
 					user-select     : none
+
+				&background
+					z-index : 1
 `
 
 const messages = defineMessages
@@ -324,7 +327,15 @@ async function upload_and_wait_for_preload(file, props, component)
 	catch (error)
 	{
 		console.error(error)
-		return onError(String(error))
+
+		error = error.message
+
+		if (error.indexOf('unsupported image format') >= 0)
+		{
+			error = 'unsupported'
+		}
+
+		return onError(error)
 	}
 	finally
 	{
