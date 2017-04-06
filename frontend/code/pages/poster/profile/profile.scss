@@ -2,7 +2,47 @@
 {
 	--content-column-width       : calc(var(--unit) * 135);
 	--poster-profile-tabs-height : calc(var(--unit) * 8);
-	--poster-profile-edit-actions-height : calc(var(--unit) * 6);
+}
+
+// Could be achieved using CSS native variables ("CSS custom properties")
+// if all major browsers supported that CSS feature.
+// http://caniuse.com/#search=css%20var
+@mixin poster_profile_edit_buttons_side_padding($value)
+{
+	.poster-profile__background-color,
+	.poster-profile__change-banner
+	{
+		padding-left  : $value;
+		padding-right : $value;
+	}
+
+	.poster-profile__background-color-picker
+	{
+		margin-left : $value;
+	}
+
+	.poster-profile__background-color-toggler
+	{
+		margin-right : $value;
+	}
+}
+
+// Could be achieved using CSS native variables ("CSS custom properties")
+// if all major browsers supported that CSS feature.
+// http://caniuse.com/#search=css%20var
+@mixin poster_profile_edit_actions_height($value)
+{
+	.poster-profile__background-color,
+	.poster-profile__edit-actions,
+	.poster-profile__change-banner
+	{
+		height : $value;
+	}
+
+	.poster-profile__edit-actions
+	{
+		margin-top : calc(#{$value} * -1);
+	}
 }
 
 .poster-profile
@@ -108,22 +148,7 @@
 	border-bottom-left-radius : var(--border-radius);
 }
 
-.poster-profile__background-color,
-.poster-profile__change-banner
-{
-	padding-left  : var(--unit);
-	padding-right : var(--unit);
-}
-
-.poster-profile__background-color-picker
-{
-	margin-left : var(--unit);
-}
-
-.poster-profile__background-color-toggler
-{
-	margin-right : var(--unit);
-}
+@include poster_profile_edit_buttons_side_padding(var(--unit));
 
 .poster-profile__picture
 {
@@ -139,6 +164,7 @@
 }
 
 @include set_profile_picture_size(calc(var(--unit) * 14));
+@include poster_profile_edit_actions_height(calc(var(--unit) * 6));
 
 .poster-profile__picture
 {
@@ -149,7 +175,6 @@
 .poster-profile__edit-actions,
 .poster-profile__change-banner
 {
-	height : var(--poster-profile-edit-actions-height);
 	border : var(--border);
 }
 
@@ -162,7 +187,6 @@
 {
 	position       : absolute;
 	top            : 0;
-	margin-top     : calc(var(--poster-profile-edit-actions-height) * -1);
 	padding-left   : calc(var(--unit) * 2);
 	padding-right  : calc(var(--unit) * 2);
 	background-color        : var(--white-color);
@@ -382,29 +406,8 @@
 		border-top-left-radius    : var(--border-radius);
 	}
 
-	.poster-profile__background-color,
-	.poster-profile__change-banner
-	{
-		padding-left  : calc(var(--unit) * 2);
-		padding-right : calc(var(--unit) * 2);
-	}
-
-	.poster-profile__background-color-toggler
-	{
-		margin-right : calc(var(--unit) * 2);
-	}
-
-	.poster-profile__background-color,
-	.poster-profile__edit-actions,
-	.poster-profile__change-banner
-	{
-		height : calc(var(--unit) * 8);
-	}
-
-	.poster-profile__edit-actions
-	{
-		margin-top : calc(var(--unit) * 8 * -1);
-	}
+	@include poster_profile_edit_buttons_side_padding(calc(var(--unit) * 2));
+	@include poster_profile_edit_actions_height(calc(var(--unit) * 8));
 }
 
 @include l
