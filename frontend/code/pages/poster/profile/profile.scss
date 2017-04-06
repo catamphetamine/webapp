@@ -27,14 +27,21 @@
 
 .poster-profile__change-banner
 {
-	z-index     : 1;
+	z-index     : 2;
 	display     : flex;
 	align-items : center;
 
 	background-color           : var(--white-color);
 	border-bottom-right-radius : var(--border-radius);
 
+	color : var(--base-color-darker);
+
 	align-self : flex-start;
+
+	&:active
+	{
+		color : var(--base-color);
+	}
 
 	.upload-picture__indicator
 	{

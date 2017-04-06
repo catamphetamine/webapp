@@ -1,0 +1,24 @@
+.rrui__color-picker
+{
+	position : relative;
+	display  : inline-block;
+	width    : calc(var(--unit) * 4);
+	height   : calc(var(--unit) * 4);
+	border-radius : var(--border-radius);
+}
+
+.rrui__color-picker__color-button
+{
+	border : var(--border);
+	cursor : pointer;
+
+	&:active
+	{
+		border-color : var(--base-color-darker);
+	}
+}
+
+.rrui__color-picker__color-button[disabled]
+{
+	cursor : default;
+}

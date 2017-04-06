@@ -105,6 +105,8 @@
 	"poster.profile.tabs.merchandise"   : "Товары",
 	"poster.profile.tabs.reviews"       : "Отзывы",
 
+	"poster.profile.latest_activity_time.online" : "В сети",
+
 	"user.settings.header"                           : "Настройки",
 	"user.settings.authentication"                   : "Проверка личности",
 	"user.settings.show_advanced_settings"           : "Показать прочие настройки",

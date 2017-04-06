@@ -100,7 +100,8 @@ class Upload_picture extends Component
 				style={ style }
 				className={ classNames('upload-picture',
 				{
-					'upload-picture--accepts-drop' : changing
+					'upload-picture--accepts-drop' : changing,
+					'upload-picture--can-drop'     : changing && draggedOver
 				},
 				className) }>
 

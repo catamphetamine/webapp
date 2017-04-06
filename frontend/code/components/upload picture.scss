@@ -21,7 +21,13 @@
 
 .upload-picture__droppable-overlay--can-drop
 {
-	background-color: var(--accent-color-lighter);
+	background-color : var(--accent-color-lighter);
+}
+
+// CSS selector specificity for replacing border color
+.layout--dragging .upload-picture--can-drop
+{
+	border-color     : var(--accent-color-lighter);
 }
 
 .upload-picture__droppable-overlay--cannot-drop

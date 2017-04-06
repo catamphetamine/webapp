@@ -68,6 +68,8 @@ import international from '../../../international/internationalize'
 
 const Latest_activity_time_refresh_interval = 60 * 1000 // once in a minute
 
+const Online_status_time_span = 5 * 60 * 1000 // 5 minutes
+
 const Default_background_color = '#ffffff'
 
 const Default_poster_background_pattern =
@@ -281,11 +283,11 @@ export default class Poster_profile extends Component
 							type="poster_banner"
 							changing={ edit }
 							changeLabel=""
-							disabled={ !banner_enabled || submitting }
+							disabled={ submitting }
 							upload={ upload_picture }
 							onChoose={ set_upload_picture_error }
 							onError={ set_upload_picture_error }
-							onFinished={ set_uploaded_poster_banner }
+							onFinished={ this.banner_uploaded }
 							className="poster-profile__change-banner">
 
 							{/* Banner toggler */}
@@ -337,7 +339,6 @@ export default class Poster_profile extends Component
 
 							<Color_picker
 								alignment="right"
-								disabled={ !background_color_enabled }
 								className="poster-profile__background-color-picker"
 								value={ background_color || Default_background_color }
 								onChange={ this.set_background_color }/>
@@ -539,11 +540,28 @@ export default class Poster_profile extends Component
 
 	render_online_status()
 	{
-		const { latest_activity_time } = this.props
+		const
+		{
+			latest_activity_time,
+			translate
+		}
+		= this.props
 
 		if (!latest_activity_time)
 		{
 			return
+		}
+
+		let latest_activity_time_was
+
+		if (Date.now() - latest_activity_time.getTime() < Online_status_time_span)
+		{
+			latest_activity_time_was = translate(messages.online)
+		}
+		else
+		{
+			// "an hour ago"
+			latest_activity_time_was = <Time_ago tick={ false }>{ latest_activity_time }</Time_ago>
 		}
 
 		const markup =
@@ -552,7 +570,7 @@ export default class Poster_profile extends Component
 				{/* Icon */}
 				<Clock_icon className="poster-profile__last-seen-icon"/>
 				{/* "an hour ago" */}
-				<Time_ago>{ latest_activity_time }</Time_ago>
+				{ latest_activity_time_was }
 			</div>
 		)
 
@@ -701,7 +719,19 @@ export default class Poster_profile extends Component
 
 	set_background_color = (background_color) =>
 	{
-		this.setState({ background_color })
+		this.setState
+		({
+			background_color,
+			background_color_enabled : true
+		})
+	}
+
+	banner_uploaded = (banner) =>
+	{
+		const { set_uploaded_poster_banner } = this.props
+
+		this.setState({ banner_enabled: true })
+		set_uploaded_poster_banner(banner)
 	}
 
 	can_edit_profile()
@@ -914,6 +944,12 @@ const messages = defineMessages
 		id             : `poster.profile.tabs.reviews`,
 		description    : `Poster profile reviews tab title`,
 		defaultMessage : `Reviews`
+	},
+	online:
+	{
+		id             : `poster.profile.latest_activity_time.online`,
+		description    : `The poster is currently online`,
+		defaultMessage : `Online`
 	},
 	latest_activity_time:
 	{
