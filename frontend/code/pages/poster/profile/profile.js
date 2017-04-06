@@ -414,7 +414,11 @@ export default class Poster_profile extends Component
 						{/* Tabs */}
 						<div className="poster-profile__tabs-container">
 							<ul className="poster-profile__tabs">
-								<li className="poster-profile__tab">
+								<li
+									className={ classNames('poster-profile__tab',
+									{
+										'poster-profile__tab--selected' : true
+									}) }>
 									<Link
 										to={`${Poster.url(poster)}`}
 										className="poster-profile__tab-button">
