@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { flat as style } from 'react-styling'
 import { defineMessages, FormattedMessage } from 'react-intl'
 import { Form } from 'react-responsive-ui'
 import Redux_form from 'simpler-redux-form'
@@ -78,7 +77,7 @@ export default class Sign_in extends Component
 				post="/authentication/legacy/sign-in">
 
 				{/* "Sign in" */}
-				<h2 style={ styles.form_title }>
+				<h2 className="rrui__form__heading">
 					{ translate(user_bar_messages.sign_in) }
 				</h2>
 
@@ -237,12 +236,6 @@ export default class Sign_in extends Component
 		}
 	}
 }
-
-const styles = style
-`
-	form_title
-		margin : 0
-`
 
 export const messages = defineMessages
 ({

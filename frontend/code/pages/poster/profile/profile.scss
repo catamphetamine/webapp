@@ -153,6 +153,7 @@
 .poster-profile__picture
 {
 	position : absolute;
+	// bottom   : calc(var(--unit) * -3);
 	z-index  : 1;
 
 	border-radius : var(--border-radius);
@@ -186,7 +187,6 @@
 .poster-profile__edit-actions
 {
 	position       : absolute;
-	top            : 0;
 	padding-left   : calc(var(--unit) * 2);
 	padding-right  : calc(var(--unit) * 2);
 	background-color        : var(--white-color);
@@ -217,23 +217,6 @@
 			margin-left: 1em;
 		}
 	}
-}
-
-.poster-profile__last-seen
-{
-	display     : flex;
-	align-items : center;
-
-	margin-top : calc(var(--unit) * 4);
-	color : var(--gray-color-darkest);
-}
-
-.poster-profile__last-seen-icon
-{
-	margin-bottom : var(--icon-liftup);
-	margin-right  : var(--icon-right-margin);
-
-	fill : var(--gray-color-darkest);
 }
 
 .poster-profile__actions

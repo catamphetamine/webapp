@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { flat as style } from 'react-styling'
 import { defineMessages, FormattedMessage } from 'react-intl'
 import { Form, Button } from 'react-responsive-ui'
 import Redux_form from 'simpler-redux-form'
@@ -80,7 +79,7 @@ export default class Authenticate_with_password extends Component
 				post="/authentication/legacy/sign-in">
 
 				{/* "Sign in" */}
-				<h2 style={ styles.form_title }>
+				<h2 className="rrui__form__heading">
 					{ title }
 				</h2>
 
@@ -186,12 +185,6 @@ export default class Authenticate_with_password extends Component
 		}
 	}
 }
-
-const styles = style
-`
-	form_title
-		margin : 0
-`
 
 export const messages = defineMessages
 ({

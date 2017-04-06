@@ -94,19 +94,21 @@
 
 	.poster-profile__picture
 	{
-		bottom : calc(-1 * (#{$padding} + #{$margin} / 2));
+		bottom : calc(-1 * #{$margin});
+		left : calc(#{$padding} + #{$margin} / 2 + #{$margin} / 2);
 	}
 
-	.poster-profile__picture,
 	.poster-profile__edit-actions
 	{
+		top  : calc(-1 * #{$margin} / 2);
 		left : calc(#{$padding} + #{$margin} / 2);
 	}
 
-	// .poster-profile__edit-actions
-	// {
-	// 	top : calc(-1 * #{$background_section_vertical_margin});
-	// }
+	.poster-profile__tabs-container
+	{
+		position : relative;
+		top      : calc(-1 * #{$margin} / 2);
+	}
 
 	.content-section-header
 	{
@@ -122,7 +124,9 @@
 		right : $padding;
 	}
 
-	.content-section, .background-section
+	.content-section,
+	.background-section,
+	.content-sections
 	{
 		margin : calc(#{$margin} / 2);
 	}

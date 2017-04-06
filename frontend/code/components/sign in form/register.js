@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { flat as style } from 'react-styling'
 import { defineMessages, FormattedMessage } from 'react-intl'
 import { Form, Button } from 'react-responsive-ui'
 import Redux_form from 'simpler-redux-form'
@@ -81,7 +80,7 @@ export default class Register extends Component
 				post="/users/legacy/register">
 
 				{/* "Register" */}
-				<h2 style={ styles.form_title }>
+				<h2 className="rrui__form__heading">
 					{ translate(messages.register) }
 				</h2>
 
@@ -183,12 +182,6 @@ export default class Register extends Component
 		}
 	}
 }
-
-const styles = style
-`
-	form_title
-		margin : 0
-`
 
 export const messages = defineMessages
 ({

@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react'
 import { flat as style } from 'react-styling'
+import classNames from 'classnames'
 // import { connect } from 'react-redux'
 
 import { defineMessages } from 'react-intl'
@@ -96,7 +97,11 @@ export default class Personal_info extends Component
 
 		const markup =
 		(
-			<div className="poster-info">
+			<div
+				className={ classNames('poster-info',
+				{
+					'poster-info--editing' : edit
+				}) }>
 				{ edit &&
 					<div className="rrui__form__fields">
 						{/* Edit poster's name */}
@@ -139,7 +144,7 @@ export default class Personal_info extends Component
 						{/* User's place and country */}
 						{ (poster.place || poster.country) &&
 							<div
-								className="poster-profile__location">
+								className="poster-info__location">
 								{ this.whereabouts().join(', ') }
 							</div>
 						}
@@ -186,7 +191,6 @@ const styles = style
 `
 	poster_name
 		font-size     : 1.5rem
-		margin-bottom : 0
 `
 
 const messages = defineMessages
@@ -208,6 +212,12 @@ const messages = defineMessages
 		id             : `poster.profile.country`,
 		description    : `User's country`,
 		defaultMessage : `Choose your country`
+	},
+	name_is_required:
+	{
+		id             : `poster.profile.name_is_required`,
+		description    : `The user tried to save his profile with a blank "name" field`,
+		defaultMessage : `Enter your name`
 	}
 })
 

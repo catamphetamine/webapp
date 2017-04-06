@@ -367,16 +367,17 @@ export default class Poster_profile extends Component
 				</div>
 
 				{/* Poster info */}
-				<div className="poster-profile__body">
+				<div className="poster-profile__body content-sections">
 					<div
 						style={ styles.personal_info_column }
 						className="poster-profile__info">
 
 						{/* Poster's personal info */}
 						<section
-							className={ classNames('background-section',
-							{
-								'content-section' : edit
+							className={ classNames
+							({
+								'background-section' : !edit,
+								'content-section'    : edit
 							}) }>
 
 							{/* Poster blocked notice */}
@@ -589,18 +590,16 @@ export default class Poster_profile extends Component
 		(
 			<div className="poster-profile__actions">
 				{/* "Subscribe" */}
-				{ false &&
-					<div>
-						<Button
-							action={ this.subscribe }
-							className="poster-profile__action">
-							{/* Icon */}
-							<Person_add_icon className="poster-profile__action-icon"/>
-							{/* Text */}
-							{ translate(messages.subscribe) }
-						</Button>
-					</div>
-				}
+				<div>
+					<Button
+						action={ this.subscribe }
+						className="poster-profile__action">
+						{/* Icon */}
+						<Person_add_icon className="poster-profile__action-icon"/>
+						{/* Text */}
+						{ translate(messages.subscribe) }
+					</Button>
+				</div>
 
 				{/* "Send message" */}
 				<div>
@@ -750,7 +749,8 @@ export default class Poster_profile extends Component
 		const
 		{
 			set_uploaded_poster_picture,
-			poster
+			poster,
+			reset
 		}
 		= this.props
 
@@ -758,6 +758,9 @@ export default class Poster_profile extends Component
 
 		// Clear the temporary uploaded picture
 		set_uploaded_poster_picture()
+
+		// Reset the form
+		reset()
 
 		this.setState((state) =>
 		({
@@ -1029,12 +1032,6 @@ const messages = defineMessages
 		id             : `poster.profile.update.error`,
 		description    : `Failed to update user's own profile`,
 		defaultMessage : `Couldn't update your profile`
-	},
-	name_is_required:
-	{
-		id             : `poster.profile.name_is_required`,
-		description    : `The user tried to save his profile with a blank "name" field`,
-		defaultMessage : `Enter your name`
 	},
 	change_background_pattern:
 	{

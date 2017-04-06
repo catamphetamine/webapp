@@ -125,9 +125,10 @@ header .rrui__menu
 	height : calc(var(--unit) * 5);
 }
 
-.rrui__form__fields
+.rrui__form__heading
 {
-	margin-top: calc(var(--unit) * 6);
+	margin-top    : 0;
+	margin-bottom : calc(var(--unit) * 6);
 }
 
 .rrui__form__field

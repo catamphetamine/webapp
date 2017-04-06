@@ -1,0 +1,27 @@
+.poster-info--editing
+{
+	margin-top : calc(var(--unit) * 2);
+}
+
+.poster-info__name
+{
+	margin-top    : 0;
+	margin-bottom : 0;
+}
+
+.poster-profile__last-seen
+{
+	display     : flex;
+	align-items : center;
+
+	margin-top : calc(var(--unit) * 4);
+	color : var(--gray-color-darkest);
+}
+
+.poster-profile__last-seen-icon
+{
+	margin-bottom : var(--icon-liftup);
+	margin-right  : var(--icon-right-margin);
+
+	fill : var(--gray-color-darkest);
+}
