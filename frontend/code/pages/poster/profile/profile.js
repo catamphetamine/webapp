@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { Title, Link, preload, redirect } from 'react-isomorphic-render'
 import { connect }                     from 'react-redux'
+import { withRouter }                  from 'react-router'
 import { flat as style }               from 'react-styling'
 import classNames                      from 'classnames'
 import Redux_form                      from 'simpler-redux-form'
@@ -83,6 +84,7 @@ const Default_poster_background_pattern =
 }
 
 @Redux_form
+@withRouter
 @preload(({ dispatch, getState, location, parameters }) =>
 {
 	return dispatch(get_poster(parameters.id))
@@ -230,7 +232,10 @@ export default class Poster_profile extends Component
 			uploaded_banner,
 
 			submit,
-			submitting
+			submitting,
+
+			router,
+			children
 		}
 		= this.props
 
@@ -248,12 +253,33 @@ export default class Poster_profile extends Component
 		const banner_shown_while_editing = uploaded_banner || (background_color_enabled && poster.banner)
 		const show_banner_while_editing = banner_enabled && banner_shown_while_editing
 
+		let wide_content = false
+		let main_page    = false
+
+		console.log('@@@@@@ router', router)
+
+		const change_background_pattern_label =
+		(
+			<div>
+				{/* "Change background pattern" */}
+				<span className="poster-profile__change-background-pattern-label--long">
+					{ translate(messages.change_background_pattern) }
+				</span>
+
+				{/* "Change background" */}
+				<span className="poster-profile__change-background-pattern-label--short">
+					{ translate(messages.change_background_pattern_short) }
+				</span>
+			</div>
+		)
+
 		const markup =
 		(
 			<div
 				className={ classNames('content', 'poster-profile',
 				{
-					'poster-profile--editing' : edit
+					'poster-profile--editing'      : edit,
+					'poster-profile--wide-content' : wide_content
 				}) }>
 
 				<Title>{ poster.name }</Title>
@@ -294,10 +320,20 @@ export default class Poster_profile extends Component
 							<Checkbox
 								value={ banner_enabled }
 								onChange={ this.set_banner_enabled }
-								className="poster-profile__background-color-toggler"/>
+								className={ classNames('poster-profile__banner-toggler',
+								{
+									'poster-profile__banner-toggler--off' : !banner_enabled
+								}) }/>
 
 							{/* "Change banner" */}
-							{ translate(messages.change_banner) }
+							<span className="poster-profile__change-banner-label--long">
+								{ translate(messages.change_banner) }
+							</span>
+
+							{/* "Banner" */}
+							<span className="poster-profile__change-banner-label--short">
+								{ translate(messages.change_banner_short) }
+							</span>
 						</Upload_picture>
 					}
 
@@ -305,7 +341,7 @@ export default class Poster_profile extends Component
 					<Upload_picture
 						type="poster_background_pattern"
 						changing={ edit }
-						changeLabel={ show_banner_while_editing ? '' : translate(messages.change_background_pattern) }
+						changeLabel={ show_banner_while_editing ? '' : change_background_pattern_label }
 						disabled={ submitting }
 						upload={ upload_picture }
 						onChoose={ set_upload_picture_error }
@@ -346,70 +382,98 @@ export default class Poster_profile extends Component
 					}
 
 					{/* Poster picture */}
-					<Upload_picture
-						type="poster_picture"
-						changing={ edit }
-						disabled={ submitting }
-						upload={ upload_picture }
-						onChoose={ set_upload_picture_error }
-						onError={ set_upload_picture_error }
-						onFinished={ set_uploaded_poster_picture }
-						className={ classNames
-						(
-							'poster-profile__picture',
-							'card'
-						) }>
+					{ !wide_content &&
+						<Upload_picture
+							type="poster_picture"
+							changing={ edit }
+							disabled={ submitting }
+							upload={ upload_picture }
+							onChoose={ set_upload_picture_error }
+							onError={ set_upload_picture_error }
+							onFinished={ set_uploaded_poster_picture }
+							className={ classNames
+							(
+								'poster-profile__picture',
+								'card'
+							) }>
 
-						<Poster_picture
-							poster={ poster }
-							className="poster-profile__picture-image"/>
-					</Upload_picture>
+							<Poster_picture
+								poster={ poster }
+								className="poster-profile__picture-image"/>
+						</Upload_picture>
+					}
+
+					{ wide_content &&
+						<Link
+							to={ Poster.url(poster) }
+							className={ classNames
+							(
+								'poster-profile__picture',
+								'card'
+							) }>
+							<Poster_picture
+								poster={ poster }
+								className="poster-profile__picture-image"/>
+						</Link>
+					}
+
+					{ wide_content &&
+						<div className="poster-profile__short-info">
+							<Link
+								to={ Poster.url(poster) }
+								className="poster-profile__short-info-name">
+								{ poster.name }
+							</Link>
+						</div>
+					}
 				</div>
 
 				{/* Poster info */}
 				<div className="poster-profile__body content-sections">
-					<div
-						style={ styles.personal_info_column }
-						className="poster-profile__info">
+					{ !wide_content &&
+						<div
+							style={ styles.personal_info_column }
+							className="poster-profile__info">
 
-						{/* Poster's personal info */}
-						<section
-							className={ classNames
-							({
-								'background-section' : !edit,
-								'content-section'    : edit
-							}) }>
+							{/* Poster's personal info */}
+							<section
+								className={ classNames
+								({
+									'background-section' : !edit,
+									'content-section'    : edit
+								}) }>
 
-							{/* Poster blocked notice */}
-							{ poster.blocked_at && this.render_poster_blocked_notice() }
+								{/* Poster blocked notice */}
+								{ poster.blocked_at && this.render_poster_blocked_notice() }
 
-							<Form
-								busy={ poster_form_busy }
-								submit={ submit(this.save_profile_edits) }>
+								<Form
+									busy={ poster_form_busy }
+									submit={ submit(this.save_profile_edits) }>
 
-								{/* Poster profile edit errors */}
-								{ this.render_poster_edit_errors() }
+									{/* Poster profile edit errors */}
+									{ this.render_poster_edit_errors() }
 
-								{/* Edit/Save own profile */}
-								{ this.can_edit_profile() && this.render_edit_actions(poster_form_busy) }
+									{/* Edit/Save own profile */}
+									{ this.can_edit_profile() && this.render_edit_actions(poster_form_busy) }
 
-								{/* Block this poster (not self) */}
-								{ !this.can_edit_profile() && this.render_moderator_actions() }
+									{/* Block this poster (not self) */}
+									{ !this.can_edit_profile() && this.render_moderator_actions() }
 
-								{/* User's personal info (name, place, etc) */}
-								<Personal_info
-									ref={ ref => this.personal_info = ref }
-									edit={ edit }
-									poster={ poster }/>
-							</Form>
+									{/* User's personal info (name, place, etc) */}
+									<Personal_info
+										ref={ ref => this.personal_info = ref }
+										edit={ edit }
+										poster={ poster }/>
+								</Form>
 
-							{/* Other poster actions: "Send message", "Subscribe" */}
-							{ !this.can_edit_profile() && this.render_other_poster_actions() }
+								{/* Other poster actions: "Send message", "Subscribe" */}
+								{ !this.can_edit_profile() && this.render_other_poster_actions() }
 
-							{/* User online status: "Last seen: an hour ago" */}
-							{ this.render_online_status() }
-						</section>
-					</div>
+								{/* User online status: "Last seen: an hour ago" */}
+								{ this.render_online_status() }
+							</section>
+						</div>
+					}
 
 					<div className="poster-profile__content">
 						{/* Tabs */}
@@ -436,17 +500,8 @@ export default class Poster_profile extends Component
 							</ul>
 						</div>
 
-						<div className="content-section">
-							Пушкин работал над этим романом свыше семи лет, с 1823 по 1831 год[1]. Роман был, по словам поэта, «плодом ума холодных наблюдений и сердца горестных замет». Работу над ним Пушкин называл подвигом — из всего своего творческого наследия только «Бориса Годунова» он характеризовал этим же словом. В произведении на широком фоне картин русской жизни показана драматическая судьба людей дворянской интеллигенции.
-						</div>
-
-						<div className="content-section">
-							Пушкин начал работу над «Онегиным» в мае 1823 года в Кишинёве, во время своей ссылки. Автор отказался от романтизма как ведущего творческого метода и начал писать реалистический роман в стихах, хотя в первых главах ещё заметно влияние романтизма. Изначально предполагалось, что роман в стихах будет состоять из 9 глав, но впоследствии Пушкин переработал его структуру, оставив только 8 глав. Он исключил из основного текста произведения главу «Путешествие Онегина», включив её фрагменты в качестве приложения к основному тексту. Существовал фрагмент этой главы, где по некоторым данным описывалось, как Онегин видит военные поселения близ Одесской пристани, а далее шли замечания и суждения, в некоторых местах в излишне резком тоне. Опасаясь возможных преследований властей, Пушкин уничтожил этот фрагмент.[2].
-						</div>
-
-						<div className="content-section">
-							Роман охватывает события с 1819 по 1825 год: от заграничных походов русской армии после разгрома Наполеона до восстания декабристов. Это были годы развития русского общества, время правления Александра I. Сюжет романа прост и хорошо известен, в центре него — любовная история. В целом, в романе «Евгений Онегин» отразились события первой четверти XIX века, то есть время создания и время действия романа примерно совпадают.
-						</div>
+						{/* Page content */}
+						{ children }
 					</div>
 
 					<div className="poster-profile__right-aside">
@@ -1039,11 +1094,23 @@ const messages = defineMessages
 		description    : `A text on background pattern overlay in edit mode`,
 		defaultMessage : `Change background pattern`
 	},
+	change_background_pattern_short:
+	{
+		id             : `poster.profile.background_pattern.change.short`,
+		description    : `A (short) text on background pattern overlay in edit mode`,
+		defaultMessage : `Change background`
+	},
 	change_banner:
 	{
 		id             : `poster.profile.banner.change`,
 		description    : `A text on banner overlay in edit mode`,
 		defaultMessage : `Change banner`
+	},
+	change_banner_short:
+	{
+		id             : `poster.profile.banner.change.short`,
+		description    : `A (short) text on banner overlay in edit mode`,
+		defaultMessage : `Banner`
 	},
 	update_picture_error:
 	{

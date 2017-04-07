@@ -43,6 +43,7 @@ import Sign_in          from './pages/sign in'
 import Menu             from './pages/menu'
 import Block_user       from './pages/poster/block'
 import Profile          from './pages/poster/profile/profile'
+import Posts            from './pages/poster/profile/posts/posts'
 import Settings         from './pages/user/settings'
 import Log              from './pages/log'
 import User_agreement   from './pages/legal/user agreement'
@@ -67,7 +68,10 @@ const routes =
 		<Route path="not-found"       status={ 404 } component={ Not_found }/>
 
 		<Route path=":poster_id/block/:token_id" component={ Block_user }/>
-		<Route path=":id" component={ Profile }/>
+
+		<Route path=":id" component={ Profile }>
+			<IndexRoute component={ Posts }/>
+		</Route>
 	</Route>
 )
 

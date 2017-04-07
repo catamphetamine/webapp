@@ -84,9 +84,11 @@
 	"poster.profile.place"                      : "Место",
 	"poster.profile.country"                    : "Выберите вашу страну",
 
-	"poster.profile.background_pattern.change" : "Сменить фоновый шаблон",
-	"poster.profile.banner.change"             : "Сменить вывеску",
-	"poster.profile.background_color"          : "Цвет фона",
+	"poster.profile.background_pattern.change"       : "Сменить фоновый шаблон",
+	"poster.profile.background_pattern.change.short" : "Сменить фон",
+	"poster.profile.banner.change"                   : "Сменить вывеску",
+	"poster.profile.banner.change.short"             : "Вывеска",
+	"poster.profile.background_color"                : "Цвет фона",
 
 	"poster.profile.update.error"      : "Не удалось обновить ваши данные",
 	"poster.profile.name_is_required"  : "Впишите своё имя",

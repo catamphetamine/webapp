@@ -5,3 +5,8 @@
 @include set_css_variable_content_section_padding_and_margin(calc(var(--unit) * 3.5), calc(var(--unit) * 2.5), calc(var(--unit) * 2.5));
 
 @include columns(xl-);
+
+.poster-profile__picture
+{
+	bottom : calc(-1 * var(--unit) * 2.5);
+}

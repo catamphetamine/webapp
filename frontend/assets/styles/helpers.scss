@@ -92,9 +92,9 @@
 		padding-bottom : calc(#{$padding} - 2 * #{$margin});
 	}
 
-	.poster-profile__picture
+	.poster-profile__picture,
+	.poster-profile__short-info
 	{
-		bottom : calc(-1 * #{$margin});
 		left : calc(#{$padding} + #{$margin} / 2 + #{$margin} / 2);
 	}
 
@@ -163,9 +163,15 @@
 		min-height : $size;
 	}
 
-	.poster-profile__edit-actions
+	.poster-profile__edit-actions,
+	.poster-profile__short-info
 	{
 		margin-left : $size;
+	}
+
+	.poster-profile__background-picture-container
+	{
+		min-height : calc(#{$size} + var(--unit) * 4);
 	}
 }
 

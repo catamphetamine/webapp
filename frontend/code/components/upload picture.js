@@ -262,13 +262,7 @@ const styles = style
 
 			&overlay
 				&label
-					display         : flex
-					align-items     : center
-					justify-content : center
-					text-align      : center
-					color           : white
-					text-shadow     : 0 0.05em 0.1em rgba(0, 0, 0, 0.75)
-					user-select     : none
+					user-select : none
 
 				&background
 					z-index : 1

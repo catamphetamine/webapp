@@ -1,29 +1,39 @@
-.logo
+.main-header
 {
-	display: block;
-
-	margin-left  : 1.2em;
-	margin-right : 1.2em;
-
-	margin-top : var(--header-vertically-centered-text-margin-top);
-
-	font-size : 14pt
+	color       : #A45E00; /* var(--base-color-darkest) */
+	font-weight : bold;
 }
 
-@include s
+// .logo
+// {
+// 	display        : none;
+// 	width          : 2em;
+// 	height         : 2em;
+// 	vertical-align : bottom;
+// 	margin-right   : 0.1em;
+// }
+
+.logo
 {
-	.logo
-	{
-		margin-top : var(--header-vertically-centered-text-margin-top);
-		font-size  : 16pt;
-	}
+	display : none
 }
 
 @include m
 {
 	.logo
 	{
+		display: block;
+
+		margin-left  : 1.2em;
+		margin-right : 1.2em;
+
+		margin-top : var(--header-vertically-centered-text-margin-top);
 		font-size : 20pt
+	}
+
+	.menu__main-page-item
+	{
+		display : none;
 	}
 }
 

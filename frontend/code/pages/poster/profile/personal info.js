@@ -23,8 +23,8 @@ import Select         from '../../../components/form/select'
 // 		update_poster
 // 	}
 // )
-@international
-export default class Personal_info extends Component
+
+class PersonalInfo extends Component
 {
 	static contextTypes =
 	{
@@ -186,6 +186,10 @@ export default class Personal_info extends Component
 		}
 	}
 }
+
+const Personal_info = international(PersonalInfo)
+
+export default Personal_info
 
 const styles = style
 `

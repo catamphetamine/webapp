@@ -1,6 +1,6 @@
 .poster-info--editing
 {
-	margin-top : calc(var(--unit) * 2);
+	margin-top : calc(var(--unit) * 4);
 }
 
 .poster-info__name
@@ -9,19 +9,18 @@
 	margin-bottom : 0;
 }
 
-.poster-profile__last-seen
+@include s
 {
-	display     : flex;
-	align-items : center;
-
-	margin-top : calc(var(--unit) * 4);
-	color : var(--gray-color-darkest);
+	.poster-info--editing
+	{
+		margin-top : calc(var(--unit) * 3);
+	}
 }
 
-.poster-profile__last-seen-icon
+@include l
 {
-	margin-bottom : var(--icon-liftup);
-	margin-right  : var(--icon-right-margin);
-
-	fill : var(--gray-color-darkest);
+	.poster-info--editing
+	{
+		margin-top : calc(var(--unit) * 3);
+	}
 }

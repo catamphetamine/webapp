@@ -158,7 +158,7 @@ export default class Authentication extends Component
 
 				{/* User name */}
 				<span
-					className="user-name">
+					className="user-bar__name">
 					{ user.poster.name }
 				</span>
 

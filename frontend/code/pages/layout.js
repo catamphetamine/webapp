@@ -203,6 +203,10 @@ function Menu_item({ to, children })
 export function menu_entries(translate)
 {
 	return [{
+		name: translate(messages.title),
+		link: '/',
+		className: 'menu__main-page-item'
+	}, {
 		name: translate(messages.menu_log),
 		link: '/logs'
 	}]

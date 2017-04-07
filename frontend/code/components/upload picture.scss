@@ -37,6 +37,13 @@
 
 .upload-picture__change-overlay
 {
+	display         : flex;
+	align-items     : center;
+	justify-content : center;
+	text-align      : center;
+	color           : var(--white-color);
+	text-shadow     : 0 0.05em 0.1em rgba(0, 0, 0, 0.75);
+
 	// background-color : rgba(var(--black-color), 0.5);
 	background-color : rgba(#4e3d27, 0.5);
 }

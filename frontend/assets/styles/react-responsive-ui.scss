@@ -1069,18 +1069,10 @@ but introduces page width jumps.
 .rrui__slideout-menu
 {
 	margin          : 0;
-	padding         : 0;
+	padding-left    : 0;
+	padding-top     : calc(2 * var(--unit));
+	padding-bottom  : calc(2 * var(--unit));
 	list-style-type : none;
-}
-
-.rrui__slideout-menu-list-item:first-child
-{
-	padding-top    : calc(2 * var(--unit));
-}
-
-.rrui__slideout-menu-list-item:last-child
-{
-	padding-bottom : calc(2 * var(--unit));
 }
 
 .rrui__slideout-menu
