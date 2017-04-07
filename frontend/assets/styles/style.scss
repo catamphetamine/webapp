@@ -10,11 +10,17 @@
 @import "datepicker.css";
 @import "components.scss";
 
-@include xs { @import "responsive/xs.scss"; }
-@include s  { @import "responsive/s.scss";  }
-@include m  { @import "responsive/m.scss";  }
-@include l  { @import "responsive/l.scss";  }
-@include xl { @import "responsive/xl.scss"; }
+@include xxxxxxs { @import "responsive/xxxxxxs.scss"; }
+@include xxxxxs  { @import "responsive/xxxxxs.scss"; }
+@include xxxxs   { @import "responsive/xxxxs.scss"; }
+@include xxxs    { @import "responsive/xxxs.scss"; }
+@include xxs     { @import "responsive/xxs.scss"; }
+@include xs      { @import "responsive/xs.scss"; }
+@include s       { @import "responsive/s.scss";  }
+@include m       { @import "responsive/m.scss";  }
+@include l       { @import "responsive/l.scss";  }
+@include xl      { @import "responsive/xl.scss"; }
+@include xxl     { @import "responsive/xxl.scss"; }
 
 @import "../../code/components/color picker.scss";
 @import "../../code/components/editable field.scss";

@@ -157,10 +157,10 @@ export default class Authentication extends Component
 				style={ styles.user_menu_toggler }>
 
 				{/* User name */}
-				<span
+				<div
 					className="user-bar__name">
 					{ user.poster.name }
-				</span>
+				</div>
 
 				{/* User picture */}
 				<Poster_picture

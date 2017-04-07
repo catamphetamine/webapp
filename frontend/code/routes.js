@@ -70,7 +70,10 @@ const routes =
 		<Route path=":poster_id/block/:token_id" component={ Block_user }/>
 
 		<Route path=":id" component={ Profile }>
-			<IndexRoute component={ Posts }/>
+			<IndexRoute component={ Posts } fullWidth={ false }/>
+			<Route path="subscriptions" component={ Posts } fullWidth={ true }/>
+			<Route path="photos" component={ Posts } fullWidth={ true }/>
+			<Route path="videos" component={ Posts } fullWidth={ true }/>
 		</Route>
 	</Route>
 )

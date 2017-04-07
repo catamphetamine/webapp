@@ -35,11 +35,9 @@ body
 	background-color: var(--gray-color-light);
 }
 
-html, body, button, input, textarea, select
-{
-	font-family : Scada, Arial, Helvetica; // Roboto maybe, but Arial has better kerning
-	color       : var(--black-color);
-}
+// Roboto could be used instead of Arial,
+// but Arial turned out to have better kerning.
+@include set_font_2(Arial, Helvetica);
 
 /* Internet Explorer adds borders around all images */
 img
@@ -235,4 +233,11 @@ th
 	height   : 100vh;
 
 	background-color : white;
+}
+
+@include s
+{
+	// Roboto could be used instead of Arial,
+	// but Arial turned out to have better kerning.
+	@include set_font_3(Scada, Arial, Helvetica);
 }

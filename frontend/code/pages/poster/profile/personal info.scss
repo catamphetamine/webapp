@@ -1,3 +1,9 @@
+.poster-info
+{
+	margin-top    : calc(-1 * var(--unit));
+	margin-bottom : calc(-1 * var(--unit));
+}
+
 .poster-info--editing
 {
 	margin-top : calc(var(--unit) * 4);
@@ -11,6 +17,12 @@
 
 @include s
 {
+	.poster-info
+	{
+		margin-top    : 0;
+		margin-bottom : 0;
+	}
+
 	.poster-info--editing
 	{
 		margin-top : calc(var(--unit) * 3);

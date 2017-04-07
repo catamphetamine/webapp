@@ -253,10 +253,9 @@ export default class Poster_profile extends Component
 		const banner_shown_while_editing = uploaded_banner || (background_color_enabled && poster.banner)
 		const show_banner_while_editing = banner_enabled && banner_shown_while_editing
 
-		let wide_content = false
-		let main_page    = false
+		const route = router.routes.last()
 
-		console.log('@@@@@@ router', router)
+		const wide_content = route.fullWidth
 
 		const change_background_pattern_label =
 		(
@@ -278,6 +277,7 @@ export default class Poster_profile extends Component
 			<div
 				className={ classNames('content', 'poster-profile',
 				{
+					'poster-profile--main'         : !route.path,
 					'poster-profile--editing'      : edit,
 					'poster-profile--wide-content' : wide_content
 				}) }>
@@ -285,6 +285,9 @@ export default class Poster_profile extends Component
 				<Title>{ poster.name }</Title>
 
 				<div className="poster-profile__background-picture-container">
+
+					{/* Edit/Save own profile */}
+					{ this.can_edit_profile() && this.render_edit_actions(poster_form_busy) }
 
 					{/* Banner */}
 					{ !edit && poster.banner &&
@@ -417,14 +420,12 @@ export default class Poster_profile extends Component
 						</Link>
 					}
 
-					{ wide_content &&
-						<div className="poster-profile__short-info">
-							<Link
-								to={ Poster.url(poster) }
-								className="poster-profile__short-info-name">
-								{ poster.name }
-							</Link>
-						</div>
+					{ !edit &&
+						<Link
+							to={ Poster.url(poster) }
+							className="poster-profile__name">
+							{ poster.name }
+						</Link>
 					}
 				</div>
 
@@ -453,9 +454,6 @@ export default class Poster_profile extends Component
 									{/* Poster profile edit errors */}
 									{ this.render_poster_edit_errors() }
 
-									{/* Edit/Save own profile */}
-									{ this.can_edit_profile() && this.render_edit_actions(poster_form_busy) }
-
 									{/* Block this poster (not self) */}
 									{ !this.can_edit_profile() && this.render_moderator_actions() }
 
@@ -470,7 +468,8 @@ export default class Poster_profile extends Component
 								{ !this.can_edit_profile() && this.render_other_poster_actions() }
 
 								{/* User online status: "Last seen: an hour ago" */}
-								{ this.render_online_status() }
+								{/* poster.user && !this.can_edit_profile() && this.render_online_status() */}
+								{ poster.user && this.render_online_status() }
 							</section>
 						</div>
 					}
@@ -478,26 +477,7 @@ export default class Poster_profile extends Component
 					<div className="poster-profile__content">
 						{/* Tabs */}
 						<div className="poster-profile__tabs-container">
-							<ul className="poster-profile__tabs">
-								<li
-									className={ classNames('poster-profile__tab',
-									{
-										'poster-profile__tab--selected' : true
-									}) }>
-									<Link
-										to={`${Poster.url(poster)}`}
-										className="poster-profile__tab-button">
-										{ translate(messages.posts) }
-									</Link>
-								</li>
-								<li className="poster-profile__tab">
-									<Link
-										to={`${Poster.url(poster)}/subscriptions`}
-										className="poster-profile__tab-button">
-										{ translate(messages.subscriptions) }
-									</Link>
-								</li>
-							</ul>
+							{ this.render_tabs(route) }
 						</div>
 
 						{/* Page content */}
@@ -759,6 +739,39 @@ export default class Poster_profile extends Component
 		return markup
 	}
 
+	render_tabs(route)
+	{
+		const { poster, translate } = this.props
+
+		const markup =
+		(
+			<ul className="poster-profile__tabs">
+				{ tabs.map((tab) =>
+				{
+					const markup =
+					(
+						<li
+							key={ tab.name.id }
+							className={ classNames('poster-profile__tab',
+							{
+								'poster-profile__tab--selected' : tab.path ? tab.path === route.path : !route.path
+							}) }>
+							<Link
+								to={ `${Poster.url(poster)}${tab.path ? '/' + tab.path : ''}` }
+								className="poster-profile__tab-button">
+								{ translate(tab.name) }
+							</Link>
+						</li>
+					)
+
+					return markup
+				}) }
+			</ul>
+		)
+
+		return markup
+	}
+
 	set_banner_enabled = (value) =>
 	{
 		this.setState
@@ -1007,6 +1020,18 @@ const messages = defineMessages
 		description    : `Poster profile reviews tab title`,
 		defaultMessage : `Reviews`
 	},
+	photos:
+	{
+		id             : `poster.profile.tabs.photos`,
+		description    : `Poster profile photos tab title`,
+		defaultMessage : `Photos`
+	},
+	videos:
+	{
+		id             : `poster.profile.tabs.videos`,
+		description    : `Poster profile videos tab title`,
+		defaultMessage : `Videos`
+	},
 	online:
 	{
 		id             : `poster.profile.latest_activity_time.online`,
@@ -1137,3 +1162,20 @@ const messages = defineMessages
 		defaultMessage : `Color`
 	}
 })
+
+const tabs =
+[{
+	name : messages.posts
+},
+{
+	name : messages.subscriptions,
+	path : 'subscriptions'
+},
+{
+	name : messages.photos,
+	path : 'photos'
+},
+{
+	name : messages.videos,
+	path : 'videos'
+}]

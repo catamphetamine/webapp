@@ -1,3 +1,30 @@
+@mixin set_font($family)
+{
+	html, body, button, input, textarea, select
+	{
+		font-family : $family;
+		color       : var(--black-color);
+	}
+}
+
+@mixin set_font_2($family1, $family2)
+{
+	html, body, button, input, textarea, select
+	{
+		font-family : $family1, $family2;
+		color       : var(--black-color);
+	}
+}
+
+@mixin set_font_3($family1, $family2, $family3)
+{
+	html, body, button, input, textarea, select
+	{
+		font-family : $family1, $family2, $family3;
+		color       : var(--black-color);
+	}
+}
+
 // Could be achieved using CSS native variables ("CSS custom properties")
 // if all major browsers supported that CSS feature.
 // http://caniuse.com/#search=css%20var
@@ -93,21 +120,18 @@
 	}
 
 	.poster-profile__picture,
-	.poster-profile__short-info
+	.poster-profile__name
 	{
 		left : calc(#{$padding} + #{$margin} / 2 + #{$margin} / 2);
 	}
 
-	.poster-profile__edit-actions
+	@include xl
 	{
-		top  : calc(-1 * #{$margin} / 2);
-		left : calc(#{$padding} + #{$margin} / 2);
-	}
-
-	.poster-profile__tabs-container
-	{
-		position : relative;
-		top      : calc(-1 * #{$margin} / 2);
+		.poster-profile__tabs-container
+		{
+			position : relative;
+			top      : calc(-1 * #{$margin} / 2);
+		}
 	}
 
 	.content-section-header
@@ -163,21 +187,60 @@
 		min-height : $size;
 	}
 
-	.poster-profile__edit-actions,
-	.poster-profile__short-info
+	.poster-profile__name
 	{
 		margin-left : $size;
 	}
 
 	.poster-profile__background-picture-container
 	{
-		min-height : calc(#{$size} + var(--unit) * 4);
+		min-height : calc(#{$size} + var(--unit));
+	}
+}
+
+@mixin xxxxxxs
+{
+	@media all
+	{
+		@content;
+	}
+}
+
+@mixin xxxxxs
+{
+	@media all and (min-width: $extra-extra-extra-extra-extra-small-screen-min-width)
+	{
+		@content;
+	}
+}
+
+@mixin xxxxs
+{
+	@media all and (min-width: $extra-extra-extra-extra-small-screen-min-width)
+	{
+		@content;
+	}
+}
+
+@mixin xxxs
+{
+	@media all and (min-width: $extra-extra-extra-small-screen-min-width)
+	{
+		@content;
+	}
+}
+
+@mixin xxs
+{
+	@media all and (min-width: $extra-extra-small-screen-min-width)
+	{
+		@content;
 	}
 }
 
 @mixin xs
 {
-	@media all
+	@media all and (min-width: $extra-small-screen-min-width)
 	{
 		@content;
 	}

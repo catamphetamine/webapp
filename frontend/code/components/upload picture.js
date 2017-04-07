@@ -29,7 +29,7 @@ class Upload_picture extends Component
 	{
 		type            : PropTypes.string.isRequired,
 		changing        : PropTypes.bool.isRequired,
-		changeLabel     : PropTypes.string,
+		changeLabel     : PropTypes.node,
 		upload          : PropTypes.func.isRequired,
 		disabled        : PropTypes.bool.isRequired,
 		onChoose        : PropTypes.func.isRequired,

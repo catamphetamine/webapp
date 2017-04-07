@@ -1,9 +1,8 @@
 :root
 {
 	--content-column-width       : calc(var(--unit) * 135);
-	--poster-profile-tabs-height : calc(var(--unit) * 8);
-	// --poster-profile-short-info-name-border-size  : 0.05em;
-	// --poster-profile-short-info-name-border-color : var(--black-color);
+	--poster-profile-short-info-name-border-size  : 0.05em;
+	--poster-profile-short-info-name-border-color : var(--black-color);
 }
 
 // Could be achieved using CSS native variables ("CSS custom properties")
@@ -49,6 +48,30 @@
 	}
 }
 
+// Could be achieved using CSS native variables ("CSS custom properties")
+// if all major browsers supported that CSS feature.
+// http://caniuse.com/#search=css%20var
+@mixin poster_profile_tabs_height($value)
+{
+	.poster-profile__tabs
+	{
+		height : $value;
+	}
+
+	@include xl
+	{
+		.poster-profile__tabs-container
+		{
+			margin-bottom : calc(#{$value} * -1);
+		}
+
+		.poster-profile__tabs
+		{
+			top           : calc(#{$value} * -1);
+		}
+	}
+}
+
 .poster-profile
 {
 	.rrui__text-input__input
@@ -74,16 +97,15 @@
 
 // Short info (to the right of the poster picture)
 
-.poster-profile__short-info
+.poster-profile__name
 {
 	position : absolute;
 	bottom   : 0;
 	padding-left   : calc(var(--unit) * 2);
 	padding-bottom : var(--unit);
+	font-size      : 120%;
 
-	color : var(--black-color);
-
-	// Emulates "spread".
+	// // Emulates "spread".
 	// text-shadow:
 	// 	0                                                              var(--poster-profile-short-info-name-border-size)              0 var(--poster-profile-short-info-name-border-color),
 	// 	0                                                              calc(-1 * var(--poster-profile-short-info-name-border-size))   0 var(--poster-profile-short-info-name-border-color),
@@ -93,16 +115,10 @@
 	// 	calc(-1.4 * var(--poster-profile-short-info-name-border-size)) calc(1.4  * var(--poster-profile-short-info-name-border-size)) 0 var(--poster-profile-short-info-name-border-color),
 	// 	calc(1.4  * var(--poster-profile-short-info-name-border-size)) calc(-1.4 * var(--poster-profile-short-info-name-border-size)) 0 var(--poster-profile-short-info-name-border-color),
 	// 	calc(-1.4 * var(--poster-profile-short-info-name-border-size)) calc(-1.4 * var(--poster-profile-short-info-name-border-size)) 0 var(--poster-profile-short-info-name-border-color);
-}
-
-.poster-profile__short-info-name
-{
-	display   : block;
-	font-size : 2em;
 
 	&, &:active
 	{
-		color : inherit;
+		color : var(--black-color);
 	}
 }
 
@@ -125,8 +141,12 @@
 	pointer-events : none;
 }
 
-.poster-profile__change-banner-label--long,
 .poster-profile__change-background-pattern-label--long
+{
+	display : none;
+}
+
+.poster-profile__change-banner-label--long
 {
 	display : none;
 }
@@ -168,14 +188,14 @@
 
 // Background picture
 
-.poster-profile__background-picture
-{
-	.upload-picture__change-overlay
-	{
-		justify-content : flex-end;
-		padding-right   : calc(var(--unit) * 2);
-	}
-}
+// .poster-profile__background-picture
+// {
+// 	.upload-picture__change-overlay
+// 	{
+// 		justify-content : flex-end;
+// 		padding-right   : calc(var(--unit) * 2);
+// 	}
+// }
 
 .poster-profile__background-picture-container
 {
@@ -232,9 +252,11 @@
 {
 	position : absolute;
 	// bottom   : calc(var(--unit) * -3);
+	// bottom   : 0;
 	z-index  : 1;
 
 	border-radius : var(--border-radius);
+	border        : 0.12rem solid var(--white-color);
 
 	.upload-picture__change-overlay
 	{
@@ -246,9 +268,13 @@
 
 .poster-profile__edit-actions
 {
-	position                : absolute;
-	background-color        : var(--white-color);
-	border-top-right-radius : var(--border-radius);
+	position : absolute;
+	right    : -1px;
+	bottom   : -1px;
+	z-index  : 1;
+
+	background-color       : var(--white-color);
+	border-top-left-radius : var(--border-radius);
 
 	.card__action
 	{
@@ -347,6 +373,7 @@
 @include set_profile_picture_size(calc(var(--unit) * 14));
 @include poster_profile_edit_actions_height(calc(var(--unit) * 5));
 @include poster_profile_edit_buttons_side_padding(calc(var(--unit) * 0.75));
+@include poster_profile_tabs_height(calc(var(--unit) * 5));
 
 .poster-profile__background-color,
 .poster-profile__edit-actions,
@@ -359,21 +386,15 @@
 
 .poster-profile__tabs-container
 {
-	text-align    : center;
+	text-align : right;
 }
 
 .poster-profile__tabs
 {
 	display          : inline-block;
-	height           : var(--poster-profile-tabs-height);
 	margin-left      : auto;
 	margin-right     : auto;
-	padding-left     : calc(var(--unit) * 1.5);
-	padding-right    : calc(var(--unit) * 1.5);
-	border           : var(--border);
-	border-radius    : var(--border-radius);
 	white-space      : nowrap;
-	background-color : var(--white-color);
 }
 
 .poster-profile__tab
@@ -388,8 +409,8 @@
 	display     : inline-flex;
 	align-items : center;
 
-	padding-left  : calc(var(--unit) * 1.5);
-	padding-right : calc(var(--unit) * 1.5);
+	padding-left  : var(--unit);
+	padding-right : var(--unit);
 
 	color : var(--black-color-light);
 }
@@ -397,24 +418,6 @@
 .poster-profile__tab
 {
 	border-bottom : calc(var(--unit) / 2) solid transparent;
-
-	&:first-child
-	{
-		&, .poster-profile__tab-button
-		{
-			border-top-left-radius    : inherit;
-			border-bottom-left-radius : inherit;
-		}
-	}
-
-	&:last-child
-	{
-		&, .poster-profile__tab-button
-		{
-			border-top-right-radius    : inherit;
-			border-bottom-right-radius : inherit;
-		}
-	}
 }
 
 .poster-profile__tab--selected
@@ -450,17 +453,48 @@
 	display : none;
 }
 
+@include xs
+{
+	.poster-profile__tab-button
+	{
+		padding-left  : calc(var(--unit) * 1.5);
+		padding-right : calc(var(--unit) * 1.5);
+	}
+
+	// .poster-profile__background-picture
+	// {
+	// 	.upload-picture__change-overlay
+	// 	{
+	// 		justify-content : center;
+	// 		padding-right   : 0;
+	// 	}
+	// }
+
+	.poster-profile__change-banner-label--long
+	{
+		display : inline;
+	}
+
+	.poster-profile__change-banner-label--short
+	{
+		display : none;
+	}
+}
+
 @include s
 {
 	@include poster_profile_edit_buttons_side_padding(var(--unit));
 
-	.poster-profile__change-banner-label--short,
+	.poster-profile__name
+	{
+		font-size : 150%;
+	}
+
 	.poster-profile__change-background-pattern-label--short
 	{
 		display : none;
 	}
 
-	.poster-profile__change-banner-label--long,
 	.poster-profile__change-background-pattern-label--long
 	{
 		display : inline;
@@ -470,24 +504,20 @@
 @include m
 {
 	@include set_profile_picture_size(calc(var(--unit) * 18));
-
 	@include poster_profile_edit_actions_height(calc(var(--unit) * 6));
 	@include poster_profile_edit_buttons_side_padding(calc(var(--unit) * 2));
+	@include poster_profile_tabs_height(calc(var(--unit) * 6));
+
+	.poster-profile__tabs-container
+	{
+		text-align : center;
+	}
 
 	.poster-profile__picture
 	{
 		.upload-picture__change-overlay
 		{
 			font-size : 100%;
-		}
-	}
-
-	.poster-profile__background-picture
-	{
-		.upload-picture__change-overlay
-		{
-			justify-content : center;
-			padding-right   : 0;
 		}
 	}
 
@@ -521,18 +551,19 @@
 		align-self : auto;
 	}
 
-	.poster-profile__background-color
-	{
-		top                       : auto;
-		bottom                    : -1px;
-		border-bottom-left-radius : 0;
-		border-top-left-radius    : var(--border-radius);
-	}
+	// .poster-profile__background-color
+	// {
+	// 	top                       : auto;
+	// 	bottom                    : -1px;
+	// 	border-bottom-left-radius : 0;
+	// 	border-top-left-radius    : var(--border-radius);
+	// }
 }
 
 @include l
 {
-	@include poster_profile_edit_actions_height(calc(var(--unit) * 8));
+	@include poster_profile_edit_actions_height(calc(var(--unit) * 7));
+	@include poster_profile_tabs_height(calc(var(--unit) * 7));
 
 	.poster-profile__body
 	{
@@ -561,20 +592,6 @@
 		flex-basis  : auto;
 		flex-grow   : 3;
 		flex-shrink : 1;
-	}
-
-	.poster-profile__tabs-container
-	{
-		margin-bottom : calc(var(--poster-profile-tabs-height) * -1);
-	}
-
-	.poster-profile__tabs
-	{
-		position : relative;
-		top      : calc(var(--poster-profile-tabs-height) * -1);
-
-		border-bottom-left-radius  : 0;
-		border-bottom-right-radius : 0;
 	}
 
 	.poster-profile
@@ -616,6 +633,21 @@
 @include xl
 {
 	@include set_profile_picture_size(calc(var(--unit) * 20));
+	// @include poster_profile_tabs_height(calc(var(--unit) * 8));
+
+	.poster-profile__tabs
+	{
+		position : relative;
+
+		padding-left     : calc(var(--unit) * 1.5);
+		padding-right    : calc(var(--unit) * 1.5);
+
+		border                     : var(--border);
+		border-radius              : var(--border-radius);
+		border-bottom-left-radius  : 0;
+		border-bottom-right-radius : 0;
+		background-color           : var(--white-color);
+	}
 
 	.poster-profile__background-picture-container
 	{

@@ -134,12 +134,13 @@ class PersonalInfo extends Component
 
 				{ !edit &&
 					<div>
-						{/* User's name */}
+						{/* User's name
 						<h1
 							style={ styles.poster_name }
 							className="poster-info__name">
 							{ poster.name }
 						</h1>
+						*/}
 
 						{/* User's place and country */}
 						{ (poster.place || poster.country) &&
