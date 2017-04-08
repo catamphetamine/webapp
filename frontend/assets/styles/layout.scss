@@ -2,6 +2,10 @@
 
 .content-section
 {
+	// Disables margin collapse since it's not
+	// gonna work anyway in most cases.
+	display : inline-block;
+
 	background-color : var(--white-color);
 	border-bottom    : 1px solid var(--gray-color-darker);
 }

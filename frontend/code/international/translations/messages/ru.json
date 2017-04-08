@@ -76,13 +76,14 @@
 	"poster.profile.block"            : "Заблокировать",
 	"poster.profile.unblock"          : "Разблокировать",
 
-	"poster.profile.edit"                      : "Правка",
-	"poster.profile.cancel_editing"            : "Отмена",
-	"poster.profile.save"                      : "Сохранить",
+	"poster.profile.edit"           : "Правка",
+	"poster.profile.cancel_editing" : "Отмена",
+	"poster.profile.save"           : "Сохранить",
 
-	"poster.profile.name"                       : "Имя",
-	"poster.profile.place"                      : "Место",
-	"poster.profile.country"                    : "Выберите вашу страну",
+	"poster.profile.name"        : "Имя",
+	"poster.profile.description" : "Описание",
+	"poster.profile.place"       : "Место",
+	"poster.profile.country"     : "Выберите вашу страну",
 
 	"poster.profile.background_pattern.change"       : "Сменить фоновый шаблон",
 	"poster.profile.background_pattern.change.short" : "Сменить фон",

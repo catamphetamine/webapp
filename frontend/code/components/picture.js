@@ -83,6 +83,7 @@ export default class Picture extends PureComponent
 		const markup =
 		(
 			<div
+				ref={ ref => this.container = ref }
 				style={ style }
 				className={ classNames('picture',
 				{
@@ -119,6 +120,11 @@ export default class Picture extends PureComponent
 		}
 	}
 
+	container_height()
+	{
+		return ReactDOM.findDOMNode(this.container).offsetHeight
+	}
+
 	width()
 	{
 		return ReactDOM.findDOMNode(this.picture).offsetWidth
@@ -133,12 +139,23 @@ export default class Picture extends PureComponent
 			return
 		}
 
-		if (pattern)
+		let width
+
+		if (!pattern)
 		{
-			return sizes.first()
+			width = this.width()
 		}
 
-		return get_preferred_size(sizes, this.width(), maxWidth)
+		// If the picture size is height-driven
+		// (e.g. poster profile background pattern, poster profile banner)
+		// then calculate width from height.
+		if (!width)
+		{
+			const aspect_ratio = sizes.last().width / sizes.last().height
+			width = this.container_height() * aspect_ratio
+		}
+
+		return get_preferred_size(sizes, width, maxWidth)
 	}
 
 	url()

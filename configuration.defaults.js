@@ -63,20 +63,11 @@ module.exports =
 			poster_picture:
 			{
 				square: true,
-				path: 'poster_pictures',
 				sizes:
 				[
 					300,
 					600,
 					1000
-				]
-			},
-			poster_background_pattern:
-			{
-				path: 'poster_background_patterns',
-				sizes:
-				[
-					2000
 				]
 			}
 		}

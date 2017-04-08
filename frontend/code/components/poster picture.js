@@ -43,7 +43,7 @@ export default class Poster_picture extends React.Component
 			type={ (picture || poster.picture) ? undefined : 'asset' }
 			fallback={ fallback }
 			uploaded={ picture ? true : false }
-			picture={ picture || poster.picture }
+			picture={ picture || poster.data.picture }
 			style={ style }
 			className={ classNames('poster-picture', className) }/>
 	}

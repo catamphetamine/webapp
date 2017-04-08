@@ -1,13 +1,13 @@
 import React, { Component, PropTypes } from 'react'
+import ReactDOM                        from 'react-dom'
 import { Title, Link, preload, redirect } from 'react-isomorphic-render'
 import { connect }                     from 'react-redux'
 import { withRouter }                  from 'react-router'
 import { flat as style }               from 'react-styling'
 import classNames                      from 'classnames'
-import Redux_form                      from 'simpler-redux-form'
 
 import { defineMessages, FormattedMessage } from 'react-intl'
-import { Form, Button, Checkbox } from 'react-responsive-ui'
+import { Button, Checkbox } from 'react-responsive-ui'
 
 import Clock_icon      from '../../../../assets/images/icons/clock.svg'
 import Message_icon    from '../../../../assets/images/icons/message.svg'
@@ -52,9 +52,8 @@ from '../../../redux/poster/block'
 
 import { snack } from '../../../redux/snackbar'
 
-import Personal_info from './personal info'
+import { PersonalInfo, PersonalInfoForm } from './personal info'
 
-import Submit         from '../../../components/form/submit'
 import Poster         from '../../../components/poster'
 import Poster_picture from '../../../components/poster picture'
 import Upload_picture, { Picture } from '../../../components/upload picture'
@@ -83,7 +82,6 @@ const Default_poster_background_pattern =
 	}]
 }
 
-@Redux_form
 @withRouter
 @preload(({ dispatch, getState, location, parameters }) =>
 {
@@ -139,8 +137,8 @@ export default class Poster_profile extends Component
 		const { poster } = this.props
 
 		// Same as in `.toggle_edit_mode()`
-		this.state.background_color         = poster.palette.background
-		this.state.background_color_enabled = poster.palette.background !== undefined
+		this.state.background_color         = poster.data.palette.background
+		this.state.background_color_enabled = poster.data.palette.background !== undefined
 		// Is `null` instead of `undefined` in knex.js
 		this.state.banner_enabled           = exists(poster.banner)
 
@@ -286,14 +284,14 @@ export default class Poster_profile extends Component
 
 				<div className="poster-profile__background-picture-container">
 
-					{/* Edit/Save own profile */}
+					{/* Edit/Save own profile (proxy buttons, not the real ones) */}
 					{ this.can_edit_profile() && this.render_edit_actions(poster_form_busy) }
 
 					{/* Banner */}
 					{ !edit && poster.banner &&
 						<Picture
 							frameless
-							picture={ poster.banner }
+							picture={ poster.data.banner }
 							className="poster-profile__banner"/>
 					}
 
@@ -360,7 +358,7 @@ export default class Poster_profile extends Component
 							pattern
 							frameless
 							type={ poster.background_pattern ? undefined : 'asset'}
-							picture={ poster.background_pattern }
+							picture={ poster.data.background_pattern }
 							fallback={ background_color_enabled ? undefined : Default_poster_background_pattern }/>
 					</Upload_picture>
 
@@ -447,22 +445,26 @@ export default class Poster_profile extends Component
 								{/* Poster blocked notice */}
 								{ poster.blocked_at && this.render_poster_blocked_notice() }
 
-								<Form
-									busy={ poster_form_busy }
-									submit={ submit(this.save_profile_edits) }>
+								{/* User's personal info (description, place, etc) */}
+								{ !edit &&
+									<PersonalInfo poster={ poster }/>
+								}
 
-									{/* Poster profile edit errors */}
-									{ this.render_poster_edit_errors() }
+								{/* User's personal info form (name, description, place, etc) */}
+								{ edit &&
+									<PersonalInfoForm
+										poster={ poster }
+										busy={ poster_form_busy }
+										onSubmit={ this.save_profile_edits }
+										storeSubmitButton={ ref => this.poster_form_submit_button = ref }>
 
-									{/* Block this poster (not self) */}
-									{ !this.can_edit_profile() && this.render_moderator_actions() }
+										{/* Poster profile edit errors */}
+										{ this.render_poster_edit_errors() }
+									</PersonalInfoForm>
+								}
 
-									{/* User's personal info (name, place, etc) */}
-									<Personal_info
-										ref={ ref => this.personal_info = ref }
-										edit={ edit }
-										poster={ poster }/>
-								</Form>
+								{/* Block this poster (not self) */}
+								{ !this.can_edit_profile() && this.render_moderator_actions() }
 
 								{/* Other poster actions: "Send message", "Subscribe" */}
 								{ !this.can_edit_profile() && this.render_other_poster_actions() }
@@ -660,9 +662,7 @@ export default class Poster_profile extends Component
 
 		const markup =
 		(
-			<div
-				style={ styles.own_profile_actions }
-				className="poster-profile__edit-actions card__actions">
+			<div className="poster-profile__edit-actions card__actions">
 
 				{/* "Edit profile" */}
 				{ !edit &&
@@ -670,15 +670,6 @@ export default class Poster_profile extends Component
 						className="card__action"
 						action={ this.toggle_edit_mode }>
 						{ translate(messages.edit_profile) }
-					</Button>
-				}
-
-				{/* "Settings" */}
-				{ false && !edit &&
-					<Button
-						className="card__action"
-						action={ this.show_profile_settings }>
-						{ translate(default_messages.settings) }
 					</Button>
 				}
 
@@ -692,13 +683,14 @@ export default class Poster_profile extends Component
 					</Button>
 				}
 
-				{/* "Save changes" */}
+				{/* "Save changes" (proxy) */}
 				{  edit &&
-					<Submit
+					<Button
+						action={ this.click_save_poster_button }
 						className="button--primary card__action"
 						disabled={ poster_form_busy }>
 						{ translate(messages.save_profile_edits) }
-					</Submit>
+					</Button>
 				}
 			</div>
 		)
@@ -772,6 +764,11 @@ export default class Poster_profile extends Component
 		return markup
 	}
 
+	click_save_poster_button = () =>
+	{
+		ReactDOM.findDOMNode(this.poster_form_submit_button).querySelector('button').click()
+	}
+
 	set_banner_enabled = (value) =>
 	{
 		this.setState
@@ -827,16 +824,13 @@ export default class Poster_profile extends Component
 		// Clear the temporary uploaded picture
 		set_uploaded_poster_picture()
 
-		// Reset the form
-		reset()
-
 		this.setState((state) =>
 		({
 			edit : !state.edit,
 
 			// Same as in `constructor()`
-			background_color         : poster.palette.background,
-			background_color_enabled : poster.palette.background !== undefined,
+			background_color         : poster.data.palette.background,
+			background_color_enabled : poster.data.palette.background !== undefined,
 			// Is `null` instead of `undefined` in knex.js
 			banner_enabled           : exists(poster.banner)
 		}))
@@ -891,7 +885,7 @@ export default class Poster_profile extends Component
 			}
 
 			// Collect poster info edits
-			const poster_info = Personal_info.get_values(this.personal_info, values)
+			const poster_info = values
 
 			// If the banner was turned off then reset it on server
 			if (!banner_enabled)
@@ -900,20 +894,17 @@ export default class Poster_profile extends Component
 			}
 
 			// The palette may have been updated so send it too
-			poster_info.palette = { ...poster.palette }
+			poster_info.palette = { ...poster.data.palette }
 
 			// Save background color (if set)
-			if (background_color)
+			if (background_color_enabled)
+			{
+				poster_info.palette.background = background_color || Default_background_color
+			}
+			else
 			{
 				// Maybe background color was turned off
-				if (background_color_enabled)
-				{
-					poster_info.palette.background = background_color
-				}
-				else
-				{
-					delete poster_info.palette.background
-				}
+				delete poster_info.palette.background
 			}
 
 			// Save poster info edits
@@ -992,6 +983,9 @@ const styles = style
 
 	latest_activity
 		cursor : default
+
+	hidden
+		display : none
 `
 
 const messages = defineMessages

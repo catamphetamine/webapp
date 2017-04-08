@@ -1,13 +1,18 @@
-import React from 'react'
+import React, { Component } from 'react'
 import classNames from 'classnames'
 import { Submit } from 'simpler-redux-form'
 import { Button } from 'react-responsive-ui'
 
-export default function Submit_button(props)
+export default class Submit_button extends Component
 {
-	return <Submit
-		{ ...props }
-		component={ Button }
-		submit
-		className={ classNames('button--primary form__action--submit', props.className) }/>
+	render()
+	{
+		const { className } = this.props
+
+		return <Submit
+			{ ...this.props }
+			component={ Button }
+			submit
+			className={ classNames('button--primary', className) }/>
+	}
 }

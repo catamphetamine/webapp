@@ -12,9 +12,17 @@ import Responsive_picture, { get_preferred_size, url } from './picture'
 const drop_area =
 @CanDrop(File, (props, dropped, component) =>
 {
-	const { onChoose } = props
+	const { onChoose, changing } = props
 	const { uploading } = component.state
 
+	// If the picture is not in upload mode
+	// then don't react to a file drop
+	if (!changing)
+	{
+		return
+	}
+
+	// Do nothing if currently busy
 	if (uploading)
 	{
 		return

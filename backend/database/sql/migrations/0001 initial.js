@@ -47,22 +47,22 @@ exports.up = function(knex, Promise)
 		table.string('name', string_max_length).notNullable()
 		table.string('alias', alias_max_length).unique()
 
-		table.text('description')
-
+		// Could be searchable
 		table.string('place', 128)
 
 		// currently using 2-digit codes, but for being future proof
 		// https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
 		table.string('country', 3)
 
-		table.jsonb('palette').notNullable().defaultTo({})
+		table.jsonb('data').notNullable().defaultTo
+		({
+			palette: {},
+			blacklist: []
+		})
 
 		table.string('type')
 
 		table.timestamp('created_at').notNullable().defaultTo(knex.fn.now())
-
-		// JSON array (NULL by default)
-		table.jsonb('blacklist')
 
 		table.timestamp('blocked_at')
 		table.text('blocked_reason')
@@ -181,14 +181,11 @@ exports.up = function(knex, Promise)
 
 	.table('posters', function(table)
 	{
-		// Storing pictures as JSONs is a minor optimization
-		// since they aren't "edited" ever.
-		table.jsonb('picture')
-		table.jsonb('background_pattern')
-		table.jsonb('banner')
-
-		// table.bigint('picture').references('images.id')
-		// table.bigint('background_pattern').references('images.id')
+		// Also storing pictures as JSON as part of `poster.info`
+		// because they aren't "edited" ever.
+		table.bigint('picture').references('images.id')
+		table.bigint('background_pattern').references('images.id')
+		table.bigint('banner').references('images.id')
 	})
 
 	.createTable('streams', function(table)

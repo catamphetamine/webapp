@@ -66,7 +66,7 @@ export default function(api)
 	})
 
 	// Change poster data
-	api.patch('/poster/:id', async function({ id, name, country, place, banner, palette }, { user, internal_http })
+	api.patch('/poster/:id', async function({ id, name, country, place, description, banner, palette }, { user, internal_http })
 	{
 		if (!user)
 		{
@@ -88,29 +88,30 @@ export default function(api)
 			throw new errors.Input_rejected(`"name" is required`)
 		}
 
-		await store.update_poster(id,
+		const updated_poster =
 		{
 			name,
 			country,
 			place,
-			palette
-		})
+			data : poster.data
+		}
+
+		updated_poster.data.description = description
+		updated_poster.data.palette     = palette
 
 		// If banner has been turned off then delete and reset it
-		if (banner === false)
+		if (poster.banner && banner === false)
 		{
 			// Delete the previous banner
-			if (poster.banner)
-			{
-				await internal_http.delete(`${address_book.image_service}/api/${poster.banner.id}`)
-			}
+			await internal_http.delete(`${address_book.image_service}/api/${poster.banner}`)
 
 			// Reset banner
-			await store.update_poster(id,
-			{
-				banner : null
-			})
+			updated_poster.banner = null
+			delete updated_poster.data.banner
 		}
+
+		// Update poster
+		await store.update_poster(id, updated_poster)
 
 		// Return the updated poster
 		return await get_poster(id)
@@ -335,16 +336,20 @@ async function update_picture(id, picture, type, property, user, internal_http)
 		}
 	)
 
+	// Update picture sizes
+	poster.data[property] = picture
+
 	// Update the picture in `posters` table
 	await store.update_poster(id,
 	{
-		[property] : picture
+		[property] : picture.id,
+		data       : poster.data
 	})
 
 	// Delete the previous picture (if any)
 	if (poster[property])
 	{
-		await internal_http.delete(`${address_book.image_service}/api/${poster[property].id}`)
+		await internal_http.delete(`${address_book.image_service}/api/${poster[property]}`)
 	}
 
 	return picture

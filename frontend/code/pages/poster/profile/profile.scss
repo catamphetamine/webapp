@@ -95,6 +95,13 @@
 	}
 }
 
+.poster-profile__background-color,
+.poster-profile__edit-actions,
+.poster-profile__change-banner
+{
+	border : var(--border);
+}
+
 // Short info (to the right of the poster picture)
 
 .poster-profile__name
@@ -269,17 +276,25 @@
 .poster-profile__edit-actions
 {
 	position : absolute;
-	right    : -1px;
+	right    : 0;
 	bottom   : -1px;
 	z-index  : 1;
 
 	background-color       : var(--white-color);
 	border-top-left-radius : var(--border-radius);
+	border-right           : none;
+
+	white-space: nowrap;
 
 	.card__action
 	{
 		top    : 0;
 		height : 100%;
+
+		&:not(:first-child)
+		{
+			margin-left: 0.5em;
+		}
 
 		.rrui__button__button
 		{
@@ -288,17 +303,11 @@
 	}
 }
 
-.poster-profile__edit-actions
-{
-	white-space: nowrap;
+// Poster info
 
-	.card__action
-	{
-		&:not(:first-child)
-		{
-			margin-left: 0.5em;
-		}
-	}
+.poster-info__description
+{
+	margin-bottom : var(--unit);
 }
 
 // "Last seen"
@@ -374,13 +383,6 @@
 @include poster_profile_edit_actions_height(calc(var(--unit) * 5));
 @include poster_profile_edit_buttons_side_padding(calc(var(--unit) * 0.75));
 @include poster_profile_tabs_height(calc(var(--unit) * 5));
-
-.poster-profile__background-color,
-.poster-profile__edit-actions,
-.poster-profile__change-banner
-{
-	border : var(--border);
-}
 
 // Tabs
 
