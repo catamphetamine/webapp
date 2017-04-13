@@ -314,15 +314,18 @@ export default class Editable_field extends Component
 
 	edit = () =>
 	{
-		const { edit, name, validate, value, focus, set } = this.props
+		const { edit, name, value, focus, set } = this.props
 
 		if (edit)
 		{
 			return edit()
 		}
 
-		set(name, value, validate(value))
-		this.setState({ edit: true }, () => focus(name))
+		this.setState({ edit: true }, () =>
+		{
+			set(name, value)
+			focus(name)
+		})
 	}
 
 	enable_disable = (enabled) =>

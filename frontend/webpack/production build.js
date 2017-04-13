@@ -5,6 +5,7 @@ import webpack             from 'webpack'
 import base_configuration  from './webpack.config'
 import clean_plugin        from 'clean-webpack-plugin'
 import extract_text_plugin from 'extract-text-webpack-plugin'
+import visualizer          from 'webpack-visualizer-plugin'
 
 import webpack_isomorphic_tools_plugin from 'webpack-isomorphic-tools/plugin'
 
@@ -60,6 +61,12 @@ configuration.plugins = configuration.plugins.concat
 		{
 			warnings: false
 		}
+	}),
+
+	new visualizer
+	({
+		// Relative to the output folder
+		filename: '../bundle-stats.html'
 	}),
 
 	new webpack_isomorphic_tools_plugin(require('./webpack-isomorphic-tools.js'))

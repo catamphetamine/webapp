@@ -84,7 +84,6 @@ const configuration =
 			},
 			{
 				test    : /\.(scss|css)$/,
-				include : assets_source_folder,
 				use     :
 				[{
 					loader : 'style-loader'

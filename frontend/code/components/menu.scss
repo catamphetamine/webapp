@@ -1,0 +1,106 @@
+// Show collapsible menu instead of full-sized menu (for small screens)
+.rrui__menu
+{
+	display: none;
+}
+
+// But at the same time the "Menu" page still has its widescreen menu shown
+.menu-page .rrui__menu
+{
+	display : block;
+}
+
+.rrui__slideout-menu
+{
+	background-color : var(--black-color);
+}
+
+.rrui__menu,
+.rrui__slideout-menu
+{
+	margin          : 0;
+	padding-left    : 0;
+	padding-top     : calc(2 * var(--unit));
+	padding-bottom  : calc(2 * var(--unit));
+	list-style-type : none;
+}
+
+.rrui__slideout-menu .rrui__menu__item
+{
+	color: var(--gray-color-light);
+}
+
+.rrui__slideout-menu .rrui__menu__item:active
+{
+	color: var(--base-color-lighter);
+}
+
+.rrui__menu__item
+{
+	display : block;
+	margin  : 0;
+
+	padding-top    : var(--unit);
+	padding-bottom : var(--unit);
+
+	padding-left  : calc(var(--unit) * 2);
+	padding-right : calc(var(--unit) * 3);
+
+	text-decoration : none;
+}
+
+.rrui__menu__item--selected
+{
+	color : var(--base-color-lightest);
+}
+
+@include l
+{
+	.rrui__menu
+	{
+		display: inline-block;
+
+		margin: 0;
+	}
+
+	.rrui__menu__list-item
+	{
+		display: inline-block;
+
+		&:first-child
+		{
+			padding-top: 0;
+		}
+
+		&:last-child
+		{
+			padding-bottom: 0;
+		}
+
+		&:not(:last-child)
+		{
+			margin-right: 0.4em;
+		}
+	}
+
+	.rrui__menu__item
+	{
+		padding-left    : calc(var(--unit) * 2);
+		padding-right   : calc(var(--unit) * 2);
+
+		padding-top    : var(--unit);
+		padding-bottom : var(--unit);
+
+		// padding-top : var(--header-vertically-centered-text-margin-top);
+
+		// border-bottom-width : 0.12em;
+		// border-bottom-color : transparent;
+		// border-bottom-style : solid;
+	}
+
+	.rrui__slideout-menu,
+	.rrui__slideout-menu-button
+	{
+		display: none;
+	}
+}

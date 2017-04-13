@@ -1,27 +1,5 @@
 @import "constants.scss";
 
-.date-picker
-{
-	padding-bottom: 0;
-}
-
-header .rrui__menu
-{
-	margin-top: var(--header-vertically-centered-text-margin-top);
-}
-
-.rrui__form__error
-{
-	margin-top    : calc(var(--unit) * 4);
-	margin-bottom : calc(var(--unit) * 4);
-	color         : var(--error-color-darker);
-}
-
-.ReactModal__Overlay
-{
-	z-index : var(--modal-z-index);
-}
-
 // a <ul/> with errors
 .errors
 {
@@ -120,39 +98,6 @@ header .rrui__menu
 	}
 }
 
-.rrui__input
-{
-	height : calc(var(--unit) * 5);
-}
-
-.rrui__form__heading
-{
-	margin-top    : 0;
-	margin-bottom : calc(var(--unit) * 6);
-}
-
-.rrui__form__field
-{
-	margin-bottom: calc(var(--unit) * 5);
-
-	&:last-child
-	{
-		margin-bottom: 0;
-	}
-}
-
-.rrui__form__field-description
-{
-	margin-top    : 0;
-	margin-bottom : calc(var(--unit) * 3);
-}
-
-.rrui__button,
-.rrui__button__button
-{
-	height : auto;
-}
-
 .button--button
 {
 	height : calc(var(--unit) * 6);
@@ -161,26 +106,4 @@ header .rrui__menu
 	{
 		height : 100%;
 	}
-}
-
-.rrui__checkbox__checkmark
-{
-	top    : -0.1em;
-	width  : 0.8em;
-	height : 0.8em;
-}
-
-.rrui__snackbar--error
-{
-	background-color : var(--error-color-darker);
-}
-
-.rrui__switch__groove
-{
-	color: var(--base-color-slightly-darker);
-}
-
-.rrui__tooltip
-{
-	z-index : var(--tooltip-z-index);
 }

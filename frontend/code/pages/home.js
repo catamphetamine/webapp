@@ -6,7 +6,7 @@ import { defineMessages }              from 'react-intl'
 
 import international from '../international/internationalize'
 
-import { messages as layout_messages } from './layout'
+import default_messages from '../components/messages'
 
 const messages = defineMessages
 ({
@@ -30,7 +30,7 @@ export default class Home extends Component
 		const markup =
 		(
 			<section className="content" style={ style.content }>
-				<Title>{ translate(layout_messages.title) }</Title>
+				<Title>{ translate(default_messages.title) }</Title>
 
 				<h1 style={ style.header }>
 					{ translate(messages.header) }

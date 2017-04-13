@@ -12,6 +12,8 @@ import set_up_realtime_service_connection from './realtime service'
 
 // include these assets in webpack build (styles, images)
 
+import react_responsive_ui from 'react-responsive-ui/style.css'
+
 import html_assets from './html assets'
 
 for (let asset of Object.keys(html_assets))

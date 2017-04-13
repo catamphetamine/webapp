@@ -8,7 +8,7 @@ import international from '../international/internationalize'
 
 import { menu_entries } from './layout'
 
-import { Menu } from 'react-responsive-ui'
+import Menu from '../components/menu'
 
 const messages = defineMessages
 ({
@@ -36,7 +36,7 @@ export default class Menu_page extends Component
 					{ translate(messages.title) }
 				</h1>
 
-				<Menu items={ menu_entries(translate) }/>
+				<Menu/>
 			</section>
 		)
 

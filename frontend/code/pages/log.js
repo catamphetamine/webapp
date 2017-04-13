@@ -10,10 +10,9 @@ import { parse as parse_stack_trace } from 'print-error'
 import { get as get_log, connector } from '../redux/log'
 import log_levels         from '../../../code/log levels'
 
-import { messages as layout_messages } from './layout'
+import { messages as menu_messages } from '../components/menu'
 
 import international      from '../international/internationalize'
-
 
 export const messages = defineMessages
 ({
@@ -81,7 +80,7 @@ export default class Log extends Component
 		const markup =
 		(
 			<div>
-				<Title>{ translate(layout_messages.menu_log) }</Title>
+				<Title>{ translate(menu_messages.log) }</Title>
 
 				<section className="content">
 					<table style={style.log}>

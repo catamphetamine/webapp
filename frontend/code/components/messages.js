@@ -2,6 +2,12 @@ import { defineMessages } from 'react-intl'
 
 export default defineMessages
 ({
+	title:
+	{
+		id             : 'application.title',
+		description    : 'Web application title',
+		defaultMessage : 'WebApp'
+	},
 	save:
 	{
 		id             : 'action.save',
