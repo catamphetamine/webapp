@@ -27,7 +27,12 @@ class Sql_store
 
 	create(user)
 	{
-		return this.users.create(user)
+		return this.users.create
+		({
+			...user,
+			// `roles` array needs stringification because `knex` requires it
+			roles: JSON.stringify(user.roles)
+		})
 	}
 
 	count()

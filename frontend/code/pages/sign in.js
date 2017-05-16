@@ -5,7 +5,7 @@ import styler                          from 'react-styling'
 import { defineMessages }              from 'react-intl'
 import { withRouter }                  from 'react-router'
 
-import { should_redirect_to } from '../helpers/redirection'
+import { get_redirect_url } from '../helpers/redirection'
 
 import international from '../international/internationalize'
 
@@ -192,7 +192,7 @@ export default class Sign_in extends Component
 		const { redirect, location } = this.props
 
 		// Revisit current URL now being logged in
-		redirect(should_redirect_to(location))
+		redirect(get_redirect_url(location))
 	}
 }
 

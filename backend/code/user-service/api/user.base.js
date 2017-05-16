@@ -68,9 +68,8 @@ function own_user(user)
 	{
 		...public_user(user),
 
-		email      : user.email,
-
-		role       : user.role,
+		email : user.email,
+		roles : user.roles,
 		// moderation : user.moderation,
 		// switches   : user.switches,
 

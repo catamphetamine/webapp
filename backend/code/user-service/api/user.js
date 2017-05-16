@@ -51,7 +51,7 @@ export default function(api)
 
 		const privileges =
 		{
-			role          : is_the_first_user ? 'administrator' : 'user', // 'moderator', 'senior moderator' (starting from moderator)
+			roles : is_the_first_user ? ['administrator'] : [], // 'moderator', 'senior moderator' (starting from moderator)
 			// moderation    : [], // [1, 2, 3, ...] (starting from moderator)
 			// switches      : [], // ['read_only', 'disable_user_registration', ...] (starting from senior moderator)
 			// grant   : ['moderation', 'switches'] // !== true (starting from senior moderator)
@@ -82,7 +82,7 @@ export default function(api)
 	})
 
 	// Revokes access token and clears authentication cookie
-	api.post('/sign-out', async function({}, { user, access_token_id, destroy_cookie, internal_http })
+	api.post('/sign-out', async function({}, { user, destroy_cookie, internal_http })
 	{
 		// Must be logged in
 		if (!user)
@@ -90,11 +90,12 @@ export default function(api)
 			return new errors.Unauthenticated()
 		}
 
-		// Revoke access token
-		await internal_http.post(`${address_book.access_token_service}/${access_token_id}/revoke`)
+		// Revoke access (refresh) token
+		await internal_http.post(`${address_book.access_token_service}/${user.access_token_id}/revoke`)
 
 		// Clear authentcication cookie
-		destroy_cookie('authentication')
+		destroy_cookie(configuration.access_token_cookie)
+		destroy_cookie(configuration.access_token_refresh_cookie)
 	})
 
 	api.post('/sign-in/request', async function({ email, phone })
@@ -166,16 +167,27 @@ export default function(api)
 		// (get `poster` too for alias redirection after sign in)
 		const user = await get_user_self(multifactor_authentication.user, { poster: true })
 
-		// Issue JWT token (the real one)
-		const token = await http.post(`${address_book.access_token_service}`,
+		// Issue JWT token (refresh token)
+		const refresh_token = await http.post(`${address_book.access_token_service}`,
 		{
-			user_id : user.id,
-			payload : configuration.access_token_payload.write(user),
+			user_id  : user.id,
+			payload  : { scopes: ['refresh'] },
+			audience : 'access-token-service',
+			ip
+		})
+
+		// Issue JWT token (access token)
+		const access_token = await http.post(`${address_book.access_token_service}`,
+		{
+			user_id    : user.id,
+			payload    : configuration.access_token_payload.write(user, refresh_token.id),
+			expires_in : configuration.access_token_lifespan,
 			ip
 		})
 
 		// Write JWT token to a cookie
-		set_cookie('authentication', token, { signed: false })
+		set_cookie(configuration.access_token_cookie,         access_token.token,  { signed: false, httpOnly: false })
+		set_cookie(configuration.access_token_refresh_cookie, refresh_token.token, { signed: false })
 
 		// Return user poster alias for alias redirection after sign in
 		return user
@@ -280,7 +292,7 @@ export default function(api)
 			return
 		}
 
-		return await get_user_self(user.id, { poster: true })
+		return await get_user_self(user.id, { poster })
 	})
 
 	api.post('/:id/block', async function({ id, token_id, poster_id, reason }, { user })

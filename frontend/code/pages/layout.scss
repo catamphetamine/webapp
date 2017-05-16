@@ -63,7 +63,9 @@
 	{
 		color: var(--white-color);
 
-		&:active
+		&:active,
+		// Only for .sign-in button (link)
+		.rrui__button__button:active
 		{
 			color: var(--base-color-lightest);
 		}

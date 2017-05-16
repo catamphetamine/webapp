@@ -1,6 +1,6 @@
 // https://github.com/uWebSockets/uWebSockets
 import WebSocket from 'uws'
-import { http } from 'web-service'
+import { http, verify_jwt } from 'web-service'
 
 import start_metrics from '../../../code/metrics'
 
@@ -19,6 +19,8 @@ export default function start()
 	visitor_tracker.report()
 
 	const server = new WebSocket.Server({ port: configuration.realtime_service.websocket.port })
+
+	const user_connections = {}
 
 	// Broadcasts to all
 	server.broadcast = function broadcast(message)
@@ -59,6 +61,11 @@ export default function start()
 			{
 				log.error(error)
 			}
+
+			if (socket.user_id)
+			{
+				user_connections[socket.user_id].remove(socket)
+			}
 		})
 
 		socket.on('message', async (message) =>
@@ -77,45 +84,37 @@ export default function start()
 				switch (message.command)
 				{
 					case 'initialize':
+
+						// If a user connected (not a guest)
+						// then store `userId` for push notifications.
+						// Using an authentication token here
+						// instead of simply taking `userId` out of the `message`
+						// because the input can't be trusted (could be a hacker).
+						if (message.token)
+						{
+							// (make sure `socket.user_id` is a `String`)
+							// The token could be a JWT token (jwt.io)
+							// and `authenticateUserByToken` function could
+							// check the token's authenticity (by verifying its signature)
+							// and then extract `userId` out of the token payload.
+							const payload = verify_jwt(message.token, configuration.web_service_secret_keys, { ignoreExpiration: true })
+							console.log('@@@@@@@@@@@@@@', payload)
+							socket.user_id = payload.sub
+
+							if (!user_connections[socket.user_id])
+							{
+								user_connections[socket.user_id] = []
+							}
+
+							user_connections[socket.user_id].push(socket)
+						}
+
 						const response =
 						{
-							command: 'initialize'
+							command: 'initialized'
 						}
 
-						const token = message.token
-
-						if (token)
-						{
-							try
-							{
-								const user = await http.get
-								(
-									address_book.user_service,
-									{ bot: true },
-									{ headers: { Authorization: `Bearer ${token}` } }
-								)
-
-								if (user)
-								{
-									socket.user = user
-									socket.token = token
-
-									response.user = user
-									response.notifications = await http.get
-									(
-										`${address_book.social_service}`,
-										{ bot: true },
-										{ headers: { Authorization: `Bearer ${token}` } }
-									)
-								}
-							}
-							catch (error)
-							{
-								log.error(error)
-							}
-						}
-
-						if (!socket.user)
+						if (!socket.user_id)
 						{
 							socket.guest_id = message.guest
 						}
@@ -125,15 +124,15 @@ export default function start()
 						return socket.send(JSON.stringify(response))
 
 					case 'active':
-						if (socket.user)
-						{
-							http.post
-							(
-								`${address_book.user_service}/ping`,
-								undefined,
-								{ headers: { Authorization: `Bearer ${socket.token}` } }
-							)
-						}
+						// if (socket.user_id)
+						// {
+						// 	http.post
+						// 	(
+						// 		`${address_book.user_service}/ping`,
+						// 		undefined,
+						// 		{ headers: { Authorization: `Bearer ${socket.token}` } }
+						// 	)
+						// }
 						return visitor_tracker.active(socket)
 
 					case 'inactive':
@@ -161,7 +160,14 @@ export default function start()
 
 	log.info(`Realtime service WebSocket is listening at port ${configuration.realtime_service.websocket.port}`)
 
-	return server
+	const result =
+	{
+		server,
+		close: () => new Promise(resolve => server.close(resolve)),
+		user_connections
+	}
+
+	return result
 }
 
 // These counters ("state") could be stored somewhere in Redis,
@@ -195,9 +201,9 @@ class Visitor_tracker
 			return
 		}
 
-		if (socket.user)
+		if (socket.user_id)
 		{
-			this._active(socket.user.id, this.active_user_connections, this.one_more_active_user)
+			this._active(socket.user_id, this.active_user_connections, this.one_more_active_user)
 		}
 		else
 		{
@@ -221,9 +227,9 @@ class Visitor_tracker
 
 	inactive(socket)
 	{
-		if (socket.user)
+		if (socket.user_id)
 		{
-			this._inactive(socket.user.id, this.active_user_connections, this.one_less_active_user)
+			this._inactive(socket.user_id, this.active_user_connections, this.one_less_active_user)
 		}
 		else
 		{
@@ -247,9 +253,9 @@ class Visitor_tracker
 
 	connected(socket)
 	{
-		if (socket.user)
+		if (socket.user_id)
 		{
-			this._connected(socket.user.id, this.active_user_connections)
+			this._connected(socket.user_id, this.active_user_connections)
 		}
 		else
 		{

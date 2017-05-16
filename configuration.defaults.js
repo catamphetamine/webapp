@@ -40,23 +40,33 @@ module.exports =
 		file_size_limit: '10mb',
 		//
 		// Estimated JPEG image file size based on image width (in pixels):
+		// (Photoshop quality: 8)
 		//
-		// 1500w = 1 MB
-		// 1000w = 523 KB
-		// 750w = 315 KB
-		// 300w = 55 KB
-		// 100w = 8 KB
+		// 6500w = 4.8 MB
+		// 6000w = 4.3 MB
+		// 5000w = 3.3 MB
+		// 4500w = 3.0 MB
+		// 4100w = 2.6 MB
+		// 3600w = 2.2 MB
+		// 2800w = 1.7 MB
+		// 2100w = 1.3 MB
+		// 1500w = 1.0 MB
+		// 1000w = 850 KB
+		// 900w  = 800 KB
+		// 750w  = 750 KB
+		// 400w  = 650 KB
+		// 300w  = 600 KB
+		// 100w  = 500 KB
+		//
+		// ~ 5 MB per photo
 		//
 		sizes:
 		[
-			300,
-			600,
-			1000,
-			1500,
-			2100
-			// 2800,
-			// 3600,
-			// 4500
+			360,  // 0.6 MB
+			1080, // 0.9 MB
+			1920, // 1.2 MB
+			4096, // 2.5 MB
+			7680  // 6.0 MB
 		],
 		type:
 		{
@@ -158,19 +168,25 @@ module.exports =
 			}
 		}
 	},
+	access_token_cookie: 'authentication',
+	access_token_refresh_cookie: 'authentication.refresh',
+	access_token_lifespan: '15 minutes',
 	// upload_folder: 'storage',
 	access_token_payload:
 	{
-		write: (user) =>
+		// Populates a new access token payload
+		write: (user, refresh_token_id) =>
 		({
-			role       : user.role,
+			refresh_token_id,
+			roles : user.roles,
 			// moderation : user.moderation,
 			// switches   : user.switches
 		}),
-
+		// Reads `user` from an access token payload
 		read: (payload) =>
 		({
-			role       : payload.role,
+			access_token_id : payload.refresh_token_id,
+			roles           : payload.roles,
 			// moderation : payload.moderation,
 			// switches   : payload.switches
 		})

@@ -734,6 +734,68 @@ Troubleshooting
 To do
 ====================
 
+Требовать наличия expires у access token-в в authentication, не принимать рефреш токен (мб какой-то флаг refresh делать там, и убрать оттуда все прочие поля: role и т.п.).
+
+
+
+
+при создании notification'а - проверять, не заблокирован ли пользователь.
+
+не разрешать отправку сообщений заблокированному пользователю (как на клиенте, так и на сервере).
+
+при подключении по вебсокету - брать `authentication`, и, не учитывая expiration, проверять user.id и user.access_token_id. проверять не отозванность user.access_token_id.
+
+делать карту user.id -> [{ connection, access_token_id }] для доставки пушей.
+
+делать карту connection_id -> user.access_token_id.
+
+периодически проверять все user.access_token_id на предмет их отозванности, и если отозвано, то делать disconnect.
+
+
+
+
+
+
+access_token_lifespan: '5s' -> 15 minutes
+
+
+
+react-isomorphic-render - следует возвращать accessToken и refreshToken вместо просто token.
+браться будут из конфига.
+но accessToken может меняться, поэтому, видимо, authentication кука будет не httpOnly, и её будет каждый раз читать websocket, у которого будет вместо token - getAccessToken(), а также refreshToken.
+
+webservice при reconnect-е не передаёт куки, поэтому "authentication.refresh" недоступна в refreshAccessToken()
+
+к тому же, тот accessToken, который записан в `http` при загрузке страницы, уже не актуален, и лучше его брать откуда-то каждый раз (что означает, что cookie будет не httpOnly, и убрать тогда запоминание accessToken в `http` и каменты про безопасность этого. а вот запоминать можно refreshToken - этот да).
+
+при :active на пунктах меню - иконки меняют цвет с transition-ом
+
+Sign Out - вообще не видно при :active
+
+
+
+
+помечать точкой текущий refreshToken (видимо, как-то дешифровать refresh token из cookie, и проставлять current: true)
+
+validateToken - removed
+
+обновить JWT example в web-service
+
+
+
+сделать refresh tokens (например, 5 минут)
+
+https://github.com/react-dnd/react-dnd/blob/master/examples/04%20Sortable/Simple/Card.js
+
+favicon URL - тоже параметром
+
+В nginx считать кол-во гетов и трафик на картинках (чтобы потом смотреть, сколько будет стоить хостинг на amazon s3 - график выводить в Grafana)
+
+
+сделать в профиле кнопку "войти" для админа, и токен будет выдаваться с флагом bot, который не будет обновлять latest access time, а токен самого админа будет пермещён в cookie authentication.original, которая будет восстанавливаться оттуда при sign-out (на сервере, видимо, это всё)
+
+
+
 кнопки "заблокировать", "разблокировать" (постера) — будут выпадающими, как фейсбуке, по нажатию на "..."
 
 

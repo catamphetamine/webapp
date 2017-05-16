@@ -21,6 +21,17 @@ export default
 	// Wraps React page component with arbitrary elements (e.g. <Provider/>, etc; see an example below)
 	wrapper,
 
+	authentication:
+	{
+		// Not using "refresh token" on the client side at all.
+		// protectedCookie: _access_token_refresh_cookie_,
+
+		accessToken(get_cookie)
+		{
+			return get_cookie(_access_token_cookie_)
+		}
+	},
+
 	// redux_middleware()
 	// {
 	// 	// enable Redux event logging here
@@ -28,10 +39,7 @@ export default
 	// 	return [redux_thunk]
 	// },
 
-	preload:
-	{
-		catch: error_handler
-	},
+	error: error_handler,
 
 	...async_settings
 }

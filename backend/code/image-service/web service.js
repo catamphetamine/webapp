@@ -1,5 +1,5 @@
 import { errors } from 'web-service'
-import web_service from '../common/webservice'
+import web_service, { authentication_options } from '../common/webservice'
 
 import path from 'path'
 import fs from 'fs-extra'
@@ -22,8 +22,8 @@ export default function start_web_service()
 {
 	const web = web_service
 	({
-		authentication : configuration.access_token_payload.read,
-		parse_body     : false,
+		authentication : authentication_options(),
+		parseBody      : false,
 		routing        : '/api'
 	})
 
@@ -36,9 +36,9 @@ export default function start_web_service()
 		web.files('/', storage.serve)
 	}
 
-	web.get('/', async function({ skip, amount })
+	web.get('/', async function({ skip, amount }, { role })
 	{
-		this.role('administrator')
+		role('administrator')
 
 		skip = skip || 0
 		amount = amount || 100
@@ -46,9 +46,9 @@ export default function start_web_service()
 		return await database.get_batch(skip, amount)
 	})
 
-	web.get('/clear_temporary', async function()
+	web.get('/clear_temporary', async function({}, { role })
 	{
-		this.role('administrator')
+		role('administrator')
 
 		return await clean_up({ force: true })
 	})

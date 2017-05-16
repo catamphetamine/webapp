@@ -117,7 +117,7 @@ export default class Register extends Component
 				{/* <input
 					type="hidden"
 					name="request"
-					value={ should_redirect_to(location) }/> */}
+					value={ get_redirect_url(location) }/> */}
 
 				<Form.Actions className="rrui__form__actions--right">
 					{/* "Register" button */}

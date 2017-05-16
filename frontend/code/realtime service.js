@@ -1,21 +1,30 @@
 import { throttle, once } from 'lodash-es'
+import { getHttpClient } from 'react-isomorphic-render'
 
 import { connected, disconnected } from './redux/realtime service'
 
 export default function set_up_realtime_service_connection()
 {
+	// `websocket` is a global variable set by `react-isomorphic-render`
 	const activity_tracker = new Activity_tracker(websocket)
 
-	websocket.onMessage((message, store) =>
+	websocket.onMessage(async (message, store) =>
 	{
-		switch (message.command)
+		if (message.command)
 		{
-			case 'initialize':
-				store.dispatch(connected())
-				activity_tracker.connected()
-				return console.log('Realtime service connected', message)
-			default:
-				return console.log('Unknown message type', message)
+			switch (message.command)
+			{
+				case 'initialized':
+					store.dispatch(connected())
+					activity_tracker.connected()
+
+					const notifications = await getHttpClient().get('/social', { bot: true })
+					console.log('Notifications', notifications)
+
+					return console.log('Realtime service connected', message)
+				default:
+					return console.log('Unknown message type', message)
+			}
 		}
 	})
 

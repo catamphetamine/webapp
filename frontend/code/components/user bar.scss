@@ -36,7 +36,9 @@
 
 	.sign-in, .sign-out
 	{
-		margin-top   : var(--header-vertically-centered-text-margin-top);
+		height : 100%;
+
+		// margin-top   : var(--header-vertically-centered-text-margin-top);
 		margin-right : calc(var(--unit));
 	}
 
@@ -56,6 +58,19 @@
 	.sign-in
 	{
 		margin-right: calc(var(--unit) * 2);
+	}
+}
+
+.user-bar__name-and-picture
+{
+	display     : flex;
+	align-items : center;
+	// Black instead of white
+	color       : inherit;
+
+	&:active
+	{
+		color : inherit;
 	}
 }
 

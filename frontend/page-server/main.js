@@ -112,10 +112,12 @@ const server = webpage_server(settings,
 		try
 		{
 			user = await http.get(`/users`, { poster: true })
+			user = await http.get(`/users`, { poster: true })
+			user = await http.get(`/users`, { poster: true })
 		}
 		catch (error)
 		{
-			log.error(user)
+			log.error(error)
 		}
 
 		const state =
@@ -261,11 +263,6 @@ const server = webpage_server(settings,
 
 			return `<script>${initializing_javascript}</script>`
 		}
-	},
-
-	authentication:
-	{
-		cookie: 'authentication'
 	},
 
 	// (optional)

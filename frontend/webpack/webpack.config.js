@@ -4,6 +4,7 @@ import webpack from 'webpack'
 import Webpack_isomorphic_tools_plugin        from 'webpack-isomorphic-tools/plugin'
 import webpack_isomorphic_tools_configuration from './webpack-isomorphic-tools'
 
+// Application configuration variables
 import global_variables from '../../code/global variables'
 
 import autoprefixer from 'autoprefixer'
@@ -18,6 +19,7 @@ const assets_source_folder = path.resolve(frontend_root_folder, 'assets')
 
 const webpack_isomorphic_tools_plugin = new Webpack_isomorphic_tools_plugin(webpack_isomorphic_tools_configuration)
 
+// Populate variables from application configuration
 const define_plugin_global_variables = {}
 Object.keys(global_variables).forEach(function(key)
 {
@@ -200,7 +202,7 @@ configuration.plugins.push
 
 			postcss:
 			[
-				autoprefixer({ browsers: 'last 2 version' }),
+				autoprefixer(),
 				css_custom_properties(),
 				postcss_calc(),
 				postcss_hexrgba

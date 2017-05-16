@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Title }            from 'react-isomorphic-render'
+import { Title, Link }      from 'react-isomorphic-render'
 import { connect }          from 'react-redux'
 
 import styler from 'react-styling'
@@ -7,8 +7,8 @@ import styler from 'react-styling'
 import { defineMessages } from 'react-intl'
 import international      from '../../international/internationalize'
 
-import Url                    from '../../../../code/url'
-import { should_redirect_to } from '../../helpers/redirection'
+import Url                  from '../../../../code/url'
+import { get_redirect_url } from '../../helpers/redirection'
 
 const messages = defineMessages
 ({
@@ -25,7 +25,7 @@ export default class Page_not_found extends Component
 {
 	render()
 	{
-		const { translate } = this.props
+		const { translate, location } = this.props
 
 		const markup =
 		(
@@ -37,10 +37,10 @@ export default class Page_not_found extends Component
 				</h1>
 
 				<Link
-					to={ should_redirect_to(location) }
+					to={ get_redirect_url(location) }
 					className="error-page__page-link">
 
-					{ new Url(should_redirect_to(location)).to_relative_url() }
+					{ new Url(get_redirect_url(location)).to_relative_url() }
 				</Link>
 			</section>
 		)

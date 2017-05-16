@@ -77,7 +77,7 @@ export default class Layout extends Component
 					<meta property="og:title" content={ title }/>
 					<meta property="og:site_name" content={ title }/>
 					<meta property="og:description" content={ description }/>
-					<meta property="og:locale" content={ locale }/>
+					{/* <meta property="og:locale" content={ locale.replace('-', '_') }/> */}
 				</Meta>
 
 				{/* navigation for small screens (will slide out) */}

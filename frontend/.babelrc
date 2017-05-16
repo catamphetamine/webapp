@@ -43,7 +43,6 @@
 
 			"plugins":
 			[
-				"transform-runtime",
 				"transform-decorators-legacy",
 				"transform-react-display-name"
 			]

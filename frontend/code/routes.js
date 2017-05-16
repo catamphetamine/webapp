@@ -31,7 +31,6 @@ if (process.env.NODE_ENV !== 'production')
 
 import React from 'react'
 import { Router, Route, IndexRoute } from 'react-router'
-import { authorize } from 'react-isomorphic-render'
 
 import Layout           from './pages/layout'
 import Not_found        from './pages/errors/not found'
@@ -79,33 +78,3 @@ const routes =
 )
 
 export default routes
-
-// Restricts a `<Route/>` to a subset of users
-function restricted(component, is_authorized)
-{
-	let authorization
-
-	if (typeof is_authorized === 'string')
-	{
-		authorization = user => user.role === is_authorized
-	}
-	else if (Array.isArray(is_authorized))
-	{
-		authorization = (user) =>
-		{
-			for (let role of is_authorized)
-			{
-				if (user.role === role)
-				{
-					return true
-				}
-			}
-		}
-	}
-	else
-	{
-		authorization = is_authorized
-	}
-
-	return authorize(state => state.authentication.user, authorization, component)
-}

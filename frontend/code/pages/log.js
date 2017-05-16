@@ -4,7 +4,7 @@ import { defineMessages } from 'react-intl'
 import styler             from 'react-styling'
 import { Title, preload } from 'react-isomorphic-render'
 import { FormattedDate }  from 'react-intl'
-import { Form, Modal }    from 'react-responsive-ui'
+import { Form, Modal, Button } from 'react-responsive-ui'
 import { parse as parse_stack_trace } from 'print-error'
 
 import { get as get_log, connector } from '../redux/log'
@@ -83,19 +83,19 @@ export default class Log extends Component
 				<Title>{ translate(menu_messages.log) }</Title>
 
 				<section className="content">
-					<table style={style.log}>
+					<table style={ style.log }>
 						<thead>
 							<tr>
 								<th>pid</th>
 								<th>hostname</th>
-								<th>{translate(messages.entry_service)}</th>
-								<th>{translate(messages.entry_date)}</th>
-								<th>{translate(messages.entry_message)}</th>
+								<th>{ translate(messages.entry_service) }</th>
+								<th>{ translate(messages.entry_date) }</th>
+								<th>{ translate(messages.entry_message) }</th>
 							</tr>
 						</thead>
 
 						<tbody>
-							{log.map(this.render_log_entry)}
+							{ log.map(this.render_log_entry) }
 						</tbody>
 					</table>
 				</section>
@@ -104,34 +104,35 @@ export default class Log extends Component
 				<Modal
 					isOpen={ this.state.show_stack_trace }
 					close={ this.hide_stack_trace }
-					style={ style.stack_trace_modal }
 					closeLabel={ translate(messages.hide_stack_trace) }>
 
-					{this.state.stack_trace && this.state.stack_trace.map((stack, stack_index) =>
+					{ this.state.stack_trace && this.state.stack_trace.map((stack, stack_index) =>
 					{
 						const markup =
 						(
-							<div key={stack_index} style={style.stack_trace}>
-								<h1 style={style.stack_trace.stack.title}>{stack.title}</h1>
+							<div key={ stack_index } style={ style.stack_trace }>
+								<h1 style={ style.stack_trace.stack.title }>
+									{ stack.title }
+								</h1>
 
-								<ul style={style.stack_trace.stack}>
-									{stack.lines.map((line, line_index) =>
+								<ul style={ style.stack_trace.stack}>
+									{ stack.lines.map((line, line_index) =>
 									{
 										const markup =
 										(
-											<li key={line_index} style={style.stack_trace.stack.line}>
-												{this.render_stack_trace_line(line)}
+											<li key={ line_index } style={ style.stack_trace.stack.line }>
+												{ this.render_stack_trace_line(line) }
 											</li>
 										)
 
 										return markup
-									})}
+									}) }
 								</ul>
 							</div>
 						)
 
 						return markup
-					})}
+					}) }
 				</Modal>
 			</div>
 		)
@@ -164,10 +165,10 @@ export default class Log extends Component
 					{entry.err &&
 						<span>
 							{' '}
-							<button
-								onClick={() => this.show_stack_trace(parse_stack_trace(entry.err.stack), entry.msg)}>
+							<Button
+								action={() => this.show_stack_trace(parse_stack_trace(entry.err.stack), entry.msg)}>
 								{this.props.translate(messages.show_stack_trace)}
-							</button>
+							</Button>
 						</span>
 					}
 				</td>
@@ -245,16 +246,11 @@ const style = styler
 
 			&generic
 
-	stack_trace_modal
+	stack_trace
 		font-family : Monospace
 
-		button
-			float : right
-
-	stack_trace
-		title
 		stack
-			margin-left     : 1.6em
+			margin-left : 1.6em
 
 			title
 				color : #C44100

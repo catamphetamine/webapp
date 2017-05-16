@@ -1,10 +1,10 @@
 // Webpack DLL Plugin claims to speed up incremental Webpack builds
 // https://github.com/erikras/react-redux-universal-hot-example/issues/616
 
-import language from '../../code/language'
 import path     from 'path'
+import webpack  from 'webpack'
 
-import webpack             from 'webpack'
+import language from '../../code/language'
 import base_configuration  from './webpack.config'
 
 const configuration = Object.clone(base_configuration)
@@ -32,7 +32,6 @@ const third_party_libraries =
 	'babel-preset-react',
 	'babel-preset-stage-2',
 	'babel-polyfill',
-	'babel-runtime/core-js',
 	'bluebird',
 	'classnames',
 	'core-js',

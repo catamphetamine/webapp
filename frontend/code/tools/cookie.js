@@ -1,4 +1,6 @@
-const cookie = 
+// This module seems to be unused
+
+const cookie =
 {
 	write(name, value, days)
 	{

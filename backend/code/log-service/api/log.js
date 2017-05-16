@@ -6,9 +6,9 @@ const ip_limiter = new IP_limiter(5)
 
 export default function(api)
 {
-	api.get('/', function({}, {user})
+	api.get('/', function({}, { user, role })
 	{
-		this.role('administrator')
+		role('administrator')
 
 		return message_store.messages.clone().reverse()
 	})

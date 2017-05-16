@@ -47,13 +47,9 @@
 	right : calc(-1 * var(--dropdown-item-side-padding));
 }
 
-.rrui__select__options > li:first-child
+.rrui__select__options
 {
 	padding-top    : calc(2 * var(--unit));
-}
-
-.rrui__select__options > li:last-child
-{
 	padding-bottom : calc(2 * var(--unit));
 }
 

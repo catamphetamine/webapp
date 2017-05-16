@@ -1,6 +1,7 @@
 import web_service, { api as api_service, http } from 'web-service'
 
-const validate_token_url = '/valid'
+const refresh_token_path = '/refresh'
+const record_access_path = '/record-access'
 
 const common_options =
 {
@@ -8,23 +9,86 @@ const common_options =
 	error_html : { font_size: '20pt' }
 }
 
-const authentication_options = (is_access_token_service) =>
+export const authentication_options = (is_access_token_service) =>
 ({
-	authentication : configuration.access_token_payload.read,
-	validate_token : async (token, ctx) =>
+	authentication:
 	{
-		// Prevents recursion
-		if (is_access_token_service && ctx.path === validate_token_url)
-		{
-			return { valid: true }
-		}
+		userInfo : configuration.access_token_payload.read,
 
-		return await http.get
-		(
-			`${address_book.access_token_service}${validate_token_url}`,
-			{ bot: ctx.query.bot },
-			{ headers: { Authorization: `Bearer ${token}` } }
-		)
+		validateAccessToken(payload, ctx)
+		{
+			if (payload.audience === 'access-token-service' && !is_access_token_service)
+			{
+				return false
+			}
+
+			return true
+		},
+
+		refreshAccessToken : async (ctx) =>
+		{
+			const refresh_token = ctx.cookies.get(configuration.access_token_refresh_cookie)
+
+			if (!refresh_token)
+			{
+				throw new Error('Refresh token not found')
+			}
+
+			const token = await http.post
+			(
+				`${address_book.access_token_service}${refresh_token_path}`,
+				{},
+				{ headers: { Authorization: `Bearer ${refresh_token}` } }
+			)
+
+			// Set the cookie to expire in January 2038 (the fartherst it can get)
+			// http://stackoverflow.com/questions/3290424/set-a-cookie-to-never-expire
+			ctx.cookies.set(configuration.access_token_cookie, token,
+			{
+				expires  : new Date(2147483647000),
+				httpOnly : false,
+				signed   : false
+			})
+
+			return token
+		},
+
+		onUserRequest(token, ctx)
+		{
+			// Prevents recursion
+			if (is_access_token_service && ctx.path === record_access_path)
+			{
+				return
+			}
+
+			// Don't track access token refresh
+			// (also `user.access_token_id` is `undefined` in those cases)
+			if (is_access_token_service && ctx.path === refresh_token_path)
+			{
+				return
+			}
+
+			if (ctx.query.bot)
+			{
+				return
+			}
+
+			// Update this authentication token's last access IP and time
+			try
+			{
+				http.post
+				(
+					`${address_book.access_token_service}${record_access_path}`,
+					{},
+					{ headers: { Authorization: `Bearer ${token}` } }
+				)
+			}
+			// Recording user access is assumed to be non-critical operation
+			catch (error)
+			{
+				log.error(error)
+			}
+		}
 	}
 })
 

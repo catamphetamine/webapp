@@ -10,7 +10,7 @@ import Sign_in from './sign in'
 import Authenticate_with_access_code from '../authentication form/authenticate with access code'
 import Authenticate_with_password from '../authentication form/authenticate with password'
 
-import { should_redirect_to } from '../../helpers/redirection'
+import { get_redirect_url } from '../../helpers/redirection'
 import international from '../../international/internationalize'
 import { messages as user_bar_messages } from '../user bar'
 import { messages as sign_in_messages } from './sign in'
@@ -211,7 +211,7 @@ export default class Sign_in_form extends Component
 				|| location.pathname === '/sign-in'
 				|| location.pathname === '/register')
 			{
-				return window.location = should_redirect_to(location)
+				return window.location = get_redirect_url(location)
 			}
 
 			// Refresh the current page after login

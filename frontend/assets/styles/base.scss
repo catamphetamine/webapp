@@ -174,22 +174,22 @@ a
 	}
 }
 
-button
-{
-	background : none;
-	border     : none;
-	outline    : none;
-	padding    : 0;
-
-	white-space: nowrap;
-
-	color: var(--base-color-darker);
-
-	&:active
-	{
-		color: var(--base-color);
-	}
-}
+// button
+// {
+// 	background : none;
+// 	border     : none;
+// 	outline    : none;
+// 	padding    : 0;
+//
+// 	white-space: nowrap;
+//
+// 	color: var(--base-color-darker);
+//
+// 	&:active
+// 	{
+// 		color: var(--base-color);
+// 	}
+// }
 
 table
 {

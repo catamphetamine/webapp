@@ -5,7 +5,7 @@ import Redis from 'ioredis'
 // if Redis is installed and configured, use it
 class Redis_online_status_store
 {
-	static ttl = 10 * 60 // 10 minutes
+	static ttl = 20 * 60 // 20 minutes (access tokens expire in 15 minutes)
 
 	ready()
 	{
@@ -79,9 +79,9 @@ class Redis_online_status_store
 	// Marks access token as being valid
 	// so that the token validity check doesn't query the database
 	// (which can be more costly)
-	async check_access_token_validity(user_id, access_token_id)
+	async check_access_token_validity(access_token_id)
 	{
-		const key = `user/${user_id}/token/${access_token_id}/valid`
+		const key = `token/${access_token_id}/valid`
 
 		const result = await this.redis.get(key)
 
@@ -94,9 +94,9 @@ class Redis_online_status_store
 	// Caches access token validity
 	// so that the token validity check doesn't query the database
 	// (which can be more costly)
-	set_access_token_validity(user_id, access_token_id, valid)
+	set_access_token_validity(access_token_id, valid)
 	{
-		const key = `user/${user_id}/token/${access_token_id}/valid`
+		const key = `token/${access_token_id}/valid`
 
 		return this.redis.multi()
 			.set(key, valid ? '✔' : null)
@@ -107,9 +107,9 @@ class Redis_online_status_store
 	// Removes the flag stating that access token is valid
 	// so that the token validity check will proceed and query the database
 	// (performed upon revoking the token)
-	clear_access_token_validity(user_id, access_token_id)
+	clear_access_token_validity(access_token_id)
 	{
-		return this.redis.del(`user/${user_id}/token/${access_token_id}/valid`)
+		return this.redis.del(`token/${access_token_id}/valid`)
 	}
 
 	get_latest_access_time_persisted_at(access_token_id, ip)

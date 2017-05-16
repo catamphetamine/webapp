@@ -14,17 +14,18 @@ export default function can(action, user)
 		return false
 	}
 
-	if (user.role === 'administrator')
+	if (user.roles.has('administrator'))
 	{
 		return true
 	}
 
-	const permissions = role_permissions[user.role]
-
-	if (!permissions)
+	for (const role of user.roles)
 	{
-		return false
-	}
+		const permissions = role_permissions[role]
 
-	return permissions[action]
+		if (permissions && permissions[action])
+		{
+			return true
+		}
+	}
 }

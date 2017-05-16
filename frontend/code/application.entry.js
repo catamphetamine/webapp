@@ -1,7 +1,5 @@
-if (process.env.NODE_ENV !== 'production')
-{
-	require('bluebird').longStackTraces()
-}
+// use `bluebird` for Promises
+require('../../code/bluebird');
 
 /**
  * Warning from React Router, caused by react-hot-loader.

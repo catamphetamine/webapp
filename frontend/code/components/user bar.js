@@ -16,7 +16,7 @@ import Poster_picture from './poster picture'
 import { bindActionCreators as bind_action_creators } from 'redux'
 
 import { sign_out, connector } from '../redux/authentication'
-import { preload_started } from '../redux/preload'
+import { preload_started, preload_finished } from '../redux/preload'
 
 import Person_icon   from '../../assets/images/icons/person.svg'
 import Settings_icon from '../../assets/images/icons/settings.svg'
@@ -32,7 +32,8 @@ import Message_icon  from '../../assets/images/icons/message.svg'
 	}),
 	{
 		sign_out,
-		preload_started
+		preload_started,
+		preload_finished
 	}
 )
 @international
@@ -154,7 +155,7 @@ export default class Authentication extends Component
 		(
 			<Link
 				to={ Poster.url(user) }
-				style={ styles.user_menu_toggler }>
+				className="user-bar__name-and-picture">
 
 				{/* User name */}
 				<div
@@ -291,12 +292,6 @@ const styles = style
 		// So that the CSS animation for ".rrui__select__option"
 		// doesn't conflict with the CSS animation for ".rrui__button"
 		transition : none
-
-	user_menu_toggler
-		display     : flex
-		align-items : center
-		// Black instead of white
-		color       : inherit
 `
 
 export const messages = defineMessages
