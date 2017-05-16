@@ -23,15 +23,15 @@
 		max-height : 100%;
 		height : 100%;
 
-		.sign-out .rrui__button__button
-		{
-			color : var(--black-color);
-		}
+		// .sign-out .rrui__button__button
+		// {
+		// 	color : var(--black-color);
+		// }
 
-		.sign-out .rrui__button__button:active
-		{
-			color : var(--base-color-darker);
-		}
+		// .sign-out .rrui__button__button:active
+		// {
+		// 	color : var(--base-color-darker);
+		// }
 	}
 
 	.sign-in, .sign-out
@@ -103,15 +103,20 @@
 	margin-bottom : var(--icon-liftup);
 	margin-right  : 0.5em;
 
-	transition : var(--button-icon-transition);
+	// transition : var(--button-icon-transition);
 }
 
 .user-menu__entry:active
 {
 	.user-menu__icon
 	{
-		fill: var(--white-color);
+		fill : var(--white-color);
 	}
+}
+
+.user-menu__entry--sign-out:active
+{
+	color : var(--white-color);
 }
 
 @include m

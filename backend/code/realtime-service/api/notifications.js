@@ -19,11 +19,11 @@ export default function(get_websocket)
 			{
 				for (const socket of user_connections)
 				{
-					socket.send(JSON.stringify
+					socket.send_message
 					({
 						type: 'notification',
 						text
-					}))
+					})
 				}
 			}
 		})

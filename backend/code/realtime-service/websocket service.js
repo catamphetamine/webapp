@@ -38,6 +38,8 @@ export default function start()
 	{
 		// log.info('Client connected. Total clients:', server.clients.length)
 
+		socket.send_message = (message) => socket.send(JSON.stringify(message))
+
 		// Broadcasts to everyone else
 		socket.broadcast = (message) =>
 		{
@@ -100,6 +102,7 @@ export default function start()
 							const payload = verify_jwt(message.token, configuration.web_service_secret_keys, { ignoreExpiration: true })
 							console.log('@@@@@@@@@@@@@@', payload)
 							socket.user_id = payload.sub
+							socket.access_token_id = payload.refresh_token_id
 
 							if (!user_connections[socket.user_id])
 							{
@@ -121,7 +124,7 @@ export default function start()
 
 						visitor_tracker.connected(socket)
 
-						return socket.send(JSON.stringify(response))
+						return socket.send_message(response)
 
 					case 'active':
 						// if (socket.user_id)
@@ -139,11 +142,11 @@ export default function start()
 						return visitor_tracker.inactive(socket)
 
 					default:
-						return socket.send(JSON.stringify
+						return socket.send_message
 						({
 							status: 404,
 							error: `Unknown command: ${message.command}`
-						}))
+						})
 				}
 			}
 			catch (error)

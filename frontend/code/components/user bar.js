@@ -231,7 +231,7 @@ export default class Authentication extends Component
 					<div
 						key="sign-out"
 						onClick={ this.sign_out }
-						className="user-menu__entry">
+						className="user-menu__entry user-menu__entry--sign-out">
 						{/* Icon */}
 						<div className="user-menu__icon"/>
 						{/* Text */}

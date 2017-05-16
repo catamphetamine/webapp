@@ -17,9 +17,22 @@ export const authentication_options = (is_access_token_service) =>
 
 		validateAccessToken(payload, ctx)
 		{
-			if (payload.audience === 'access-token-service' && !is_access_token_service)
+			// If it's a refresh token then the only thing
+			// it can do is refresh access token.
+			if (payload.audience === 'access-token-service')
 			{
-				return false
+				if (!is_access_token_service)
+				{
+					return false
+				}
+
+				if (payload.scopes && payload.scopes[0] === 'refresh')
+				{
+					if (ctx.path !== refresh_token_path)
+					{
+						return false
+					}
+				}
 			}
 
 			return true
