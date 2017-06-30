@@ -4,6 +4,7 @@ import { redirect } from 'react-isomorphic-render'
 import { withRouter } from 'react-router'
 import { defineMessages } from 'react-intl'
 import { ActivityIndicator } from 'react-responsive-ui'
+import classNames from 'classnames'
 
 import Register from './register'
 import Sign_in from './sign in'
@@ -78,6 +79,7 @@ export default class Sign_in_form extends Component
 		const
 		{
 			sign_in_error,
+			className,
 			style
 		}
 		= this.props
@@ -89,7 +91,7 @@ export default class Sign_in_form extends Component
 
 		return this.snapshot =
 		(
-			<div className="sign-in-form compact" style={ style }>
+			<div className={ classNames('sign-in-form', 'compact', className) } style={ style }>
 				{ this.render_content() }
 
 				{ sign_in_error &&

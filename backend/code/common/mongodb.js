@@ -1,6 +1,3 @@
-// https://github.com/59naga/babel-plugin-transform-bluebird/pull/2
-import Promise from 'bluebird'
-
 import { MongoClient, ObjectId } from 'mongodb'
 
 Promise.promisifyAll(MongoClient)
@@ -19,7 +16,7 @@ export default class MongoDB
 		this.db = await MongoClient.connect(`mongodb://${configuration.mongodb.user}:${configuration.mongodb.password}@${configuration.mongodb.host}:${configuration.mongodb.port}/${configuration.mongodb.database}`,
 		{
 			// https://docs.mongodb.org/manual/reference/write-concern/
-			db: { w: 'majority' } 
+			db: { w: 'majority' }
 		})
 	}
 
@@ -30,7 +27,7 @@ export default class MongoDB
 		if (!collection)
 		{
 			collection = this.db.collection(name)
-			
+
 			if (collection.create)
 			{
 				throw new Error(`"create" method already defined on MongoDB collection`)
@@ -40,7 +37,7 @@ export default class MongoDB
 			{
 				return collection.findOneAsync({ _id: ObjectId(id) })
 			}
-			
+
 			collection.update_by_id = async function(id, actions)
 			{
 				const result = await collection.updateOneAsync({ _id: ObjectId(id) }, actions)
@@ -68,7 +65,7 @@ export default class MongoDB
 					throw new Error(`Failed to update document with id "${id}" in collection "${name}" (${JSON.stringify(actions)}): ${JSON.stringify(result)}`)
 				}
 			}
-			
+
 			collection.remove_by_id = function(id)
 			{
 				return collection.removeAsync({ _id: ObjectId(id) })

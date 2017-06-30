@@ -4,7 +4,7 @@
 // requiring the `Intl` polyfill for browser not supporting it
 // It is used in client.js *before* rendering the root component.
 
-import { addLocaleData as add_locale_data } from 'react-intl'
+import { addLocaleData } from 'react-intl'
 import javascript_time_ago from 'javascript-time-ago'
 import is_intl_locale_supported from 'intl-locales-supported'
 
@@ -12,7 +12,7 @@ import { get_language_from_locale } from '../../../code/locale'
 
 // `react-intl` is already used in the project,
 // so it initialized its internal `intl-messageformat`
-// during `add_locale_data()` function call.
+// during `addLocaleData()` function call.
 //
 // https://github.com/yahoo/react-intl/blob/54d40377e1f6c2daf27030a8a5cda4cd2530060e/src/locale-data-registry.js#L15
 //
@@ -28,182 +28,135 @@ require('javascript-time-ago/intl-messageformat-global')
 let _locale = 'en'
 
 // console output for debugging purposes
-const debug = (...parameters) => { console.log.bind(console)(parameters) }
+const debug = (...parameters) => console.log(parameters)
 
-const international =
+// Client-side bootstrap code.
+// Loads `Intl` polyfill and all locale-specific data.
+export default function internationalize(locale)
 {
-	// client-side bootstrap code
-	//
-	// load the Intl polyfill and its locale data before rendering the application
-	load(locale)
+	// language
+	locale = locale || document.documentElement.getAttribute('lang') || 'en'
+
+	return load_intl_polyfill(locale).then(() =>
 	{
-		// language
-		locale = locale || document.documentElement.getAttribute('lang') || 'en'
-
-		return international.load_polyfill(locale)
-			.then(international.load_locale_data.bind(null, locale))
-	},
-
-	// Returns a promise which is resolved when Intl has been polyfilled
-	load_polyfill(locale)
-	{
-		if (window.Intl && is_intl_locale_supported(locale))
-		{
-			// all fine: Intl is in the global scope and the locale data is available
-			return Promise.resolve()
-		}
-
-		return new Promise((resolve) =>
-		{
-			debug(`Intl or locale data for "${locale}" not available, downloading the polyfill...`)
-
-			// do not remove code duplication (because Webpack won't work as expected)
-			switch (get_language_from_locale(locale))
-			{
-				// russian
-				case 'ru':
-					// When building: create a intl chunk with webpack
-					// When executing: run the callback once the chunk has been download.
-					require.ensure
-					([
-						'intl',
-						'intl/locale-data/jsonp/ru.js'
-					],
-					(require) =>
-					{
-						// apply the polyfill
-						require('intl')
-						require('intl/locale-data/jsonp/ru.js')
-						debug(`Intl polyfill for "${locale}" has been loaded`)
-						resolve()
-					},
-					'intl')
-					break
-
-				default:
-					// When building: create a intl chunk with webpack
-					// When executing: run the callback once the chunk has been download.
-					require.ensure
-					([
-						'intl',
-						'intl/locale-data/jsonp/en.js'
-					],
-					(require) =>
-					{
-						// apply the polyfill
-						require('intl')
-						require('intl/locale-data/jsonp/en.js')
-						debug(`Intl polyfill for "${locale}" has been loaded`)
-						resolve()
-					},
-					'intl')
-			}
-		})
-	},
-
-	// Returns a promise which is resolved as the required locale-data chunks
-	// has been downloaded with webpack's require.ensure. For each language,
-	// we make two different chunks: one for browsers supporting `intl` and one
-	// for those who don't.
-	// The react-intl locale-data is required, for example, by the FormattedRelative
-	// component.
-	load_locale_data(locale)
-	{
-		// Make sure ReactIntl is in the global scope: this is required for adding locale-data
-		// Since ReactIntl needs the `Intl` polyfill to be required (sic) we must place
-		// this require here, when loadIntlPolyfill is supposed to be present
+		// Puts `ReactIntl` into the global scope:
+		// this is required for adding locale-specific data.
+		// `ReactIntl` needs the `Intl` polyfill to already be loaded.
 		require('expose-loader?ReactIntl!react-intl')
 
-		// The require.ensure function accepts an additional 3rd parameter.
-		// This must be a string.
-		// If two split point pass the same string they use the same chunk.
-
-		return new Promise(resolve =>
-		{
-			// do not remove code duplication (because Webpack won't work as expected)
-			switch (get_language_from_locale(locale))
-			{
-				// russian
-				case 'ru':
-					// download react-intl specific locale data for this language
-					require.ensure
-					([
-						'react-intl/locale-data/ru',
-
-						'intl-messageformat/dist/locale-data/ru',
-						'javascript-time-ago/locales/ru'
-					],
-					require =>
-					{
-						add_locale_data(require('react-intl/locale-data/ru'))
-						debug(`ReactIntl locale-data for "${locale}" has been downloaded`)
-
-						require('intl-messageformat/dist/locale-data/ru')
-						javascript_time_ago.locale(require('javascript-time-ago/locales/ru'))
-
-						resolve()
-					},
-					'locale-ru')
-					break
-
-				// english
-				default:
-					// download intl locale data for this language
-					require.ensure
-					([
-						// (is hardcoded into `react-intl`)
-						// 'react-intl/locale-data/en',
-
-						'intl-messageformat/dist/locale-data/en',
-						'javascript-time-ago/locales/en'
-					],
-					require =>
-					{
-						// (is hardcoded into `react-intl`)
-						// add_locale_data(require('react-intl/locale-data/en'))
-						// debug(`ReactIntl locale-data for "${locale}" has been downloaded`)
-
-						require('intl-messageformat/dist/locale-data/en')
-						javascript_time_ago.locale(require('javascript-time-ago/locales/en'))
-
-						resolve()
-					},
-					'locale-en-with-intl')
-			}
-		})
-	},
-
-	// This is purely for Webpack HMR in dev mode
-	load_translation: locale =>
+		return load_locale_specific_data(locale)
+	})
+	.then(([react_intl_data, _, javascript_time_ago_data]) =>
 	{
-		// makes Webpack HMR work for this locale for now
-		_locale = locale
-
-		switch (get_language_from_locale(locale))
+		if (locale !== 'en')
 		{
-			case 'ru':
-				return import('./translations/ru').then(module => module.default)
-
-			default:
-				return import('./translations/en').then(module => module.default)
+			addLocaleData(react_intl_data)
 		}
-	},
 
-	hot_reload: on_reload =>
+		javascript_time_ago.locale(javascript_time_ago_data)
+
+		debug(`All locale-specific data for "${locale}" has been loaded`)
+	})
+}
+
+// Loads `Intl` polyfill and its locale-specific data.
+function load_intl_polyfill(locale)
+{
+	if (window.Intl && is_intl_locale_supported(locale))
 	{
-		// `process.env.NODE_ENV !== 'production'` flag is needed here
-		// to make sure that Webpack doesn't include
-		// the whole `./international` folder into the `main` bundle
-		// in production mode (because that's the sole point of code splitting)
-		//
-		if (process.env.NODE_ENV !== 'production' && module.hot)
-		{
-			module.hot.accept(require.resolve('./translations/' + _locale + '.js'), function()
-			{
-				on_reload()
-			})
-		}
+		// `Intl` is in the global scope and the locale data is available
+		return Promise.resolve()
+	}
+
+	debug(`Intl${window.Intl ? ' locale data' : ''} for "${locale}" not available, downloading the polyfill...`)
+
+	return Promise.all
+	([
+		import(/* webpackChunkName: "intl" */ 'intl'),
+		load_language_specific_intl_data(locale)
+	])
+}
+
+// Loads `Intl` locale-specific data.
+function load_language_specific_intl_data(locale)
+{
+	// Do not remove code duplication via an inline `${locale}` variable,
+	// otherwise Webpack will include **all** contents
+	// of the `intl/locale-data/jsonp` folder in the bundle.
+	switch (get_language_from_locale(locale))
+	{
+		// Russian
+		case 'ru':
+			return import(/* webpackChunkName: "intl-ru" */ 'intl/locale-data/jsonp/ru.js')
+
+		// English
+		default:
+			return import(/* webpackChunkName: "intl-en" */ 'intl/locale-data/jsonp/en.js')
 	}
 }
 
-export default international
+// Loads all locale-specific data.
+//
+// For example, `react-intl` locale-specific data is used
+// by `<FormattedRelative />` component.
+//
+function load_locale_specific_data(locale)
+{
+	// Do not remove code duplication via an inline `${locale}` variable,
+	// otherwise Webpack will include **all** contents
+	// of the locale data folders in the bundle.
+	switch (get_language_from_locale(locale))
+	{
+		// Russian
+		case 'ru':
+			return Promise.all
+			([
+				import(/* webpackChunkName: "react-intl-ru" */ 'react-intl/locale-data/ru'),
+				import(/* webpackChunkName: "intl-messageformat-ru" */ 'intl-messageformat/dist/locale-data/ru'),
+				import(/* webpackChunkName: "javascript-time-ago-ru" */ 'javascript-time-ago/locales/ru')
+			])
+
+		// English
+		default:
+			return Promise.all
+			([
+				// (is hardcoded into `react-intl`)
+				// import('react-intl/locale-data/en'),
+				Promise.resolve(),
+				import(/* webpackChunkName: "intl-messageformat-en" */ 'intl-messageformat/dist/locale-data/en'),
+				import(/* webpackChunkName: "javascript-time-ago-en" */ 'javascript-time-ago/locales/en')
+			])
+	}
+}
+
+export function hot_reload_translation(on_reload)
+{
+	// `process.env.NODE_ENV !== 'production'` flag is needed here
+	// to make sure that Webpack doesn't include
+	// the whole `./international` folder into the `main` bundle
+	// in production mode (because that's the sole point of code splitting)
+	//
+	if (process.env.NODE_ENV !== 'production' && module.hot)
+	{
+		module.hot.accept(require.resolve('./translations/' + window._current_locale + '.js'), function()
+		{
+			on_reload()
+		})
+	}
+}
+
+// This is purely for Webpack HMR in dev mode
+export function load_translation(locale)
+{
+	// The `_locale` variable is used in Webpack HMR
+	window._current_locale = locale
+
+	switch (get_language_from_locale(locale))
+	{
+		case 'ru':
+			return import('./translations/ru').then(module => module.default)
+
+		default:
+			return import('./translations/en').then(module => module.default)
+	}
+}

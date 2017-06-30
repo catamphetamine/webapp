@@ -25,7 +25,7 @@
 
 			"plugins":
 			[
-				"transform-bluebird",
+				"transform-promise-to-bluebird",
 				"transform-decorators-legacy",
 				"transform-react-display-name",
 				"react-hot-loader/babel"

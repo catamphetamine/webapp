@@ -7,11 +7,6 @@ import webpack_isomorphic_tools_configuration from './webpack-isomorphic-tools'
 // Application configuration variables
 import global_variables from '../../code/global variables'
 
-import autoprefixer from 'autoprefixer'
-import css_custom_properties from 'postcss-custom-properties'
-import postcss_calc from 'postcss-calc'
-import postcss_hexrgba from 'postcss-hexrgba'
-
 const root_folder = path.resolve(__dirname, '..', '..')
 const frontend_root_folder = path.resolve(__dirname, '..')
 
@@ -99,7 +94,11 @@ const configuration =
 					}
 				},
 				{
-					loader : 'postcss-loader'
+					loader : 'postcss-loader',
+					options:
+					{
+						sourceMap : true
+					}
 				},
 				{
 					loader : 'sass-loader',
@@ -160,7 +159,10 @@ const configuration =
 					loader: 'babel-loader'
 				},
 				{
-					loader: 'svg-react-loader'
+					loader: 'react-svg-loader',
+					// For `svg-react-loader`:
+					// titleCaseDelim: /\s+/g
+					// (https://github.com/jhamlet/svg-react-loader/issues/72)
 				}]
 			}
 		]
@@ -184,35 +186,5 @@ const configuration =
 		new webpack.DefinePlugin(define_plugin_global_variables)
 	]
 }
-
-configuration.plugins.push
-(
-	new webpack.LoaderOptionsPlugin
-	({
-		test: /\.(scss|css)$/,
-		debug: true,
-		options:
-		{
-			// A temporary workaround for `scss-loader`
-			// https://github.com/jtangelder/sass-loader/issues/298
-			output:
-			{
-				path: configuration.output.path
-			},
-
-			postcss:
-			[
-				autoprefixer(),
-				css_custom_properties(),
-				postcss_calc(),
-				postcss_hexrgba
-			],
-
-			// A temporary workaround for `css-loader`.
-			// Can also supply `query.context` parameter.
-			context: configuration.context
-		}
-	})
-)
 
 module.exports = configuration

@@ -7,7 +7,7 @@ import inject_tap_event_plugin from 'react-tap-event-plugin'
 
 import language from '../../code/language'
 import settings from './react-isomorphic-render'
-import international from './international/loader'
+import internationalize, { hot_reload_translation, load_translation } from './international/loader'
 import set_up_realtime_service_connection from './realtime service'
 
 // include these assets in webpack build (styles, images)
@@ -28,7 +28,7 @@ for (let asset of Object.keys(html_assets))
 inject_tap_event_plugin()
 
 // load the Intl polyfill and its locale data before rendering the application
-international.load().then(() =>
+internationalize().then(() =>
 {
 	// renders the webpage on the client side
 	render(settings,
@@ -38,7 +38,7 @@ international.load().then(() =>
 
 		// internationalization
 		// (this is here solely for Webpack HMR in dev mode)
-		translation: process.env.NODE_ENV !== 'production' && international.load_translation
+		translation: process.env.NODE_ENV !== 'production' && load_translation
 	})
 	.then(({ store, token, rerender }) =>
 	{
@@ -51,7 +51,7 @@ international.load().then(() =>
 				rerender()
 			})
 
-			international.hot_reload(rerender)
+			hot_reload_translation(rerender)
 		}
 
 		// Set up WebSocket connection

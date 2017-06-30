@@ -92,7 +92,8 @@ export default class Sign_in extends Component
 					values={ this.fields }
 					focus_on={ this.get_focused_element() }
 					style={ style.form }
-					error={ this.error_message() }/>
+					error={ this.error_message() }
+					className="content-section"/>
 			</section>
 		)
 

@@ -1,6 +1,3 @@
-// https://github.com/59naga/babel-plugin-transform-bluebird/pull/2
-import Promise from 'bluebird'
-
 import sharp from 'sharp'
 
 import fs from 'fs'

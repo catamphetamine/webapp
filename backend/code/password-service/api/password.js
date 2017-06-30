@@ -1,6 +1,3 @@
-// https://github.com/59naga/babel-plugin-transform-bluebird/pull/2
-import Promise from 'bluebird'
-
 // http://stackoverflow.com/questions/1561174/sha512-vs-blowfish-and-bcrypt
 //
 // "Speed is exactly what you don’t want in a password hash function."

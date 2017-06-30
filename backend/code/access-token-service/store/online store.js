@@ -1,5 +1,3 @@
-// https://github.com/59naga/babel-plugin-transform-bluebird/pull/2
-import Promise from 'bluebird'
 import Redis from 'ioredis'
 
 // if Redis is installed and configured, use it

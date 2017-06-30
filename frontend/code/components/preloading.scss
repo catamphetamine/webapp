@@ -7,32 +7,39 @@
 	right  : 0;
 	bottom : 0;
 
-	// display: none; // breaks opacity transition
-	z-index: -1;
+	z-index: 0;
 
-	background-color: rgba(0, 0, 0, 0.1);
-
-	opacity          : 0;
-	transition       : opacity 100ms ease-out;
-	transition-delay : 0;
-
+	background-color: rgba(0, 0, 0, 0.08);
 	text-align: center;
+
+	transition: opacity 100ms ease-out, z-index 100ms step-end;
 }
 
 .preloading--shown
 {
 	z-index : var(--preloading-z-index);
-
 	opacity : 1;
+
+	transition: opacity 600ms ease-out 500ms, z-index 0ms step-start;
+
 	cursor  : wait;
 
-	transition-duration : 140ms;
-	transition-delay    : 500ms;
+	.rrui__activity-indicator-circle-container,
+	.rrui__activity-indicator-circle
+	{
+		animation-delay: 500ms;
+	}
 }
 
 .preloading--immediate
 {
 	transition-delay : 0ms;
+
+	.rrui__activity-indicator-circle-container,
+	.rrui__activity-indicator-circle
+	{
+		animation-delay: 0ms;
+	}
 }
 
 .preloading-spinner-container

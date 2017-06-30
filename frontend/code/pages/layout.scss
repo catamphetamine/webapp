@@ -12,6 +12,13 @@
 	display : none
 }
 
+.page
+{
+	// For z-index ordering (relative to preloading screen)
+	position: relative;
+	z-index: 0;
+}
+
 @include s
 {
 	.main-header

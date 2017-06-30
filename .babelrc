@@ -7,7 +7,7 @@
 
 	"plugins":
 	[
-		"transform-bluebird",
+		"transform-promise-to-bluebird",
 		"transform-decorators-legacy"
 	]
 }

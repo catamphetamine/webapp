@@ -27,23 +27,38 @@ Features
 Running
 =======
 
-* make sure you have [Node.js version >= 7.0.0](https://www.npmjs.com/package/babel-preset-node7) installed
-* make sure you have Postgresql and Redis installed and running
+Prerequisites:
+
+* [Node.js version >= 7.0.0](https://www.npmjs.com/package/babel-preset-node7)
+* [PostgreSQL](#postgresql)
+* [Redis](#redis)
+
+Prerequisites for production:
+
+* [Docker](#docker) (on each machine)
+* [Consul](#consul) (on each machine)
+* [Nomad](#nomad) (on each machine)
+
+Installing:
+
 * `npm run install-recursive` (runs `npm install` for all subdirectories recursively)
 * `cd backend`
 * `npm run postgresql-knex-init`
 * `nano database/sql/knexfile.js` (edit `database`, `username` and `password`)
 * `npm run postgresql-migrate`
 * `cd ..`
+
+Running in development mode:
+
 * `npm run dev`
 * wait for it to finish the build (green stats will appear in the terminal, and it will say "Webpage server is listening at http://localhost:3004")
 * go to `http://127.0.0.1:3000`
-* interact with the development version of the web application
-* `Ctrl + C`
+
+Running in production mode:
+
 * `npm run production`
 * wait a bit for Webpack to finish the build (green stats will appear in the terminal, plus some `node.js` server running commands)
 * go to `http://127.0.0.1:3000`
-* interact with the production version of the web application
 
 Configuration
 =============
@@ -119,12 +134,10 @@ pm2 logs webapp
 Возможна кластеризация, безостановочное самообновление и т.п.
  -->
 
-<!-- Redis
+Redis
 =====
 
-The application will run without Redis but user authenication will only work in demo mode.
-
-To enable full support for user authentication Redis must be installed for storing user sessions.
+The application uses Redis for storing user sessions (things like online status).
 
 After installing Redis edit the configuration.js file accordingly
 
@@ -138,7 +151,31 @@ redis:
 ```
 
 To secure Redis from outside intrusion set up your operating system firewall accordingly. Also a password can be set and tunneling through an SSL proxy can be set up between the microservices. Also Redis should be run as an unprivileged `redis` user.
- -->
+
+Consul
+======
+
+Consul is a service discovery software used in conjunction with Nomad and Docker to run high-availability applications in production.
+
+```js
+brew install consul
+```
+
+Nomad
+======
+
+Nomad is a Docker container deployment software used in conjunction with Consul and Docker to run high-availability applications in production.
+
+```js
+brew install nomad
+```
+
+Docker
+======
+
+Docker is a containerization software used to easily run applications in production.
+
+Download it from the [Docker website](https://www.docker.com/docker-mac)
 
 Security
 ========
@@ -734,6 +771,11 @@ Troubleshooting
 To do
 ====================
 
+
+
+
+в конфиге в http добавить флаг secure: true
+
 из конфига брать цветовую схему, название сайта, description, favicon URL
 
 
@@ -742,6 +784,17 @@ To do
 (например, раз в 15 минут, только для каждого, а не для всех сразу, чтобы распределять нагрузку равномерно)
 если access_token_id не valid, то делать disconnect.
 но будет потом reconnect, так что сразу при connect проверять access_token_id на valid.
+
+
+
+
+
+
+
+настроить telemetry для nomad и statsd
+https://www.nomadproject.io/docs/agent/telemetry.html
+
+
 
 
 

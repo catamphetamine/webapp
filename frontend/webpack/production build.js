@@ -4,6 +4,7 @@ import path     from 'path'
 import webpack             from 'webpack'
 import base_configuration  from './webpack.config'
 import clean_plugin        from 'clean-webpack-plugin'
+import babili_plugin       from 'babili-webpack-plugin'
 import extract_text_plugin from 'extract-text-webpack-plugin'
 import visualizer          from 'webpack-visualizer-plugin'
 
@@ -55,13 +56,7 @@ configuration.plugins = configuration.plugins.concat
 	}),
 
 	// Compresses javascript files
-	new webpack.optimize.UglifyJsPlugin
-	({
-		compress:
-		{
-			warnings: false
-		}
-	}),
+	new babili_plugin(),
 
 	new visualizer
 	({

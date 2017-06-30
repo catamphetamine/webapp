@@ -7,10 +7,9 @@
 
 	"plugins":
 	[
+		"transform-promise-to-bluebird",
 		"transform-es2015-destructuring",
 		"transform-object-rest-spread",
-
-		"transform-bluebird",
 		"transform-decorators-legacy"
 	]
 }

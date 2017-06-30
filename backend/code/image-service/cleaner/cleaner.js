@@ -1,6 +1,3 @@
-// https://github.com/59naga/babel-plugin-transform-bluebird/pull/2
-import Promise from 'bluebird'
-
 import path from 'path'
 import fs from 'fs-extra'
 import moment from 'moment'

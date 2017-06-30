@@ -24,7 +24,7 @@ export default function start_web_server()
 	// Serve assets
 	web.files('/assets', path.join(Root_folder, 'frontend/build/assets'))
 
-	// Remove this after fixing the "simple example" page
+	// Uploaded files transient storage
 	web.files('/temporary_storage', path.join(Root_folder, configuration.image_service.temporary_files_directory))
 
 	// If it's not a static file url:
@@ -55,7 +55,7 @@ export default function start_web_server()
 
 		return web
 	},
-	error =>
+	(error) =>
 	{
 		log.error(error, 'Web server shutdown')
 	})
