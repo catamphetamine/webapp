@@ -6,6 +6,14 @@ export default function(error, { path, url, redirect, dispatch, getState, server
 	// Not authenticated
 	if (error.status === 401)
 	{
+		// Prevent double redirection to `/unauthenticated`.
+		// (e.g. when two parallel `Promise`s load inside `@preload()`
+		//  and both get Status 401 HTTP Response)
+		if (typeof window !== 'undefined' && window.location.pathname === '/unauthenticated')
+		{
+			return
+		}
+
 		return redirect(add_redirect('/unauthenticated', url))
 	}
 

@@ -69,7 +69,7 @@ const metrics = start_metrics
 const server = webpage_server(settings,
 {
 	// Http host and port for executing all client-side ajax requests on server-side
-	application:
+	http:
 	{
 		host: configuration.web_server.http.host || 'localhost',
 		port: configuration.web_server.http.port

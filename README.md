@@ -788,6 +788,30 @@ To do
 
 
 
+fluentd
+
+sudo usermod -G docker -a username
+
+
+
+
+https://cfssl.org/
+
+The following command will generate a suitable example CA CSR, certificate, and key:
+
+cfssl print-defaults csr | cfssl gencert -initca - | cfssljson -bare ca
+
+{
+  "CN": "global.nomad",
+  "hosts": [
+    "server.global.nomad",
+    "client.global.nomad",
+    "localhost"
+  ]
+}
+
+cfssl gencert -ca ca.pem -ca-key ca-key.pem *.json | cfssljson -bare nomad
+
 
 
 
