@@ -73,7 +73,13 @@ export default class Layout extends Component
 					https://css-tricks.com/probably-use-initial-scale1/
 					They say: "user-scalable=no removes touch event delay ~300ms"
 					*/}
+					{/*
+					This also makes the page not scale down on mobile devices
+					and instead adapt to the screen width using `@media` queries.
+					*/}
 					<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+
+					{/* OpenGraph metadata (ogp.me) */}
 					<meta property="og:title" content={ title }/>
 					<meta property="og:site_name" content={ title }/>
 					<meta property="og:description" content={ description }/>

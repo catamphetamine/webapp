@@ -31,11 +31,8 @@ inject_tap_event_plugin()
 internationalize().then(() =>
 {
 	// renders the webpage on the client side
-	render(settings,
+	return render(settings,
 	{
-		// enable/disable Redux dev-tools (true/false)
-		devtools: _development_tools_ && require('./devtools').default,
-
 		// internationalization
 		// (this is here solely for Webpack HMR in dev mode)
 		translation: process.env.NODE_ENV !== 'production' && load_translation
@@ -66,3 +63,4 @@ internationalize().then(() =>
 		set_up_realtime_service_connection()
 	})
 })
+.catch((error) => console.error(error))
