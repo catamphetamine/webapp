@@ -795,6 +795,13 @@ sudo usermod -G docker -a username
 
 
 
+SVG previews:
+
+https://github.com/technopagan/sqip
+
+
+
+
 https://cfssl.org/
 
 The following command will generate a suitable example CA CSR, certificate, and key:
